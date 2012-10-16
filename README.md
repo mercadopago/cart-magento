@@ -26,10 +26,8 @@ Yes.  You can disable it at the Store Administration
 <a name="usage"></a>
 ### Installation instructions:
 1. Copy the folds "APP", "Skin", ”JS”, to the Magento root installation. Make sure to keep the Magento folders structure intact.
-2. In your admin go to System>Cache Management and clear all caches.
-
-![Installation Instructions](https://raw.github.com/mercadopago/cart-magento/master/README.img/installation.png)
-
+2. In your admin go to System>Cache Management and clear all caches.<br />
+![Installation Instructions](https://raw.github.com/mercadopago/cart-magento/master/README.img/installation.png)<br />
 3. Go to System>IndexManagement and select all fields. Then click in Reindex Data.
 
 ![Index Managment](https://raw.github.com/mercadopago/cart-magento/master/README.img/indexmanagment.png)
@@ -41,12 +39,9 @@ Yes.  You can disable it at the Store Administration
 3. Set your ***CLIENT_ID*** and ***CLIENT_SECRET***.<br />
    You could get in<br />
    Argentina: https://www.mercadopago.com/mla/herramientas/aplicaciones<br />
-Brazil: https://www.mercadopago.com/mlb/ferramentas/aplicacoes
-
-![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup.png)
-
-![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup2.png)
-
+Brazil: https://www.mercadopago.com/mlb/ferramentas/aplicacoes<br />
+![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup.png)<br />
+![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup2.png)<br />
 
 4. Note: If you change the Country where your account was created you need save config to refresh the excluded payment methods.
 5. Note: The standard URL for successful payment or pending payment is [yourstoreaddrees.com]/index.php/checkout/onepage/success/ but you can use any page as you want.

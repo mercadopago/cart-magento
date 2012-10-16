@@ -1,0 +1,174 @@
+<?php
+/**
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL).
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   	Payment Gateway
+ * @package    	MercadoPago
+ * @author      Andr� Fuhrman (andrefuhrman@gmail.com)
+ * @copyright  	Copyright (c) MercadoPago [http://www.mercadopago.com]
+ * @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<div class="page-title">
+<h1><?php echo $this->__('Congratulations') ?></h1>
+<label for="shipping-address-select"><?php echo $this->__('Your order is now been processing') ?>!</label>
+
+</div>
+<div class="dashboard">
+<div class="box-account box-info">
+        
+    <div class="col2-set">
+        <div class="box">
+                
+<div class="col-1">
+<div class="box-title">
+<h3><?php echo $this->__('Order Information') ?> - #<?php echo ($this->getOrderId()) ;?></h3>
+</div>   
+    <h2 class="table-caption"><?php echo $this->__('Items Ordered') ?></h2>
+    <table class="data-table" id="my-orders-table" summary="Items Ordered">
+<colgroup>
+<col/>
+<col width="1"/>
+<col width="1"/>
+<col width="1"/>
+<col width="1"/>
+</colgroup>
+<thead>
+<tr class="first last">
+<th><?php echo $this->__('Product Name') ?></th>
+<th><?php echo $this->__('Sku') ?></th>
+<th class="a-right"><?php echo $this->__('Price') ?></th>
+<th class="a-center"><?php echo $this->__('Qty') ?></th>
+<th class="a-right"><?php echo $this->__('Subtotal') ?></th>
+</tr>
+</thead>
+<tfoot>
+<tr class="subtotal first">
+<td colspan="4" class="a-right"><?php echo $this->__('Subtotal') ?></td>
+<td class="last a-right">
+<span class="price"><?php echo ($this->getSubTotal()); ?></span>
+</td>
+</tr>
+<tr class="shipping">
+<td colspan="4" class="a-right"><?php echo $this->__('Shipping & Handling') ?></td>
+<td class="last a-right">
+<span class="price"><?php echo ($this->getShipping()); ?></span>
+</td>
+</tr>
+<tr class="grand_total last">
+<td class="a-right" colspan="4">
+<strong><?php echo $this->__('Grand Total') ?></strong>
+</td>
+<td class="last a-right">
+    <strong><?php echo ($this->getTotal()); ?></strong>
+</tr>
+</tfoot>
+<?php 
+
+foreach ($this->getItens() as $item){
+ ?>
+
+<tbody class="even">
+<tr class="border last" id="order-item-row-97">
+<td>
+<h3 class="product-name"><?php echo ($item->getName()); ?></h3>
+</td>
+<td><?php echo ($item->getSku()); ?></td>
+<td class="a-right">
+<?php echo Mage::helper('core')->currency($item->getPrice(),true,false); ?>
+<br/>
+</td>
+<td class="a-right">
+<?php echo number_format($item->getQtyOrdered(), 0, ',', ' ');  ?>
+</td>
+<td class="a-right last">
+<?php echo Mage::helper('core')->currency($item->getBaseRowTotalInclTax(),true,false); ?>
+<br/>
+</td>
+</tr>
+</tbody>
+<?php
+    
+    
+    
+    
+}
+?>
+
+
+
+
+</table>
+<br /><br />   
+
+<button class="button btn-proceed-checkout btn-checkout" onclick="window.location='<?php echo $this->getHome();?>';" title="<?php echo $this->__('Continue Shopping') ?>" type="button">
+<span>
+<span><?php echo $this->__('Continue Shopping') ?></span>
+</span>
+</button>
+    
+<address>
+        
+        
+</address>
+   
+</div>
+            
+            
+<div class="col-2">
+<div class="box-title">
+<h3><?php echo $this->__('Customer Information') ?></h3>
+</div> 
+<address>
+<?php echo($this->getBillName().' '.$this->getBillLastname()); ?>
+<br/>
+<?php echo($this->getBillEmail()) ;?>
+<br/>
+
+<br/><br/>
+
+</address>
+                
+                
+            </div>
+            <div class="col-2">
+                <br />
+<div class="box-title">
+<h3><?php echo $this->__('Shipping Information') ?></h3>
+</div> 
+<address>
+<?php echo($this->getCustomername().' '.$this->getCustomerlastname()); ?>
+<br/>
+<?php echo($this->getCustomeremail()) ;?>
+<br/>
+<?php echo($this->getCustomerstreet()) ;?>
+<br/>
+<?php echo($this->getCustomercity()) ;?>, <?php echo $this->getCustomerstate(); ?>,<?php echo $this->getCustomerpostcode(); ?>
+<br/>
+<?php $countryName = Mage::getModel('directory/country')->load($this->getCustomercountry())->getName(); ?>
+<?php echo($countryName) ;?>
+
+
+
+<br/>
+Phone:  <?php echo($this->getCustomerphone()) ;?>
+<br/><br/>
+<a href="<?php echo($this->getEditPage());?>"><?php echo $this->__('Edit Address') ?></a>
+</address>
+                
+                
+            </div>
+        </div>
+    </div>      
+        
+</div>
+    <?php  echo $this->getChildHtml('order_items') ?>
+</div>
+
+<?
+

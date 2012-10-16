@@ -48,7 +48,7 @@ Yes.  You can disable it at the Store Administration
    ![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup2.png)<br />
 
 4. Note: If you change the Country where your account was created you need save config to refresh the excluded payment methods.
-5. Note: The standard URL for successful payment or pending payment is **[yourstoreaddrees.com]**/index.php/checkout/onepage/success/ but you can use any page as you want.
+5. Note: The standard URL for successful payment or pending payment is **[yourstoreaddress.com]**/index.php/checkout/onepage/success/ but you can use any page as you want.
 
 ---
 
@@ -57,4 +57,4 @@ Yes.  You can disable it at the Store Administration
 1. Go to **MercadoPago IPN admin page:**<br />
 Argentina: https://www.mercadopago.com/mla/herramientas/notificaciones<br />
 Brazil: https://www.mercadopago.com/mlb/ferramentas/notificacoes
-2. Enter the URL as follow **[yourstoreaddrees.com]**/index.php/mpexpress/ipn/
+2. Enter the URL as follow **[yourstoreaddress.com]**/index.php/mpexpress/ipn/

@@ -13,7 +13,7 @@ This module provides MercadoPago Express functionality that allow customers paid
 * MercadoPago Standard Checkout
 
 <a name="howto"></a>
-### How the MercadoPago Checkout Express works?
+## How the MercadoPago Checkout Express works?
 At the shopping cart, the customer can click on “Buy Now” and a light box will open. In this Light Box the customer can insert his Postal Code and the module utilizes Magento Shipping modules to calculate the shipping price.
  After the customer chose the shipping option an order is generate and a MercadoPago checkout page take place, allowing the customer to make the payment.  After the payment is done, the customer click on redirect and again in the store to him fills the shipping information.
 The Store will receive the customer name related to this order, and the customer email by the IPN (Instant Payment Notification) making sure that this order not getting lost in the store.
@@ -24,7 +24,7 @@ The Store will receive the customer name related to this order, and the customer
 Yes.  You can disable it at the Store Administration
 
 <a name="usage"></a>
-### Installation instructions:
+## Installation instructions:
 1. Copy the folds "APP", "Skin", ”JS”, to the Magento root installation. Make sure to keep the Magento folders structure intact.
 2. In your admin go to System>Cache Management and clear all caches.<br />
 ![Installation Instructions](https://raw.github.com/mercadopago/cart-magento/master/README.img/installation.png)<br />

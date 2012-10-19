@@ -1,7 +1,7 @@
 # Magento - Mercadopago Module (1.4.x to 1.7.x)
 ---
 
-This module provides MercadoPago Express functionality that allow customers paid their shops much faster, increasing the store conversion.
+This module provides MercadoPago Checkout Express functionality that allow customers paid their shops much faster, increasing the store conversion.
 
 * [Installation](#usage)
 * [How the MercadoPago Checkout Express works?](#howto)
@@ -14,10 +14,10 @@ This module provides MercadoPago Express functionality that allow customers paid
 * MercadoPago Standard Checkout
 
 <a name="howto"></a>
-## How works MercadoPago Checkout Express?
-At the shopping cart, the customer can click on “Buy Now” and a light box will open. In this Light Box the customer can insert his Postal Code and the module utilizes Magento Shipping modules to calculate the shipping price.
-After the customer chose the shipping option an order is generate and a MercadoPago checkout page take place, allowing the customer to make the payment.  After the payment is done, the customer click on redirect and again in the store to him fills the shipping information.
-The Store will receive the customer name related to this order, and the customer email by the IPN (Instant Payment Notification) making sure that this order not getting lost in the store.
+## How does the MercadoPago Checkout Express work?
+At the shopping cart, the customer can click on “Buy Now” and a light box will open. In this Light Box the customer can insert their Postal Code and the module utilizes Magento Shipping modules to calculate the shipping price.
+After the customer chose the shipping option an order is generated and a MercadoPago checkout page takes place, allowing the customer to make the payment.  After the payment is done, the customer clicks on redirect and again on the store to fill the shipping information.
+The Store will receive the customer name related to this order, and the customer email by the IPN (Instant Payment Notification) making sure that this order are not getting lost in the store.
 
 ![How the MercadoPago Checkout Express works?](https://raw.github.com/mercadopago/cart-magento/master/README.img/howto.png)
  

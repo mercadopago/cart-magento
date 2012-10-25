@@ -4,12 +4,11 @@
 This module provides MercadoPago Checkout Express functionality that allow customers paid their shops much faster, increasing the store conversion.
 
 * [Installation](#usage)
-* [How the MercadoPago Checkout Express works?](#howto)
-* [Set up MercadoPago Magento plugin](#magentoplugin)
+* [How does the MercadoPago Checkout Express works?](#howto)
+* [Set up MercadoPago](#Setup)
 * [Sync your backoffice with MercadoPago (IPN)](#IPN)
 
 #### What does this module include?
-
 * MercadoPago Checkout Express
 * MercadoPago Standard Checkout
 
@@ -27,7 +26,7 @@ Yes.  You can disable it at the Store Administration
 ---
 
 <a name="usage"></a>
-### Installation:
+## Installation:
 
 1. Copy the folders **app**, **skin** and **js** to the Magento root installation. Make sure to keep the Magento folders structure intact.
 2. In your admin go to **System > Cache Management** and clear all caches.
@@ -38,33 +37,34 @@ Yes.  You can disable it at the Store Administration
 	![Index Managment](https://raw.github.com/mercadopago/cart-magento/master/README.img/indexmanagment.png)
 
 ---
-### Setup MercadoPago
+<a name="Setup"></a>
+## Setup MercadoPago
 
 1. Go to **System > Configuration > Sales > Payment Methods**. Select **MercadoPago**.
 
 2. Set your Country to the same where your account was created on, and save config.
 
-	***Note:*** *If you change the Country where your account was created you need save config to refresh the excluded payment methods.*
+	***Note:*** If you change the Country where your account was created you need save config to refresh the excluded payment methods.
 
 
 3. Set your **CLIENT_ID** and **CLIENT_SECRET**.
 
-    Get your ***CLIENT_ID*** and ***CLIENT_SECRET*** in the following address:
-    * Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
-    * Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
+Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
+* Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
+* Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
 
-   ![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup.png)<br />
-   ![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup2.png)<br />
+![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup.png)<br />
+![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup2.png)<br />
 
-* ***Note:*** *The standard URL for successful payment or pending payment is **[yourstoreaddress.com]**/index.php/checkout/onepage/success/ but you can use any page as you want.*
+***Note:*** The standard URL for successful payment or pending payment is ***[yourstoreaddress.com]***/index.php/checkout/onepage/success/ but you can use any page as you want.
 
 ---
 
 <a name="IPN"></a>
-### Sync your backoffice with Mercadopago (IPN) 
+## Sync your backoffice with Mercadopago (IPN) 
 
 1. Go to **Mercadopago IPN configuration**:
     * Argentina: [https://www.mercadopago.com/mla/herramientas/notificaciones](https://www.mercadopago.com/mla/herramientas/notificaciones)
-    * Brasil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)
+    * Brasil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)<br />
 
 2. Enter the URL as follow: ***[yourstoreaddress.com]***/index.php/mpexpress/ipn/

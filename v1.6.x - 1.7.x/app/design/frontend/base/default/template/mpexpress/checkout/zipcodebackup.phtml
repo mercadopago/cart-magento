@@ -1,0 +1,35 @@
+<?php
+
+/**
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL).
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   	Payment Gateway
+ * @package    	MercadoPago
+ * @author      André Fuhrman (andrefuhrman@gmail.com)
+ * @copyright  	Copyright (c) MercadoPago [http://www.mercadopago.com]
+ * @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<div class="page-title">
+
+<form action="<?php echo $this->getpostpage();  ?>" id="co-shipping-form"  method="post" >
+    <ul class="form-list">
+ 
+        <li id="shipping-new-address-form">
+       <div class="field">
+      <label for="zipcode" class="required"><em>*</em><?php echo $this->__('ZipCode') ?></label>
+      <div class="input-box">
+      <input type="text" name="zipcode" title="<?php echo $this->__('ZipCode') ?>" class="input-text" id="zipcode" value="" />
+      </div>
+      </div>
+            
+        </li>
+    </ul>
+    <button type="submit" class="button" title="<?php echo $this->__('Save') ?>" ><span><span><?php echo $this->__('Save') ?></span></span></button>
+<p class="required"><?php echo $this->__('* Required Fields') ?></p>
+</form>

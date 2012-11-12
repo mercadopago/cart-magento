@@ -95,8 +95,8 @@
                                                         ]]>
                                                       </comment>
 						</checkout_mode>
-                                                <express_button translate="label">
-							<label>Allow Express Checkout</label>
+                                                <express_button_checkout translate="label">
+							<label>Show ShopCart Express Checkout button</label>
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<sort_order>7</sort_order>
@@ -108,7 +108,35 @@
                   When this option is enable a express button is showed on the shopping cart, allowing the client finishing the process much fastar, increasing your store sales 
                 ]]>
                                                       </comment>
-						</express_button>
+						</express_button_checkout>
+                                                <express_button_checkout_sidebar translate="label">
+							<label>Show ShopCart Express Checkout Sidebar button</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>7</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+                                                         <comment>
+                <![CDATA[
+                  When this option is enable a express button is showed on the shopping cart sidebar, allowing the client finishing the process much fastar, increasing your store sales 
+                ]]>
+                                                      </comment>
+						</express_button_checkout_sidebar>
+                                                <express_button_product translate="label">
+							<label>Show Express Checkout Product button</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>7</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+                                                         <comment>
+                <![CDATA[
+                  When this option is enable a express button is at each product, allowing the client finishing the process much fastar, increasing your store sales 
+                ]]>
+                                                      </comment>
+						</express_button_product>
                                                   <ask_postalcode translate="label">
 							<label>Postal Code Request on Express Payment on Express Checkout</label>
 							<frontend_type>select</frontend_type>

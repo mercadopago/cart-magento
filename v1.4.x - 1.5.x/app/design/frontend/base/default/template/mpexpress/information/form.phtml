@@ -21,6 +21,7 @@
 <?php
 $address = $this->getLastShip();
 $order_address = $this->getAddress(); 
+$postalcode = $this->getPostalCode(); 
 
     
     if (!isset($address['firstname'])){
@@ -58,13 +59,18 @@ $order_address = $this->getAddress();
        $address['region'] = '';   
        }
     }
-     if (!isset($address['postcode'])){
-       if($order_address['postcode']!= '-') { 
-       $address['postcode'] = $order_address['postcode'];     
-       } else {
-       $address['postcode'] = '';   
-       }
-    }
+     if($postalcode == '' || $postalcode == '-' || $postalcode == null){
+
+               if(!isset($address['postcode'])){
+                   if($order_address['postcode']!= '-') { 
+                   $address['postcode'] = $order_address['postcode'];     
+                   } else {
+                   $address['postcode'] = '';   
+                   }
+               } 
+     } else {
+           $address['postcode'] = $postalcode;
+     }
      if (!isset($address['country_id'])){
        if($order_address['country_id']!= '-') { 
        $address['country_id'] = $order_address['country_id'];     
@@ -177,7 +183,7 @@ $order_address = $this->getAddress();
                        
                     </li>
                     <li class="fields">
-                         <?php if($this->getCepChange() == true):?>
+                         <?php if($this->getCepChange() == true || $address['postcode'] == ''):?>
                         <div class="field">
                             <label for="shipping:postcode" class="required"><em>*</em><?php echo $this->__('Zip/Postal Code') ?></label>
                             <div class="input-box">

@@ -1,4 +1,4 @@
-﻿"Escolha a forma de entrega","Escolha a forma de entrega"
+"Escolha a forma de entrega","Escolha a forma de entrega"
 "Desculpe, não há formas de entrega disponível nesse momento","Desculpe, não há formas de entrega disponível nesse momento"
 "É necessário escolher uma opção de envio","É necessário escolher uma opção de envio"
 "Insira seu cep","Insira seu cep"
@@ -19,6 +19,7 @@
 "Show ShopCart Express Checkout button","Mostrar o botão do ExpressCheckout no carrinho de compra"
 "Show ShopCart Express Checkout Sidebar button","Mostrar o botão do ExpressCheckout no carrinho de compra lateral"
 "Show Express Checkout Product button","Mostrar o botão do ExpressCheckout em cada produto"
+
 "Postal Code Request on Express Payment on Express Checkout","Solicitar o CEP para cálculo de frete no Express Checkout"
 "Allow to change postal code after the order is paid on Express Payment on Express Checkout","Permitir que cliente altere o CEP depois que já realizou o pagamento pelo Express Checkout"
 "Auto Create Invoice","Gerar Invoices automáticamente"
@@ -36,5 +37,5 @@
 "Choose the status when payment was canceled","Escolha o staus caso o pagamento tenha sido cancelado"
 "Debug Mode","Modo de depuração"
 "Complete your order shipping information","Complete seu pedido com as informações de entrega"
-"Thank you for your purchase.","Obrigado por sua compra"
-"To complete your order, if is not done yet, fill the address information at the address below.","&Eacute; necess&aacute;rio que voc&ecirc; complete as informa&ccedil;&otilde;es de entrega do seu pedido, caso j&aacute; tenha completado, por favor, desconsidere esse email."
+"Thank you for your purchase. ","Obrigado por sua compra!"
+"To complete your order, if is not done yet, fill the address information at the address below.","É necessário que você complete as informações de entrega do seu pedido, caso já tenha completado, por favor, desconsidere esse email."

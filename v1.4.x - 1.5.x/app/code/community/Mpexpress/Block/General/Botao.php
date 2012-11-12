@@ -21,8 +21,11 @@ class MPexpress_Block_General_Botao extends Mage_Core_Block_Template
     protected function _beforeToHtml()
     {  
        $country = Mage::getModel('mpexpress/express')->getConfigData('acc_origin');
-       $allowed = Mage::getModel('mpexpress/express')->getConfigData('express_button');
-       $this->setcheckoutexpress($this->getUrl($this->_checkoutpage))->setAllowed($allowed)->setCountry($country)
+       $cart = Mage::getModel('mpexpress/express')->getConfigData('express_button_checkout');
+       $side = Mage::getModel('mpexpress/express')->getConfigData('express_button_checkout_sidebar');
+       $prod = Mage::getModel('mpexpress/express')->getConfigData('express_button_product');   
+       $this->setcheckoutexpress($this->getUrl($this->_checkoutpage))->setCountry($country)
+       ->setAllowedProduct($prod)->setAllowedCart($cart)->setAllowedSidebar($side)        
        ->setimgcheckoutBr($this->getSkinUrl('images/mpexpress/pagarbr.jpg'))->setimgcheckoutAr($this->getSkinUrl('images/mpexpress/pagarar.jpg'));  
     }
   

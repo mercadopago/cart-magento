@@ -21,11 +21,7 @@ class MPexpress_Block_Checkout_Methods extends Mage_Core_Block_Template {
     public function _construct() {
 
         $this->_car = Mage::getSingleton('checkout/cart');
-        //   $this->_car->init();
         $this->_car->save();
-        
-        
-        
         //       $this->_car->getQuote()->getShippingAddress()->collectShippingRates()->save();
     }
 
@@ -69,8 +65,7 @@ class MPexpress_Block_Checkout_Methods extends Mage_Core_Block_Template {
                         $this->_car = Mage::getSingleton('checkout/cart');
                         $this->_rates = $methods;
                         return $this->_rates;
-                    // if has error, show error
-                        
+                    // if has error, show error   
                     } elseif($error >= 1) {
                         $this->_car = Mage::getSingleton('checkout/cart');
                         $this->_rates = $methods;
@@ -78,8 +73,12 @@ class MPexpress_Block_Checkout_Methods extends Mage_Core_Block_Template {
                     } else {
  
                      // if has also only one submethod , jump to the next steap
-                    $this->_car->getQuote()->getShippingAddress()->setShippingMethod($codava[0])->setCartWasUpdated(true)
-                            ->save();
+                    $this->_car->getQuote()->getShippingAddress()
+                                           ->setShippingMethod($codava[0])
+                                           ->setCartWasUpdated(true)
+                                           ->collectShippingRates()
+                                           ->collectTotals()
+                                           ->save();
                     Mage::app()->getFrontController()->getResponse()->setRedirect(Mage::getUrl('mpexpress/checkout/cart'));
                    }
             

@@ -31,6 +31,38 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
         $this->_model = Mage::getModel('mpexpress/Express');
 
     }
+    
+    public function addcartAction() {
+        
+        $this->ClearCart();
+        $params = $this->getRequest()->getPost();
+        $cart = Mage::getModel('checkout/cart'); 
+        $product = new Mage_Catalog_Model_Product();
+        $product->load($params['product']);
+        try{
+        $cart->addProduct($product, $params);
+        $cart->save();
+        $saved = true;
+        }catch(Exception  $e){
+        $saved = false;    
+        Mage::getSingleton('checkout/session')->addError($e->getMessage());
+        $this->_redirect('mpexpress/checkout/error');  
+        }
+        if($saved){
+        Mage::getSingleton('checkout/session')->setCartWasUpdated(true);
+        echo 'success';
+        } else {
+        echo 'fail';     
+        }
+        
+    }
+    
+    protected function ClearCart()
+    {
+    foreach( Mage::getSingleton('checkout/session')->getQuote()->getItemsCollection() as $item ){
+    Mage::getSingleton('checkout/cart')->removeItem( $item->getId() )->save();
+    }}
+    
 
     public function cartAction() {
 
@@ -163,7 +195,10 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
         if (!empty($code)) {
             $quote->setShippingMethod($code)
                     ->setCartWasUpdated(true)
+                    ->collectShippingRates()
+                    ->collectTotals()
                     ->save();
+                   
         }
         $this->_redirect('mpexpress/checkout/cart');
     }
@@ -201,7 +236,6 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
     }
 
     public function errorAction() {
-
         parent::_construct();
         $this->loadLayout();
         $this->renderLayout();

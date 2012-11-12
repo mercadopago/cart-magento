@@ -14,16 +14,23 @@ class Mpexpress_IpnController extends Mage_Core_Controller_Front_Action
     
     protected $_return = null;
     protected $_order = null;
-
+    protected $_order_id = null;
+    protected $_mpcartid = null;
+    protected $_sendemail = false;
+    protected $_hash = null;
 
     public function indexAction()
     {
     
 
     $params = $this->getRequest()->getParams();
+    
+ 
    
+    
     if (isset($params['id']) && isset($params['topic'])){
         
+
          try {
              
             $ipn = Mage::getModel('mpexpress/Checkout');    
@@ -56,8 +63,11 @@ class Mpexpress_IpnController extends Mage_Core_Controller_Front_Action
         if ($this->_return['collection']['payer']['last_name'])$this->_order->setCustomerLastname($this->_return['collection']['payer']['last_name']);
         if ($this->_return['collection']['payer']['email'])$this->_order->setCustomerEmail($this->_return['collection']['payer']['email']);
         $this->_order->save();
-               
-        
+
+        if($this->_sendemail){
+           $name = $this->_return['collection']['payer']['first_name'].' ' .$this->_return['collection']['payer']['last_name'];
+           $this->notify($name,$this->_return['collection']['payer']['email']);
+        }
         
         switch ( $this->_return['collection']['status']) {
           
@@ -156,35 +166,95 @@ class Mpexpress_IpnController extends Mage_Core_Controller_Front_Action
         if ( empty($this->_order) || $this->_order == null ) {
             $idr = $this->_return['collection']['external_reference'];
             $ida = explode('-',$idr);
-            $id  = $ida[1];           
+            $this->_hash  = $ida[1];           
             
-            $preorder = Mage::getModel('sales/order')->loadByIncrementId($id); 
+            /// if is normal checkout (order is already created)
+            if ($ida[0] == 'magentostandart'){
+                
+            $preorder = Mage::getModel('sales/order')->loadByIncrementId($this->_hash); 
             if (isset($preorder['increment_id'])){
             $this->_order = $preorder;
             }else{
                echo 'Order not found';
                die;            
             }
+            // else, if is checkout express, maybe order is not created
+            
+            } else {
+                
+                $mpcart = Mage::getModel('mpexpress/mpcart')->load($this->_hash,'hash');  
+                $this->_order_id = $mpcart->getOrderId();
+                $this->_mpcartid = $mpcart->getMpexpressCartId();
+
+                // If don´t have order, generate a order and send email
+     
+                    if(is_null($this->_order_id) || empty($this->order_id)){
+      
+                    $this->_order_id = $mpcart->generateEmptyOrder($this->_mpcartid);  
+
+                    $preorder = Mage::getModel('sales/order')->loadByIncrementId($this->_order_id); 
+                    
+                    if (isset($preorder['increment_id'])){
+                    $this->_order = $preorder;
+                    }else{
+                    echo 'Order not found';
+                    die;            
+                    }
+                    
+                    $this->_sendemail = true;
+                    
+                    }else{
+                    $preorder = Mage::getModel('sales/order')->loadByIncrementId($this->_order_id); 
+                    if (isset($preorder['increment_id'])){
+                    $this->_order = $preorder;
+                    }else{
+                    echo 'Order not found';
+                    die;            
+                    }
+                
+                }
+                
+                
+            }
         }
 
     }
     
+
+    public function notify($sendToName, $sendToEmail) {
+ 
     
-    // função desativada
-    private function checkOrderHasAnInvoice($order_entity_id)
-    {                
-        $read = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $query = "SELECT * FROM `sales_order_entity_int` WHERE `attribute_id` = 329 AND `value` = $order_entity_id;"; // attribute_id = 329 is defined in the EAV attribute table
-        $results = $read->fetchAll("$query");
-        if (count($results) > 0)
-            {
-                return true; //there is an invoice
-            }
-        else
-            {
-                return false; //there is no invoice
-            }
+    $store = Mage::app()->getStore();
+    $store->getName();
+    $link = '<a href="'. Mage::getBaseUrl() . 'mpexpress/information/address/hash/'.$this->_hash.'">'.Mage::getBaseUrl().'mpexpress/information/address/hash/'.$this->_hash.'</a>';
+    $name = Mage::getStoreConfig('general/store_information/name');
+    $from = Mage::getStoreConfig('trans_email/ident_general/email');
+    $subject = Mage::helper('mpexpress')->__('Complete your order shipping information');
+    $charset = '<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />';
+    $dear = Mage::helper('mpexpress')->__('Thank you for your purchase.');
+    $linha = ' <br /> ';        
+    $information = Mage::helper('mpexpress')->__('To complete your order, if is not done yet, fill the address information at the address below.');        
+    $finalmessage = $charset.$dear.$linha.$linha.$information.$linha.$linha.$link;
+    $mail = Mage::getModel('core/email');
+    $mail->setToName($sendToName);
+    $mail->setToEmail($sendToEmail);
+    $mail->setBody($finalmessage);
+    $mail->setSubject('=?utf-8?B?'.base64_encode($subject).'?=');
+    $mail->setFromEmail($from);
+    $mail->setFromName($name);
+    $mail->setType('html');
+ 
+    try {
+        $mail->send();
     }
+    catch (Exception $e) {
+        Mage::logException($e);
+        return false;
+    }
+ 
+    return true;
+}
+
     
     
     

@@ -3,7 +3,7 @@
     
     <modules>
         <Mpexpress>
-            <version>0.0.1</version>
+            <version>0.1.5</version>
         </Mpexpress>
     </modules>
     
@@ -17,45 +17,33 @@
         <models>
             <mpexpress>
                 <class>Mpexpress_Model</class>
-                <resourceModel>Mpexpress_model</resourceModel>
+                <resourceModel>mpexpress_resource</resourceModel>
             </mpexpress>
-            <mpexpress_mysql4>
-                <class>Mpexpress_Model_Mysql4</class>
+            <mpexpress_resource>
+                <class>Mpexpress_Model_Resource</class>
                 <entities>
-                    <api_debug><table>mpexpress_api_debug</table></api_debug>
+                        <mpcart>
+                            <table>mpexpress_cart</table>
+                        </mpcart>
                 </entities>
-            </mpexpress_mysql4>
-            <mpexpress_mysql4>
-                <class>Mpexpress_Model_Mysql4</class>
-                <entities>
-                    <mpexpress_return><table>mpexpress</table></mpexpress_return>
-                </entities>
-            </mpexpress_mysql4>
+            </mpexpress_resource>
         </models>
 
-       
 
 
         <resources>
-            <mpexpress_setup>
-                <setup>
-            <module>Mpexpress</module>
-                </setup>
-                 <connection>
-                <use>core_setup</use>
-                </connection>
-            </mpexpress_setup>
-              <mpexpress_write>
-                <connection>
-                  <use>core_write</use>
-                </connection>
-            </mpexpress_write>
-            <mpexpress_read>
-               <connection>
-                <use>core_read</use>
-              </connection>
-            </mpexpress_read>
+               <mpexpress_setup>
+                    <setup>
+                        <module>Mpexpress</module>
+                         <class>Mpexpress_Model_Resource_Setup</class>
+                    </setup>
+                     <connection>
+                        <use>core_setup</use>
+                    </connection>
+                </mpexpress_setup>           
         </resources>  
+        
+   
         
        
     
@@ -101,7 +89,9 @@
                   <installments></installments>
                   <checkout_mode>iframe</checkout_mode>
                   <auto_create_inovice>1</auto_create_inovice>
-                  <express_button>1</express_button>
+                  <express_button_checkout>1</express_button_checkout>
+                  <express_button_checkout_sidebar>1</express_button_checkout_sidebar>
+                  <express_button_product>1</express_button_product>      
                   <allowspecific>0</allowspecific>
             </mpexpress>
         </payment>

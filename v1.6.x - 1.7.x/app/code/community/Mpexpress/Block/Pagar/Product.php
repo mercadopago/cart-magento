@@ -38,7 +38,7 @@ class Mpexpress_Block_Pagar_Product extends Mage_Core_Block_Template
         
         
         $currentproduct = Mage::registry('current_product');
-        var_dump($currentproduct);
+      
      
         
 // ubiquitous product data

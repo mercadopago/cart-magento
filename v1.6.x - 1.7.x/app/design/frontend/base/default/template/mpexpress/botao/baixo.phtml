@@ -13,10 +13,9 @@
 
 <?php 
 
-if ($this->getAllowed() == 1){
+if ($this->getAllowedCart() == 1){
 if ($this->getCountry() == 'MLB'){?>
 <img id ="mpbtbaixo" class="mpboton" src="<?php echo $this->getimgcheckoutBr()  ;?>" alt="<?php echo $this->__('Comprar Agora com MercadoPago');?>" title="<?php echo $this->__('Faça o pagamento de forma rápida e segura pelo MercadoPago');?>" style="cursor:pointer;" />
-<span style="line-height:3.3; padding-left:2px;padding-right:2px;"><b><?php echo $this->__('Ou');?></b></span>
 <?php }else{ ?>
 <img id ="mpbtbaixo" class="mpboton" src="<?php echo $this->getimgcheckoutAr()  ;?>" alt="<?php echo $this->__('Compre  Ahora con MercadoPago');?>" title="<?php echo $this->__('Hace pagos de forma rápida y segura con MercadoPago');?>" style="cursor:pointer;" />
 <span style="line-height:3.3; padding-left:2px;padding-right:2px;"><b><?php echo $this->__('O');?></b></span>    

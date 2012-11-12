@@ -21,12 +21,12 @@ class Mpexpress_Block_Information_Success extends Mage_Core_Block_Template
 
     protected function _beforeToHtml()
     {  
-       $this->_id = Mage::getSingleton('customer/session')->getOrderId();
+       $mpid = Mage::getSingleton('customer/session')->getMpCartId();
+       $mpcart = Mage::getModel('mpexpress/mpcart')->load($mpid);
+       $this->_id = $mpcart->getOrderId();
        $this->_order = Mage::getModel('sales/order')->loadByIncrementId($this->_id); 
        $this->_address = Mage::getModel('sales/order_address')->load($this->_order['shipping_address_id']);
        
-
-     //  var_dump($this->_order->getAllVisibleItems());die;
        
        $billname =       $this->_order['customer_firstname'];
        $billlastname =   $this->_order['customer_lastname'];

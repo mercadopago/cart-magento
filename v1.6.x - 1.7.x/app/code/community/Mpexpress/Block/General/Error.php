@@ -18,16 +18,25 @@ class MPexpress_Block_General_Error extends Mage_Core_Block_Template
 
      protected function _beforeToHtml()
     {  
-       $error = Mage::helper("mpexpress")->__("Shopping Cart is Empty");
-       $this->setError($error); 
+      $mens = Mage::getSingleton('checkout/session')->getMessages();
+      $smessages = $mens->getErrors();
+      $output = NULL;
+      foreach ($smessages as $smessage) {
+          $output .= $smessage->getText();        
+     }   
+      $this->setError($output); 
+      
     }
     
     protected function _toHtml()
-    {
-         return parent::_toHtml();
+    {   
+         $html = parent::_toHtml();
+         return $html;
+         
     }
     
-   
+  
+    
 
 }
 

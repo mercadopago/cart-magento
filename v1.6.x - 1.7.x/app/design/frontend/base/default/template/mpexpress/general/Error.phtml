@@ -17,8 +17,6 @@
 ?>
 
 <a class="ch-close" onclick="closeRender();" style="z-index: 1002;">×</a>
-<div class='mploading'><h3><strong><?php echo $this->getError(); ?></strong></h3></div><br />
-<input id="buttonmp" class="ch-btn ch-big" type="button" value="<?php echo $this->__('Fechar') ?>" onclick="closeRender();" name="_eventId_next" tabindex="4"></input></center>
-<?php $messages = Mage::getSingleton('core/session')->getMessages(true); ?>
-
-<?php echo $messages; ?>
+<?php $messages = Mage::getSingleton('core/session')->getMessage(true); ?>
+<div class='mploading'><h3><?php echo $this->getError(); ?></h3></div><br />
+<center><input id="buttonmp" class="ch-btn ch-big" type="button" value="<?php echo $this->__('Fechar') ?>" onclick="closeRender();" name="_eventId_next" tabindex="4"></input></center>

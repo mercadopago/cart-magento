@@ -78,8 +78,12 @@ class MPexpress_Block_Checkout_Methods extends Mage_Core_Block_Template {
                     } else {
  
                      // if has also only one submethod , jump to the next steap
-                    $this->_car->getQuote()->getShippingAddress()->setShippingMethod($codava[0])->setCartWasUpdated(true)
-                            ->save();
+                    $this->_car->getQuote()->getShippingAddress()
+                                           ->setShippingMethod($codava[0])
+                                           ->setCartWasUpdated(true)
+                                           ->collectShippingRates()
+                                           ->collectTotals()
+                                           ->save();
                     Mage::app()->getFrontController()->getResponse()->setRedirect(Mage::getUrl('mpexpress/checkout/cart'));
                    }
             

@@ -6,8 +6,7 @@
         
         <reference name="checkout.cart.methods">
         <block type="mpexpress/general_botao" template="mpexpress/botao/baixo.phtml" before="-" name="mpexpress_atalho_base" />
-        </reference>
-        
+        </reference>      
     </checkout_cart_index>
     
     
@@ -17,6 +16,9 @@
     </reference>
      <reference name="before_body_end">
     <block type="mpexpress/general_body" name="body_mp" as="body_mp" template="mpexpress/general/body.phtml" />
+    </reference>
+    <reference name="cart_sidebar.extra_actions">
+    <block type="mpexpress/general_botao" name="mpexpress_atalho_sidebar" template="mpexpress/botao/baixo.phtml"/>
     </reference>
     </default>
     
@@ -37,7 +39,11 @@
     <block type="mpexpress/general_nomethod" name="root" output="toHtml" template="mpexpress/general/nomethod.phtml" />
     </mpexpress_checkout_nomethod>
 
-
+    <catalog_product_view>
+        <reference name="product.info.addtocart">
+            <block type="mpexpress/general_botao" template="mpexpress/botao/product.phtml" before="-" name="mpexpress_atalho_prod" />
+        </reference>
+     </catalog_product_view>
    
     
 </layout>

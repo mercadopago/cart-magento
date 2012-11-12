@@ -1,5 +1,5 @@
 # Magento - Mercadopago Module (1.4.1 to 1.7.x) 
-1.4.1 Standard Checkout Only
+1.4.0 Standard Checkout Only
 
 ---
 

@@ -1,5 +1,6 @@
-# Magento - Mercadopago Module (1.4.x to 1.7.x)*
-*1.4.0 - Compatible only with standard checkout
+# Magento - Mercadopago Module (1.4.1 to 1.7.x) 
+1.4.1 Standard Checkout Only
+
 ---
 
 This module provides MercadoPago Checkout Express functionality that allow customers paid their shops much faster, increasing the store conversion.
@@ -23,8 +24,7 @@ The Store will receive the customer name related to this order, and the customer
  
 #####Can I disable Checkout Express?
 Yes.  You can disable it at the Store Administration
-#####Can I select to MercadoPago Button appear only at Cart page or Product page?
-Yes. You can configure it at the Store Administration
+
 ---
 
 <a name="usage"></a>

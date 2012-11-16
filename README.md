@@ -1,7 +1,7 @@
-# Magento - Mercadopago Module (1.4.1 to 1.7.x) 
-1.4.0 Standard Checkout Only
-
+# Magento - Mercadopago Module (1.4.1 to 1.7.x, 1.4.0 Standard Checkout Only)
 ---
+*Available for Argentina and Brazil*
+
 
 This module provides MercadoPago Checkout Express functionality that allow customers paid their shops much faster, increasing the store conversion.
 
@@ -22,7 +22,7 @@ The Store will receive the customer name related to this order, and the customer
 
 ![How the MercadoPago Checkout Express works?](https://raw.github.com/mercadopago/cart-magento/master/README.img/howto.png)
  
-#####Can I disable Checkout Express?
+##### Can I disable Checkout Express?
 Yes.  You can disable it at the Store Administration
 
 ---

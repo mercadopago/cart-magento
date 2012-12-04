@@ -18,7 +18,7 @@
     <block type="mpexpress/general_body" name="body_mp" as="body_mp" template="mpexpress/general/body.phtml" />
     </reference>
     <reference name="cart_sidebar.extra_actions">
-    <block type="mpexpress/general_botao" name="mpexpress_atalho_sidebar" template="mpexpress/botao/baixo.phtml"/>
+    <block type="mpexpress/general_botao" name="mpexpress_atalho_sidebar" template="mpexpress/botao/sidebar.phtml"/>
     </reference>
     </default>
     

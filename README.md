@@ -23,8 +23,7 @@ The Store will receive the customer name related to this order, and the customer
  
 #####Can I disable Checkout Express?
 Yes.  You can disable it at the Store Administration
-#####Can I select to MercadoPago Button appear only at Cart page or Product page?
-Yes. You can configure it at the Store Administration
+
 ---
 
 <a name="usage"></a>

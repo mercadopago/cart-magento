@@ -27,12 +27,10 @@ class Mpexpress_Model_Source_OriginAccount extends Mage_Payment_Model_Method_Abs
       $response = $standard->DoPost($options,$url,$header,$return_code,"data","GET");
     
       foreach($response as $v){
-        if ( $v['id'] == 'MLA' || $v['id'] == 'MLB'  ) {
-          $sites[] = array('value' => $v['id'], 'label'=>Mage::helper('adminhtml')->__($v['name']));
-        }
+          $sites[] = array('value' => $v['id'], 'label'=>Mage::helper('adminhtml')->__($v['name']));      
       }
 
       return $sites;
-	}
+      }
 }
 ###

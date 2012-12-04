@@ -82,9 +82,10 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract
             'email' => htmlentities($customer->getEmail()),
             'pending' => $this->getConfigData('url_success'),
             'approved' => $this->getConfigData('url_process'),
-            'installments' => $this->getConfigData('installments'),
+            'installments' => (int)$this->getConfigData('installments'),
         );
-        
+
+
         $exclude = $this->getConfigData('excluded_payment_methods');
         return Mage::getModel('mpexpress/checkout')->GetCheckout($data,$exclude);
         

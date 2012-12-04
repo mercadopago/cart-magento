@@ -16,7 +16,7 @@
  */
 ?>
 
-
+<?php if ($this->getExpress() == true){ ?>
 <link rel="stylesheet" href="<?php echo $this->getSkinUrl('css/chico/mpexpress.css'); ?>" />
 <script type="text/javascript" src="<?php echo $this->getJsUrl('jquery/jquery.js'); ?>"></script>
 <script type="text/javascript">
@@ -24,3 +24,4 @@
 	 var $j = jQuery.noConflict();
 //]]>
 </script>
+<?php } ?>

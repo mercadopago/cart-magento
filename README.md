@@ -54,9 +54,11 @@ Yes.  You can disable it at the Store Administration
 Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
 * Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
 * Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
+* Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
 
 ![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup.png)<br />
 ![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup2.png)<br />
+
 
 ***Note:*** The standard URL for successful payment or pending payment is ***[yourstoreaddress.com]***/index.php/checkout/onepage/success/ but you can use any page as you want.
 
@@ -68,5 +70,5 @@ Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
 1. Go to **Mercadopago IPN configuration**:
     * Argentina: [https://www.mercadopago.com/mla/herramientas/notificaciones](https://www.mercadopago.com/mla/herramientas/notificaciones)
     * Brasil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)<br />
-
+    * Mexico: [https://www.mercadopago.com/mlm/herramientas/notificaciones](https://www.mercadopago.com/mlm/herramientas/notificaciones)<br />
 2. Enter the URL as follow: ***[yourstoreaddress.com]***/index.php/mpexpress/ipn/

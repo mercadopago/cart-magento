@@ -1,5 +1,6 @@
-# Magento - Mercadopago Module (1.4.x to 1.7.x)*
-*1.4.0 - Compatible only with standard checkout
+# Magento - Mercadopago Module (1.4.1 to 1.7.x) 
+1.4.0 Standard Checkout Only
+
 ---
 
 This module provides MercadoPago Checkout Express functionality that allow customers paid their shops much faster, increasing the store conversion.

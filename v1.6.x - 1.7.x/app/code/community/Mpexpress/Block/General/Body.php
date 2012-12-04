@@ -15,14 +15,25 @@
 
 class MPexpress_Block_General_Body extends Mage_Core_Block_Template
 {
-
+    
     protected $_checkoutpage = 'mpexpress/checkout/zipcode';
+    protected $_checkoutpageprod = 'mpexpress/checkout/addcart';
  
     protected function _beforeToHtml()
     {  
-     $this->setcheckoutexpress($this->getUrl($this->_checkoutpage));   
-   }
-  
+        
+     $checkouta = Mage::getModel('mpexpress/express')->getConfigData('express_button_checkout');
+     $checkoutp = Mage::getModel('mpexpress/express')->getConfigData('express_button_product');
+     $checkouts = Mage::getModel('mpexpress/express')->getConfigData('express_button_checkout_sidebar');
+     
+     if ($checkouta == 1 || $checkoutp == 1 ||$checkouts == 1){
+         $this->setExpress(true);
+     } else {
+         $this->setExpress(false);
+     }
+        
+     $this->setcheckoutexpress($this->getUrl($this->_checkoutpage))->setcheckoutexpressproduct($this->getUrl($this->_checkoutpageprod));
+    }
     protected function _toHtml()
     {
          return parent::_toHtml();

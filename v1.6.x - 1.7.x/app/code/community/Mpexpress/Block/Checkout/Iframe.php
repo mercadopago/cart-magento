@@ -28,7 +28,16 @@ class Mpexpress_Block_Checkout_Iframe extends Mage_Core_Block_Abstract
     
         else:
        
-       $html = '<center><iframe id="MP-Checkout-IFrame" frameborder="0" style="width: 740px; height: 480px;" src="' . $preference . '"></center>';   
+      
+        $html = '<center><iframe onreturn="checkoutReturn" id="MP-Checkout-IFrame" src="' . $preference . '" name="MP-Checkout" width="740" height="600" frameborder="0"></iframe></center>
+
+        <script type="text/javascript">
+	(function(){function $MPBR_load(){window.$MPBR_loaded !== true && (function(){var s = document.createElement("script");s.type = "text/javascript";s.async = true;
+	s.src = ("https:"==document.location.protocol?"https://www.mercadopago.com/org-img/jsapi/mptools/buttons/":"http://mp-tools.mlstatic.com/buttons/")+"render.js";
+	var x = document.getElementsByTagName("script")[0];x.parentNode.insertBefore(s, x);window.$MPBR_loaded = true;})();}
+	window.$MPBR_loaded !== true ? (window.attachEvent ? window.attachEvent("onload", $MPBR_load) : window.addEventListener("load", $MPBR_load, false)) : null;})();
+        </script>';
+        
         return utf8_decode($html); 
         
         endif;

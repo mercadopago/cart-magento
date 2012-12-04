@@ -18,6 +18,16 @@ class MPexpress_Block_General_Head extends Mage_Core_Block_Template
  
     protected function _beforeToHtml()
     {  
+     
+     $checkouta = Mage::getModel('mpexpress/express')->getConfigData('express_button_checkout');
+     $checkoutp = Mage::getModel('mpexpress/express')->getConfigData('express_button_product');
+     $checkouts = Mage::getModel('mpexpress/express')->getConfigData('express_button_checkout_sidebar');
+     
+     if ($checkouta == 1 || $checkoutp == 1 ||$checkouts == 1){
+         $this->setExpress(true);
+     } else {
+         $this->setExpress(false);
+     }
         
    }
   

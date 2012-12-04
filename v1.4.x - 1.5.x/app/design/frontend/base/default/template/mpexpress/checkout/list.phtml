@@ -30,7 +30,13 @@
        <li>
        <?php echo $this->__('O Pagamento será realizado em uma janela de segurança do MercadoPago') ?>
        </li>
-
+       <?php elseif($this->getMethod()->getConfigData('acc_origin') == 'MLM'): ?>  
+       <li>
+       <img src="<?php echo $this->getSkinUrl('images/mpexpress/mercadopagomx.jpg'); ?>" alt="MercadoPago" title="MercadoPago" />
+       </li>
+       <li>
+       <?php echo $this->__('El pago se realizará en una ventana de seguridad del MercadoPago') ?>
+       </li>
        <?php else: ?>  
        <li>
        <img src="<?php echo $this->getSkinUrl('images/mpexpress/mercadopagoar.jpg'); ?>" alt="MercadoPago" title="MercadoPago" />
@@ -38,7 +44,7 @@
        <li>
        <?php echo $this->__('El pago se realizará en una ventana de seguridad del MercadoPago') ?>
        </li>
- <?php endif; ?> 
+      <?php endif; ?> 
        
 </ul>
 <div>

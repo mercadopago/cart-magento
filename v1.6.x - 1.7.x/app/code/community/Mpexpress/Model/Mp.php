@@ -44,9 +44,7 @@ class Mpexpress_Model_Mp extends Mage_Payment_Model_Method_Abstract
                     $posts = http_build_query($fields);    
                     }
              
-                 
-                    
-                  
+              
                     // change the curl method follwing the api needs
                     switch ($method):
                     case 'get':
@@ -103,6 +101,7 @@ class Mpexpress_Model_Mp extends Mage_Payment_Model_Method_Abstract
                     break;
                     endswitch;
   
+                
                 // do a curl call
                 $call = curl_init();
                 curl_setopt_array($call,$options);

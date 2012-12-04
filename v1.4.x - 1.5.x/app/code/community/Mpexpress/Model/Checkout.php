@@ -60,7 +60,7 @@ class Mpexpress_Model_Checkout extends Mpexpress_Model_Mp {
                    ),           
                    "payment_methods" => array(
                    "excluded_payment_methods" => $excludemethods,
-                   "installments" => $data['installments']      
+                   "installments" => (int) $data['installments']      
                    )
                 );
             }else{

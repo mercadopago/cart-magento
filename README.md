@@ -1,6 +1,6 @@
 # Magento - Mercadopago Module (1.4.1 to 1.7.x, 1.4.0 Standard Checkout Only)
 ---
-*Available for Argentina and Brazil*
+*Available for Argentina, Mexico and Brazil*
 
 
 This module provides MercadoPago Checkout Express functionality that allow customers paid their shops much faster, increasing the store conversion.
@@ -53,6 +53,7 @@ Yes.  You can disable it at the Store Administration
 
 Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
 * Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
+* Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
 * Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
 
 ![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup.png)<br />
@@ -67,6 +68,7 @@ Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
 
 1. Go to **Mercadopago IPN configuration**:
     * Argentina: [https://www.mercadopago.com/mla/herramientas/notificaciones](https://www.mercadopago.com/mla/herramientas/notificaciones)
+    * Mexico: [https://www.mercadopago.com/mlm/herramientas/notificaciones](https://www.mercadopago.com/mlm/herramientas/notificaciones)
     * Brasil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)<br />
 
 2. Enter the URL as follow: ***[yourstoreaddress.com]***/index.php/mpexpress/ipn/

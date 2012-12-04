@@ -85,12 +85,12 @@ class Mpexpress_Model_Checkout extends Mpexpress_Model_Mp {
                    "success" => $data['approved']
                    ),
                    "payment_methods" => array(
-                   "installments" => $data['installments']      
+                   "installments" => (int)$data['installments']      
                    )  
                 );
                 
             }
-
+         
             $this->getAccessToken(); 
             $url = 'https://api.mercadolibre.com/checkout/preferences?access_token=' . $this->accesstoken;
             $header = array('Content-Type:application/json','Accept: application/json');

@@ -96,7 +96,7 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
         // setup mpCheckout
         
         $dados = array(
-        'installments' => $express->getConfigData('installments'),
+        'installments' => (int) $express->getConfigData('installments'),
         "external_reference" => 'magentoexpertcart-'.$hash ,// seu codigo de referencia, i.e. Numero do pedido da sua loja 
         "currency" => $express->getConfigData('currency'),// string Argentina: ARS (peso argentino) ó USD (Dólar estadounidense); Brasil: BRL (Real).
         "title" => $product_name,
@@ -198,7 +198,7 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
         }
         
         $dados = array(
-        'installments' => $express->getConfigData('installments'),
+        'installments' => (int) $express->getConfigData('installments'),
         "external_reference" => 'mpexpresscart-'.$orderId ,// seu codigo de referencia, i.e. Numero do pedido da sua loja 
         "currency" => $express->getConfigData('currency'),// string Argentina: ARS (peso argentino) ó USD (Dólar estadounidense); Brasil: BRL (Real).
         "title" => $name,

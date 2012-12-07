@@ -141,7 +141,7 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
                 'firstname' => 'Guess',
                 'lastname' => '-',
                 'street' => '-',
-                'city' => '-',
+         //       'city' => '-',
                 'telephone' => '-',
                 'preference' => '-',
                 'region_id' => '-', // id from directory_country_region table

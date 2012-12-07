@@ -16,13 +16,42 @@
 
 class Mpexpress_Model_Source_Currency
 {
-	public function toOptionArray ()
+//	public function toOptionArray ()
+//	{
+//        return array(
+//            array('value' => 'ARS', 'label'=>Mage::helper('adminhtml')->__('Pesos Argentinos')),
+//            array('value' => 'BRL', 'label'=>Mage::helper('adminhtml')->__('Reais')),
+//            array('value' => 'USD', 'label'=>Mage::helper('adminhtml')->__('Dolares')),
+//        );
+//	}
+        
+        
+        public function toOptionArray ()
 	{
-        return array(
-            array('value' => 'ARS', 'label'=>Mage::helper('adminhtml')->__('Pesos Argentinos')),
-            array('value' => 'BRL', 'label'=>Mage::helper('adminhtml')->__('Reais')),
-            array('value' => 'USD', 'label'=>Mage::helper('adminhtml')->__('Dolares')),
-        );
+    
+       $standard = Mage::getModel('mpexpress/Express');
+       //$standard = new Mpexpress_Model_Express();
+  
+       $site = $standard->getConfigData('acc_origin');
+       $mp = Mage::getModel('mpexpress/Mp');
+       if ( $site != "" ) {
+      
+        $url = "https://api.mercadolibre.com/sites/$site";
+        $return_code = 200;
+        $options = array();
+        $header = array();
+        $response = $mp->DoPost($options,$url,$header,$return_code,"data","GET");
+        
+        
+
+        foreach($response['currencies'] as $v){
+             $cur[] = array('value' => $v['id'], 'label'=>Mage::helper('adminhtml')->__($v['id']));
+        }   
+        } else {
+        $cur[] = array('value' => "", 'label'=>Mage::helper('adminhtml')->__("Please Reload Page"));
+        }
+
+        return $cur;
 	}
 }
 ###

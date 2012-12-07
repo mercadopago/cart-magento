@@ -32,6 +32,9 @@ class Mpexpress_Model_Mpcart extends Mage_Core_Model_Abstract
             case 'MLA':
                 $country = 'AR';
                 break;
+            case 'MLM':
+                $country = 'MX';
+                break;
         endswitch;
        
        
@@ -62,6 +65,7 @@ class Mpexpress_Model_Mpcart extends Mage_Core_Model_Abstract
 
         $quote->setCustomerEmail($email);
         $bill = $quote->getBillingAddress();
+        $bill->setShouldIgnoreValidation(true);
         $bill->setCity('-')
                 ->setFirstname('Guess')
                 ->setLastname('-')
@@ -72,10 +76,12 @@ class Mpexpress_Model_Mpcart extends Mage_Core_Model_Abstract
                 ->setPostcode($cep)
                 ->setRegionId('0')
                 ->setRegion('');
-        $bill->save();
-       
 
+        $bill->save();
+  
+        
         $ship = $quote->getShippingAddress();
+        $ship->setShouldIgnoreValidation(true);
         $ship->setCity('-')
                 ->setFirstname('Guess')
                 ->setLastname('-')
@@ -88,8 +94,14 @@ class Mpexpress_Model_Mpcart extends Mage_Core_Model_Abstract
                 ->setRegion('')
                 ->setCollectShippingRates(True)
                 ->setPaymentMethod('mpexpress');
+         
+    
         $ship->save();
+  
         $quote->setCartWasUpdated(true);
+       
+       
+      
       
         $quote->getPayment()->importData(array('method' => 'mpexpress'));
         $service = Mage::getModel('sales/service_quote', $quote);

@@ -125,6 +125,9 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
             case 'MLA':
                 $country = 'AR';
                 break;
+            case 'MLM':
+                $country = 'MX';
+                break;
         endswitch;
 
         $cart = Mage::getSingleton('checkout/cart');
@@ -133,8 +136,8 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
         $bill = $cart->getQuote()->getBillingAddress();
         $bill->setCity('-')
                 ->setFirstname('Guess')
-                ->setLastname('-')
-                ->setStreet('-')
+          //      ->setLastname('-')
+          //      ->setStreet('-')
                 ->setTelephone('-')
                 ->setPreference('-')
                 ->setCountryId($country)
@@ -146,8 +149,8 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
         $quote = $cart->getQuote()->getShippingAddress();
         $quote->setCity('-')
                 ->setFirstname('Guess')
-                ->setLastname('-')
-                ->setStreet('-')
+       //         ->setLastname('-')
+       //         ->setStreet('-')
                 ->setTelephone('-')
                 ->setPreference('-')
                 ->setCountryId($country)

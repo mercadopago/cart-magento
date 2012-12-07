@@ -25,12 +25,15 @@ class Mpexpress_Model_Mpcart extends Mage_Core_Model_Abstract
 
        $acc_orign = Mage::getModel('mpexpress/express')->getConfigData('acc_origin');
 
-        switch ($acc_orign):
+       switch ($acc_orign):
             case 'MLB':
                 $country = 'BR';
                 break;
             case 'MLA':
                 $country = 'AR';
+                break;
+            case 'MLM':
+                $country = 'MX';
                 break;
         endswitch;
        
@@ -62,6 +65,7 @@ class Mpexpress_Model_Mpcart extends Mage_Core_Model_Abstract
 
         $quote->setCustomerEmail($email);
         $bill = $quote->getBillingAddress();
+        $bill->setShouldIgnoreValidation(true);
         $bill->setCity('-')
                 ->setFirstname('Guess')
                 ->setLastname('-')
@@ -76,6 +80,7 @@ class Mpexpress_Model_Mpcart extends Mage_Core_Model_Abstract
        
 
         $ship = $quote->getShippingAddress();
+        $ship->setShouldIgnoreValidation(true);
         $ship->setCity('-')
                 ->setFirstname('Guess')
                 ->setLastname('-')

@@ -125,6 +125,9 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
             case 'MLA':
                 $country = 'AR';
                 break;
+            case 'MLM':
+                $country = 'MX';
+                break;
         endswitch;
 
         $cart = Mage::getSingleton('checkout/cart');

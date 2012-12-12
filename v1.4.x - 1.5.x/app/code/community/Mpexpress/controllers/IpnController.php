@@ -169,7 +169,7 @@ class Mpexpress_IpnController extends Mage_Core_Controller_Front_Action
             $this->_hash  = $ida[1];           
             
             /// if is normal checkout (order is already created)
-            if ($ida[0] == 'magentostandart'){
+            if ($ida[0] == 'mpexpress'){
                 
             $preorder = Mage::getModel('sales/order')->loadByIncrementId($this->_hash); 
             if (isset($preorder['increment_id'])){

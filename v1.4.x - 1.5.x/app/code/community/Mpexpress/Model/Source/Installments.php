@@ -19,7 +19,7 @@ class Mpexpress_Model_Source_Installments extends Mage_Payment_Model_Method_Abst
 	public function toOptionArray ()
 	{
         return array(
-            array('value' => '', 'label'=>Mage::helper('adminhtml')->__('Maximum Available')),
+            array('value' => '24', 'label'=>Mage::helper('adminhtml')->__('24 Installments')),
             array('value' => '18', 'label'=>Mage::helper('adminhtml')->__('18 Installments')),
             array('value' => '15', 'label'=>Mage::helper('adminhtml')->__('15 Installments')),
             array('value' => '12', 'label'=>Mage::helper('adminhtml')->__('12 Installments')),

@@ -75,7 +75,7 @@ class Mpexpress_IpnController extends Mage_Core_Controller_Front_Action
       
               
              $createinvoice = Mage::getModel('mpexpress/Express')->getConfigData('auto_create_inovice');
-             if ($createinvoice = 1){  
+             if ($createinvoice == 1){  
              
              // Geração automatica de invoice    
                  

@@ -35,6 +35,9 @@ class Mpexpress_Model_Mpcart extends Mage_Core_Model_Abstract
             case 'MLM':
                 $country = 'MX';
                 break;
+            case 'MLV':
+                $country = 'VE';
+                break;
         endswitch;
        
        

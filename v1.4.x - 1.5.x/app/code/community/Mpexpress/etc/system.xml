@@ -64,7 +64,8 @@
                   To get fields above, follow: 
                   <a href="https://www.mercadopago.com/mla/herramientas/aplicaciones" target="_blank">Arg</a> or
                   <a href="https://www.mercadopago.com/mlb/ferramentas/aplicacoes" target="_blank">Bra</a> or
-                  <a href="https://www.mercadopago.com/mlm/herramientas/aplicaciones" target="_blank">Mex</a>
+                  <a href="https://www.mercadopago.com/mlm/herramientas/aplicaciones" target="_blank">Mex</a> or
+                  <a href="https://www.mercadopago.com/mlv/herramientas/aplicaciones" target="_blank">Ven</a>
                 ]]>
               </comment>
 							<frontend_type>text</frontend_type>
@@ -206,7 +207,8 @@
                   This is just the url where the custumer is redirect after his payment is done. Please set your <b>instant payment notification</b> to receive your automatic order status changes at: 
                   <a href="https://www.mercadopago.com/mla/herramientas/notificaciones" target="_blank">Arg</a> or
                   <a href="https://www.mercadopago.com/mlb/ferramentas/notificacoes" target="_blank">Bra</a> or
-                  <a href="https://www.mercadopago.com/mlm/herramientas/notificaciones" target="_blank">Mex</a>
+                  <a href="https://www.mercadopago.com/mlm/herramientas/notificaciones" target="_blank">Mex</a> or
+                  <a href="https://www.mercadopago.com/mlv/herramientas/notificaciones" target="_blank">Ven</a>
                   <br />
                   Set your url follwing this exemple: [mystore.com]<b>/index.php/mpexpress/ipn</b>
                 ]]>

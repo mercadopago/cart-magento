@@ -34,6 +34,8 @@ class Mpexpress_Block_Checkout_Lightbox extends Mage_Core_Block_Abstract
         $html .= '<img src="' . $this->getSkinUrl('images/mpexpress/mercadopagobr.jpg') .'" alt="MercadoPago" title="MercadoPago" />';
         elseif($express->getConfigData('acc_origin') == 'MLM'):
         $html .= '<img src="' . $this->getSkinUrl('images/mpexpress/mercadopagomx.jpg') .'" alt="MercadoPago" title="MercadoPago" />';    
+        elseif($express->getConfigData('acc_origin') == 'MLV'):
+        $html .= '<img src="' . $this->getSkinUrl('images/mpexpress/mercadopagove.jpg') .'" alt="MercadoPago" title="MercadoPago" />';
         else:
         $html .= '<img src="' . $this->getSkinUrl('images/mpexpress/mercadopagoar.jpg') .'" alt="MercadoPago" title="MercadoPago" />';    
         endif;

@@ -1,6 +1,6 @@
 # Magento - Mercadopago Module (1.4.1 to 1.7.x, 1.4.0 Standard Checkout Only)
 ---
-*Available for Argentina, Mexico and Brazil*
+*Available for Argentina, Brazil, México and Venezuela*
 
 
 This module provides MercadoPago Checkout Express functionality that allow customers paid their shops much faster, increasing the store conversion.

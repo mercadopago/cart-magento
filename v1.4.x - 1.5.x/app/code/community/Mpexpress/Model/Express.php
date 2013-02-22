@@ -55,7 +55,13 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract
         $name = '#' . $orderIncrementId . ' - '; 
         $model = Mage::getModel('catalog/product');
         foreach ($order->getAllVisibleItems() as $item) {
-            $prod = $model->loadByAttribute('sku', $item->getSku()); 
+            //modificado por e-values para permitir el manejo de kits
+            if (strpos($item->getSku(), '-') !== false) {
+                $skus = explode("-", $item->getSku());
+                $prod = $model->loadByAttribute('sku', $skus[0]);
+            } else {
+                $prod = $model->loadByAttribute('sku', $item->getSku());
+            }
             $image[] = $prod->getImageUrl();
             $name .= $item->getName();
         }

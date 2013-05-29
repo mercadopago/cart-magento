@@ -93,7 +93,7 @@ class Mpexpress_Model_Checkout extends Mpexpress_Model_Mp {
          
             $this->getAccessToken(); 
             $url = 'https://api.mercadolibre.com/checkout/preferences?access_token=' . $this->accesstoken;
-            $header = array('Content-Type:application/json','Accept: application/json');
+            $header = array('Content-Type:application/json', 'User-Agent:MercadoPago Magento-1.6.xto1.7.x Cart v1.0.0', 'Accept: application/json');
             $dados = $this->DoPost($opt,$url,$header,'201','json','post');
             $link = $dados['init_point'];
             $bt = '<a href="'.$link.'" name="MP-payButton" class="blue-l-rn-ar">Comprar</a>

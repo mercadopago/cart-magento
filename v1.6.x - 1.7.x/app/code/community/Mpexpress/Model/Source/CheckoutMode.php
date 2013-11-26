@@ -14,14 +14,13 @@
  * @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Mpexpress_Model_Source_CheckoutMode extends Mage_Payment_Model_Method_Abstract
-{
-	public function toOptionArray ()
-	{
-        return array(
-            array('value' => 'lightbox', 'label'=>Mage::helper('adminhtml')->__('LightBox')),
-            array('value' => 'iframe',   'label'=>Mage::helper('adminhtml')->__('Transparent / Iframe')),
-            array('value' => 'redirect', 'label'=>Mage::helper('adminhtml')->__('Redirect')),
-            );
+class Mpexpress_Model_Source_CheckoutMode extends Mage_Payment_Model_Method_Abstract{
+	
+	public function toOptionArray (){
+		return array(
+		    array('value' => 'lightbox', 'label'=>Mage::helper('adminhtml')->__('LightBox')),
+		    array('value' => 'iframe',   'label'=>Mage::helper('adminhtml')->__('Transparent / Iframe')),
+		    array('value' => 'redirect', 'label'=>Mage::helper('adminhtml')->__('Redirect')),
+		    );
 	}
 }

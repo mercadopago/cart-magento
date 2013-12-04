@@ -62,7 +62,16 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
             } else {
                 $prod = $model->loadByAttribute('sku', $item->getSku());
             }
-            $image[] = $prod->getImageUrl();
+            
+            //get methods and each find getImage
+            $methods = get_class_methods($prod);
+            foreach($methods as $method):
+                if($method == "getImageUrl"):
+                    $image[] = $prod->getImageUrl();
+                endif;  
+            endforeach;
+            
+            
             $name .= $item->getName();
         }
         
@@ -112,6 +121,14 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
         }
         
         $item_price = number_format($item_price, 2, '.', '');
+        
+        
+        //case no exist function getImage in the $prod no generate item on the array
+        $image_items = "";
+        if (count($image) > 0):
+            $image_items = $image[0];
+        endif;
+        
         $items = array(
             array (
             "id" => $orderIncrementId,
@@ -120,7 +137,7 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
             "quantity" => 1,
             "unit_price" => round($item_price, 2),
             "currency_id" => $this->getConfigData('currency'),
-            "picture_url"=> $image[0],
+            "picture_url"=> $image_items,
             "category_id"=> $this->getConfigData('category_id')
             )
         );

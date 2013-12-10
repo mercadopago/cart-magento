@@ -40,16 +40,16 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
         $product = new Mage_Catalog_Model_Product();
         $product->load($params['product']);
         try{
-        $cart->addProduct($product, $params);
-        $cart->save();
-        $saved = true;
+            $cart->addProduct($product, $params);
+            $cart->save();
+            $saved = true;
         }catch(Exception  $e){
-        $saved = false;    
-        Mage::getSingleton('checkout/session')->addError($e->getMessage());
-        $this->_redirect('mpexpress/checkout/error');  
+            $saved = false;    
+            Mage::getSingleton('checkout/session')->addError($e->getMessage());
+            $this->_redirect('mpexpress/checkout/error');  
         }
         if($saved){
-        Mage::getSingleton('checkout/session')->setCartWasUpdated(true);
+            Mage::getSingleton('checkout/session')->setCartWasUpdated(true);
         echo 'success';
         } else {
         echo 'fail';     
@@ -57,11 +57,11 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
         
     }
     
-    protected function ClearCart()
-    {
-    foreach( Mage::getSingleton('checkout/session')->getQuote()->getItemsCollection() as $item ){
-    Mage::getSingleton('checkout/cart')->removeItem( $item->getId() )->save();
-    }}
+    protected function ClearCart(){
+        foreach( Mage::getSingleton('checkout/session')->getQuote()->getItemsCollection() as $item ){
+            Mage::getSingleton('checkout/cart')->removeItem( $item->getId() )->save();
+        }
+    }
     
 
     public function cartAction() {
@@ -85,10 +85,7 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
         $askzip = $this->_model->getConfigData('ask_postalcode');
 
         if($askzip == 1) {
-
-
             if ($quote->getPostcode() == null || $quote->getPostcode() == '') {
-
                 parent::_construct();
                 $this->docheck();
                 $this->loadLayout();
@@ -97,11 +94,11 @@ class Mpexpress_CheckoutController extends Mage_Core_Controller_Front_Action {
                 $this->_redirect('mpexpress/checkout/shipping');
             }
         } else {
-                  $cep = "-";
-                  Mage::getSingleton('checkout/cart')->save();
-                  $this->keepdata($cep);
-                  $this->_redirect('mpexpress/checkout/shipping');
-                 }
+            $cep = "-";
+            Mage::getSingleton('checkout/cart')->save();
+            $this->keepdata($cep);
+            $this->_redirect('mpexpress/checkout/shipping');
+        }
     }
 
     public function shippingPostAction() {

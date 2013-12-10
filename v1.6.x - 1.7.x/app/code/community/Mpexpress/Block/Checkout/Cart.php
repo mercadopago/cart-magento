@@ -83,9 +83,11 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
         $excludes = $express->getConfigData('excluded_payment_methods');  
         
         $methods_excludes = preg_split("/[\s,]+/",$excludes); 
-                 foreach ($methods_excludes as $exclude ){
-                 $excluded_payment_methods[] = array('id' => $exclude);     
+        
+        foreach ($methods_excludes as $exclude ){
+            $excluded_payment_methods[] = array('id' => $exclude);     
         }
+        
         $baseUrl = Mage::getBaseUrl();
         $redirectURL = $baseUrl . 'mpexpress/information/address';
         
@@ -96,23 +98,23 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
         // setup mpCheckout
         
         $dados = array(
-        'installments' => (int) $express->getConfigData('installments'),
-        "external_reference" => 'magentoexpertcart-'.$hash ,// seu codigo de referencia, i.e. Numero do pedido da sua loja 
-        "currency" => $express->getConfigData('currency'),// string Argentina: ARS (peso argentino) ó USD (Dólar estadounidense); Brasil: BRL (Real).
-        "title" => $product_name,
-        "description" => $product_name, // string
-        'quantity' => (int) 1,// int 
-        'image' => $image[0],  // Imagem, string
-        'amount' => $item_price, //decimal
-        'payment_firstname' => '',// string
-        'payment_lastname' => '',// string
-        'email' => $this->_email,// string
-        'pending' => $redirectURL, // string 
-        'approved' => $redirectURL, // string
+            'installments' => (int) $express->getConfigData('installments'),
+            "external_reference" => 'magentoexpertcart-'.$hash ,// seu codigo de referencia, i.e. Numero do pedido da sua loja 
+            "currency" => $express->getConfigData('currency'),// string Argentina: ARS (peso argentino) ó USD (Dólar estadounidense); Brasil: BRL (Real).
+            "title" => $product_name,
+            "description" => $product_name, // string
+            'quantity' => (int) 1,// int 
+            'image' => $image[0],  // Imagem, string
+            'amount' => $item_price, //decimal
+            'payment_firstname' => '',// string
+            'payment_lastname' => '',// string
+            'email' => $this->_email,// string
+            'pending' => $redirectURL, // string 
+            'approved' => $redirectURL, // string
         );
     
        
-         $checkout = Mage::getModel('mpexpress/Checkout');  
+         $checkout = Mage::getModel('mpexpress/Checkout');
 
          $botton = $checkout->GetCheckout($dados,$excludes);
          $this->setPreference($botton); 
@@ -121,7 +123,8 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
         // continuar daqui
         
     }
-    
+
+    /*
        // to delet
     private function createorder(){
         
@@ -162,6 +165,7 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
      
     }
     
+    
     // to delet
     private function Checkout($order){
      
@@ -198,19 +202,19 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
         }
         
         $dados = array(
-        'installments' => $express->getConfigData('installments'),
-        "external_reference" => 'mpexpresscart-'.$orderId ,// seu codigo de referencia, i.e. Numero do pedido da sua loja 
-        "currency" => $express->getConfigData('currency'),// string Argentina: ARS (peso argentino) ó USD (Dólar estadounidense); Brasil: BRL (Real).
-        "title" => $name,
-        "description" => $name, // string
-        'quantity' => (int) 1,// int 
-        'image' => $image[0],  // Imagem, string
-        'amount' => $item_price, //decimal
-        'payment_firstname' => '',// string
-        'payment_lastname' => '',// string
-        'email' => $this->_email,// string
-        'pending' => $redirectURL, // string 
-        'approved' => $redirectURL, // string
+            'installments' => $express->getConfigData('installments'),
+            "external_reference" => 'mpexpresscart-'.$orderId ,// seu codigo de referencia, i.e. Numero do pedido da sua loja 
+            "currency" => $express->getConfigData('currency'),// string Argentina: ARS (peso argentino) ó USD (Dólar estadounidense); Brasil: BRL (Real).
+            "title" => $name,
+            "description" => $name, // string
+            'quantity' => (int) 1,// int 
+            'image' => $image[0],  // Imagem, string
+            'amount' => $item_price, //decimal
+            'payment_firstname' => '',// string
+            'payment_lastname' => '',// string
+            'email' => $this->_email,// string
+            'pending' => $redirectURL, // string 
+            'approved' => $redirectURL, // string
         );
     
        
@@ -220,7 +224,7 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
      return $botton;
         
     }
-    
+    */
    
 
 }

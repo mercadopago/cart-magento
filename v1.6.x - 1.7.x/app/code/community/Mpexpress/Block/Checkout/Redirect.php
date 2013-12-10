@@ -14,7 +14,7 @@ class Mpexpress_Block_Checkout_Redirect extends Mage_Core_Block_Abstract
    
     
     protected function _toHtml(){
-      
+        
         $express = Mage::getModel('mpexpress/express');
         $preference = $express->getInitPoint();
 

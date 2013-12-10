@@ -10,10 +10,10 @@
  */
 
 
-class Mpexpress_Block_Checkout_List extends Mage_Payment_Block_Form
-{
-    protected function _construct()
-    {
+class Mpexpress_Block_Checkout_List extends Mage_Payment_Block_Form{
+    
+    protected function _construct(){
+
         parent::_construct();
         $this->setTemplate('mpexpress/checkout/list.phtml');
         

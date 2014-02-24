@@ -155,7 +155,7 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
         if($exclude != ''):
         //case exist exclude methods
             $excludemethods = array();
-            $methods_excludes = preg_split("/[\s,]+/", $excludes); 
+            $methods_excludes = preg_split("/[\s,]+/", $exclude); 
             foreach ($methods_excludes as $exclude ){
                 $excludemethods[] = array('id' => $exclude);     
             }

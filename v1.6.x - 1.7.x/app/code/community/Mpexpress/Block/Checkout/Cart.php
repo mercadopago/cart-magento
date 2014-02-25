@@ -82,10 +82,10 @@ class MPexpress_Block_Checkout_Cart extends Mage_Core_Block_Template
         $express = Mage::getModel('mpexpress/Express');      
         $excludes = $express->getConfigData('excluded_payment_methods');  
         
-        $methods_excludes = preg_split("/[\s,]+/",$excludes); 
+        $methods_excludes = preg_split("/[\s,]+/",$excludes);
         
         foreach ($methods_excludes as $exclude ){
-            $excluded_payment_methods[] = array('id' => $exclude);     
+            $excluded_payment_methods[] = array('id' => $exclude);
         }
         
         $baseUrl = Mage::getBaseUrl();

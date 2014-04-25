@@ -1,22 +1,22 @@
 <?php
 
-/** * * NOTICE OF LICENSE * * This source file is subject to the Open Software License (OSL). 
+/** * * NOTICE OF LICENSE * * This source file is subject to the Open Software License (OSL).
  *  It is also available through the world-wide-web at this URL: *
- *  http://opensource.org/licenses/osl-3.0.php * 
- *  @category    Payment Gateway * @package    	MercadoPago 
+ *  http://opensource.org/licenses/osl-3.0.php *
+ *  @category    Payment Gateway * @package    	MercadoPago
  *  @author      André Fuhrman (andrefuhrman@gmail.com) | Edited: Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
- *  @copyright  Copyright (c) MercadoPago [http://www.mercadopago.com] 
- *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0) 
+ *  @copyright  Copyright (c) MercadoPago [http://www.mercadopago.com]
+ *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
-class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{   
+class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
 
     const PAYMENT_TYPE_AUTH = 'AUTHORIZATION';
     const PAYMENT_TYPE_SALE = 'SALE';
     protected $_formBlockType = 'mpexpress/checkout_list';
     protected $_code = 'mpexpress';
-    
+
     protected $_isGateway                   = true;
     protected $_canOrder                    = true;
     protected $_canAuthorize                = true;
@@ -31,28 +31,28 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
     protected $_canFetchTransactionInfo     = true;
     protected $_canCreateBillingAgreement   = true;
     protected $_canReviewPayment            = true;
-    
-  
-    
+
+
+
     protected function _construct(){
 
         $this->_init('mpexpress/express');
     }
-    
+
     public function getOrderPlaceRedirectUrl() {
         return Mage::getUrl('mpexpress/checkout/redirect', array('_secure' => true));
     }
-      
-    
+
+
     public function getInitPoint() {
-        
+
         $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
         $customer = Mage::getSingleton('customer/session')->getCustomer();
-        $name = '#' . $orderIncrementId . ' - '; 
+        $name = '#' . $orderIncrementId . ' - ';
         $model = Mage::getModel('catalog/product');
-        
-        $quote = Mage::getSingleton('checkout/session')->getQuote();        
+
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
 
         foreach ($order->getAllVisibleItems() as $item) {
             //modificado por e-values para permitir el manejo de kits
@@ -62,35 +62,38 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
             } else {
                 $prod = $model->loadByAttribute('sku', $item->getSku());
             }
-            
+
             //get methods and each find getImage
             $methods = get_class_methods($prod);
             foreach($methods as $method):
                 if($method == "getImageUrl"):
                     $image[] = $prod->getImageUrl();
-                endif;  
+                endif;
             endforeach;
-            
-            
+
+
             $name .= $item->getName();
         }
-        
-        
+
+
         //Shipping
-        $shipping = $order->getShippingAddress()->getData();
-        $shipments = array(
-            "receiver_address" => array(
-            "floor" => "-",
-            "zip_code" => $shipping['postcode'],
-            "street_name" => $shipping['street'] . " - " . $shipping['city'] . " - " . $shipping['country_id'],
-            "apartment" => "-",
-            "street_number" => "-"
-            )
-        );
-        
+        //check method exist :)
+        if(method_exists($order->getShippingAddress(), "getData")){
+          $shipping = $order->getShippingAddress()->getData();
+          $shipments = array(
+              "receiver_address" => array(
+              "floor" => "-",
+              "zip_code" => $shipping['postcode'],
+              "street_name" => $shipping['street'] . " - " . $shipping['city'] . " - " . $shipping['country_id'],
+              "apartment" => "-",
+              "street_number" => "-"
+              )
+          );
+        }
+
         //Force format YYYY-DD-MMTH:i:s
         $date_creation_user = date('Y-m-d',$customer->getCreatedAtTimestamp()) . "T" . date('H:i:s',$customer->getCreatedAtTimestamp());
-        
+
         $billing_address = $order->getBillingAddress();
         $billing_address = $billing_address->getData();
 
@@ -113,22 +116,22 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
                 "type" => "null"
             )
         );
-        
+
         //items
         $item_price = $order->getBaseGrandTotal();
         if (!$item_price) {
             $item_price = $order->getBasePrice() + $order->getBaseShippingAmount();
         }
-        
+
         $item_price = number_format($item_price, 2, '.', '');
-        
-        
+
+
         //case no exist function getImage in the $prod no generate item on the array
         $image_items = "";
         if (count($image) > 0):
             $image_items = $image[0];
         endif;
-        
+
         $items = array(
             array (
             "id" => $orderIncrementId,
@@ -141,25 +144,25 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
             "category_id"=> $this->getConfigData('category_id')
             )
         );
-        
+
         $installments = (int)$this->getConfigData('installments');
-        
+
         //send null installment case send 0 or empty
         if($installments == 0 || $installments == ""):
             $installments = null;
         endif;
-        
-        
+
+
         //payment_methods
         $exclude = $this->getConfigData('excluded_payment_methods');
         if($exclude != ''):
         //case exist exclude methods
             $excludemethods = array();
-            $methods_excludes = preg_split("/[\s,]+/", $exclude); 
+            $methods_excludes = preg_split("/[\s,]+/", $exclude);
             foreach ($methods_excludes as $exclude ){
-                $excludemethods[] = array('id' => $exclude);     
+                $excludemethods[] = array('id' => $exclude);
             }
-        
+
             $payment_methods = array(
                 "installments" => $installments,
                 "excluded_payment_methods" => $excludemethods
@@ -170,15 +173,15 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
                 "installments" => $installments
             );
         endif;
-        
-        
+
+
         //set back url
         $back_urls = array(
             "pending" => $this->getConfigData('url_success'),
             "success" => $this->getConfigData('url_process')
         );
-        
-        
+
+
         //mount array pref
         $pref = array();
         $pref['external_reference'] = 'mpexpress-' . $orderIncrementId;
@@ -187,13 +190,13 @@ class Mpexpress_Model_Express extends Mage_Payment_Model_Method_Abstract{
         $pref['items'] = $items;
         $pref['back_urls'] = $back_urls;
         $pref['payment_methods'] = $payment_methods;
-        
+
         $sandbox = $this->getConfigData('sandbox_checkout') == 1 ? true: false;
-        
+
         return Mage::getModel('mpexpress/checkout')->GetCheckout($pref, $sandbox);
-    
+
   }
-    
+
 }
 
 ?>

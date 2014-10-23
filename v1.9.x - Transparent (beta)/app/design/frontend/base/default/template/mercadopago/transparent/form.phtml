@@ -1,0 +1,108 @@
+<fieldset class="form-list mercadopago">
+    <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>" />
+
+    <?php $_code = $this->getMethodCode(); ?>
+    <?php $_country = $this->getMethodCountry(); ?>
+    
+    <script>
+        //load nas actions para funcionar o js do mercadopago
+        loadFilesMP(); 
+    </script>
+    
+    <div id="mp-form">
+        <ul class="form-list form-mercadopago" id="payment_form_<?php  echo $_code ?>" style="display:none;" >
+            <li>
+                <label for="<?php echo $_code ?>_cn" class="required"><em>*</em>Número do cartão</label>
+                <div class="input-box">
+                    <input data-checkout="cardNumber" id="<?php echo $_code ?>_cn" type="text" class="input-text required-entry"/>
+                    <div id="img_payment_method"></div>
+                </div>
+            </li>
+            
+            
+            <li>
+                <div class="box-mes">
+                    <label for="<?php echo $_code ?>_month" class="required"><em>*</em>Mês de vencimento</label>
+                    <div class="input-box mes">
+                        <select data-checkout="cardExpirationMonth" id="<?php echo $_code ?>_month" class="input-text required-entry validate-digits">
+                            <?php foreach ($this->getCcMonths() as $m=>$v): ?>
+                                <option value="<?php echo $m?$m:'' ?>"><?php echo $v ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="box-ano">
+                    <label for="<?php echo $_code ?>_year" class="required"><em>*</em>Ano de vencimento</label>
+                    <div class="input-box">
+                        <select data-checkout="cardExpirationYear"  id="<?php echo $_code ?>_year" class="input-text required-entry validate-digits">
+                            <?php foreach ($this->getCcYears() as $y=>$v): ?>
+                                <option value="<?php echo $y?$y:'' ?>"><?php echo $v ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+            </li>
+            
+            
+            <li>
+                <div class="box-input">
+                    <label for="<?php echo $_code ?>_name" class="required"><em>*</em>Titular do cartão</label>
+                    <div class="input-box">
+                        <input data-checkout="cardholderName" id="<?php echo $_code ?>_name" type="text" class="input-text required-entry" type="text"/>
+                    </div>
+                </div>
+            </li>
+            
+            <li>
+                <div class="box-input">
+                    <label for="<?php echo $_code ?>_doc" class="required"><em>*</em>CPF</label>
+                    <div class="input-box">
+                        <input name="payment[doc_number]" data-checkout="docNumber" id="<?php echo $_code ?>_doc" type="text" class="input-text required-entry validate-digits" type="text" maxlength="11" />
+                    </div>
+                </div>
+            </li>
+            
+             <li>
+                <div class="box-input">
+                    <label for="<?php echo $_code ?>_code" class="required"><em>*</em>Código de segurança</label>
+                    <div class="input-box">
+                        <input data-checkout="securityCode" id="<?php echo $_code ?>_code" type="text" class="input-text required-entry validate-digits" type="text"/>
+                    </div>
+                </div>
+            </li>
+            
+            <li>
+                <div class="box-input">
+                    <label for="<?php echo $_code ?>_installments" class="required"><em>*</em>Parcelas</label>
+                    <div class="input-box">
+                        <select name="payment[installments]" id="installments" data-checkout="installments" id="<?php echo $_code ?>_installments" class="input-text required-entry validate-digits">
+                            <option>Digite o numero do cartão</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="status">
+                    <div class="box">
+                        <div class="loading-mp">
+                            <img src="<?php echo $this->getSkinUrl('mercadopago/images/loading.gif')  ;?>" alt="loading" />
+                        </div>
+                        
+                        <div class="text-mp">
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="amount" value="<?php echo $this->helper('checkout/cart')->getQuote()->getGrandTotal(); ?>">
+                <input type="hidden" data-checkout="docType" type="text" value="CPF"/>
+                <input type="hidden" name="payment[card_token_id]" type="text" value="" id="card_token_id" />
+                <input type="hidden" name="payment[payment_method]" type="text" value="" id="payment_method" />
+                
+                <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+                    <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
+                <?php endif;?>
+            </li>
+        </ul>
+
+        
+    </div>
+</fieldset>

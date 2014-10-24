@@ -1,0 +1,151 @@
+<?xml version="1.0" ?>
+<!--
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL).
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+*
+* @category   	Payment Gateway
+* @package    	MercadoPago
+* @author      	Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
+* @copyright  	Copyright (c) MercadoPago [http://www.mercadopago.com]
+* @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+
+<config>
+    <sections>
+        <payment>
+            <groups>
+                <mercadopago_standard module="mercadopago_standard">
+                    <label>MercadoPago Standard - Cartão, Boleto e Dinheiro em Conta</label>
+                    <sort_order>102</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+			    <comment>
+				<![CDATA[
+				  Para o funcionamento do Checkout Standard é necessário configurar as Credenciais "CLIENT_ID" e "CLIENT_SECRET" em "MercadoPago - Cartão de Crédito"
+				]]>
+			    </comment>
+                        </active>
+			
+                        <title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </title>
+		    
+		    
+			<banner_checkout translate="label">
+                            <label>Banner Checkout</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </banner_checkout>
+			
+			<sort_order translate="label">
+                            <label>Posição no Checkout</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <frontend_class>validate-number</frontend_class>
+                        </sort_order>
+			
+			<type_checkout>
+				<label>Tipo de checkout</label>
+				<frontend_type>select</frontend_type>
+				<source_model>MercadoPago_Standard_Model_Source_TypeCheckout</source_model>
+				<sort_order>5</sort_order>
+				<show_in_default>1</show_in_default>
+				<show_in_website>1</show_in_website>
+				<show_in_store>1</show_in_store>
+			</type_checkout>
+			
+			<auto_return translate="label">
+                            <label>Auto-redirecionar</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+			    <comment>
+				<![CDATA[
+				  Auto-redirecionar o comprador para a tela de finalização de Pedido.
+				]]>
+			    </comment>
+                        </auto_return>
+			
+			<excluded_payment_methods>
+				<label>Excluir Meios de Pagamento</label>
+				<comment>
+				    <![CDATA[
+					Selecione os meios de pagamento que você deseja não aceitar.
+				    ]]>
+				</comment>
+				<frontend_type>multiselect</frontend_type>
+				<source_model>MercadoPago_Standard_Model_Source_PaymentMethods</source_model>
+				<sort_order>8</sort_order>
+				<show_in_default>1</show_in_default>
+				<show_in_website>1</show_in_website>
+				<show_in_store>1</show_in_store>
+				<can_be_empty>1</can_be_empty>
+			</excluded_payment_methods>
+			
+			<installments>
+				<label>Numero maximo de parcelas aceita</label>
+				<frontend_type>select</frontend_type>
+				<source_model>MercadoPago_Standard_Model_Source_Installments</source_model>
+				<sort_order>9</sort_order>
+				<show_in_default>1</show_in_default>
+				<show_in_website>1</show_in_website>
+				<show_in_store>1</show_in_store>
+			</installments>
+			
+			
+			<iframe_width translate="label">
+                            <label>Largura do Checkout Iframe (Width)</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <frontend_class>validate-number</frontend_class>
+                        </iframe_width>
+			
+			<iframe_height translate="label">
+                            <label>Altura do Checkout Iframe (Height)</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <frontend_class>validate-number</frontend_class>
+                        </iframe_height>
+			
+                    </fields>
+                </mercadopago_standard>
+            </groups>
+        </payment>
+    </sections>
+</config>

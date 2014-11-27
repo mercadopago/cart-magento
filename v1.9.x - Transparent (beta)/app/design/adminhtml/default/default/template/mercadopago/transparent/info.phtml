@@ -1,0 +1,20 @@
+<p><strong><?php echo $this->getMethod()->getTitle() ?></strong></p>
+
+<p><?php echo $this->__('Titular do Cartão: %s', $this->htmlEscape($this->getOrder()->getAdditionalInformation('cardholderName'))); ?></p>
+<p><?php echo $this->__('Cartão: %s', $this->htmlEscape($this->getOrder()->getAdditionalInformation('trunc_card'))); ?></p>
+<p><?php echo $this->__('Método de Pagamento: %s', $this->htmlEscape($this->getOrder()->getAdditionalInformation('payment_method'))); ?></p>
+<p><?php echo $this->__('Data de expiração: %s', $this->htmlEscape($this->getOrder()->getAdditionalInformation('expiration_date'))); ?></p>
+<p><?php echo $this->__('Parcelas: %s', $this->htmlEscape($this->getOrder()->getAdditionalInformation('installments'))); ?></p>
+
+
+<?php if($this->getOrder()->getAdditionalInformation('statement_descriptor') != ""): ?>
+    <p><?php echo $this->__('Identificação na Fatura: %s', $this->htmlEscape($this->getOrder()->getAdditionalInformation('statement_descriptor'))); ?></p>
+<?php endif; ?>
+
+<?php if($this->getOrder()->getAdditionalInformation('payment_id') != ""): ?>
+    <p><?php echo $this->__('Numero de Pagamento (MercadoPago): %s', $this->htmlEscape($this->getOrder()->getAdditionalInformation('payment_id'))); ?></p>
+<?php endif; ?>
+
+<?php if($this->getOrder()->getAdditionalInformation('status') != ""): ?>
+    <p><?php echo $this->__('Status de Pagamento: %s (%s)', $this->htmlEscape($this->getOrder()->getAdditionalInformation('status')), $this->htmlEscape($this->getOrder()->getAdditionalInformation('status_detail'))); ?></p>
+<?php endif; ?>

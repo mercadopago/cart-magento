@@ -33,9 +33,38 @@ class MercadoPago_Transparent_NotificacaoController extends Mage_Core_Controller
 		$message = "";
 		$status = "";
 		$payment = $response['response']['collection'];
+		
 		$order = Mage::getModel('sales/order')->loadByIncrementId($payment["external_reference"]);
 		
-	
+		//update info de status no pagamento
+		$payment_order = $order->getPayment();
+		$payment_order->setAdditionalInformation('status',$payment['status']);
+		$payment_order->setAdditionalInformation('status_detail',$payment['status_detail']);
+		$payment_order->setAdditionalInformation('payment_id',$payment['id']);
+		
+		if($payment_order->getAdditionalInformation('cardholderName') == ""):
+		    $payment_order->setAdditionalInformation('cardholderName', $payment['payer']['first_name'] . " " . $payment['payer']['last_name']);
+		endif;
+		
+		if($payment_order->getAdditionalInformation('payment_method') == ""):
+		    $payment_order->setAdditionalInformation('payment_method', $payment['payment_method_id']);
+		endif;
+		
+		if($payment_order->getAdditionalInformation('statement_descriptor') == ""):
+		    if(isset($payment['statement_descriptor'])):
+			$payment_order->setAdditionalInformation('statement_descriptor', $payment['statement_descriptor']);
+		    endif;
+		endif;
+		
+		if($payment_order->getAdditionalInformation('trunc_card') == ""):
+		    if(isset($payment['last_four_digits'])):
+			$payment_order->setAdditionalInformation('trunc_card', "XXXXXXXXXXXX" . $payment['last_four_digits']);
+		    endif;
+		    
+		endif;
+		
+		$payment_order->save();
+		
 		//adiciona informações sobre o comprador na order	
 		if ($payment['payer']['first_name'])
 		    $order->setCustomerFirstname($payment['payer']['first_name']);
@@ -49,9 +78,19 @@ class MercadoPago_Transparent_NotificacaoController extends Mage_Core_Controller
 		switch ( $payment['status']) {
     
 		    case 'approved':
-			// Geração não automática de invoice    
+			//add status na order
 			$message = 'Notificação automática do MercadoPago: O pagamento foi aprovado.';
 			$status = $model->getConfigData('order_status_approved');
+			
+			//cria a invoice
+			$invoice = $order->prepareInvoice();
+                        $invoice->register()->pay();
+                        Mage::getModel('core/resource_transaction')
+                            ->addObject($invoice)
+                            ->addObject($invoice->getOrder())
+                            ->save();
+
+                        $invoice->sendEmail(true, $message);
 			break;
 		    case 'refunded':
 			$status = $model->getConfigData('order_status_refunded');

@@ -1,7 +1,6 @@
 MercadoPago Magento Transparent & Standard
 ================================
 
-*Available for Brazil*
 
 ## Installation:
 

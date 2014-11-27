@@ -52,6 +52,14 @@
             </mercadopago_transparent>
         </routers>
 
+        <layout>
+            <updates>
+                <mpexpress>
+                    <file>mercadopago.xml</file>
+                </mpexpress>
+            </updates>
+        </layout>
+         
         <translate>
             <modules>
                 <mercadopago>
@@ -80,6 +88,7 @@
                 <order_status_cancelled>pending</order_status_cancelled>
                 <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg</banner_checkout>
                 <sort_order>-2</sort_order>
+                <payment_action>authorize</payment_action>
             </mercadopago_transparent>
         </payment>
     </default>

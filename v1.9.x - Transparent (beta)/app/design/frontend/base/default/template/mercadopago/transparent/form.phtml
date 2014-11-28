@@ -24,7 +24,7 @@
                 <div class="box-mes">
                     <label for="<?php echo $_code ?>_month" class="required"><em>*</em>Mês de vencimento</label>
                     <div class="input-box mes">
-                        <select data-checkout="cardExpirationMonth" id="<?php echo $_code ?>_month" class="input-text required-entry validate-digits">
+                        <select data-checkout="cardExpirationMonth"  name="payment[cardExpirationMonth]" id="<?php echo $_code ?>_month" class="input-text required-entry validate-digits">
                             <?php foreach ($this->getCcMonths() as $m=>$v): ?>
                                 <option value="<?php echo $m?$m:'' ?>"><?php echo $v ?></option>
                             <?php endforeach ?>
@@ -35,7 +35,7 @@
                 <div class="box-ano">
                     <label for="<?php echo $_code ?>_year" class="required"><em>*</em>Ano de vencimento</label>
                     <div class="input-box">
-                        <select data-checkout="cardExpirationYear"  id="<?php echo $_code ?>_year" class="input-text required-entry validate-digits">
+                        <select data-checkout="cardExpirationYear"  name="payment[cardExpirationYear]" id="<?php echo $_code ?>_year" class="input-text required-entry validate-digits">
                             <?php foreach ($this->getCcYears() as $y=>$v): ?>
                                 <option value="<?php echo $y?$y:'' ?>"><?php echo $v ?></option>
                             <?php endforeach ?>
@@ -49,7 +49,7 @@
                 <div class="box-input">
                     <label for="<?php echo $_code ?>_name" class="required"><em>*</em>Titular do cartão</label>
                     <div class="input-box">
-                        <input data-checkout="cardholderName" id="<?php echo $_code ?>_name" type="text" class="input-text required-entry" type="text"/>
+                        <input data-checkout="cardholderName" name="payment[cardholderName]" id="<?php echo $_code ?>_name" type="text" class="input-text required-entry" type="text"/>
                     </div>
                 </div>
             </li>
@@ -96,6 +96,7 @@
                 <input type="hidden" data-checkout="docType" type="text" value="CPF"/>
                 <input type="hidden" name="payment[card_token_id]" type="text" value="" id="card_token_id" />
                 <input type="hidden" name="payment[payment_method]" type="text" value="" id="payment_method" />
+                <input type="hidden" name="payment[trunc_card]" type="text" value="" id="trunc_card" />
                 
                 <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
                     <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>

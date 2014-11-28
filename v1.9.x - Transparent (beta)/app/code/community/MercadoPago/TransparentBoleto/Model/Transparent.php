@@ -19,28 +19,35 @@ class MercadoPago_TransparentBoleto_Model_Transparent extends Mage_Payment_Model
     
     //configura o lugar do arquivo para listar meios de pagamento
     protected $_formBlockType = 'mercadopago_transparentboleto/form';
+    protected $_infoBlockType = 'mercadopago_transparentboleto/info';
     
     protected $_code = 'mercadopago_transparentboleto';
 
-    protected $_isGateway                   = true;
-    protected $_canOrder                    = true;
-    protected $_canAuthorize                = true;
-    protected $_canCapture                  = true;
-    protected $_canCapturePartial           = true;
-    protected $_canRefund                   = true;
-    protected $_canRefundInvoicePartial     = true;
-    protected $_canVoid                     = true;
-    protected $_canUseInternal              = true;
-    protected $_canUseCheckout              = true;
-    protected $_canUseForMultishipping      = true;
+    protected $_canSaveCc = false;
+    protected $_isGateway = true;
+    protected $_canAuthorize = true;
+    protected $_canCapture = true;
+    protected $_canVoid = true;
+    protected $_canCancelInvoice = true;
+    protected $_isInitializeNeeded = true;
     protected $_canFetchTransactionInfo     = true;
     protected $_canCreateBillingAgreement   = true;
     protected $_canReviewPayment            = true;
 
-    protected function _construct(){
-        $this->_init('mercadopago_transparentboleto/transparent');
-    }
     
+    public function initialize($paymentAction, $stateObject) {
+        //chama model para fazer o post do pagamento
+	$response = Mage::getModel('mercadopago_transparent/transparent')->postPago();
+
+        if($response !== false):
+            $this->getInfoInstance()->setAdditionalInformation('activation_uri', $response['response']['activation_uri']);
+            return true;
+        endif;
+        
+        return false;
+        
+    }
+
     public function assignData($data){
         
         // route /checkout/onepage/savePayment
@@ -52,20 +59,13 @@ class MercadoPago_TransparentBoleto_Model_Transparent extends Mage_Payment_Model
         $info_form = $data->getData();
         
         $info = $this->getInfoInstance();
-        $info->setAdditionalInformation('card_token_id',$info_form['card_token_id']);
-        $info->setAdditionalInformation('payment_method',$info_form['payment_method_boleto']);
-        $info->setAdditionalInformation('installments',$info_form['installments']);
-        $info->setAdditionalInformation('doc_number',$info_form['doc_number']);
+        $info->setAdditionalInformation('payment_method', $info_form['payment_method_boleto']);
+        $info->setAdditionalInformation('card_token_id', "");
+	$info->setAdditionalInformation('installments', 1);
+        $info->setAdditionalInformation('doc_number', "");
         
         
         return $this;
-    }
-    
-    public function getOrderPlaceRedirectUrl() {
-        
-        // requisicao vem da pagina de finalizacao de pedido
-        return Mage::getUrl('mercadopago_transparent/pay', array('_secure' => true));
-    
     }
     
 }

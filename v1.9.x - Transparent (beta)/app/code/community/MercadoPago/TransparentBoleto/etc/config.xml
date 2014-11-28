@@ -51,6 +51,15 @@
                 </args>
             </mercadopago_transparentboleto>
         </routers>
+        
+        <layout>
+            <updates>
+                <mpexpress>
+                    <file>mercadopago.xml</file>
+                </mpexpress>
+            </updates>
+        </layout>
+        
     </frontend>
 
 
@@ -64,6 +73,7 @@
                 <allowspecific>0</allowspecific>
                 <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/2014/230x60.png</banner_checkout>
                 <sort_order>-1</sort_order>
+                <payment_action>authorize</payment_action>
             </mercadopago_transparentboleto>
         </payment>
     </default>

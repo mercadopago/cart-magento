@@ -110,6 +110,9 @@ class Mpexpress_Model_Mp extends Mage_Payment_Model_Method_Abstract
   
                 // do a curl call
                 $call = curl_init();
+
+                curl_setopt($call, CURLOPT_USERAGENT, "MercadoPago Magento-v1.4.x-1.5.x Cart v1.0.1");
+
                 curl_setopt_array($call,$options);
                 // execute the curl call
                 $dados = curl_exec($call);

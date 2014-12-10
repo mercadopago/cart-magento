@@ -1,4 +1,4 @@
-# Magento - Mercadopago Module (1.4.1 to 1.9.x, 1.4.0 Standard Checkout Only)
+# Magento - Mercadopago Module (1.4.x to 1.9.x, Standard Checkout Only)
 ---
 *Available for Argentina, Brazil, México and Venezuela*
 

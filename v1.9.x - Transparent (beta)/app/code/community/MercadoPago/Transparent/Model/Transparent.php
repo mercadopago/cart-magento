@@ -275,7 +275,7 @@ Tente novamente em alguns minutos. \t";
                 "picture_url" => $imagem,
                 "category_id" => $this->getConfigData('category_id'),
                 "quantity" => (int) number_format($item->getQtyOrdered(), 0, '.', ''),
-                "unit_price" => (float) number_format($prod->getPrice(), 2, '.', '')
+                "unit_price" => (float) number_format($prod->getFinalPrice(), 2, '.', '')
             );
             
         }

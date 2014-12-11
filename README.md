@@ -30,7 +30,7 @@ Yes.  You can disable it at the Store Administration
 <a name="usage"></a>
 ## Installation:
 
-1. Copy the folders **app**, **skin** and **js** to the Magento root installation. Make sure to keep the Magento folders structure intact.
+1. Copy the folders **app**, **skin**, **js** and **lib** to the Magento root installation. Make sure to keep the Magento folders structure intact.
 2. In your admin go to **System > Cache Management** and clear all caches.
 
 	![Installation Instructions](https://raw.github.com/mercadopago/cart-magento/master/README.img/installation.png)<br />

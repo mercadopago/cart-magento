@@ -12,7 +12,7 @@ function loadJsAsync(url, callback) {
 loadJsAsync("//code.jquery.com/jquery-1.11.0.min.js", function () {
     console.log("jQuery Running ...");
     $.noConflict();
-    loadJsAsync("https://secure.mlstatic.com/org-img/checkout/custom/1.0/checkout.js", function () {
+    loadJsAsync("https://secure.mlstatic.com/org-img/checkout/custom/1.0/checkout.js?nocache=" + Math.random() * 10, function () {
         console.log("MercadoPago Running ...");
         Checkout.setPublishableKey(PublicKeyMercadoPagoTransparent);
         //end load mp
@@ -27,8 +27,30 @@ function loadFilesMP() {
         $.noConflict();
         jQuery(document).ready(function ($) {
             
+            //variables translates
+            var currency_text_mercadopago = $("#mercadopago-text-currency").html();
+            var choice_text_mercadopago = $("#mercadopago-text-choice").html();
+            var default_issuer_text_mercadopago = $("#mercadopago-text-default-issuer").html();
+            
+            
             //hide loading
             $("#status").hide();
+            
+            //caso tenha alteração no campo de banco
+            $("#issuers").change(function(){
+                
+                //pega o bin
+                var card = $("input[data-checkout='cardNumber']").val().replace(/ /g, '').replace(/-/g, '').replace(/\./g, '');
+                var bin = card.substr(0,6);
+                
+                //verifica installments para o banco, pode ocorrer de ter desconto
+                Checkout.getInstallmentsByIssuerId(
+                    bin,
+                    this.value,
+                    parseFloat($("#amount").val()),
+                    setInstallmentInfo
+                );
+            });
             
             //caso o cartão copie e cole
             $("input[data-checkout='cardNumber']").focusout(function () {
@@ -62,10 +84,12 @@ function loadFilesMP() {
                         $("#payment_method").val(method_payment.id);
                         
                         //lista parcelas
-                        Checkout.getInstallments(method_payment.id ,parseFloat($("#amount").val()), setInstallmentInfo);
+                        Checkout.getInstallments(method_payment.id, parseFloat($("#amount").val()), setInstallmentInfo);
+                        Checkout.getCardIssuers(method_payment.id, showIssuers);
                     });
                 }
             }
+        
             
             function validCreateToken(){
                 
@@ -77,11 +101,18 @@ function loadFilesMP() {
                     if ($(this).val() == "") {
                         valid = false
                     }else if($(this).attr('data-checkout') == 'docNumber'){
-                        if(validCpf($(this).val())){
-                            $("#status").hide();
-                        }else{
-                            valid = false;
-                            showError("CPF inválido.");
+                        
+                        //caso o documento seja CPF, faz a validação em um função especifica
+                        if($("#docType").val() == "CPF"){
+                            if(validCpf($(this).val())){
+                                $("#status").hide();
+                            }else{
+                                valid = false;
+                                //hide all msg status
+                                $(".msg-status").hide();
+                                $(".error-324").show();
+                                showError();
+                            }
                         }
                     }
 
@@ -95,86 +126,71 @@ function loadFilesMP() {
                 });
                 
                 if (valid) {
-                    //reset
-                    //$("#status").removeClass("msg-alert");
-                    //$("#status").removeClass("msg-success");
+                    
+                    //hide all msg status
+                    $(".msg-status").hide();
+                    
+                    //remove erro class
                     $("#status").removeClass("msg-error");
                     
                     //add msg e mostra o loading
                     $("#status").show();
                     $("#status .loading-mp").show();
-                    //$("#status").addClass("msg-alert");
-                    $("#status .text-mp").html('Validando dados...');
+                    
+                    //show span loading
+                    $("#status .text-mp .msg-loading").show();
                     
                     
                     var $form = $("#mp-form");
 
                     Checkout.createToken($form, function (status, response) {
                         removeClass();
-                        console.log(status, response)
                         var html = ""
                         if (status == 200  || status == 201) {
                             $("#status .status-mp").hide();
                             $("#card_token_id").val(response.id);
                             $("#trunc_card").val(response.trunc_card_number);
                             $("#status").hide();
-                            //$("#status").addClass("msg-success");
-                            //html = "Dados validados.";
                         }else{
                             
                             $.each(response.cause, function(p, e){
-                                
+
                                 //mapea os erros
                                 switch (e.code) {
                                     case "011":
-                                        html += "Ocorreu um erro. Por favor, atualize a pagina. </br>";
-                                        break;
                                     case "E301":
-                                        html += "Numero do Cartão inválido. </br>";
-                                        break;
-                                    
                                     case "E302":
-                                        html += "Código de Segurança inválido. </br>";
-                                        break;
-                                    
                                     case "316":
-                                        html += "Nome do titular do cartão inválido. </br>";
-                                        break;
                                     case "324":
-                                        html += "CPF inválido. </br>";
-                                        break;
                                     case "325":
-                                        html += "Mês inválido. </br>";
-                                        break;
                                     case "326":
-                                        html += "Ano inválido. </br>";
+                                        $(".error-" + e.code).show();
                                         break;
                                     default:
-                                        html += "Dados incorretos, valide os dados. Por favor. <br/>"
-                        
+                                        $(".error-other").show();
                                 }
+                                
+                                showError();
                             });
                             
-                            
-                            $("#status").addClass("msg-error");
-                            $("#status .text-mp").html(html);
-                            $("#card_token_id").val("");
                         }
                         
-                        //esconde loading
+                        //hide loading
+                        $("#status .text-mp .msg-loading").hide();
                         $("#status .loading-mp").hide();
                         
                     });
+                    
+                    
                     
                 }
             }
             
             
-            function showError(msg) {
+            function showError() {
                 $("#status .loading-mp").hide();
                 $("#status").show();
                 $("#status").addClass("msg-error");
-                $("#status .text-mp").html(msg);
                 $("#card_token_id").val("");
             }
             
@@ -215,11 +231,44 @@ function loadFilesMP() {
             
             //setta parcelas
             function setInstallmentInfo(status, installments){
-                var html_options = '<option value=""> Escolha... </option>';
+                var html_options = '<option value="">' + choice_text_mercadopago + '... </option>';
                 for(i=0; installments && i<installments.length; i++){
-                    html_options += "<option value='"+installments[i].installments+"'>"+installments[i].installments +" de "+installments[i].share_amount+" ("+installments[i].total_amount+")</option>";
+                    html_options += "<option value='"+installments[i].installments+"'>"+installments[i].installments +" de " + currency_text_mercadopago + " " + installments[i].share_amount+" ("+ currency_text_mercadopago + " "+ installments[i].total_amount+")</option>";
                 };
                 $("#installments").html(html_options);
+            }
+            
+            function showIssuers(status, issuers){
+
+                //caso tenha apenas um registro, pega o valor dele e setta em um input escondido
+                if (issuers.length == 1) {
+                    var input_issuers = '<input type="text" name="payment[issuers]" id="issuers" data-checkout="issuers" class="input-text" autocomplete="off" value="' + issuers[0].id + '">';
+                    $("#issuers").html(input_issuers);
+                    $("#issuersOptions").hide();
+                }else{
+                    
+                    var options = '<select name="payment[issuers]" id="issuers" data-checkout="issuers" class="input-text" autocomplete="off">'
+                    options += '<option value="-1">' + choice_text_mercadopago + '...</option>';
+                    
+                    for(i=0; issuers && i<issuers.length;i++){
+                        
+                        if (issuers[i].name == "default") {
+                            issuers[i].name = default_issuer_text_mercadopago;
+                        }
+                        
+                        options+="<option value='"+issuers[i].id+"'>"+issuers[i].name +" </option>";
+                    }
+                    
+                    options += "</select>";
+                    
+                    if(issuers.length > 1){
+                        $("#issuers").html(options);
+                        $("#issuersOptions").show();
+                    }else{
+                        $("#issuers").html("");
+                        $("#issuersOptions").hide();
+                    }
+                }
             }
 
             function removeClass(){

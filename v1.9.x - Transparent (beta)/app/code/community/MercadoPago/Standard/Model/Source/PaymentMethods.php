@@ -19,12 +19,12 @@ require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
 class MercadoPago_Standard_Model_Source_PaymentMethods extends Mage_Payment_Model_Method_Abstract{
 	
     public function toOptionArray (){
-	$methods = array();
 	
+	$country = strtoupper(Mage::getStoreConfig('payment/mercadopago_configuration/country'));
+	$methods = array();
 	//adiciona um valor vazio caso n‹o queria excluir nada
 	$methods[] = array("value" => "", "label" => "");
-	
-        $response = MPRestClient::get("/sites/MLB/payment_methods");
+        $response = MPRestClient::get("/sites/" . $country . "/payment_methods");
         $response = $response['response'];
         
         foreach($response as $m){

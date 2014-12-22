@@ -12,7 +12,7 @@
     <div id="mp-form">
         <ul class="form-list form-mercadopago" id="payment_form_<?php  echo $_code ?>" style="display:none;" >
             <li>
-                <label for="<?php echo $_code ?>_cn" class="required"><em>*</em>Número do cartão</label>
+                <label for="<?php echo $_code ?>_cn" class="required"><em>*</em><?php echo $this->__('Card Number'); ?></label>
                 <div class="input-box">
                     <input data-checkout="cardNumber" id="<?php echo $_code ?>_cn" type="text" class="input-text required-entry"/>
                     <div id="img_payment_method"></div>
@@ -22,7 +22,7 @@
             
             <li>
                 <div class="box-mes">
-                    <label for="<?php echo $_code ?>_month" class="required"><em>*</em>Mês de vencimento</label>
+                    <label for="<?php echo $_code ?>_month" class="required"><em>*</em><?php echo $this->__('Month'); ?></label>
                     <div class="input-box mes">
                         <select data-checkout="cardExpirationMonth"  name="payment[cardExpirationMonth]" id="<?php echo $_code ?>_month" class="input-text required-entry validate-digits">
                             <?php foreach ($this->getCcMonths() as $m=>$v): ?>
@@ -33,7 +33,7 @@
                 </div>
                 
                 <div class="box-ano">
-                    <label for="<?php echo $_code ?>_year" class="required"><em>*</em>Ano de vencimento</label>
+                    <label for="<?php echo $_code ?>_year" class="required"><em>*</em><?php echo $this->__('Year'); ?></label>
                     <div class="input-box">
                         <select data-checkout="cardExpirationYear"  name="payment[cardExpirationYear]" id="<?php echo $_code ?>_year" class="input-text required-entry validate-digits">
                             <?php foreach ($this->getCcYears() as $y=>$v): ?>
@@ -47,7 +47,7 @@
             
             <li>
                 <div class="box-input">
-                    <label for="<?php echo $_code ?>_name" class="required"><em>*</em>Titular do cartão</label>
+                    <label for="<?php echo $_code ?>_name" class="required"><em>*</em><?php echo $this->__('Card Holder Name'); ?></label>
                     <div class="input-box">
                         <input data-checkout="cardholderName" name="payment[cardholderName]" id="<?php echo $_code ?>_name" type="text" class="input-text required-entry" type="text"/>
                     </div>
@@ -56,28 +56,52 @@
             
             <li>
                 <div class="box-input">
-                    <label for="<?php echo $_code ?>_doc" class="required"><em>*</em>CPF</label>
+                    <label for="<?php echo $_code ?>_doc" class="required"><em>*</em><?php echo $this->__('Document Number'); ?></label>
                     <div class="input-box">
+                        <?php
+                        $country= Mage::getStoreConfig('payment/mercadopago_configuration/country');
+                        if( $country == 'mlb'): ?>
+                            <input type="hidden" data-checkout="docType" id="docType" type="text" value="CPF"/>
+                        <?php elseif($country == 'mla'): ?>
+                            <select optionkey="id" name="payment[docType]" id="docType" data-checkout="docType">
+                                <option value="DNI">DNI</option>
+                                <option value="CI">Cédula</option>
+                                <option value="LC">L.C.</option>
+                                <option value="LE">L.E.</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        <?php endif; ?>
+                        
                         <input name="payment[doc_number]" data-checkout="docNumber" id="<?php echo $_code ?>_doc" type="text" class="input-text required-entry validate-digits" type="text" maxlength="11" />
+                        
                     </div>
                 </div>
             </li>
             
              <li>
                 <div class="box-input">
-                    <label for="<?php echo $_code ?>_code" class="required"><em>*</em>Código de segurança</label>
+                    <label for="<?php echo $_code ?>_code" class="required"><em>*</em><?php echo $this->__('CVV'); ?></label>
                     <div class="input-box">
                         <input data-checkout="securityCode" id="<?php echo $_code ?>_code" type="text" class="input-text required-entry validate-digits" type="text"/>
                     </div>
                 </div>
             </li>
             
+            <li id="issuersOptions" style="display: none;">
+                <label for="<?php echo $_code ?>_issuers" class="required"><em>*</em><?php echo $this->__('Banks'); ?></label>
+                <div class="input-box">
+                    <div id="issuers">
+                    </div>
+                </div>
+            </li>
+            
+            
             <li>
                 <div class="box-input">
-                    <label for="<?php echo $_code ?>_installments" class="required"><em>*</em>Parcelas</label>
-                    <div class="input-box">
+                    <label for="<?php echo $_code ?>_installments" class="required"><em>*</em><?php echo $this->__('Installments'); ?></label>
+                    <div class="input-box box-installments">
                         <select name="payment[installments]" id="installments" data-checkout="installments" id="<?php echo $_code ?>_installments" class="input-text required-entry validate-digits">
-                            <option>Digite o numero do cartão</option>
+                            <option><?php echo $this->__('Enter the card number'); ?></option>
                         </select>
                     </div>
                 </div>
@@ -89,11 +113,19 @@
                         </div>
                         
                         <div class="text-mp">
+                            <p class="msg-status msg-loading"><?php echo $this->__('Validating Data'); ?>...</p>
+                            <p class="msg-status error-011"><?php echo $this->__('An error has occurred. Please refresh the page.'); ?></p>
+                            <p class="msg-status error-E301"><?php echo $this->__('Card Number is invalid.'); ?></p>
+                            <p class="msg-status error-E302"><?php echo $this->__('CVV is invalid.'); ?></p>
+                            <p class="msg-status error-316"><?php echo $this->__('Card Holder Name is invalid.'); ?></p>
+                            <p class="msg-status error-324"><?php echo $this->__('Document Number is invalid.'); ?></p>
+                            <p class="msg-status error-325"><?php echo $this->__('Month is invalid.'); ?></p>
+                            <p class="msg-status error-326"><?php echo $this->__('Year is invalid.'); ?></p>
+                            <p class="msg-status error-other"><?php echo $this->__('Please validate your data.'); ?></p>
                         </div>
                     </div>
                 </div>
                 <input type="hidden" id="amount" value="<?php echo $this->helper('checkout/cart')->getQuote()->getGrandTotal(); ?>">
-                <input type="hidden" data-checkout="docType" type="text" value="CPF"/>
                 <input type="hidden" name="payment[card_token_id]" type="text" value="" id="card_token_id" />
                 <input type="hidden" name="payment[payment_method]" type="text" value="" id="payment_method" />
                 <input type="hidden" name="payment[trunc_card]" type="text" value="" id="trunc_card" />
@@ -101,6 +133,12 @@
                 <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
                     <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
                 <?php endif;?>
+                
+                <div style="display: none;">
+                    <span id="mercadopago-text-currency"><?php echo $this->__('$'); ?></span>
+                    <span id="mercadopago-text-choice"><?php echo $this->__('Choice'); ?></span>
+                    <span id="mercadopago-text-default-issuer"><?php echo $this->__('Default issuer'); ?></span>
+                </div>
             </li>
         </ul>
 

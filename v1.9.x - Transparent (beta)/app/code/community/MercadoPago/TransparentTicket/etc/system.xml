@@ -20,9 +20,9 @@
     <sections>
         <payment translate="label">
             <groups>
-                <mercadopago_transparent translate="label" module="mercadopago_transparent">
-                    <label>MercadoPago Transparent - Credit Card</label>
-                    <sort_order>100</sort_order>
+                <mercadopago_transparentticket translate="label" module="mercadopago_transparentticket">
+                    <label>MercadoPago Transparent - Ticket</label>
+                    <sort_order>101</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>0</show_in_store>
@@ -35,6 +35,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+			    <comment>For the operation of the Checkout Transparent Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'</comment>
                         </active>
                         <title translate="label">
                             <label>Payment Title</label>
@@ -44,21 +45,12 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </title>
-			
-			<public_key translate="label">
-                            <label>Public Key</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>5</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </public_key>
 		    
 		    
 			<banner_checkout translate="label">
                             <label>Banner Checkout</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>13</sort_order>
+                            <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -67,14 +59,15 @@
 			<sort_order translate="label">
                             <label>Checkout Position</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>14</sort_order>
+                            <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <frontend_class>validate-number</frontend_class>
                         </sort_order>
+			
                     </fields>
-                </mercadopago_transparent>
+                </mercadopago_transparentticket>
             </groups>
         </payment>
     </sections>

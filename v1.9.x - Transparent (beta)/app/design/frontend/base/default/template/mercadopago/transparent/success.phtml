@@ -57,7 +57,7 @@
     ?>
     <h5>
         <b>
-            <?php echo $this->__('Método de Pagamento'); ?>
+            <?php echo $this->__('Payment Method'); ?>
         </b>
     </h5>
     
@@ -73,19 +73,19 @@
         
         $payment = $order->getPayment();
         
-            if($payment->getAdditionalInformation('payment_method') == 'bolbradesco'):
+            if($payment->getAdditionalInformation('payment_type_id') == 'ticket'):
         ?>
         
             <p>
-                <?php echo $this->__('Gere o boleto e pague-o onde quiser.'); ?>
+                <?php echo $this->__('Generate the ticket and pay it wherever you want.'); ?>
             </p>
             <p>
-                <?php echo $this->__('Será aprovado até 2 dias úteis.'); ?>
+                <?php echo $this->__('Will be approved within 2 business days.'); ?>
             </p>
             <a href="<?php echo urldecode($this->htmlEscape($payment->getAdditionalInformation('activation_uri'))); ?>" target="_blank" id="btn-boleto-mercadopago">
-                <?php echo $this->__('Gerar Boleto'); ?>
+                <?php echo $this->__('Generate Ticket'); ?>
             </a>
-        
+
         <?php else: ?>
             
             <?php
@@ -94,82 +94,78 @@
             
             switch ($payment->getAdditionalInformation('status')){
                 case "approved":
-                    $title = $this->__('O seu pagamento foi aprovado!');
+                    $title = $this->__('Done, your payment was accredited!');
                     $msg = "";
                     break;
                 
                 case "in_process":
-                    $title = $this->__('Estamos processando o pagamento.');
-                    $msg = "Em menos de 2 dias úteis você será avisado por e-mail se foi creditado ou se precisarmos de mais informações.";
+                    $title = $this->__('We are processing the payment.');
+                    $msg = $this->__('In less than 2 business days we will tell you by e-mail if it is accredited or if we need more information.');
                     break;
                 
                 case "pending":
-                    $title = $this->__('Estamos processando o pagamento.');
-                    $msg = "Em menos de 1 hora, nós enviaremos o resultado por e-mail.";
+                    $title = $this->__('We are processing the payment.');
+                    $msg = $this->__('In less than an hour we will send you by e-mail the result.');
                     break;
                 
                 case "rejected":
-                    $title = $this->__('O seu pagamento não foi processado.');
+                    $title = $this->__('We could not process your payment.');
                     
                     switch ($payment->getAdditionalInformation('status_detail')){
                         case "cc_rejected_bad_filled_card_number":
-                            $msg = $this->__('Verifique o número do cartão.');
+                            $msg = $this->__('Check the card number.');
                             break;
                         
                         case "cc_rejected_bad_filled_date":
-                            $msg = $this->__('Verifique a data de validade.');
+                            $msg = $this->__('Check the expiration date.');
                             break;
                         
                         case "cc_rejected_bad_filled_other":
-                            $msg = $this->__('Verifique os dados.');
+                            $msg = $this->__('Check the data.');
                             break;
                         
                         case "cc_rejected_bad_filled_security_code":
-                            $msg = $this->__('Verifique o código de segurança.');
+                            $msg = $this->__('Check the security code.');
                             break;
                         
                         case "cc_rejected_blacklist":
-                            $msg = $this->__('Não foi possível processar o pagamento.');
+                            $msg = $this->__('We could not process your payment.');
                             break;
                         
                         case "cc_rejected_call_for_authorize":
-                            $msg = $this->__('Você precisa autorizar com a %s o pagamento de R$ %s ao MercadoPago', strtoupper($payment->getAdditionalInformation('payment_method')), strtoupper($total));
+                            $msg = $this->__('You must authorize to %s the payment of $ %s to MercadoPago.', strtoupper($payment->getAdditionalInformation('payment_method')), strtoupper($total));
                             break;
                         
                         case "cc_rejected_card_disabled":
-                            $msg = $this->__('Ligue para %s e ative o seu cartão.  <br/>
-                                    O telefone está no verso do seu cartão de crédito.', strtoupper($payment->getAdditionalInformation('payment_method')));
+                            $msg = $this->__('Call %s to activate your card.<br/>The phone is on the back of your card.', strtoupper($payment->getAdditionalInformation('payment_method')));
                             break;
                         
                         case "cc_rejected_card_error":
-                            $msg = $this->__('Não foi possível processar o pagamento.');
+                            $msg = $this->__('We could not process your payment.');
                             break;
                         
                         case "cc_rejected_duplicated_payment":
-                            $msg = $this->__('Você já fez o pagamento deste valor. <br/>
-                                    Se você precisa pagar novamente use outro cartão ou outro meio de pagamento.');
+                            $msg = $this->__('You already made a payment by that value.<br/>If you need to repay, use another card or other payment method.');
                             break;
                         
                         case "cc_rejected_high_risk":
-                            $msg = $this->__('O seu pagamento foi recusado. <br/>
-                                    Recomendamos que você pague com outro dos meios de pagamento oferecidos, preferencialmente à vista.');
+                            $msg = $this->__('Your payment was rejected.<br/>Choose another payment method, we recommend cash methods.');
                             break;
                         
                         case "cc_rejected_insufficient_amount":
-                            $msg = $this->__('O seu %s não tem limite suficiente.', strtoupper($payment->getAdditionalInformation('payment_method')));
+                            $msg = $this->__('Your %s do not have sufficient funds.', strtoupper($payment->getAdditionalInformation('payment_method')));
                             break;
                         
                         case "cc_rejected_invalid_installments":
-                            $msg = $this->__('%s não processa pagamentos em %s parcelas.', strtoupper($payment->getAdditionalInformation('payment_method')), $payment->getAdditionalInformation('installments'));
+                            $msg = $this->__('%s does not process payments in %s installments.', strtoupper($payment->getAdditionalInformation('payment_method')), $payment->getAdditionalInformation('installments'));
                             break;
                         
                         case "cc_rejected_max_attempts":
-                            $msg = $this->__('Você atingiu o limite de tentativas permitidas. <br/>
-                                    Use outro cartão ou outro meio de pagamento.');
+                            $msg = $this->__('You have got to the limit of allowed attempts.<br/>Choose another card or another payment method.');
                             break;
                         
                         case "cc_rejected_other_reason":
-                            $msg = $this->__('%s não processou o pagamento.', strtoupper($payment->getAdditionalInformation('payment_method')));
+                            $msg = $this->__('%s did not process the payment.', strtoupper($payment->getAdditionalInformation('payment_method')));
                             break;
                     }
                 break;
@@ -190,35 +186,35 @@
             <br />
             
             <?php if($payment->getAdditionalInformation('cardholderName') != ""): ?>
-                <p><?php echo $this->__('Titular do Cartão: %s', $this->htmlEscape($payment->getAdditionalInformation('cardholderName'))); ?></p>
+                <p><?php echo $this->__('Card Holder Name: %s', $this->htmlEscape($payment->getAdditionalInformation('cardholderName'))); ?></p>
             <?php endif; ?>
             
             <?php if($payment->getAdditionalInformation('trunc_card') != ""): ?>
-                <p><?php echo $this->__('Cartão: %s', $this->htmlEscape($payment->getAdditionalInformation('trunc_card'))); ?></p>
+                <p><?php echo $this->__('Card Number: %s', $this->htmlEscape($payment->getAdditionalInformation('trunc_card'))); ?></p>
             <?php endif; ?>
             
             <?php if($payment->getAdditionalInformation('payment_method') != ""): ?>
-                <p><?php echo $this->__('Método de Pagamento: %s', $this->htmlEscape($payment->getAdditionalInformation('payment_method'))); ?></p>
+                <p><?php echo $this->__('Payment Method: %s', $this->htmlEscape($payment->getAdditionalInformation('payment_method'))); ?></p>
             <?php endif; ?>
             
             <?php if($payment->getAdditionalInformation('expiration_date') != ""): ?>
-                <p><?php echo $this->__('Data de expiração: %s', $this->htmlEscape($payment->getAdditionalInformation('expiration_date'))); ?></p>
+                <p><?php echo $this->__('Expiration Date: %s', $this->htmlEscape($payment->getAdditionalInformation('expiration_date'))); ?></p>
             <?php endif; ?>
             
             <?php if($payment->getAdditionalInformation('installments') != ""): ?>
-                <p><?php echo $this->__('Parcelas: %s', $this->htmlEscape($payment->getAdditionalInformation('installments'))); ?></p>
+                <p><?php echo $this->__('Installments: %s', $this->htmlEscape($payment->getAdditionalInformation('installments'))); ?></p>
             <?php endif; ?>
             
             <?php if($payment->getAdditionalInformation('statement_descriptor') != ""): ?>
-                <p><?php echo $this->__('Identificação na Fatura: %s', $this->htmlEscape($payment->getAdditionalInformation('statement_descriptor'))); ?></p>
+                <p><?php echo $this->__('Statement Descriptor: %s', $this->htmlEscape($payment->getAdditionalInformation('statement_descriptor'))); ?></p>
             <?php endif; ?>
             
             <?php if($payment->getAdditionalInformation('payment_id') != ""): ?>
-                <p><?php echo $this->__('Numero de Pagamento (MercadoPago): %s', $this->htmlEscape($payment->getAdditionalInformation('payment_id'))); ?></p>
+                <p><?php echo $this->__('Payment id (MercadoPago): %s', $this->htmlEscape($payment->getAdditionalInformation('payment_id'))); ?></p>
             <?php endif; ?>
             
             <?php if($payment->getAdditionalInformation('status') != ""): ?>
-                <p><?php echo $this->__('Status de Pagamento: %s (%s)', $this->htmlEscape($payment->getAdditionalInformation('status')), $this->htmlEscape($payment->getAdditionalInformation('status_detail'))); ?></p>
+                <p><?php echo $this->__('Payment Status: %s (%s)', $this->htmlEscape($payment->getAdditionalInformation('status')), $this->htmlEscape($payment->getAdditionalInformation('status_detail'))); ?></p>
             <?php endif; ?>    
             
             

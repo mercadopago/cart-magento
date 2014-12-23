@@ -17,42 +17,41 @@
 -->
 <config>
     <modules>
-        <MercadoPago_Transparent>
+        <MercadoPago_TransparentTicket>
             <version>2.0.0</version>
-        </MercadoPago_Transparent>
+        </MercadoPago_TransparentTicket>
     </modules>
 
     <global>
         <models>
-            <mercadopago_transparent>
-                <class>MercadoPago_Transparent_Model</class>
-            </mercadopago_transparent>
+            <mercadopago_transparentticket>
+                <class>MercadoPago_TransparentTicket_Model</class>
+            </mercadopago_transparentticket>
         </models>
         <blocks>
-            <mercadopago_transparent>
-                <class>MercadoPago_Transparent_Block</class>
-            </mercadopago_transparent>
+            <mercadopago_transparentticket>
+                <class>MercadoPago_TransparentTicket_Block</class>
+            </mercadopago_transparentticket>
         </blocks>
         <helpers>
-            <mercadopago_transparent>
-                <class>MercadoPago_Transparent_Helper</class>
-            </mercadopago_transparent>
+            <mercadopago_transparentticket>
+                <class>MercadoPago_TransparentTicket_Helper</class>
+            </mercadopago_transparentticket>
         </helpers>
-
     </global>
 
 
     <frontend>
         <routers>
-            <mercadopago_transparent>
+            <mercadopago_transparentticket>
                 <use>standard</use>
                 <args>
-                    <module>MercadoPago_Transparent</module>
-                    <frontName>mercadopago_transparent</frontName>
+                    <module>MercadoPago_TransparentTicket</module>
+                    <frontName>mercadopago_transparentticket</frontName>
                 </args>
-            </mercadopago_transparent>
+            </mercadopago_transparentticket>
         </routers>
-
+        
         <layout>
             <updates>
                 <mpexpress>
@@ -60,7 +59,7 @@
                 </mpexpress>
             </updates>
         </layout>
-         
+        
         <translate>
             <modules>
                 <mercadopago>
@@ -85,18 +84,19 @@
         </translate>
     </adminhtml>
 
+
     <default>
         <payment translate="label">
-            <mercadopago_transparent>
+            <mercadopago_transparentticket>
                 <active>1</active>
-                <model>MercadoPago_Transparent_Model_Transparent</model>
+                <model>MercadoPago_TransparentTicket_Model_Transparent</model>
                 <!-- nome do modulo na exibição para o comprador -->
-                <title translate="label">Credit Card - MercadoPago</title>
+                <title translate="label">Ticket - MercadoPago</title>
                 <allowspecific>0</allowspecific>
-                <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg</banner_checkout>
-                <sort_order>-2</sort_order>
+                <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/2014/230x60.png</banner_checkout>
+                <sort_order>-1</sort_order>
                 <payment_action>authorize</payment_action>
-            </mercadopago_transparent>
+            </mercadopago_transparentticket>
         </payment>
     </default>
 

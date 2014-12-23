@@ -14,6 +14,7 @@
 * @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
+require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
 
 class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abstract{
     
@@ -44,8 +45,8 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
     
     public function postPago(){ 
         //seta sdk php mercadopago
-        $client_id = Mage::getModel('mercadopago_transparent/transparent')->getConfigData('client_id');
-        $client_secret = Mage::getModel('mercadopago_transparent/transparent')->getConfigData('client_secret');
+        $client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
+        $client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
         $mp = new MP($client_id, $client_secret);
 	
         //monta a prefernecia
@@ -62,6 +63,17 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
     
     }
     
+    public function getDiscount($order){
+	$discount = 0;
+	
+        $order = $order->getData();
+	
+	if(isset($order['base_discount_amount']) && $order['base_discount_amount'] < 0) {
+	    $discount =  $order['base_discount_amount'];
+	}
+	
+	return $discount;
+    }
     
     function makePreference(){
 	
@@ -71,7 +83,8 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
         $customer = Mage::getSingleton('customer/session')->getCustomer();
         $model = Mage::getModel('catalog/product');
     
-         
+        
+	
         //pega payment dentro da order para pegar as informacoes adicionadas pela funcao assignData()
 	$payment = $order->getPayment();
 	
@@ -99,12 +112,25 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
                 "title" => $item->getName(),
                 "description" => $item->getName(),
                 "picture_url" => $imagem,
-                "category_id" => Mage::getModel('mercadopago_transparent/transparent')->getConfigData('category_id'),
+                "category_id" => Mage::getStoreConfig('payment/mercadopago_configuration/category_id'),
                 "quantity" => (int) number_format($item->getQtyOrdered(), 0, '.', ''),
-                "unit_price" => (float) number_format($prod->getFinalPrice(), 2, '.', '')
+                "unit_price" => (float) number_format($prod->getPrice(), 2, '.', '')
             );
             
         }
+	
+	//verifica se existe desconto, caso exista adiciona como um item
+	$discount = $this->getDiscount($order);
+	
+	if($discount != 0){
+	    $arr['items'][] = array(
+                "title" => "Discount by the Store",
+                "description" => "Discount by the Store",
+                "quantity" => (int) 1,
+                "unit_price" => (float) number_format($discount, 2, '.', '')
+            );
+	}
+	
         
         //pega dados de envio
         if(method_exists($order->getShippingAddress(), "getData")){
@@ -163,7 +189,7 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
         );
         
 	//define a url de notificacao 
-	$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_transparent/notificacao";
+	$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_standard/notification";
 	
 	//pega o email e o nome do usuario guest
 	if($arr['payer']['email'] == ""){
@@ -203,6 +229,22 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
 	
     }
     
+    
+    public function getPayment($payment_id){
+	$model = $this;
+	$this->client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
+        $this->client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
+        $mp = new MP($this->client_id, $this->client_secret);
+	return $mp->get_payment($payment_id);
+    }
+    
+    public function getMerchantOrder($merchant_order_id){
+	$model = $this;
+	$this->client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
+	$this->client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
+        $mp = new MP($this->client_id, $this->client_secret);
+	return $mp->get_merchant_order($merchant_order_id);
+    }
 }
 
 ?>

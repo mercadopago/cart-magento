@@ -38,6 +38,17 @@
                 <class>MercadoPago_Standard_Helper</class>
             </mercadopago_standard>
         </helpers>
+        
+        <events>             
+            <admin_system_config_changed_section_payment>
+                <observers>
+                    <observer>
+                        <class>MercadoPago_Standard_Model_Observer</class>
+                        <method>checkAndValidData</method>
+                    </observer>
+                </observers>
+            </admin_system_config_changed_section_payment>    
+        </events>
     </global>
 
 
@@ -51,11 +62,44 @@
                 </args>
             </mercadopago_standard>
         </routers>
+        <translate>
+            <modules>
+                <mercadopago>
+                    <files>
+                        <default>mercadopago.csv</default>
+                    </files>
+                </mercadopago>
+            </modules>
+        </translate>
     </frontend>
+
+
+    <adminhtml>
+        <translate>
+            <modules>
+                <translations>
+                    <files>
+                        <default>mercadopago.csv</default>
+                    </files>
+                </translations>
+            </modules>
+        </translate>
+    </adminhtml>
 
 
     <default>
         <payment>
+            
+            <mercadopago_configuration>
+                <country>mlb</country>
+                <order_status_approved>processing</order_status_approved>
+                <order_status_refunded>pending</order_status_refunded>
+                <order_status_in_process>pending</order_status_in_process>
+                <order_status_in_mediation>pending</order_status_in_mediation>
+                <order_status_rejected>pending</order_status_rejected>
+                <order_status_cancelled>pending</order_status_cancelled>
+            </mercadopago_configuration>
+            
             <mercadopago_standard>
                 <active>1</active>
                 <model>MercadoPago_Standard_Model_Checkout</model>
@@ -69,7 +113,6 @@
                 <auto_return>1</auto_return>
                 <iframe_width>900</iframe_width>
                 <iframe_height>600</iframe_height>
-                
             </mercadopago_standard>
         </payment>
     </default>

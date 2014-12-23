@@ -45,12 +45,20 @@
     margin: 10px 0 0 0;
 }
 
+.input-box.box-installments{
+    margin: 0 0 10px 0;
+}
+
+#docType{
+    width: 60px;
+}
+
 #installments{
     margin: 0 0 5px 0;
 }
 #status{
     float: left;
-    margin: 10px 0 0 0;
+    margin: 10px 0 10px 0;
     width: 100%;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -88,6 +96,10 @@
 
 #status .text-mp{
     float: left;
+}
+
+p.msg-status{
+    margin: 0 0 !important;
 }
 
 #mercadopago_transparent_doc{

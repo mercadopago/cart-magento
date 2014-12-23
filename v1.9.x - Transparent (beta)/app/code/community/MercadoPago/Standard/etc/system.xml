@@ -18,10 +18,127 @@
 
 <config>
     <sections>
-        <payment>
+        <payment translate="label">
             <groups>
+		
+		<mercadopago_configuration>
+		    <label>MercadoPago - Configuration</label>
+                    <sort_order>99</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+
+                        <client_id translate="label">
+                            <label>Client Id</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </client_id>
+			
+                        <client_secret translate="label">
+                            <label>Client Secret</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </client_secret>
+			
+			<country translate="label">
+			    <label>Country</label>
+			    <frontend_type>select</frontend_type>
+			    <source_model>MercadoPago_Standard_Model_Source_Country</source_model>
+			    <sort_order>6</sort_order>
+			    <show_in_default>1</show_in_default>
+			    <show_in_website>1</show_in_website>
+			    <show_in_store>1</show_in_store>
+			</country>
+
+			<category_id translate="label">
+                            <label>Category of your store</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>MercadoPago_Standard_Model_Source_CategoryId</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </category_id>
+						
+			<order_status_approved translate="label">
+			    <label>Choose the status of approved orders</label>
+			    <comment>To manage the status available go to System > Order Statuses</comment>
+			    <frontend_type>select</frontend_type>
+			    <source_model>adminhtml/system_config_source_order_status</source_model>
+			    <sort_order>8</sort_order>
+			    <show_in_default>1</show_in_default>
+			    <show_in_website>1</show_in_website>
+			    <show_in_store>1</show_in_store>
+			</order_status_approved>
+			    
+			<order_status_refunded translate="label">
+			    <label>Choose the status of refunded orders</label>
+			    <comment>To manage the status available go to System > Order Statuses</comment>
+			    <frontend_type>select</frontend_type>
+			    <source_model>adminhtml/system_config_source_order_status</source_model>
+			    <sort_order>9</sort_order>
+			    <show_in_default>1</show_in_default>
+			    <show_in_website>1</show_in_website>
+			    <show_in_store>1</show_in_store>
+			</order_status_refunded>
+			
+			<order_status_in_process translate="label">
+			    <label>Choose the status when payment is pending</label>
+			    <comment>To manage the status available go to System > Order Statuses</comment>
+			    <frontend_type>select</frontend_type>
+			    <source_model>adminhtml/system_config_source_order_status</source_model>
+			    <sort_order>9</sort_order>
+			    <show_in_default>1</show_in_default>
+			    <show_in_website>1</show_in_website>
+			    <show_in_store>1</show_in_store>
+			</order_status_in_process>
+			
+			<order_status_in_mediation translate="label">
+			    <label>Choose the status when client open a mediation</label>
+			    <comment>To manage the status available go to System > Order Statuses</comment>
+			    <frontend_type>select</frontend_type>
+			    <source_model>adminhtml/system_config_source_order_status</source_model>
+			    <sort_order>10</sort_order>
+			    <show_in_default>1</show_in_default>
+			    <show_in_website>1</show_in_website>
+			    <show_in_store>1</show_in_store>
+			</order_status_in_mediation>
+			
+			<order_status_rejected translate="label">
+			    <label>Choose the status when payment was reject</label>
+			    <comment>To manage the status available go to System > Order Statuses</comment>
+			    <frontend_type>select</frontend_type>
+			    <source_model>adminhtml/system_config_source_order_status</source_model>
+			    <sort_order>11</sort_order>
+			    <show_in_default>1</show_in_default>
+			    <show_in_website>1</show_in_website>
+			    <show_in_store>1</show_in_store>
+			</order_status_rejected>
+			
+			<order_status_cancelled translate="label">
+			    <label>Choose the status when payment was canceled</label>
+			    <comment>To manage the status available go to System > Order Statuses</comment>
+			    <frontend_type>select</frontend_type>
+			    <source_model>adminhtml/system_config_source_order_status</source_model>
+			    <sort_order>12</sort_order>
+			    <show_in_default>1</show_in_default>
+			    <show_in_website>1</show_in_website>
+			    <show_in_store>1</show_in_store>
+			</order_status_cancelled>
+			
+		    </fields>
+		</mercadopago_configuration>
+		
+		
                 <mercadopago_standard module="mercadopago_standard">
-                    <label>MercadoPago Standard - Cartão, Boleto e Dinheiro em Conta</label>
+                    <label>MercadoPago Standard - Credit Card, Ticket and Account Money</label>
                     <sort_order>102</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -35,15 +152,11 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-			    <comment>
-				<![CDATA[
-				  Para o funcionamento do Checkout Standard é necessário configurar as Credenciais "CLIENT_ID" e "CLIENT_SECRET" em "MercadoPago - Cartão de Crédito"
-				]]>
-			    </comment>
+			    <comment>For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'</comment>
                         </active>
 			
                         <title translate="label">
-                            <label>Title</label>
+                            <label>Payment Title</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>2</sort_order>
                             <show_in_default>1</show_in_default>
@@ -62,7 +175,7 @@
                         </banner_checkout>
 			
 			<sort_order translate="label">
-                            <label>Posição no Checkout</label>
+                            <label>Checkout Position</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
@@ -72,7 +185,7 @@
                         </sort_order>
 			
 			<type_checkout>
-				<label>Tipo de checkout</label>
+				<label>Type Checkout</label>
 				<frontend_type>select</frontend_type>
 				<source_model>MercadoPago_Standard_Model_Source_TypeCheckout</source_model>
 				<sort_order>5</sort_order>
@@ -82,27 +195,19 @@
 			</type_checkout>
 			
 			<auto_return translate="label">
-                            <label>Auto-redirecionar</label>
+                            <label>Auto Redirect</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>6</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-			    <comment>
-				<![CDATA[
-				  Auto-redirecionar o comprador para a tela de finalização de Pedido.
-				]]>
-			    </comment>
+			    <comment>Auto-redirect the buyer when finishing the payment.</comment>
                         </auto_return>
 			
-			<excluded_payment_methods>
-				<label>Excluir Meios de Pagamento</label>
-				<comment>
-				    <![CDATA[
-					Selecione os meios de pagamento que você deseja não aceitar.
-				    ]]>
-				</comment>
+			<excluded_payment_methods translate="label">
+				<label>Exclude Payment Methods</label>
+				<comment>Select payment methods not accepted</comment>
 				<frontend_type>multiselect</frontend_type>
 				<source_model>MercadoPago_Standard_Model_Source_PaymentMethods</source_model>
 				<sort_order>8</sort_order>
@@ -113,7 +218,7 @@
 			</excluded_payment_methods>
 			
 			<installments>
-				<label>Numero maximo de parcelas aceita</label>
+				<label>Maximum number of accepted installments</label>
 				<frontend_type>select</frontend_type>
 				<source_model>MercadoPago_Standard_Model_Source_Installments</source_model>
 				<sort_order>9</sort_order>
@@ -124,7 +229,7 @@
 			
 			
 			<iframe_width translate="label">
-                            <label>Largura do Checkout Iframe (Width)</label>
+                            <label>Width Checkout Iframe</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
@@ -134,7 +239,7 @@
                         </iframe_width>
 			
 			<iframe_height translate="label">
-                            <label>Altura do Checkout Iframe (Height)</label>
+                            <label>Height Checkout Iframe</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>11</sort_order>
                             <show_in_default>1</show_in_default>

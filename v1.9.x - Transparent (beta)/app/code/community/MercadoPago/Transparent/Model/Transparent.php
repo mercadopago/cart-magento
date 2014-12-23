@@ -38,8 +38,8 @@ class MercadoPago_Transparent_Model_Transparent extends Mage_Payment_Model_Metho
     public function initialize($paymentAction, $stateObject) {
 	
 	//verifica se o pagamento não é boleto, caso seja não tem card_token_id
-        if($this->getInfoInstance()->getAdditionalInformation('payment_method') != "bolbradesco" && $this->getInfoInstance()->getAdditionalInformation('card_token_id') == ""):
-	    Mage::throwException('Corrija os dados do formulario de pagamento para prosseguir ou Aguarde a validação dos dados de pagamento.');
+        if($this->getInfoInstance()->getAdditionalInformation('payment_type_id') != "ticket" && $this->getInfoInstance()->getAdditionalInformation('card_token_id') == ""):
+	    Mage::throwException(Mage::helper('mercadopago_transparent')->__('Verify the form data or wait until the validation of the payment data'));
 	    return false;
 	endif;
 	
@@ -75,10 +75,16 @@ class MercadoPago_Transparent_Model_Transparent extends Mage_Payment_Model_Metho
         $info_form = $data->getData();
 	    
         $info = $this->getInfoInstance();
+	$info->setAdditionalInformation('payment_type_id', "credit_card");
         $info->setAdditionalInformation('card_token_id', $info_form['card_token_id']);
         $info->setAdditionalInformation('payment_method', $info_form['payment_method']);
         $info->setAdditionalInformation('installments', $info_form['installments']);
         $info->setAdditionalInformation('doc_number', $info_form['doc_number']);
+	
+	//caso tenha banco, adiciona nas informações adicionais
+	if(isset($info_form['issuers'])){
+	    $info->setAdditionalInformation('issuers', $info_form['issuers']);
+	}
 	
 	if($info_form['card_token_id'] != ""):
 	    $info->setAdditionalInformation('expiration_date', $info_form['cardExpirationMonth'] . "/" . $info_form['cardExpirationYear']);
@@ -87,9 +93,9 @@ class MercadoPago_Transparent_Model_Transparent extends Mage_Payment_Model_Metho
 	endif;
 	
         
-        //verifica se o pagamento não é boleto, caso seja não tem card_token_id
-        if($info_form['payment_method'] != "bolbradesco" && $info_form['card_token_id'] == ""):
-	    Mage::throwException('Corrija os dados do formulario de pagamento para prosseguir ou Aguarde a validação dos dados de pagamento.');
+        //caso seja não tenha card_token_id
+        if($info_form['card_token_id'] == ""):
+	    Mage::throwException(Mage::helper('mercadopago_transparent')->__('Verify the form data or wait until the validation of the payment data'));
 	    return false;
 	endif;
 	
@@ -142,11 +148,25 @@ class MercadoPago_Transparent_Model_Transparent extends Mage_Payment_Model_Metho
         return Mage::getModel('sales/order')->loadByIncrementId($incrementId);
     }
     
+    
+    
+    public function getDiscount(){
+	$discount = 0;
+	$totals = Mage::getSingleton('checkout/session')->getQuote()->getTotals();
+	
+	if(isset($totals['discount']) && $totals['discount']->getValue()) {
+	    $discount =  $totals['discount']->getValue();
+	}
+	
+	return $discount;
+    }
+    
     public function postPago(){ 
         
         //seta sdk php mercadopago
-        $client_id = $this->getConfigData('client_id');
-        $client_secret = $this->getConfigData('client_secret');
+	$client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
+        $client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
+
         $mp = new MP($client_id, $client_secret);
 	
 	//monta a preferencia
@@ -154,76 +174,72 @@ class MercadoPago_Transparent_Model_Transparent extends Mage_Payment_Model_Metho
 	
 	//faz o post do pagamento
         $response = $mp->create_custon_payment($pref);
-	
+
 	if($response['status'] == 200 || $response['status'] == 201):
 	    return $response;
 	else:
 	    $e = "";
 	    foreach($response['response']['cause'] as $error):
-		
-		switch ($error) {
+		switch ($error['code']) {
 		    case "106":
-			$e .=  "Você não pode fazer pagamentos para usuários em outros países. \t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('You can not make payments to users in other countries.');
 			break;
 		    
 		    case "109":
-			$e .=  "O meio de pagamento selecionado não processa pagamentos as parcelas selecionadas.
-Use outro cartão ou outro meio de pagamento. \t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('Payment Method selected does not process payments in installments selected. Choose another card or another payment method.');
 			break;
 		    
 		    case "126":
-			$e .=  "Não foi possível processar o pagamento. Erro de numero: 126.\t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('We could not process your payment. Error code: 126.');
 			break;
 		    
 		    case "129":
-			$e .=  "O meio de pagamento selecionado não processa pagamentos do valor selecionado.
-Use outro cartão ou outro meio de pagamento.. \t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('Payment Method selected does not process payments for the selected amount. Choose another card or another payment method.');
 			break;
 		    
 		    case "145":
-			$e .=  "Não foi possível processar o pagamento. Erro de numero: 145. \t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('We could not process your payment. Error code: 145.');
 			break;
 		    
 		    case "150":
-			$e .=  "Você não pode fazer pagamentos. \t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('You can not make payments. Error code: 150.');
 			break;
 
 		    case "151":
-			$e .=  "Você não pode fazer pagamentos com esse meio de pagamento. \t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('You can not make payments.');
 			break;
 		    
 		    case "160":
-			$e .=  "Não foi possível processar o pagamento. Erro de numero: 160. \t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('We could not process your payment. Error code: 160.');
 			break;
 		    
 		    case "204":
-			$e .=  "O meio de pagamento selecionado não está disponível neste momento.
-Use outro cartão ou outro meio de pagamento. \t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('Payment Method selected is not available at this time. Choose another card or another payment method.');
 			break;
 		    
 		    case "801":
-			$e .=  "Você realizou um pagamento similar há pouco tempo.
-Tente novamente em alguns minutos. \t";
+			$e .=  Mage::helper('mercadopago_transparent')->__('You made a similar payment moments ago. Try again in a few minutes.');
 			break;
 		    
 		    default:
-			$e .=  "Não foi possível processar o pagamento. \t" . json_encode($response['response']). "\t";
+			$e .=  Mage::helper('mercadopago_transparent')->__("We could not process your payment. %s", $this->htmlEscape(json_encode($error)));
 			break;
 		}
+		
 	    endforeach;
-	    
+
 	    Mage::throwException($e);
 	    return false;
 	endif;
         
     }
     
-    
     function makePreference(){
 	
 	$quote = $this->_getQuote();
         $orderId = $quote->getReservedOrderId();
         $order = $this->_getOrder($orderId);
+    
 	
         $customer = Mage::getSingleton('customer/session')->getCustomer();
         $model = Mage::getModel('catalog/product');
@@ -245,8 +261,9 @@ Tente novamente em alguns minutos. \t";
         $arr = array();
         $arr['external_reference'] = $orderId;
         $arr['amount'] = (float) $item_price;
-        $arr['reason'] = "Pedido #" . $orderIncrementId . " realizado na loja " . Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true);
-        $arr['currency_id'] = "BRL";
+        $arr['reason'] = Mage::helper('mercadopago_transparent')->__("Order # %s in store %s", $orderId, Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true));
+        //não é necessario settar currency_id, pois ja identifica no backend
+	//$arr['currency_id'] = "BRL";
         $arr['installments'] = (int) $payment->getAdditionalInformation("installments");
         $arr['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
         $arr['payer_email'] = htmlentities($customer->getEmail());
@@ -254,12 +271,17 @@ Tente novamente em alguns minutos. \t";
         if($payment->getAdditionalInformation("card_token_id") != ""){
 	    $arr['card_token_id'] = $payment->getAdditionalInformation("card_token_id");
 	}
+	
+	if($payment->getAdditionalInformation("issuers") != ""){
+	    $arr['card_issuer_id'] = (int) $payment->getAdditionalInformation("issuers");
+	}
+	
         
         //monta array de produtos 
         $arr['items'] = array();
         foreach ($order->getAllVisibleItems() as $item) {
 
-            $prod = $model->loadByAttribute('sku', $item->getSku());            
+            $prod = $model->loadByAttribute('sku', $item->getSku());
 
             //get image
 	    try{
@@ -273,13 +295,25 @@ Tente novamente em alguns minutos. \t";
                 "title" => $item->getName(),
                 "description" => $item->getName(),
                 "picture_url" => $imagem,
-                "category_id" => $this->getConfigData('category_id'),
+                "category_id" => Mage::getStoreConfig('payment/mercadopago_configuration/category_id'),
                 "quantity" => (int) number_format($item->getQtyOrdered(), 0, '.', ''),
-                "unit_price" => (float) number_format($prod->getFinalPrice(), 2, '.', '')
+                "unit_price" => (float) number_format($prod->getPrice(), 2, '.', '')
             );
             
         }
-        
+	
+	
+	//verifica se existe desconto, caso exista adiciona como um item
+	$discount = $this->getDiscount();
+	if($discount != 0){
+	    $arr['items'][] = array(
+                "title" => "Discount by the Store",
+                "description" => "Discount by the Store",
+                "quantity" => (int) 1,
+                "unit_price" => (float) number_format($discount, 2, '.', '')
+            );
+	}
+	
         //pega dados de envio
         if(method_exists($order->getShippingAddress(), "getData")){
             $shipping = $order->getShippingAddress()->getData();
@@ -325,7 +359,7 @@ Tente novamente em alguns minutos. \t";
         );
         
 	//define a url de notificacao 
-	$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_transparent/notificacao";
+	$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_standard/notification";
 	
 	//pega o email e o nome do usuario guest
 	if($arr['payer_email'] == "" && $arr['customer']['email'] == ""){
@@ -340,22 +374,6 @@ Tente novamente em alguns minutos. \t";
 	
 	return $arr;
 	
-    }
-    
-    public function getPayment($payment_id){
-	$model = $this;
-	$this->client_id = $model->getConfigData('client_id');
-        $this->client_secret = $model->getConfigData('client_secret');
-        $mp = new MP($this->client_id, $this->client_secret);
-	return $mp->get_payment($payment_id);
-    }
-    
-    public function getMerchantOrder($merchant_order_id){
-	$model = $this;
-	$this->client_id = $model->getConfigData('client_id');
-        $this->client_secret = $model->getConfigData('client_secret');
-        $mp = new MP($this->client_id, $this->client_secret);
-	return $mp->get_merchant_order($merchant_order_id);
     }
     
 }

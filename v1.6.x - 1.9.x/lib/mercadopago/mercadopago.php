@@ -248,7 +248,6 @@ class MPRestClient {
 
         curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago Magento-v1.6.x-1.9.x Cart v1.0.1");
         curl_setopt($connect, CURLOPT_CAINFO, $GLOBALS["LIB_LOCATION"] . "/cacert.pem");
-        curl_setopt($connect, CURLOPT_SSLVERSION, 3);
         curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($connect, CURLOPT_HTTPHEADER, array("Accept: application/json", "Content-Type: " . $content_type));

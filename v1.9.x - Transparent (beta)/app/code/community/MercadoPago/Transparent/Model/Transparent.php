@@ -376,6 +376,18 @@ class MercadoPago_Transparent_Model_Transparent extends Mage_Payment_Model_Metho
 	
     }
     
+    public function getPaymentMethods(){
+
+	$this->client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
+        $this->client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
+	
+	$mp = new MP ($this->client_id, $this->client_secret);
+	$access_token = $mp->get_access_token();
+
+        $payment_methods = MPRestClient::get("/checkout/custom/payment_methods?access_token=" . $access_token);
+	
+	return $payment_methods;
+    }  
 }
 
 ?>

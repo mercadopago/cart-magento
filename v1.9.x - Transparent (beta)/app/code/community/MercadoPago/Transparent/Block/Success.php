@@ -20,17 +20,17 @@ class MercadoPago_Transparent_Block_Success extends Mage_Core_Block_Template{
     protected function _construct(){
 
         parent::_construct();
-	$this->setTemplate('mercadopago/transparent/success.phtml');
+        $this->setTemplate('mercadopago/transparent/success.phtml');
+
         return $this->toHtml();
     }
     
     
     public function getOrder() {
-	
-	$orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+
+        $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
 	
-	return $order;
-
+        return $order;
     }
 }

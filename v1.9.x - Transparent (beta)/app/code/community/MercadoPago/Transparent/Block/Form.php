@@ -52,6 +52,28 @@ class MercadoPago_Transparent_Block_Form extends Mage_Payment_Block_Form_Cc{
         
         return parent::_prepareLayout();
     }
+    
+    /*
+     *
+     * Fun‹o especifica para mexico
+     *
+     */
+    function getCardsPaymentMethods(){
+        $payment_methods = Mage::getModel('mercadopago_transparent/transparent')->getPaymentMethods();
+        $payment_methods_types = array("credit_card", "debit_card", "prepaid_card");
+        $types = array();
+        
+        //percorre todos os payments methods
+        foreach($payment_methods['response'] as $pm){
+            
+            //filtra por tickets
+            if(in_array($pm['payment_type_id'], $payment_methods_types)){
+                $types[] = $pm;
+            }
+        }
+        
+        return $types;
+    }
 }
 
 

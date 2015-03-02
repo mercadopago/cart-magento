@@ -50,6 +50,7 @@ function loadFilesMP() {
                     parseFloat($("#amount").val()),
                     setInstallmentInfo
                 );
+
             });
             
             //caso o cartão copie e cole
@@ -76,20 +77,27 @@ function loadFilesMP() {
             
             function getBin(bin){
                 if (bin.length == 6) {
-                    Checkout.getPaymentMethod(bin, function (status, result) {
-                        var method_payment = result[0];
-                        
-                        //adiciona a imagem do meio de pagamento
-                        $("#img_payment_method").html('<img src="' + method_payment.secure_thumbnail + '">')
-                        $("#payment_method").val(method_payment.id);
-                        
-                        //lista parcelas
-                        Checkout.getInstallments(method_payment.id, parseFloat($("#amount").val()), setInstallmentInfo);
-                        Checkout.getCardIssuers(method_payment.id, showIssuers);
-                    });
+                    if ($("#mercadopago-country").html() == 'mlm') {
+                        Checkout.getPaymentMethod(bin, parseFloat($("#amount").val()), setPaymentMethodInfo, $('#payment_method option:checked').val());
+                    }else{
+                        Checkout.getPaymentMethod(bin, setPaymentMethodInfo);
+                    }
                 }
             }
         
+            function setPaymentMethodInfo(status, result){
+                var method_payment = result[0];
+                        
+                //adiciona a imagem do meio de pagamento
+                $("#img_payment_method").html('<img src="' + method_payment.secure_thumbnail + '">')
+                
+                //setta o meio de pagamento
+                $("#payment_method").val(method_payment.id);
+                
+                //lista parcelas
+                Checkout.getInstallments(method_payment.id, parseFloat($("#amount").val()), setInstallmentInfo);
+                Checkout.getCardIssuers(method_payment.id, showIssuers);   
+            }
             
             function validCreateToken(){
                 
@@ -231,6 +239,7 @@ function loadFilesMP() {
             
             //setta parcelas
             function setInstallmentInfo(status, installments){
+                
                 var html_options = '<option value="">' + choice_text_mercadopago + '... </option>';
                 for(i=0; installments && i<installments.length; i++){
                     html_options += "<option value='"+installments[i].installments+"'>"+installments[i].installments +" de " + currency_text_mercadopago + " " + installments[i].share_amount+" ("+ currency_text_mercadopago + " "+ installments[i].total_amount+")</option>";

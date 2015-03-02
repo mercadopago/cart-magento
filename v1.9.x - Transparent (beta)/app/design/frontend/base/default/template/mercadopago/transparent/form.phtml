@@ -1,3 +1,10 @@
+<?php
+
+$country = Mage::getStoreConfig('payment/mercadopago_configuration/country');
+
+?>
+
+
 <fieldset class="form-list mercadopago">
     <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>" />
 
@@ -11,6 +18,27 @@
     
     <div id="mp-form">
         <ul class="form-list form-mercadopago" id="payment_form_<?php  echo $_code ?>" style="display:none;" >
+        
+            <?php if( $country == 'mlm'):
+                $payment_methods = $this->getCardsPaymentMethods();
+            ?>
+                <li>
+                    <div class="box-input">
+                        <label for="<?php echo $_code ?>_payment_method" class="required"><em>*</em><?php echo $this->__('Payment Method'); ?></label>
+                        <div class="input-box box-payment_method">
+                            <select name="payment[payment_method]" id="payment_method" data-checkout="payment_method" id="<?php echo $_code ?>_payment_method" class="input-text required-entry">
+                                <option value="-1"><?php echo $this->__('Choice'); ?>...</option>
+                                <?php foreach($payment_methods as $pm): ?>
+                                    <option value="<?php echo $pm['id']; ?>"><?php echo $pm['name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+            <?php else: ?>
+                <input type="hidden" name="payment[payment_method]" type="text" value="" id="payment_method" />
+            <?php endif; ?>
+            
             <li>
                 <label for="<?php echo $_code ?>_cn" class="required"><em>*</em><?php echo $this->__('Card Number'); ?></label>
                 <div class="input-box">
@@ -19,6 +47,13 @@
                 </div>
             </li>
             
+            <li id="issuersOptions" style="display: none;">
+                <label for="<?php echo $_code ?>_issuers" class="required"><em>*</em><?php echo $this->__('Banks'); ?></label>
+                <div class="input-box">
+                    <div id="issuers">
+                    </div>
+                </div>
+            </li>
             
             <li>
                 <div class="box-mes">
@@ -54,29 +89,31 @@
                 </div>
             </li>
             
-            <li>
-                <div class="box-input">
-                    <label for="<?php echo $_code ?>_doc" class="required"><em>*</em><?php echo $this->__('Document Number'); ?></label>
-                    <div class="input-box">
-                        <?php
-                        $country= Mage::getStoreConfig('payment/mercadopago_configuration/country');
-                        if( $country == 'mlb'): ?>
-                            <input type="hidden" data-checkout="docType" id="docType" type="text" value="CPF"/>
-                        <?php elseif($country == 'mla'): ?>
-                            <select optionkey="id" name="payment[docType]" id="docType" data-checkout="docType">
-                                <option value="DNI">DNI</option>
-                                <option value="CI">Cédula</option>
-                                <option value="LC">L.C.</option>
-                                <option value="LE">L.E.</option>
-                                <option value="Otro">Otro</option>
-                            </select>
-                        <?php endif; ?>
-                        
-                        <input name="payment[doc_number]" data-checkout="docNumber" id="<?php echo $_code ?>_doc" type="text" class="input-text required-entry validate-digits" type="text" maxlength="11" />
-                        
+            <?php
+            //mexico não possui documento no checkout
+            if( $country != 'mlm'): ?>
+            
+                <li>
+                    <div class="box-input">
+                        <label for="<?php echo $_code ?>_doc" class="required"><em>*</em><?php echo $this->__('Document Number'); ?></label>
+                        <div class="input-box">
+                            <?php if( $country == 'mlb'): ?>
+                                <input type="hidden" data-checkout="docType" id="docType" type="text" value="CPF"/>
+                            <?php elseif($country == 'mla'): ?>
+                                <select optionkey="id" name="payment[docType]" id="docType" data-checkout="docType">
+                                    <option value="DNI">DNI</option>
+                                    <option value="CI">Cédula</option>
+                                    <option value="LC">L.C.</option>
+                                    <option value="LE">L.E.</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            <?php endif; ?>
+                            
+                            <input name="payment[doc_number]" data-checkout="docNumber" id="<?php echo $_code ?>_doc" type="text" class="input-text required-entry validate-digits" type="text" maxlength="11" />
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            <?php endif; ?>
             
              <li>
                 <div class="box-input">
@@ -85,16 +122,7 @@
                         <input data-checkout="securityCode" id="<?php echo $_code ?>_code" type="text" class="input-text required-entry validate-digits" type="text"/>
                     </div>
                 </div>
-            </li>
-            
-            <li id="issuersOptions" style="display: none;">
-                <label for="<?php echo $_code ?>_issuers" class="required"><em>*</em><?php echo $this->__('Banks'); ?></label>
-                <div class="input-box">
-                    <div id="issuers">
-                    </div>
-                </div>
-            </li>
-            
+            </li>    
             
             <li>
                 <div class="box-input">
@@ -127,7 +155,6 @@
                 </div>
                 <input type="hidden" id="amount" value="<?php echo $this->helper('checkout/cart')->getQuote()->getGrandTotal(); ?>">
                 <input type="hidden" name="payment[card_token_id]" type="text" value="" id="card_token_id" />
-                <input type="hidden" name="payment[payment_method]" type="text" value="" id="payment_method" />
                 <input type="hidden" name="payment[trunc_card]" type="text" value="" id="trunc_card" />
                 
                 <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
@@ -138,6 +165,7 @@
                     <span id="mercadopago-text-currency"><?php echo $this->__('$'); ?></span>
                     <span id="mercadopago-text-choice"><?php echo $this->__('Choice'); ?></span>
                     <span id="mercadopago-text-default-issuer"><?php echo $this->__('Default issuer'); ?></span>
+                    <span id="mercadopago-country"><?php echo $country; ?></span>
                 </div>
             </li>
         </ul>

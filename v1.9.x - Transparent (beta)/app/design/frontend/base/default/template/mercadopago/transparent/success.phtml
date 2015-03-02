@@ -63,8 +63,9 @@
     
     <?php
         $order = $this->getOrder();
-        
+
         $total = $order->getBaseGrandTotal();
+
         if (!$total) {
             $total = $order->getBasePrice() + $order->getBaseShippingAmount();
         }

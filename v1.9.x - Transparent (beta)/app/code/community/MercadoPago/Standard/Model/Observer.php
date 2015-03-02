@@ -34,8 +34,8 @@ class MercadoPago_Standard_Model_Observer{
         "mlm" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png"
     );
     
-    private $available_transparent_credit_cart = array('mla', 'mlb');
-    private $available_transparent_ticket = array('mla', 'mlb');
+    private $available_transparent_credit_cart = array('mla', 'mlb', 'mlm');
+    private $available_transparent_ticket = array('mla', 'mlb', 'mlm');
     
     public function checkAndValidData($observer){
         $this->availableCheckout();

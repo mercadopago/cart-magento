@@ -41,7 +41,7 @@
 "The invoice was created. MercadoPago automatically confirmed payment %s for this order.","A fatura foi criada com sucesso. O MercadoPago confirmou o pagamento %s para esse pedido automaticamente."
 "MercadoPago automatically confirmed payment %s for this order.","O MercadoPago confirmou automaticamente o pagamento %s para esse pedido"
 "Payment %s was refound. The vendor returned the values ​​of this operation.","O vendedor realizou a devolução do pagamento %s referente a esse pedido."
-"The user has not completed the payment process yet.","O cliente ainda não finalizou o processo de pagamento desse pedido."
+"The user has not completed the payment process yet.","O pagemento se encontra em processamento pelo MercadoPago."
 "The payment %s is been analysing.","O pagamento %s está em análise pelo MercadoPago"
 "It started a dispute for the payment %s.","O pagamento %s foi disputado pelo comprador"
 "Payment %s was canceled.","O pagamento %s foi cancelado"

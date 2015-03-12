@@ -9,7 +9,7 @@
 *  @copyright  Copyright (c) MercadoPago [http://www.mercadopago.com] 
 *  @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0) 
 */
-class Mpexpress_IpnController extends Mage_Core_Controller_Front_Action{
+class Mpexpress_IpnController extends Mage_Core_Controller_Front_Action {
     
     protected $_return = null;
     protected $_order = null;
@@ -38,7 +38,7 @@ class Mpexpress_IpnController extends Mage_Core_Controller_Front_Action{
     
     } 
     
-    private function _process_order(){
+    private function _process_order() {
 	
 	//  $standard = new MercadoPago_Model_Standard();
 	$standard = Mage::getModel('mpexpress/Express');  
@@ -59,89 +59,93 @@ class Mpexpress_IpnController extends Mage_Core_Controller_Front_Action{
 	    $name = $this->_return['collection']['payer']['first_name'].' ' .$this->_return['collection']['payer']['last_name'];
 	    $this->notify($name,$this->_return['collection']['payer']['email']);
 	}
+	$mercadopago_id = $this->_return['collection']['id'];
 	
 	switch ( $this->_return['collection']['status']) {
-    
-	case 'approved':
+		case 'approved':
 	    $createinvoice = Mage::getModel('mpexpress/Express')->getConfigData('auto_create_inovice');
-	    if ($createinvoice == 1){  
-		// Geração automatica de invoice    
-		// checa para ver se já tem invoice    
-		if(!$this->_order->hasInvoices()){
-		    $invoice = $this->_order->prepareInvoice();   
-		    $invoice->register()->pay();
-		    Mage::getModel('core/resource_transaction')
-		    ->addObject($invoice)
-		    ->addObject($invoice->getOrder())
-		    ->save();
-		    
-		    
-		    $message = 'Payment '.$invoice->getIncrementId().' was created. MercadoPago automatically confirmed payment for this order.';
-		    $status = $config->getConfigData('order_status_approved');
-		    $this->_order->addStatusToHistory(
-			$status, //update order status to processing after creating an invoice
-			$message,
-			true
-		    );
-		    $invoice->sendEmail(true, $message);
-		}
+	    if ($createinvoice == 1) { // Geração automatica de invoice
+			// checa para ver se já tem invoice    
+			if(!$this->_order->hasInvoices()) {
+			    $invoice = $this->_order->prepareInvoice();   
+			    $invoice->register()->pay();
+			    Mage::getModel('core/resource_transaction')
+				    ->addObject($invoice)
+				    ->addObject($invoice->getOrder())
+				    ->save();
+			    $message = $this->__('The invoice was created. MercadoPago automatically confirmed payment %s for this order.', 
+			    	$mercadopago_id);
+			    $status = $config->getConfigData('order_status_approved');
+			    $this->_order->addStatusToHistory(
+					$status, //update order status to processing after creating an invoice
+					$message,
+					true
+			    	);
+			    $invoice->sendEmail(true, $message);
+			}
 	    } else {
-		// Geração não automática de invoice    
-		$message = 'MercadoPago automatically confirmed payment for this order.';           
-		$status = $config->getConfigData('order_status_approved');
-		$this->_order->addStatusToHistory(
-		$status, //update order status to processing after creating an invoice
-		$message,
-		true
-		);
-		$this->_order->sendOrderUpdateEmail(true, $message); 
-	    }
+			// Geração não automática de invoice    
+			$message = $this->__('MercadoPago automatically confirmed payment %s for this order.', $mercadopago_id);
+			$status = $config->getConfigData('order_status_approved');
+			$this->_order->addStatusToHistory(
+				$status, //update order status to processing after creating an invoice
+				$message,
+				true
+				);
+			$this->_order->sendOrderUpdateEmail(true, $message); 
+		}
 	    break;
-	case 'refunded':
+
+		case 'refunded':
 	    $status = $config->getConfigData('order_status_refunded');
-	    $message = 'Payment was refound. The vendor returned the values ​​of this operation.';	
+	    $message = $this->__('Payment %s was refound. The vendor returned the values ​​of this operation.', $mercadopago_id);
 	    $this->_order->cancel();
 	    $this->_order->addStatusToHistory($status, $message);
 	    $this->_order->sendOrderUpdateEmail(true, $message);
 	    break;
-	case 'pending':
+
+		case 'pending':
 	    $status = $config->getConfigData('order_status_in_process');
-	    $message = 'The user has not completed the payment process yet.';
+	    $message = $this->__('The user has not completed the payment process yet.');
 	    $this->_order->addStatusToHistory($status, $message);
 	    $this->_order->sendOrderUpdateEmail(true, $message);
 	    break;
-	case 'in_process':
+
+		case 'in_process':
 	    $status = $config->getConfigData('order_status_in_process');
-	    $message = 'The payment is been analysing.';
+	    $message = $this->__('The payment %s is been analysing.', $mercadopago_id);
 	    $this->_order->addStatusToHistory($status, $message);
 	    $this->_order->sendOrderUpdateEmail(true, $message);
 	    break;
-	case 'in_mediation':
+
+		case 'in_mediation':
 	    $status = $config->getConfigData('order_status_in_mediation');
-	    $message = 'It started a dispute for the payment.';
+	    $message = $this->__('It started a dispute for the payment %s.', $mercadopago_id);
 	    $this->_order->addStatusToHistory($status, $message);
 	    $this->_order->sendOrderUpdateEmail(true, $message);
 	    break;
-	case 'cancelled':              
+
+		case 'cancelled':              
 	    $status = $config->getConfigData('order_status_cancelled');
-	    $message = 'Payment was canceled.';
+	    $message = $this->__('Payment %s was canceled.', $mercadopago_id);
 	    $this->_order->addStatusToHistory($status, $message);
 	    $this->_order->sendOrderUpdateEmail(true, $message);
 	    $this->_order->cancel();
 	    break;
-	case 'rejected':              
+
+		case 'rejected':              
 	    $status = $config->getConfigData('order_status_rejected');
-	    $message = 'Payment was Reject.';
+	    $message = $this->__('Payment %s was Reject.', $mercadopago_id);
 	    $this->_order->addStatusToHistory($status, $message);
 	    $this->_order->sendOrderUpdateEmail(true, $message);
 	    break;
+
     	default:
 	    $status = $config->getConfigData('order_status_in_process');
 	    $message = "";    
 	    $this->_order->addStatusToHistory($status, $message);
 	    $this->_order->sendOrderUpdateEmail(true, $message);
 	}
-	
 	
 	$this->_order->save();
 	echo "Success Update";

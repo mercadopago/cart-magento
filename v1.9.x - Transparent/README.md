@@ -20,8 +20,8 @@ MercadoPago Magento Transparent & Standard
     * Venezuela: [https://www.mercadopago.com/mlv/herramientas/notificaciones](https://www.mercadopago.com/mlv/herramientas/notificaciones)
 
 2. Enter the URL as follow: 
-    * `http://example.com/index.php/mercadopago_standard/notification`
-    * `http://example.com/index.php/mercadopago_transparent/notificacao`
+    * Standard: `http://example.com/index.php/mercadopago_standard/notification`
+    * Transparent: `http://example.com/index.php/mercadopago_transparent/notificacao`
 
 ## Setup MercadoPago
 

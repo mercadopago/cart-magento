@@ -114,7 +114,7 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
                 "picture_url" => $imagem,
                 "category_id" => Mage::getStoreConfig('payment/mercadopago_configuration/category_id'),
                 "quantity" => (int) number_format($item->getQtyOrdered(), 0, '.', ''),
-                "unit_price" => (float) number_format($prod->getPrice(), 2, '.', '')
+                "unit_price" => (float) number_format($prod->getFinalPrice(), 2, '.', '')
             );
             
         }

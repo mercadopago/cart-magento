@@ -25,5 +25,9 @@
 <?php endif; ?>
 
 <?php if($this->getOrder()->getAdditionalInformation('status') != ""): ?>
-    <p><?php echo $this->__('Payment Status: %s (%s)', $this->htmlEscape($this->getOrder()->getAdditionalInformation('status')), $this->htmlEscape($this->getOrder()->getAdditionalInformation('status_detail'))); ?></p>
+    <p><?php echo $this->__('Payment Status: %s', $this->htmlEscape($this->getOrder()->getAdditionalInformation('status'))); ?></p>
+<?php endif; ?>
+
+<?php if($this->getOrder()->getAdditionalInformation('status_detail') != ""): ?>
+    <p><?php echo $this->__('Payment Status Detail: %s', $this->htmlEscape($this->getOrder()->getAdditionalInformation('status_detail'))); ?></p>
 <?php endif; ?>    

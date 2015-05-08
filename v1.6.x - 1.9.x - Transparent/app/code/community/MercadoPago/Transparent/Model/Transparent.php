@@ -359,7 +359,7 @@ class MercadoPago_Transparent_Model_Transparent extends Mage_Payment_Model_Metho
         );
         
 	//define a url de notificacao 
-	$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_standard/notification";
+	$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_standard/notification?checkout=custom";
 	
 	//pega o email e o nome do usuario guest
 	if($arr['payer_email'] == "" && $arr['customer']['email'] == ""){

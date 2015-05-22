@@ -189,7 +189,7 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
         );
         
 	//define a url de notificacao 
-	$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_standard/notification";
+	$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_standard/notification?checkout=standard";
 	
 	//pega o email e o nome do usuario guest
 	if($arr['payer']['email'] == ""){

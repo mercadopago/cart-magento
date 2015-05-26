@@ -49,6 +49,7 @@
 "Year is invalid.","Año inválido."
 "Month is invalid.","Mes inválido."
 "Please validate your data.","Por favor, valide los datos"
+"Cannot pay this amount with this payment_method_id.","No se puede pagar esta monto con este medio de pago."
 
 "Card Number: %s","Número de Tarjeta: %s"
 "Card Holder Name: %s","Titular de la Tarjeta: %s"

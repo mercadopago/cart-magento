@@ -86,17 +86,31 @@ function loadFilesMP() {
             }
         
             function setPaymentMethodInfo(status, result){
-                var method_payment = result[0];
-                        
-                //adiciona a imagem do meio de pagamento
-                $("#img_payment_method").html('<img src="' + method_payment.secure_thumbnail + '">')
+                //hide box status
+                $("#status").hide();
                 
-                //setta o meio de pagamento
-                $("#payment_method").val(method_payment.id);
-                
-                //lista parcelas
-                Checkout.getInstallments(method_payment.id, parseFloat($("#amount").val()), setInstallmentInfo);
-                Checkout.getCardIssuers(method_payment.id, showIssuers);   
+                if (status == 200) {
+                    var method_payment = result[0];
+                            
+                    //adiciona a imagem do meio de pagamento
+                    $("#img_payment_method").html('<img src="' + method_payment.secure_thumbnail + '">')
+                    
+                    //setta o meio de pagamento
+                    $("#payment_method").val(method_payment.id);
+                    
+                    //lista parcelas
+                    Checkout.getInstallments(method_payment.id, parseFloat($("#amount").val()), setInstallmentInfo);
+                    Checkout.getCardIssuers(method_payment.id, showIssuers);   
+                }else{
+                    //show errors
+                    if (result.error == "bad_request") {
+                        $.each(result.cause, function(p, e){
+                            $(".msg-status").hide();
+                            $(".error-" + e.code).show();
+                            showError();
+                        });
+                    }
+                } 
             }
             
             function validCreateToken(){

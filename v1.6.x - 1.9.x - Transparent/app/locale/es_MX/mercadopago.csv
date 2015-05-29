@@ -27,7 +27,7 @@
 "Height Checkout Iframe","Alto de la zona del Checkout (Iframe)"
 "Auto-redirect the buyer when finishing the payment.","Auto-Redireccionar al comprador al finalizar el pago."
 "Select payment methods not accepted","Seleccione los medios de pago no aceptados"
-"For the operation of the Checkout Transparent Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'",""Para el funcionamento del Checkout Transparente - Tickets de pago, es necesario configurar las Credenciales 'CLIENT_ID' y 'CLIENT_SECRET' en 'MercadoPago - Configuración'""
+"For the operation of the Checkout Transparent Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","Para el funcionamento del Checkout Transparente - Tickets de pago, es necesario configurar las Credenciales 'CLIENT_ID' y 'CLIENT_SECRET' en 'MercadoPago - Configuración'"
 "For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","Para el funcionamento del Checkout Standard, es necesario configurar las Credenciales 'CLIENT_ID' y 'CLIENT_SECRET' en 'MercadoPago - Configuración'"
 
 "Payment Method", "Medio de pago"

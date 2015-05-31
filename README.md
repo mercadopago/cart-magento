@@ -1,31 +1,31 @@
-# Magento - Mercadopago Module (1.4.x to 1.9.x, Standard Checkout Only)
+# Magento - Mercadopago Module (1.4.x to 1.9.x)
 ---
-*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+
+*Checkout Custom Available for Argentina, Brazil and Mexico*
+
+*Checkout Standard Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
 
 
-This module provides MercadoPago Checkout Express functionality that allow customers paid their shops much faster, increasing the store conversion.
+## Features:
 
-* [Installation](#usage)
-* [How does the MercadoPago Checkout Express works?](#howto)
-* [Set up MercadoPago](#Setup)
-* [Sync your backoffice with MercadoPago (IPN)](#IPN)
+**Credit Card Customized Checkout**
 
-#### What does this module include?
-* MercadoPago Checkout Express
-* MercadoPago Standard Checkout
+This feature will allow merchants to have a customized checkout for credit card
+payment. Thus, it will be possible to customize its look and feel, customers won’t be
+redirected away to complete the payment, and it will also reduce the checkout steps
+improving conversion rates.
 
-<a name="howto"></a>
-## How does the MercadoPago Checkout Express work?
-At the shopping cart, the customer can click on “Buy Now” and a light box will open. In this Light Box the customer can insert their Postal Code and the module utilizes Magento Shipping modules to calculate the shipping price.
-After the customer chose the shipping option an order is generated and a MercadoPago checkout page takes place, allowing the customer to make the payment.  After the payment is done, the customer clicks on redirect and again on the store to fill the shipping information.
-The Store will receive the customer name related to this order, and the customer email by the IPN (Instant Payment Notification) making sure that this order are not getting lost in the store.
+**Customized Bar Code Payment**
 
-![How the MercadoPago Checkout Express works?](https://raw.github.com/mercadopago/cart-magento/master/README.img/howto.png)
- 
-##### Can I disable Checkout Express?
-Yes.  You can disable it at the Store Administration
+This feature will allow merchants to have a customized bar code payment. It
+reduces the checkout steps improving conversion rates. The bar code payment will
+have merchant's logo.
 
----
+**Standard checkout**
+
+This feature will allow merchants to have a standard checkout. It includes all
+payment methods (i.e. all credit cards, bar code payment, account money) and all
+window types (i.e. redirect, iframe, modal, blank and popup). Customization is not allowed.
 
 <a name="usage"></a>
 ## Installation:
@@ -51,6 +51,9 @@ Yes.  You can disable it at the Store Administration
 
 3. Set your **CLIENT_ID** and **CLIENT_SECRET**.
 
+4. To generate a **public_key** send an email to developers@mercadopago.com.br passing your **CLIENT_ID** and link your online store asking for a PUBLIC_KEY 
+for Magento
+
 Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
 * Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
 * Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
@@ -60,20 +63,3 @@ Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
 
 ![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup.png)<br />
 ![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup2.png)<br />
-
-
-***Note:*** The standard URL for successful payment or pending payment is ***[yourstoreaddress.com]***/index.php/checkout/onepage/success/ but you can use any page as you want.
-
----
-
-<a name="IPN"></a>
-## Sync your backoffice with Mercadopago (IPN) 
-
-1. Go to **Mercadopago IPN configuration**:
-    * Argentina: [https://www.mercadopago.com/mla/herramientas/notificaciones](https://www.mercadopago.com/mla/herramientas/notificaciones)
-    * Brazil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)
-    * Colombia: [https://www.mercadopago.com/mco/herramientas/notificaciones](https://www.mercadopago.com/mco/herramientas/notificaciones)
-    * Mexico: [https://www.mercadopago.com/mlm/herramientas/notificaciones](https://www.mercadopago.com/mlm/herramientas/notificaciones)
-    * Venezuela: [https://www.mercadopago.com/mlv/herramientas/notificaciones](https://www.mercadopago.com/mlv/herramientas/notificaciones)
-
-2. Enter the URL as follow: ***[yourstoreaddress.com]***/index.php/mpexpress/ipn/

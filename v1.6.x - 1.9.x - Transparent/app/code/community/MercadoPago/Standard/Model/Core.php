@@ -37,34 +37,34 @@ class MercadoPago_Standard_Model_Core extends Mage_Payment_Model_Method_Abstract
     protected $_canReviewPayment            = true;
     
     
-    public function log($message, $file = "mercadopago.log", $array = null){
-
+	public function log($message, $file = "mercadopago.log", $array = null){
+	
 		//pega a configuração de log no admin, essa variavel vem como true por padrão
 		$action_log = Mage::getStoreConfig('payment/mercadopago_configuration/logs');
 		
-        //caso tenha um array, transforma em json para melhor visualização
-        if(!is_null($array))
-            $message .= " - " . json_encode($array);
-        
+		//caso tenha um array, transforma em json para melhor visualização
+		if(!is_null($array))
+		$message .= " - " . json_encode($array);
+		
 		//set log
-        Mage::log($message, null, $file, $action_log);
-    }
-    
-    public function getPayment($payment_id){
-		$model = $this;
-		$this->client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
-        $this->client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
-        $mp = new MP($this->client_id, $this->client_secret);
-		return $mp->get_payment($payment_id);
-    }
-    
-    public function getMerchantOrder($merchant_order_id){
+		Mage::log($message, null, $file, $action_log);
+	}
+	
+	public function getPayment($payment_id){
 		$model = $this;
 		$this->client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
 		$this->client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
-        $mp = new MP($this->client_id, $this->client_secret);
+		$mp = new MP($this->client_id, $this->client_secret);
+		return $mp->get_payment($payment_id);
+	}
+	
+	public function getMerchantOrder($merchant_order_id){
+		$model = $this;
+		$this->client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
+		$this->client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
+		$mp = new MP($this->client_id, $this->client_secret);
 		return $mp->get_merchant_order($merchant_order_id);
-    }
+	}
     
 }
 

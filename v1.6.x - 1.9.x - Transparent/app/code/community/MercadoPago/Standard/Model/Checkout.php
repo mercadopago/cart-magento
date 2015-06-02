@@ -42,42 +42,50 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
     protected function _construct(){
         $this->_init('mercadopago_standard/checkout');
     }
-    
-    public function postPago(){ 
+	
+    public function postPago(){
+		$core = Mage::getModel('mercadopago_standard/core');
+
         //seta sdk php mercadopago
         $client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
         $client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
         $mp = new MP($client_id, $client_secret);
-	
+
         //monta a prefernecia
-	$pref = $this->makePreference();
-        
+		$pref = $this->makePreference();
+		
+		//log preferences
+		$core->log("make array", 'mercadopago-standard.log', $pref);
+
         //faz o posto do pagamento
-        return $mp->create_preference($pref);
+		$preference = $mp->create_preference($pref);
+
+		//log preferences
+		$core->log("create preference result", 'mercadopago-standard.log', $preference);
+        return $preference;
     }
     
     public function getOrderPlaceRedirectUrl() {
-        
         // requisicao vem da pagina de finalizacao de pedido
         return Mage::getUrl('mercadopago_standard/pay', array('_secure' => true));
     
     }
     
     public function getDiscount($order){
-	$discount = 0;
+		$discount = 0;
 	
-        $order = $order->getData();
-	
-	if(isset($order['base_discount_amount']) && $order['base_discount_amount'] < 0) {
-	    $discount =  $order['base_discount_amount'];
-	}
-	
-	return $discount;
+		$order = $order->getData();
+		
+		if(isset($order['base_discount_amount']) && $order['base_discount_amount'] < 0) {
+			$discount =  $order['base_discount_amount'];
+		}
+		
+		return $discount;
     }
     
     function makePreference(){
 	
-	//pega a order atual
+		//pega a order atual
         $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
         $customer = Mage::getSingleton('customer/session')->getCustomer();
@@ -86,12 +94,12 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
         
 	
         //pega payment dentro da order para pegar as informacoes adicionadas pela funcao assignData()
-	$payment = $order->getPayment();
+		$payment = $order->getPayment();
 	
-	//init array preferneces
-	$arr = array();
-	
-	//seta o external_reference para concilia‹o futura
+		//init array preferneces
+		$arr = array();
+		
+		//seta o external_reference para conciliacao futura
         $arr['external_reference'] = $orderIncrementId;
        
         //monta array de produtos 
@@ -101,57 +109,57 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
             $prod = $model->loadByAttribute('sku', $item->getSku());
 
             //get image
-	    try{
-		$imagem = $prod->getImageUrl();
-	    }catch(Exception $e){
-		$imagem = "";
-	    }
-            
-            $arr['items'][] = array(
-                "id" => $item->getSku(),
-                "title" => $item->getName(),
-                "description" => $item->getName(),
-                "picture_url" => $imagem,
-                "category_id" => Mage::getStoreConfig('payment/mercadopago_configuration/category_id'),
-                "quantity" => (int) number_format($item->getQtyOrdered(), 0, '.', ''),
-                "unit_price" => (float) number_format($prod->getFinalPrice(), 2, '.', '')
-            );
-            
-        }
+			try{
+				$imagem = $prod->getImageUrl();
+			}catch(Exception $e){
+				$imagem = "";
+			}
+				
+				$arr['items'][] = array(
+					"id" => $item->getSku(),
+					"title" => $item->getName(),
+					"description" => $item->getName(),
+					"picture_url" => $imagem,
+					"category_id" => Mage::getStoreConfig('payment/mercadopago_configuration/category_id'),
+					"quantity" => (int) number_format($item->getQtyOrdered(), 0, '.', ''),
+					"unit_price" => (float) number_format($prod->getFinalPrice(), 2, '.', '')
+				);
+				
+		}
 	
-	//verifica se existe desconto, caso exista adiciona como um item
-	$discount = $this->getDiscount($order);
+		//verifica se existe desconto, caso exista adiciona como um item
+		$discount = $this->getDiscount($order);
+		
+		if($discount != 0){
+			$arr['items'][] = array(
+					"title" => "Discount by the Store",
+					"description" => "Discount by the Store",
+					"quantity" => (int) 1,
+					"unit_price" => (float) number_format($discount, 2, '.', '')
+				);
+		}
+
 	
-	if($discount != 0){
-	    $arr['items'][] = array(
-                "title" => "Discount by the Store",
-                "description" => "Discount by the Store",
-                "quantity" => (int) 1,
-                "unit_price" => (float) number_format($discount, 2, '.', '')
-            );
-	}
+		//pega dados de envio
+		if(method_exists($order->getShippingAddress(), "getData")){
+			$shipping = $order->getShippingAddress()->getData();
+			$arr['shipments']['receiver_address'] = array(
+					"floor" => "-",
+					"zip_code" => $shipping['postcode'],
+					"street_name" => $shipping['street'] . " - " . $shipping['city'] . " - " . $shipping['country_id'],
+					"apartment" => "-",
+					"street_number" => "0"
+			);
+			$arr['payer']['phone'] = array(
+				"area_code" => "-",
+				"number" => $shipping['telephone']
+			);
+		}
 	
-        
-        //pega dados de envio
-        if(method_exists($order->getShippingAddress(), "getData")){
-            $shipping = $order->getShippingAddress()->getData();
-            $arr['shipments']['receiver_address'] = array(
-                    "floor" => "-",
-                    "zip_code" => $shipping['postcode'],
-                    "street_name" => $shipping['street'] . " - " . $shipping['city'] . " - " . $shipping['country_id'],
-                    "apartment" => "-",
-                    "street_number" => "0"
-            );
-            $arr['payer']['phone'] = array(
-                "area_code" => "-",
-                "number" => $shipping['telephone']
-            );
-        }
-        
-	//adiciona o valor do frete nas preferencias
-	if($order->getBaseShippingAmount() != "" && $order->getBaseShippingAmount() > 0){
-	    $arr['shipments']['cost'] = (float) $order->getBaseShippingAmount();
-	}
+		//adiciona o valor do frete nas preferencias
+		if($order->getBaseShippingAmount() != "" && $order->getBaseShippingAmount() > 0){
+			$arr['shipments']['cost'] = (float) $order->getBaseShippingAmount();
+		}
 	
         
         //pega informaoes de cadastro do usuario
@@ -167,12 +175,12 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
         $arr['payer']['last_name'] = htmlentities($customer->getLastname());
         
         //set o documento do usuario
-	if(isset($payment['additional_information']['doc_number']) && $payment['additional_information']['doc_number'] != ""){
-	    $arr['payer']['identification'] = array(
-		"type" => "CPF",
-		"number" => $payment['additional_information']['doc_number']
-	    );
-	}
+		if(isset($payment['additional_information']['doc_number']) && $payment['additional_information']['doc_number'] != ""){
+			$arr['payer']['identification'] = array(
+			"type" => "CPF",
+			"number" => $payment['additional_information']['doc_number']
+			);
+		}
         
         //set endereco do usuario
         $arr['payer']['address'] = array(
@@ -188,15 +196,15 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
             "failure" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "checkout/onepage/success"
         );
         
-	//define a url de notificacao 
-	$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_standard/notification?checkout=standard";
-	
-	//pega o email e o nome do usuario guest
-	if($arr['payer']['email'] == ""){
-	    $arr['payer']['email'] = $order['customer_email'];
-	    $arr['payer']['first_name'] = $order->getBillingAddress()->getFirstname();
-	    $arr['payer']['last_name'] = $order->getBillingAddress()->getLastname();
-	}
+		//define a url de notificacao 
+		$arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "mercadopago_standard/notification?checkout=standard";
+		
+		//pega o email e o nome do usuario guest
+		if($arr['payer']['email'] == ""){
+			$arr['payer']['email'] = $order['customer_email'];
+			$arr['payer']['first_name'] = $order->getBillingAddress()->getFirstname();
+			$arr['payer']['last_name'] = $order->getBillingAddress()->getLastname();
+		}
         
         // pega os meios de pagamento que ele dejexa excluir
         $checkout = Mage::getModel('mercadopago_standard/checkout');
@@ -222,28 +230,11 @@ class MercadoPago_Standard_Model_Checkout extends Mage_Payment_Model_Method_Abst
             $arr['auto_return'] = "approved";
         }
 	
-	//adiciona o sponsor_id para as vendas serem identificadas
-	//$arr['sponsor_id'] = "";
+		//adiciona o sponsor_id para as vendas serem identificadas
+		//$arr['sponsor_id'] = "";
+
+		return $arr;
 	
-	return $arr;
-	
-    }
-    
-    
-    public function getPayment($payment_id){
-	$model = $this;
-	$this->client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
-        $this->client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
-        $mp = new MP($this->client_id, $this->client_secret);
-	return $mp->get_payment($payment_id);
-    }
-    
-    public function getMerchantOrder($merchant_order_id){
-	$model = $this;
-	$this->client_id = Mage::getStoreConfig('payment/mercadopago_configuration/client_id');
-	$this->client_secret = Mage::getStoreConfig('payment/mercadopago_configuration/client_secret');
-        $mp = new MP($this->client_id, $this->client_secret);
-	return $mp->get_merchant_order($merchant_order_id);
     }
 }
 

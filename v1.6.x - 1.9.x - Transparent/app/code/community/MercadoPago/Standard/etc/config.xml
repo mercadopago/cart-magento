@@ -98,6 +98,7 @@
                 <order_status_in_mediation>pending</order_status_in_mediation>
                 <order_status_rejected>pending</order_status_rejected>
                 <order_status_cancelled>pending</order_status_cancelled>
+                <logs>1</logs>
             </mercadopago_configuration>
             
             <mercadopago_standard>

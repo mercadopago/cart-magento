@@ -236,7 +236,11 @@ class MercadoPago_Transparent_Model_Transparent extends Mage_Payment_Model_Metho
 		endif;
         
     }
-    
+   
+    function htmlEscape($data, $allowedTags = null){
+        return Mage::helper('core')->escapeHtml($data, $allowedTags);
+    }
+ 
     function makePreference(){
 	
 		$quote = $this->_getQuote();

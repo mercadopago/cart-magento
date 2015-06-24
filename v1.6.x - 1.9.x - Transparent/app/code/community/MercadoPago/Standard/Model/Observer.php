@@ -24,8 +24,8 @@ class MercadoPago_Standard_Model_Observer{
         "mla" => "http://imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg",
         "mlb" => "http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg",
         "mco" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
-        "mlm" => "http://imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG",
-        "mlc" => ""
+        "mlm" => "https://secure.mlstatic.com/developers/site/cloud/banners/co/468x60_Todos-los-medios-de-pago.jpg",
+        "mlc" => "https://secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif"
     );
     
     private $banner_ticket = array(

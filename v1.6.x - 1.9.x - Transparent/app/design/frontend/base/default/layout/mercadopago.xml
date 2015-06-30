@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-
-<layout version="0.1.0">
-	<checkout_onepage_success translate="label">
-        <reference name="content">
-		    <block name="mercadopago.transparent.success" template="mercadopago/transparent/success.phtml" type="mercadopago_transparent/success" />
-        </reference>
-    </checkout_onepage_success>
-</layout>

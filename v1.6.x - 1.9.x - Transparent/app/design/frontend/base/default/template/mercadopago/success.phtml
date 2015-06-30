@@ -1,0 +1,135 @@
+<?php
+    $order = $this->getOrder();
+    $total = $this->getTotal();
+    $payment = $this->getPayment();
+    
+    //monta link para o pedido
+    $link_to_order = $this->__('Your order %s has been successfully generated.', '<a href="'. Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "sales/order/view/order_id/" . $this->getEntityId() . '">' . $order->getIncrementId() .'</a>');
+    
+    $payment_method = $this->getPaymentMethod();
+    $info_payment = $this->getInfoPayment();
+?>
+
+<div id="box-mercadopago">
+
+    <?php if($payment_method == 'mercadopago_customticket'): ?>
+        <h2 class="mercadopago-title"><?php echo $this->__('Thank you for your purchase!'); ?></h2>
+        
+        <p>
+            <?php echo $link_to_order; ?>
+        </p>
+        
+        <p>
+            <?php echo $this->__('Generate the ticket and pay it wherever you want.'); ?>
+        </p>
+        <p>
+            <?php echo $this->__('Will be approved within 2 business days.'); ?>
+        </p>
+        <a href="<?php echo urldecode($this->htmlEscape($payment->getAdditionalInformation('activation_uri'))); ?>" target="_blank" id="btn-boleto-mercadopago">
+            <?php echo $this->__('Generate Ticket'); ?>
+        </a>
+        
+    <?php endif; ?>
+    
+    
+    <?php
+        if($payment_method == 'mercadopago_standard' || $payment_method == 'mercadopago_custom'):
+        
+            if(!isset($info_payment['status']['value'])){
+                //caso não exista informações sobre o pagamento
+                ?>
+                    <h2 class="mercadopago-title"><?php echo $this->__('Thank you for your purchase!'); ?></h2>
+                    <p><?php echo $link_to_order; ?></p>   
+                <?php
+            }else{
+                //caso exista informações sobre o pagamento
+                $message_status = $this->getMessageByStatus(
+                    $info_payment['status']['value'],
+                    $info_payment['status_detail']['value'],
+                    $info_payment['payment_method']['value'],
+                    $info_payment['installment']['value'],
+                    $this->getTotal()
+                );
+                
+                ?>
+                    <h2 class="mercadopago-title"><?php echo $message_status['title']; ?></h2>
+            
+                    <p><?php echo $message_status['message']; ?></p>
+                    
+                    <p><?php echo $link_to_order; ?></p>
+                    
+                    <h5 class="mercadopago-title-info-payment"><?php echo $this->__('Payment information'); ?></h5>
+    
+                    <?php foreach($info_payment as $info): ?>
+                        <p><?php echo $info['text']; ?></p>
+                    <?php endforeach; ?>
+            
+                <?php 
+            } //end if exist informações do pagamento
+        ?>
+    
+    <?php endif; ?>
+    
+    
+</div>
+
+<div id="logo-mercadopago">
+    <img src="https://secure.mlstatic.com/components/resources/mp/desktop/css/assets/desktop-logo-mercadopago.png" /> 
+</div>
+
+<style>
+    .mercadopago-title{
+        margin: 0 0 10px 0;
+        font-weight:bold;
+    }
+    .mercadopago-title-info-payment{
+        margin: 20px 0 10px 0;
+    }
+    
+    #btn-boleto-mercadopago{
+        font-size: 1.25em;
+        text-align: center;
+        line-height: 1.25em;
+        padding: 6px 12px;
+        font-family: 'Lato',sans-serif;
+        font-weight: 400;
+        background-color: #36A1F1;
+        background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#36A1F1),color-stop(100%,#0F79C9));
+        background-image: -webkit-linear-gradient(#36A1F1,#0F79C9);
+        background-image: -moz-linear-gradient(#36A1F1,#0F79C9);
+        background-image: -o-linear-gradient(#36A1F1,#0F79C9);
+        background-image: linear-gradient(#36A1F1,#0F79C9);
+        -webkit-box-shadow: inset 0 1px #97DCFF;
+        box-shadow: 0 1px #97DCFF inset;
+        color: #FFF!important;
+        border: 1px solid #0D6FB9;
+        border-radius: 4px 4px 4px 4px;
+        cursor: pointer;
+        display: inline-block;
+        text-decoration:none;
+    }
+    #btn-boleto-mercadopago:hover{
+        background-color:#4CBFF8;
+        background-image:linear-gradient(#4CBFF8,#1699DF);
+        box-shadow:0 1px #B6EBFF inset;
+        background-image:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#4CBFF8),color-stop(100%,#1699DF));
+        background-image:-webkit-linear-gradient(#4CBFF8,#1699DF);
+        background-image:-moz-linear-gradient(#4CBFF8,#1699DF);
+        background-image:-o-linear-gradient(#4CBFF8,#1699DF);
+        background-image:linear-gradient(#4CBFF8,#1699DF);-webkit-box-shadow:inset 0 1px #B6EBFF;
+        border:1px solid #1890D3;
+        color:#FFF;
+        text-decoration:none;
+    }
+    
+    #logo-mercadopago{
+        width: 100px;
+        margin: 20px 0;
+        float: left;
+    }
+    
+    #logo-mercadopago img{
+        float: left;
+        width: 100%;
+    }
+</style>

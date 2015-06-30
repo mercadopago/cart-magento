@@ -3,7 +3,7 @@
 "MercadoPago - Configuration", "MercadoPago - Configurações"
 "Credit Card - MercadoPago", "Cartões de Credito - MercadoPago"
 
-"MercadoPago Transparent - Credit Card", "MercadoPago Transparente - Cartão de Crédito"
+"MercadoPago Custom - Credit Card", "MercadoPago Transparente - Cartão de Crédito"
 "Payment Title", "Titulo"
 "Category of your store", "Categoria da Loja"
 "Choose the status of approved orders", "Escolha o status dos pedidos para pagamentos Aprovados"
@@ -12,10 +12,11 @@
 "Choose the status when client open a mediation", "Escolha o status dos pedidos para pagamentos que estão em Disputa"
 "Choose the status when payment was reject", "Escolha o status dos pedidos para pagamentos Rejeitados"
 "Choose the status when payment was canceled", "Escolha o status dos pedidos para pagamentos Cancelados"
+
 "Checkout Position", "Posição no Checkout"
 "To manage the status available go to System > Order Statuses", "Para gerenciar os status disponíveis vá até System > Order Statuses"
 
-"MercadoPago Transparent - Ticket", "MercadoPago Transparente - Boleto"
+"MercadoPago Custom - Ticket", "MercadoPago Transparente - Boleto"
 
 "MercadoPago Standard - Credit Card, Ticket and Account Money", "MercadoPago Standard - Cartão, Boleto e Dinheiro em Conta"
 "Country", "País"
@@ -27,7 +28,7 @@
 "Height Checkout Iframe","Altura do Checkout Iframe (Height)"
 "Auto-redirect the buyer when finishing the payment.","Auto-Redirecionar o comprador ao finalizar o pagamento."
 "Select payment methods not accepted","Selecione os meios de pagamento não aceitos"
-"For the operation of the Checkout Transparent Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","Para o funcionamento do Checkout Transparente Boleto é necessário configurar as Credenciais 'CLIENT_ID' e 'CLIENT_SECRET' em 'MercadoPago - Configurações'"
+"For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","Para o funcionamento do Checkout Transparente Boleto é necessário configurar as Credenciais 'CLIENT_ID' e 'CLIENT_SECRET' em 'MercadoPago - Configurações'"
 "For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","Para o funcionamento do Checkout Standard é necessário configurar as Credenciais 'CLIENT_ID' e 'CLIENT_SECRET' em 'MercadoPago - Configurações'"
 
 "Card Number", "Número do cartão"
@@ -46,11 +47,32 @@
 "CVV is invalid.", "Código de Segurança inválido."
 "Card Holder Name is invalid.", "Nome do titular do cartão inválido."
 "Document Number is invalid.", "CPF inválido."
+"Document Type is invalid.","Tipo de Documento inválido."
 "Year is invalid.", "Ano inválido."
 "Month is invalid.", "Mês inválido."
 "Please validate your data.", "Dados incorretos, valide os dados. Por favor."
 "Cannot pay this amount with this payment_method_id.","Não é possível pagar esse valor com essa forma de pagamento."
+"It was not possible to calculate the installments, click here and try again.","Não foi possível calcular as parcelas, clique aqui e tente novamente."
 
+"Discount coupon","Cupom de Desconto"
+"Run Out of uses per user.","Cupom já utilizado."
+"An error occurred while validating the coupon. Try again.", "Ocorreu um erro ao validar o cupom. Tente novamente."
+"The coupon can not be applied to this amount.", "O cupom não pode ser aplicado para esse valor."
+"Please enter a valid coupon code.","Digite um código de cupom válido."
+"Exclusive discount","Desconto exclusivo do"
+"You save %s with the exclusive discount","Você economizará %s com o desconto exclusivo do"
+"Total of your purchase","Total da sua compra"
+"Total of your purchase discount","Total da sua compra com desconto"
+"Upon approval of payment","Mediante aprovação do pagamento"
+"Terms and conditions","Termos e condições"
+"Apply discount","Aplicar desconto"
+"Remove discount","Remover desconto"
+
+
+
+"Thank you for your purchase!","Obrigado pela sua Compra!"
+"Your order %s has been successfully generated.","O seu pedido de numero %s foi gerado com sucesso."
+"Payment information","Informações sobre o pagamento"
 "Card Number: %s", "Número do cartão: %s"
 "Card Holder Name: %s", "Titular do cartão: %s"
 "Payment Method: %s", "Método de Pagamento: %s"
@@ -101,6 +123,10 @@
 "We could not process your payment. %s", "Não foi possível processar o pagamento. %s"
 
 "Verify the form data or wait until the validation of the payment data", "Verifique os dados do formulario ou aguarde a validação dos dados de pagamento."
+"Doesn't find a campaign with the given code.","Cupom inválido."
+
+"Payments were canceled.","O pagamento foi cancelado."
+"Contact for more information.","Entre em contato para mais informações."
 
 
 "Automatic notification of the MercadoPago: The payment was approved.", "Notificação automática do MercadoPago: O pagamento foi aprovado."
@@ -119,3 +145,6 @@
 "$", "R$"
 "Choice", "Escolha"
 "Default issuer", "Qualquer Banco"
+
+"To generate a public_key send an email to developers@mercadopago.com passing your CLIENT_ID and link your online store asking for a PUBLIC_KEY for Magento","Para gerar a public_key envie um email para developers@mercadopago.com.br informando o seu CLIENT_ID e a url da sua loja virtual com o assunto PUBLIC_KEY para Magento"
+"Choose the status when payment was chargeback", "Escolha o status dos pedidos para pagamentos com status Chargeback"

@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<config>
-    <modules>
-        <MercadoPago_TransparentTicket>
-            <active>true</active>
-            <codePool>community</codePool>
-        </MercadoPago_TransparentTicket>
-    </modules>
-</config>

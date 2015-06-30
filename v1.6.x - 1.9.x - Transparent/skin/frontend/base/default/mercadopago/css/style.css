@@ -4,6 +4,14 @@
  *
  */
 
+#mercadopago_custom_code{
+    width: 60px !important;    
+}
+
+#mercadopago_custom_doc{
+    width: 190px !important;
+}
+
 .sp-methods .form-list.mercadopago{
     padding:0 !important;
 }
@@ -49,9 +57,12 @@
     margin: 0 0 10px 0;
 }
 
+
+
 #docType{
     width: 60px;
 }
+
 
 #installments{
     margin: 0 0 5px 0;
@@ -219,4 +230,60 @@ p.msg-status{
 
 
 
+#mercadopago-loading{
+    display: none;
+    margin: -5px 0 10px 0;
+    float: left;
+    width: 100%;
+}
+.msg-status{
+    display: none;
+}
 
+.mercadopago-message-coupon{
+    margin: 5px 0 0 0px;
+    float: left;
+    width: 100%;
+}
+
+.mercadopago-message-coupon li{
+    display: none;
+}
+
+.mercadopago-coupon-action-apply, .mercadopago-coupon-action-remove{
+    cursor: pointer;
+    float: left;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.mercadopago-coupon-action-remove{
+    display: none;
+}
+
+.mercadopago-message-coupon p{
+      margin: 0 0 0 0;
+}
+
+.mercadopago-focus{
+    color: #004098;
+    font-family: arial;
+    font-weight: bold;
+}
+
+.discount-ok{
+    padding: 10px;
+    border: 1px solid #cecece;
+    background-color: #F0F0F0;
+    float: left;
+}
+.error-installment-not-work{
+    cursor: pointer;
+}
+
+.mercadopago-info-discount li{
+    display: block !important;
+    float: left;
+    width: 100%;
+    margin: 0  !important;
+}

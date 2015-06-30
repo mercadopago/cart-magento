@@ -1,0 +1,171 @@
+<?xml version="1.0" ?>
+<!--
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL).
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+*
+* @category   	Payment Gateway
+* @package    	MercadoPago
+* @author      	Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
+* @copyright  	Copyright (c) MercadoPago [http://www.mercadopago.com]
+* @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+<config>
+    <modules>
+        
+        <MercadoPago>
+            <version>2.0.0</version>
+        </MercadoPago>
+        
+        <MercadoPago_Custom>
+            <version>2.0.0</version>
+        </MercadoPago_Custom>
+        
+        <MercadoPago_CustomTicket>
+            <version>2.0.0</version>
+        </MercadoPago_CustomTicket>
+        
+        <MercadoPago_Standard>
+            <version>2.0.0</version>
+        </MercadoPago_Standard>
+        
+    </modules>
+
+    <global>
+        <models>
+            <mercadopago>
+                <class>MercadoPago_Model</class>
+            </mercadopago>
+        </models>
+        
+        <blocks>
+            <mercadopago>
+                <class>MercadoPago_Block</class>
+            </mercadopago>
+        </blocks>
+        
+        <helpers>
+            <mercadopago>
+                <class>MercadoPago_Helper</class>
+            </mercadopago>
+            <mercadopago_custom>
+                <class>MercadoPago_Helper</class>
+            </mercadopago_custom>
+            <mercadopago_customticket>
+                <class>MercadoPago_Helper</class>
+            </mercadopago_customticket>
+            <mercadopago_standard>
+                <class>MercadoPago_Helper</class>
+            </mercadopago_standard>
+        </helpers>
+        
+        <events>             
+            <admin_system_config_changed_section_payment>
+                <observers>
+                    <observer>
+                        <class>MercadoPago_Model_Observer</class>
+                        <method>checkAndValidData</method>
+                    </observer>
+                </observers>
+            </admin_system_config_changed_section_payment>    
+        </events>
+    </global>
+
+
+    <frontend>
+        <routers>
+            <mercadopago>
+                <use>standard</use>
+                <args>
+                    <module>MercadoPago</module>
+                    <frontName>mercadopago</frontName>
+                </args>
+            </mercadopago>
+        </routers>
+        <translate>
+            <modules>
+                <mercadopago>
+                    <files>
+                        <default>mercadopago.csv</default>
+                    </files>
+                </mercadopago>
+            </modules>
+        </translate>
+    </frontend>
+
+
+    <adminhtml>
+        <translate>
+            <modules>
+                <translations>
+                    <files>
+                        <default>mercadopago.csv</default>
+                    </files>
+                </translations>
+            </modules>
+        </translate>
+    </adminhtml>
+    
+                
+                
+    <default>
+        <payment>            
+            <mercadopago>
+                <country>mlb</country>
+                <order_status_approved>processing</order_status_approved>
+                <order_status_refunded>pending</order_status_refunded>
+                <order_status_in_process>pending</order_status_in_process>
+                <order_status_in_mediation>pending</order_status_in_mediation>
+                <order_status_rejected>pending</order_status_rejected>
+                <order_status_cancelled>pending</order_status_cancelled>
+                <order_status_chargeback>pending</order_status_chargeback>
+                <logs>0</logs>
+            </mercadopago>
+            
+            <mercadopago_custom>
+                <active>1</active>
+                <model>MercadoPago_Model_Custom_Payment</model>
+                <!-- nome do modulo na exibição para o comprador -->
+                <title translate="label">Credit Card - MercadoPago</title>
+                <allowspecific>0</allowspecific>
+                <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg</banner_checkout>
+                <sort_order>-2</sort_order>
+                <payment_action>authorize</payment_action>
+                <coupon_mercadopago>0</coupon_mercadopago>
+            </mercadopago_custom>
+            
+            <mercadopago_customticket>
+                <active>1</active>
+                <model>MercadoPago_Model_CustomTicket_Payment</model>
+                <!-- nome do modulo na exibição para o comprador -->
+                <title translate="label">Ticket - MercadoPago</title>
+                <allowspecific>0</allowspecific>
+                <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/2014/230x60.png</banner_checkout>
+                <sort_order>-1</sort_order>
+                <payment_action>authorize</payment_action>
+                <coupon_mercadopago>0</coupon_mercadopago>
+            </mercadopago_customticket>
+            
+            <mercadopago_standard>
+                <active>1</active>
+                <model>MercadoPago_Model_Standard_Payment</model>
+                <!-- nome do modulo na exibição para o comprador -->
+                <title>MercadoPago</title>
+                <allowspecific>0</allowspecific>
+                <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg</banner_checkout>
+                <sort_order>-1</sort_order>
+                <installments>24</installments>
+                <type_checkout>iframe</type_checkout>
+                <auto_return>1</auto_return>
+                <iframe_width>900</iframe_width>
+                <iframe_height>700</iframe_height>
+            </mercadopago_standard>
+            
+        </payment>
+    </default>
+</config>

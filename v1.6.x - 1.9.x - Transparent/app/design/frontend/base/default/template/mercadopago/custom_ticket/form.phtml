@@ -1,0 +1,61 @@
+<?php
+    $coupon_mercadopago = Mage::getStoreConfig('payment/mercadopago_customticket/coupon_mercadopago');
+    $_code = $this->getMethodCode();
+    $grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
+    $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true);
+    $route = $this->getRequest()->getRequestedRouteName();
+
+?>
+
+<fieldset class="form-list">
+    <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand();?>" />
+    
+    <script>
+        //load nas actions para funcionar o js do mercadopago
+        loadFilesMP(); 
+    </script>
+    
+    <div id="mp-form-boleto">
+        <ul class="form-list form-mercadopago" id="payment_form_<?php  echo $_code ?>" style="display:none;" >
+            <li>
+                <?php
+                    if($coupon_mercadopago):
+                        $block = $this->getLayout()->createBlock('MercadoPago_Block_Discount');
+                        echo $block->toHtml();
+                    endif;
+                ?>
+                
+                <?php
+                $optionsTicket = $this->getTicketsOptions();
+                if(count($optionsTicket) == 1){ ?>
+                    <input type="hidden" name="payment[payment_method_boleto]" type="text" value="<?php echo $optionsTicket[0]['id']; ?>" id="payment_method_boleto" />
+                <?php } else { ?>
+                        
+                    <?php
+                    foreach($optionsTicket as $ticket){ ?>
+                        <input type="radio" name="payment[payment_method_boleto]" class="optionsTicketMp" value="<?php echo $ticket['id']; ?>"> <img src="<?php echo $ticket['secure_thumbnail']; ?>"> (<?php echo $ticket['name']; ?>) <br/>
+                    <?php } ?>
+                <?php } ?>
+                
+                
+                <input type="hidden" class="amount" value="<?php echo $grant_total; ?>">
+                <input type="hidden" class="mercadopago-discount-amount" value="0">
+                <input type="hidden" type="text" value="<?php echo $base_url; ?>" class="mercado_base_url" />
+                <input type="hidden" type="text" value="<?php echo $route; ?>" class="mercado_route" />
+                
+                <div style="display: none;">
+                    <span class="mercadopago-text-currency"><?php echo $this->__('$'); ?></span>
+                    <span class="mercadopago-text-choice"><?php echo $this->__('Choice'); ?></span>
+                    <span class="mercadopago-text-default-issuer"><?php echo $this->__('Default issuer'); ?></span>
+                    <span class="mercadopago-country"><?php // echo $country; ?></span>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+
+    <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+        <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
+    <?php endif;?>
+    
+</fieldset>

@@ -1,0 +1,188 @@
+<?php
+
+$country = Mage::getStoreConfig('payment/mercadopago/country');
+
+$coupon_mercadopago = Mage::getStoreConfig('payment/mercadopago_custom/coupon_mercadopago');
+
+$_code = $this->getMethodCode();
+$grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
+$base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true);
+$route = $this->getRequest()->getRequestedRouteName();
+
+?>
+
+
+<fieldset class="form-list mercadopago">
+    <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand();?>" />
+    
+    <script>
+        //load nas actions para funcionar o js do mercadopago
+        loadFilesMP(); 
+    </script>
+    
+    <div id="mp-form">
+        <ul class="form-list form-mercadopago" id="payment_form_<?php  echo $_code ?>" style="display:none;" >
+        
+            <?php if( $country == 'mlm'):
+                $payment_methods = $this->getCardsPaymentMethods();
+            ?>
+                <li>
+                    <div class="box-input">
+                        <label for="<?php echo $_code ?>_payment_method" class="required"><em>*</em><?php echo $this->__('Payment Method'); ?></label>
+                        <div class="input-box box-payment_method">
+                            <select name="payment[payment_method]" id="payment_method" data-checkout="payment_method" id="<?php echo $_code ?>_payment_method" class="input-text required-entry">
+                                <option value="-1"><?php echo $this->__('Choice'); ?>...</option>
+                                <?php foreach($payment_methods as $pm): ?>
+                                    <option value="<?php echo $pm['id']; ?>"><?php echo $pm['name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+            <?php else: ?>
+                <input type="hidden" name="payment[payment_method]" type="text" value="" id="payment_method" />
+            <?php endif; ?>
+            
+            <?php
+                if($coupon_mercadopago):
+                    $block = $this->getLayout()->createBlock('MercadoPago_Block_Discount');
+                    echo $block->toHtml();
+                endif;
+            ?>
+            
+            <li>
+                <label for="<?php echo $_code ?>_cn" class="required"><em>*</em><?php echo $this->__('Card Number'); ?></label>
+                <div class="input-box">
+                    <input data-checkout="cardNumber" id="<?php echo $_code ?>_cn" type="text" class="input-text required-entry"/>
+                    <p class="msg-status error-E301 validation-advice"><?php echo $this->__('Card number is invalid.'); ?></p>
+                    <p class="msg-status error-132 validation-advice"><?php echo $this->__('Cannot pay this amount with this payment_method_id.'); ?></p>
+                </div>
+            </li>
+            
+            <li id="issuersOptions" style="display: none;">
+                <label for="<?php echo $_code ?>_issuers" class="required"><em>*</em><?php echo $this->__('Banks'); ?></label>
+                <div class="input-box">
+                    <div id="issuers">
+                    </div>
+                </div>
+            </li>
+            
+            <li>
+                <div class="box-mes">
+                    <label for="<?php echo $_code ?>_month" class="required"><em>*</em><?php echo $this->__('Month'); ?></label>
+                    <div class="input-box mes">
+                        <select data-checkout="cardExpirationMonth"  name="payment[cardExpirationMonth]" id="<?php echo $_code ?>_month" class="required-entry validate-digits">
+                            <?php foreach ($this->getCcMonths() as $m=>$v): ?>
+                                <option value="<?php echo $m?$m:'' ?>"><?php echo $v ?></option>
+                            <?php endforeach ?>
+                        </select>
+                        <p class="msg-status error-325 validation-advice"><?php echo $this->__('Month is invalid.'); ?></p>
+                    </div>
+                </div>
+                
+                <div class="box-ano">
+                    <label for="<?php echo $_code ?>_year" class="required"><em>*</em><?php echo $this->__('Year'); ?></label>
+                    <div class="input-box">
+                        <select data-checkout="cardExpirationYear"  name="payment[cardExpirationYear]" id="<?php echo $_code ?>_year" class="required-entry validate-digits">
+                            <?php foreach ($this->getCcYears() as $y=>$v): ?>
+                                <option value="<?php echo $y?$y:'' ?>"><?php echo $v ?></option>
+                            <?php endforeach ?>
+                        </select>
+                        <p class="msg-status error-326 validation-advice"><?php echo $this->__('Year is invalid.'); ?></p>
+                    </div>
+                </div>
+            </li>
+            
+            
+            <li>
+                <div class="box-input">
+                    <label for="<?php echo $_code ?>_name" class="required"><em>*</em><?php echo $this->__('Card Holder Name'); ?></label>
+                    <div class="input-box">
+                        <input data-checkout="cardholderName" name="payment[cardholderName]" id="<?php echo $_code ?>_name" type="text" class="input-text required-entry" type="text"/>
+                        <p class="msg-status error-316 validation-advice"><?php echo $this->__('Card Holder Name is invalid.'); ?></p>
+                    </div>
+                </div>
+            </li>
+            
+            <?php
+            //mexico não possui documento no checkout
+            if( $country != 'mlm'): ?>
+            
+                <li>
+                    <div class="box-input">
+                        <label for="<?php echo $_code ?>_doc" class="required"><em>*</em><?php echo $this->__('Document Number'); ?></label>
+                        <div class="input-box">
+                            <?php if( $country == 'mlb'): ?>
+                                <input type="hidden" data-checkout="docType" id="docType" type="text" value="CPF"/>
+                            <?php elseif($country == 'mla'): ?>
+                                <select optionkey="id" name="payment[docType]" id="docType" data-checkout="docType">
+                                    <option value="DNI">DNI</option>
+                                    <option value="CI">Cédula</option>
+                                    <option value="LC">L.C.</option>
+                                    <option value="LE">L.E.</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            <?php endif; ?>
+                            
+                            <input name="payment[doc_number]" data-checkout="docNumber" id="<?php echo $_code ?>_doc" type="text" class="input-text required-entry validate-digits" type="text" maxlength="11" />
+                            <p class="msg-status error-324 validation-advice"><?php echo $this->__('Document Number is invalid.'); ?></p>
+                            <p class="msg-status error-322 validation-advice"><?php echo $this->__('Document Type is invalid.'); ?></p>
+                        </div>
+                    </div>
+                </li>
+            <?php endif; ?>
+            
+             <li>
+                <div class="box-input">
+                    <label for="<?php echo $_code ?>_code" class="required"><em>*</em><?php echo $this->__('CVV'); ?></label>
+                    <div class="input-box">
+                        <input data-checkout="securityCode" id="<?php echo $_code ?>_code" type="text" class="input-text required-entry validate-digits" type="text" size="5"/>
+                        <p class="msg-status error-E302 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
+                    </div>
+                </div>
+            </li>  
+            
+            <li>
+                <div class="box-input">
+                    <label for="<?php echo $_code ?>_installments" class="required"><em>*</em><?php echo $this->__('Installments'); ?></label>
+                    <div class="input-box box-installments">
+                        <select name="payment[installments]" id="installments" data-checkout="installments" id="<?php echo $_code ?>_installments" class="required-entry validate-digits">
+                            <option><?php echo $this->__('Enter the card number'); ?></option>
+                        </select>
+                        <p class="msg-status error-installment-not-work validation-advice"><?php echo $this->__('It was not possible to calculate the installments, click here and try again.'); ?></p>
+                        <p class="msg-status error-011 validation-advice"><?php echo $this->__('An error has occurred. Please refresh the page.'); ?></p>
+                        <p class="msg-status error-other validation-advice"><?php echo $this->__('Please validate your data.'); ?></p>
+                    </div>
+                </div>
+                
+                <div id="mercadopago-loading">
+                    <img src="<?php echo $this->getSkinUrl('mercadopago/images/loading.gif')  ;?>" alt="loading" />
+                    <!--<p><?php echo $this->__('Validating Data'); ?>...</p>-->
+                </div>
+                
+                <input type="hidden" name="payment[card_token_id]" type="text" value="" id="card_token_id" />
+                <input type="hidden" name="payment[trunc_card]" type="text" value="" id="trunc_card" />
+                
+                <!-- -->
+                <input type="hidden" class="amount" value="<?php echo $grant_total; ?>">
+                <input type="hidden" class="mercadopago-discount-amount" value="0">
+                <input type="hidden" type="text" value="<?php echo $base_url; ?>" class="mercado_base_url" />
+                <input type="hidden" type="text" value="<?php echo $route; ?>" class="mercado_route" />
+                <!-- -->
+                
+                <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+                    <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
+                <?php endif;?>
+                
+                <div style="display: none;">
+                    <span class="mercadopago-text-currency"><?php echo $this->__('$'); ?></span>
+                    <span class="mercadopago-text-choice"><?php echo $this->__('Choice'); ?></span>
+                    <span class="mercadopago-text-default-issuer"><?php echo $this->__('Default issuer'); ?></span>
+                    <span class="mercadopago-country"><?php echo $country; ?></span>
+                </div>
+            </li>
+        </ul>
+
+        
+    </div>
+</fieldset>

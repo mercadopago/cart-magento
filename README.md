@@ -49,17 +49,21 @@ window types (i.e. redirect, iframe, modal, blank and popup). Customization is n
 	***Note:*** If you change the Country where your account was created you need save config to refresh the excluded payment methods.
 
 
-3. Set your **CLIENT_ID** and **CLIENT_SECRET**.
+3. Set your **CLIENT_ID** and **CLIENT_SECRET**. Get them in the following address:
 
-4. To generate a **public_key** send an email to developers@mercadopago.com.br passing your **CLIENT_ID** and link your online store asking for a PUBLIC_KEY 
-for Magento
+	* Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
+	* Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
+	* Colombia: [https://www.mercadopago.com/mco/herramientas/aplicaciones](https://www.mercadopago.com/mco/herramientas/aplicaciones)
+	* Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
+	* Venezuela: [https://www.mercadopago.com/mlv/herramientas/aplicaciones](https://www.mercadopago.com/mlv/herramientas/aplicaciones)
 
-Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
-* Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
-* Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
-* Colombia: [https://www.mercadopago.com/mco/herramientas/aplicaciones](https://www.mercadopago.com/mco/herramientas/aplicaciones)
-* Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
-* Venezuela: [https://www.mercadopago.com/mlv/herramientas/aplicaciones](https://www.mercadopago.com/mlv/herramientas/aplicaciones)
+4. Get your **public_key** in the following address:
+
+	* Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
+	* Brazil: [https://www.mercadopago.com/mlb/account/credentials](https://www.mercadopago.com/mlb/account/credentials)
+	* Colombia: [https://www.mercadopago.com/mco/account/credentials](https://www.mercadopago.com/mco/account/credentials)
+	* Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
+	* Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
 
 ![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup.png)<br />
 ![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup2.png)<br />

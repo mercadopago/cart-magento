@@ -11,5 +11,10 @@ MercadoPago Magento Transparent & Standard
 
 ## Setup MercadoPago
 
+Get your **public_key** in the following address:
 
-To request your **public key** send an email to **[developers@mercadopago.com.br](developers@mercadopago.com.br)**
+* Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
+* Brazil: [https://www.mercadopago.com/mlb/account/credentials](https://www.mercadopago.com/mlb/account/credentials)
+* Colombia: [https://www.mercadopago.com/mco/account/credentials](https://www.mercadopago.com/mco/account/credentials)
+* Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
+* Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)

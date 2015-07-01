@@ -426,7 +426,7 @@ class MercadoPago_Model_Custom_Payment extends Mage_Payment_Model_Method_Abstrac
 		$sponsor_id = Mage::getStoreConfig('payment/mercadopago/sponsor_id');
 		Mage::helper('mercadopago')->log("Sponsor_id", 'mercadopago-standard.log', $sponsor_id);
 		if($sponsor_id != null && $sponsor_id != ""){
-			Mage::helper('mercadopago')->log("Sponsor_id identificado", 'mercadopago-standard.log', $sponsor_id);
+			Mage::helper('mercadopago')->log("Sponsor_id identificado", 'mercadopago-custom.log', $sponsor_id);
 			$arr['sponsor_id'] = (int) $sponsor_id;
 		}
 		

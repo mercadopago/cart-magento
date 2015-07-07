@@ -188,7 +188,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-							<comment>To generate a public_key send an email to developers@mercadopago.com passing your CLIENT_ID and link your online store asking for a PUBLIC_KEY for Magento</comment>
+							<comment>Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials</comment>
                         </public_key>
 		    
 		    

@@ -119,5 +119,5 @@
 "<br/> Status: %s","<br/> Estado: %s"
 "<br/> Status Detail: %s","<br/> Detalle del Estado: %s"
 
-"To generate a public_key send an email to developers@mercadopago.com passing your CLIENT_ID and link your online store asking for a PUBLIC_KEY for Magento","Para generar una public_key envíe un email para developers@mercadopago.com informando su CLIENT_ID y la url de su tienda con el asunto public_key para Magento"
+"Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials","Obtén tu public_key en la siguiente dirección: https://www.mercadopago.com/mla/account/credentials"
 "Choose the status when payment was chargeback", "Elija el estado de los pedidos para pagos con status Chargeback"

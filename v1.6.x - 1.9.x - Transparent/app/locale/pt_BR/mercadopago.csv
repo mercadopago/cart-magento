@@ -146,5 +146,5 @@
 "Choice", "Escolha"
 "Default issuer", "Qualquer Banco"
 
-"To generate a public_key send an email to developers@mercadopago.com passing your CLIENT_ID and link your online store asking for a PUBLIC_KEY for Magento","Para gerar a public_key envie um email para developers@mercadopago.com.br informando o seu CLIENT_ID e a url da sua loja virtual com o assunto PUBLIC_KEY para Magento"
+"Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials","Obtenha seu public_key no seguinte endereço: https://www.mercadopago.com/mlb/account/credentials"
 "Choose the status when payment was chargeback", "Escolha o status dos pedidos para pagamentos com status Chargeback"

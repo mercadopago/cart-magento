@@ -410,12 +410,16 @@ class MercadoPago_Model_Custom_Payment extends Mage_Payment_Model_Method_Abstrac
 					// caso de erro significa que o coupon não é mais valido para utilização
 					// pode ter ocorrido do usuario ja ter utilizado o coupon e mesmo assim prosseguir com o pagamento
 					
+					//adiciona o coupon amount, caso o usuario esteja passando pela v1
+					$arr['coupon_amount'] = (float) $coupon['response']['coupon_amount'];
 					$arr['coupon_code'] = $coupon_code;
 					Mage::helper('mercadopago')->log("Coupon applied. API response 400, error not mapped", 'mercadopago-custom.log');	
 				}else{
 					Mage::helper('mercadopago')->log("Coupon invalid, not applied.", 'mercadopago-custom.log');	
 				}
 			}else{
+				//adiciona o coupon amount, caso o usuario esteja passando pela v1
+				$arr['coupon_amount'] = (float) $coupon['response']['coupon_amount'];
 				$arr['coupon_code'] = $coupon_code;
 				Mage::helper('mercadopago')->log("Coupon applied. API response 200.", 'mercadopago-custom.log');
 				

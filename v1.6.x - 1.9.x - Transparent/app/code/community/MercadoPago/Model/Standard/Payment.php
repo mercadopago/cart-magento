@@ -123,28 +123,28 @@ class MercadoPago_Model_Standard_Payment extends Mage_Payment_Model_Method_Abstr
 		
 		$total_item = 0;
 		foreach ($order->getAllVisibleItems() as $item) {
-		
-			$prod = $model->loadByAttribute('sku', $item->getSku());
+			
+			$produto = $item->getProduct();
 			
 			//get image
 			try{
-				$imagem = $prod->getImageUrl();
+				$imagem = $produto->getImageUrl();
 			}catch(Exception $e){
 				$imagem = "";
 			}
 			
 			$arr['items'][] = array(
 				"id" => $item->getSku(),
-				"title" => $item->getName(),
-				"description" => $item->getName(),
+				"title" => $produto->getName(),
+				"description" => $produto->getName(),
 				"picture_url" => $imagem,
 				"category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
 				"quantity" => (int) number_format($item->getQtyOrdered(), 0, '.', ''),
-				"unit_price" => (float) number_format($prod->getFinalPrice(), 2, '.', '')
+				"unit_price" => (float) number_format($produto->getFinalPrice(), 2, '.', '')
 			);
 		
 			//faz uma soma dos itens para depois verificar com o valor total
-			$total_item += (float) number_format($prod->getFinalPrice(), 2, '.', '');
+			$total_item += (float) number_format($produto->getFinalPrice(), 2, '.', '');
 		}
 		
 		//pega valor total da compra
@@ -156,7 +156,7 @@ class MercadoPago_Model_Standard_Payment extends Mage_Payment_Model_Method_Abstr
 		//adiciona o valor do frete para as variaveis bater
 		$total_item +=  (float) $order->getBaseShippingAmount();
 		
-		// if responsável por verificar se existe diferença entre os preços,
+		// if responsÃ¡vel por verificar se existe diferenÃ§a entre os preÃ§os,
 		// tanto maior quanto menor,
 		// calcula e adiciona como itens para ter o valor real do pedido
 		if($total_item > $order_amount || $total_item < $order_amount){
@@ -212,14 +212,14 @@ class MercadoPago_Model_Standard_Payment extends Mage_Payment_Model_Method_Abstr
 		}
 		
 		
-		//pega informaoes de cadastro do usuario
+		//pega informaÂoes de cadastro do usuario
 		$billing_address = $order->getBillingAddress();
 		$billing_address = $billing_address->getData();
 		
 		//formata a data do usuario para o padrao do mercado pago YYYY-MM-DDTHH:MM:SS
 		$arr['payer']['date_created'] = date('Y-m-d',$customer->getCreatedAtTimestamp()) . "T" . date('H:i:s',$customer->getCreatedAtTimestamp());
 		
-		//set informaoes do usuario
+		//set informaÂoes do usuario
 		$arr['payer']['email'] = htmlentities($customer->getEmail());
 		$arr['payer']['first_name'] = htmlentities($customer->getFirstname());
 		$arr['payer']['last_name'] = htmlentities($customer->getLastname());
@@ -281,7 +281,7 @@ class MercadoPago_Model_Standard_Payment extends Mage_Payment_Model_Method_Abstr
 		}
 		
 		
-		//verifico se o sponsor é diferente de null (se existe)
+		//verifico se o sponsor Ã© diferente de null (se existe)
 		$sponsor_id = Mage::getStoreConfig('payment/mercadopago/sponsor_id');
 		Mage::helper('mercadopago')->log("Sponsor_id", 'mercadopago-standard.log', $sponsor_id);
 		if($sponsor_id != null && $sponsor_id != ""){

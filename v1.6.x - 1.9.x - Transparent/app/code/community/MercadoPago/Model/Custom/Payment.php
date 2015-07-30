@@ -302,23 +302,23 @@ class MercadoPago_Model_Custom_Payment extends Mage_Payment_Model_Method_Abstrac
         $arr['items'] = array();
         foreach ($order->getAllVisibleItems() as $item) {
 
-            $prod = $model->loadByAttribute('sku', $item->getSku());
+            $produto = $item->getProduct();
 
             //get image
 			try{
-				$imagem = $prod->getImageUrl();
+				$imagem = $produto->getImageUrl();
 			}catch(Exception $e){
 				$imagem = "";
 			}
             
             $arr['items'][] = array(
                 "id" => $item->getSku(),
-                "title" => $item->getName(),
-                "description" => $item->getName(),
+                "title" => $produto->getName(),
+                "description" => $produto->getName(),
                 "picture_url" => $imagem,
                 "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
                 "quantity" => (int) number_format($item->getQtyOrdered(), 0, '.', ''),
-                "unit_price" => (float) number_format($prod->getPrice(), 2, '.', '')
+                "unit_price" => (float) number_format($produto->getPrice(), 2, '.', '')
             );
             
         }

@@ -302,23 +302,23 @@ class MercadoPago_Model_Custom_Payment extends Mage_Payment_Model_Method_Abstrac
         $arr['items'] = array();
         foreach ($order->getAllVisibleItems() as $item) {
 
-            $prod = $model->loadByAttribute('sku', $item->getSku());
+            $produto = $item->getProduct();
 
             //get image
 			try{
-				$imagem = $prod->getImageUrl();
+				$imagem = $produto->getImageUrl();
 			}catch(Exception $e){
 				$imagem = "";
 			}
             
             $arr['items'][] = array(
                 "id" => $item->getSku(),
-                "title" => $item->getName(),
-                "description" => $item->getName(),
+                "title" => $produto->getName(),
+                "description" => $produto->getName(),
                 "picture_url" => $imagem,
                 "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
                 "quantity" => (int) number_format($item->getQtyOrdered(), 0, '.', ''),
-                "unit_price" => (float) number_format($prod->getPrice(), 2, '.', '')
+                "unit_price" => (float) number_format($produto->getPrice(), 2, '.', '')
             );
             
         }
@@ -410,12 +410,16 @@ class MercadoPago_Model_Custom_Payment extends Mage_Payment_Model_Method_Abstrac
 					// caso de erro significa que o coupon não é mais valido para utilização
 					// pode ter ocorrido do usuario ja ter utilizado o coupon e mesmo assim prosseguir com o pagamento
 					
+					//adiciona o coupon amount, caso o usuario esteja passando pela v1
+					$arr['coupon_amount'] = (float) $coupon['response']['coupon_amount'];
 					$arr['coupon_code'] = $coupon_code;
 					Mage::helper('mercadopago')->log("Coupon applied. API response 400, error not mapped", 'mercadopago-custom.log');	
 				}else{
 					Mage::helper('mercadopago')->log("Coupon invalid, not applied.", 'mercadopago-custom.log');	
 				}
 			}else{
+				//adiciona o coupon amount, caso o usuario esteja passando pela v1
+				$arr['coupon_amount'] = (float) $coupon['response']['coupon_amount'];
 				$arr['coupon_code'] = $coupon_code;
 				Mage::helper('mercadopago')->log("Coupon applied. API response 200.", 'mercadopago-custom.log');
 				

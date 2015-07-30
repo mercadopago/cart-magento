@@ -62,6 +62,7 @@ class MercadoPago_Model_CustomTicket_Payment extends Mage_Payment_Model_Method_A
 		$info->setAdditionalInformation('payment_type_id', "ticket");
 		$info->setAdditionalInformation('payment_method', $info_form['payment_method_boleto']);
 		$info->setAdditionalInformation('card_token_id', "");
+		$info->setAdditionalInformation('issuers', "");
 		$info->setAdditionalInformation('installments', 1);
 		$info->setAdditionalInformation('doc_number', "");
 		

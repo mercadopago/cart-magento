@@ -96,7 +96,8 @@ function loadFilesMP() {
         
             function setPaymentMethodInfo(status, result){
                 showLogMercadoPago("Get Payment Method: ");
-                showLogMercadoPago({status, result});
+                showLogMercadoPago(status);
+                showLogMercadoPago(result);
                 
                 if (status == 200) {
                     var method_payment = result[0];
@@ -190,7 +191,8 @@ function loadFilesMP() {
 
                     Checkout.createToken($form, function (status, response) {
                         showLogMercadoPago("Card_token created: ");
-                        showLogMercadoPago({status, response});
+                        showLogMercadoPago(status);
+                        showLogMercadoPago(response);
                         
                         var html = ""
                         if (status == 200  || status == 201) {
@@ -355,7 +357,8 @@ function loadFilesMP() {
                 $("#mercadopago-loading").hide();
                 
                 showLogMercadoPago("Set installment: ");
-                showLogMercadoPago({status, installments});
+                showLogMercadoPago(status);
+                showLogMercadoPago(installments);
                 
                 var html_options = '<option value="">' + choice_text_mercadopago + '... </option>';
                 for(i=0; installments && i<installments.length; i++){

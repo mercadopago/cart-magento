@@ -20,23 +20,34 @@ class MercadoPago_Model_Source_PaymentMethods extends Mage_Payment_Model_Method_
 	
     public function toOptionArray (){
 		
-		Mage::helper('mercadopago')->log("Get payment methods by country... ", 'mercadopago.log');
-		
-		$country = strtoupper(Mage::getStoreConfig('payment/mercadopago/country'));
 		$methods = array();
+		
 		//adiciona um valor vazio caso nao queria excluir nada
 		$methods[] = array("value" => "", "label" => "");
-		$response = MPRestClient::get("/sites/" . $country . "/payment_methods");
-		Mage::helper('mercadopago')->log("API payment methods", 'mercadopago.log', $response);
 		
-		$response = $response['response'];
+		$client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
+		$client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
 		
-		foreach($response as $m){
-			if ( $m['id'] != 'account_money' ) {
-				$methods[] = array(
-					'value' => $m['id'],
-					'label'=>Mage::helper('adminhtml')->__($m['name'])
-				);
+		//verifico se as credenciais não são vazias, caso sejam não é possível obte-los
+		if($client_id != "" && $client_secret != ""){
+			$mp = new MP($client_id, $client_secret);
+			$access_token = $mp->get_access_token();
+			
+			Mage::helper('mercadopago')->log("Get payment methods by country... ", 'mercadopago.log');
+			Mage::helper('mercadopago')->log("API payment methods: " . "/v1/payment_methods?access_token=" . $access_token, 'mercadopago.log');
+			$response = MPRestClient::get("/v1/payment_methods?access_token=" . $access_token);
+			
+			Mage::helper('mercadopago')->log("API payment methods", 'mercadopago.log', $response);
+			
+			$response = $response['response'];
+			
+			foreach($response as $m){
+				if ( $m['id'] != 'account_money' ) {
+					$methods[] = array(
+						'value' => $m['id'],
+						'label'=>Mage::helper('adminhtml')->__($m['name'])
+					);
+				}
 			}
 		}
 		

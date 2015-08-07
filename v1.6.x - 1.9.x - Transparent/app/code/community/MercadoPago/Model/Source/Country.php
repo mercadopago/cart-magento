@@ -23,6 +23,7 @@ class MercadoPago_Model_Source_Country extends Mage_Payment_Model_Method_Abstrac
 		$country[] = array('value' => "mlb", 'label'=>Mage::helper('adminhtml')->__("Brasil"));
 		$country[] = array('value' => "mco", 'label'=>Mage::helper('adminhtml')->__("Colombia"));
 		$country[] = array('value' => "mlm", 'label'=>Mage::helper('adminhtml')->__("Mexico"));
+		$country[] = array('value' => "mlc", 'label'=>Mage::helper('adminhtml')->__("Chile"));
 		
 		//force order by key
 		ksort($country);

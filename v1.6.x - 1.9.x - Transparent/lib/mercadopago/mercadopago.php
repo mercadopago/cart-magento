@@ -17,7 +17,7 @@ class MP {
     private $access_data;
     private $sandbox = FALSE;
 
-    function __construct() {
+    public function __construct() {
         $i = func_num_args(); 
 
         if ($i > 2 || $i < 1) {
@@ -346,6 +346,7 @@ class MP {
         if (function_exists("http_build_query")) {
             return http_build_query($params, "", "&");
         } else {
+            $elements = array();
             foreach ($params as $name => $value) {
                 $elements[] = "{$name}=" . urlencode($value);
             }
@@ -448,6 +449,6 @@ class MPRestClient {
     }
 
     public static function delete($uri, $content_type = "application/json") {
-        return self::exec("DELETE", $uri, $null, $content_type);
+        return self::exec("DELETE", $uri, null, $content_type);
     }
 }

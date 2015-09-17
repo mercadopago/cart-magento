@@ -38,8 +38,8 @@ class MercadoPago_ApiController extends Mage_Core_Controller_Front_Action{
 		$response = array();
 		$core = Mage::getModel('mercadopago/core');
 
-		if(!empty($this->getRequest()->getParam('id'))){
-			$coupon_id = $this->getRequest()->getParam('id');
+		$coupon_id = $this->getRequest()->getParam('id');
+		if(!empty($coupon_id)){
 			$response = $core->validCoupon($coupon_id);
 		}else{
 			$response = array(

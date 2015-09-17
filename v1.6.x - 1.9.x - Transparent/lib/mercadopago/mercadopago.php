@@ -346,7 +346,7 @@ class MP {
         if (function_exists("http_build_query")) {
             return http_build_query($params, "", "&");
         } else {
-            $elements = array();
+            $elements = [];
             foreach ($params as $name => $value) {
                 $elements[] = "{$name}=" . urlencode($value);
             }

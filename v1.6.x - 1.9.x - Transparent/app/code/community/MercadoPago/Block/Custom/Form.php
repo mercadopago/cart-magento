@@ -50,7 +50,7 @@ class MercadoPago_Block_Custom_Form extends Mage_Payment_Block_Form_Cc{
     
     /*
      *
-     * função especifica para mexico
+     * Only used in Mexico
      *
      */
     function getCardsPaymentMethods(){

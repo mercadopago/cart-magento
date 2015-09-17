@@ -22,6 +22,7 @@ class MercadoPago_NotificationsController extends Mage_Core_Controller_Front_Act
 	protected $_mpcartid = null;
 	protected $_sendemail = false;
 	protected $_hash = null;
+	protected static $errorResponseCode = 400;
 
 	public function indexAction(){
 		
@@ -42,12 +43,12 @@ class MercadoPago_NotificationsController extends Mage_Core_Controller_Front_Act
 			}
 		} catch (Exception $e) {
 			Mage::helper('mercadopago')->log("error: " . $e, 'mercadopago-notification.log');
-			echo $e;
-			
+			$this->getResponse()->setBody($e);
+
 			//caso erro no processo de notificação de pagamento, mercadopago ira notificar novamente.
-			header(' ', true, 400);
-			exit;
-		}	
+			$this->getResponse()->setHttpResponseCode(self::$errorResponseCode);
+
+		}
 	
 	}
 
@@ -181,11 +182,10 @@ class MercadoPago_NotificationsController extends Mage_Core_Controller_Front_Act
 			
 		} catch (Exception $e) {
 			Mage::helper('mercadopago')->log("erro in update order status: " . $e, 'mercadopago-notification.log');
-			echo $e;
-			
+			$this->getResponse()->setBody($e);
+
 			//caso erro no processo de notificação de pagamento, mercadopago ira notificar novamente.
-			header(' ', true, 400);
-			exit;
+			$this->getResponse()->setHttpResponseCode(self::$errorResponseCode);
 		}
 	}
 
@@ -284,11 +284,10 @@ class MercadoPago_NotificationsController extends Mage_Core_Controller_Front_Act
 			echo $message;
 		} catch (Exception $e) {
 			Mage::helper('mercadopago')->log("erro in set order status: " . $e, 'mercadopago-notification.log');
-			echo $e;
-			
+			$this->getResponse()->setBody($e);
+
 			//caso erro no processo de notificação de pagamento, mercadopago ira notificar novamente.
-			header(' ', true, 400);
-			exit;
+			$this->getResponse()->setHttpResponseCode(self::$errorResponseCode);
 		}
 	}
 

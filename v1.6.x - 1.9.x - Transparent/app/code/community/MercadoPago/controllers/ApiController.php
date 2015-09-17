@@ -25,10 +25,10 @@ class MercadoPago_ApiController extends Mage_Core_Controller_Front_Action{
 		$response = array(
 			"amount" => $core->getAmount()		
 		);
-		
-		header('Content-Type: application/json');
-        echo json_encode($response);
-		exit;
+
+		$jsonData = Mage::helper('core')->jsonEncode($response);
+		$this->getResponse()->setHeader('Content-type', 'application/json');
+		$this->getResponse()->setBody($jsonData);
         
     }
 	
@@ -37,9 +37,9 @@ class MercadoPago_ApiController extends Mage_Core_Controller_Front_Action{
 	public function couponAction(){
 		$response = array();
 		$core = Mage::getModel('mercadopago/core');
-		
-		if(isset($_REQUEST['id']) && $_REQUEST['id'] != ""){
-			$coupon_id = $_REQUEST['id'];
+
+		$coupon_id = $this->getRequest()->getParam('id');
+		if(!empty($coupon_id)){
 			$response = $core->validCoupon($coupon_id);
 		}else{
 			$response = array(
@@ -50,10 +50,11 @@ class MercadoPago_ApiController extends Mage_Core_Controller_Front_Action{
 				)
 			);	
 		}
-        
-		header('Content-Type: application/json');
-        echo json_encode($response);
-		exit;
+
+		$jsonData = Mage::helper('core')->jsonEncode($response);
+		$this->getResponse()->setHeader('Content-type', 'application/json');
+		$this->getResponse()->setBody($jsonData);
+
     }
 	
 	
@@ -72,10 +73,11 @@ class MercadoPago_ApiController extends Mage_Core_Controller_Front_Action{
 			"getPaymentMethods"	=> $payment_methods['status'],
 			"public_key" => Mage::getStoreConfig('payment/mercadopago_custom/public_key')
 		);
-		
-		header('Content-Type: application/json');
-        echo json_encode($response);
-		exit;
+
+		$jsonData = Mage::helper('core')->jsonEncode($response);
+		$this->getResponse()->setHeader('Content-type', 'application/json');
+		$this->getResponse()->setBody($jsonData);
+
 	}
     
 }

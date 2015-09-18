@@ -21,19 +21,7 @@
         <MercadoPago_Core>
             <version>2.0.0</version>
         </MercadoPago_Core>
-        
-        <MercadoPago_Core_Custom>
-            <version>2.0.0</version>
-        </MercadoPago_Core_Custom>
-        
-        <MercadoPago_Core_CustomTicket>
-            <version>2.0.0</version>
-        </MercadoPago_Core_CustomTicket>
-        
-        <MercadoPago_Core_Standard>
-            <version>2.0.0</version>
-        </MercadoPago_Core_Standard>
-        
+
     </modules>
 
     <global>
@@ -53,15 +41,6 @@
             <mercadopago>
                 <class>MercadoPago_Core_Helper</class>
             </mercadopago>
-            <mercadopago_custom>
-                <class>MercadoPago_Core_Helper</class>
-            </mercadopago_custom>
-            <mercadopago_customticket>
-                <class>MercadoPago_Core_Helper</class>
-            </mercadopago_customticket>
-            <mercadopago_standard>
-                <class>MercadoPago_Core_Helper</class>
-            </mercadopago_standard>
         </helpers>
         
         <events>             

@@ -45,7 +45,7 @@ class MercadoPago_Core_Model_Source_PaymentMethods extends Mage_Payment_Model_Me
 				if ( $m['id'] != 'account_money' ) {
 					$methods[] = array(
 						'value' => $m['id'],
-						'label'=>Mage::helper('adminhtml')->__($m['name'])
+						'label'=>Mage::helper('mercadopago')->__($m['name'])
 					);
 				}
 			}

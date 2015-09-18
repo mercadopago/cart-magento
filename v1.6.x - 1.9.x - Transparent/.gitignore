@@ -1,0 +1,10 @@
+#SOs
+Thumbs.db
+*~
+._*
+.DS_Store
+
+#IDEs
+nbproject
+.idea
+

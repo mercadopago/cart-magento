@@ -19,10 +19,8 @@ require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
 class MercadoPago_Core_Model_Source_Installments
     extends Mage_Payment_Model_Method_Abstract
 {
-
     public function toOptionArray()
     {
-
         $installment = array();
 
         Mage::helper('mercadopago')->log("Get installments ... ", 'mercadopago.log');

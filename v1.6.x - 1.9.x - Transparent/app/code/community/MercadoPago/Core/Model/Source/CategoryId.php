@@ -19,10 +19,8 @@ require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
 class MercadoPago_Core_Model_Source_CategoryId
     extends Mage_Payment_Model_Method_Abstract
 {
-
     public function toOptionArray()
     {
-
         Mage::helper('mercadopago')->log("Get Categories... ", 'mercadopago.log');
 
         $response = MPRestClient::get("/item_categories");
@@ -35,11 +33,10 @@ class MercadoPago_Core_Model_Source_CategoryId
         foreach ($response as $v):
             //force category others first
             if ($v['id'] == "others"):
-                $cat[0] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
-            else:
+                $cat[0] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description'])); else:
                 $count++;
-                $cat[$count] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
-            endif;
+        $cat[$count] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
+        endif;
 
         endforeach;
 
@@ -47,6 +44,5 @@ class MercadoPago_Core_Model_Source_CategoryId
         ksort($cat);
 
         return $cat;
-
     }
 }

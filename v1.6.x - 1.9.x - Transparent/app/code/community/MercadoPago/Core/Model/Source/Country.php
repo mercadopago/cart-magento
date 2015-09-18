@@ -17,10 +17,8 @@
 class MercadoPago_Core_Model_Source_Country
     extends Mage_Payment_Model_Method_Abstract
 {
-
     public function toOptionArray()
     {
-
         $country = array();
         $country[] = array('value' => "mla", 'label' => Mage::helper('mercadopago')->__("Argentina"));
         $country[] = array('value' => "mlb", 'label' => Mage::helper('mercadopago')->__("Brasil"));
@@ -32,6 +30,5 @@ class MercadoPago_Core_Model_Source_Country
         ksort($country);
 
         return $country;
-
     }
 }

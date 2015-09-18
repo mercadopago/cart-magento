@@ -17,10 +17,8 @@
 class MercadoPago_Core_SuccessController
     extends Mage_Core_Controller_Front_Action
 {
-
     public function indexAction()
     {
-
         $this->loadLayout();
 
         //instancia block de success
@@ -30,11 +28,10 @@ class MercadoPago_Core_SuccessController
         $this->getLayout()->getBlock('content')->append($block);
         $this->_initLayoutMessages('core/session');
 
-        //adiciona uma clean page 
+        //adiciona uma clean page
         $root = $this->getLayout()->getBlock('root');
         $root->setTemplate("mercadopago/clean.phtml");
 
         $this->renderLayout();
     }
-
 }

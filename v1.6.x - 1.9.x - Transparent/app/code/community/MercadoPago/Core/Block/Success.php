@@ -18,13 +18,10 @@
 class MercadoPago_Core_Block_Success
     extends Mage_Core_Block_Template
 {
-
     protected function _construct()
     {
-
         parent::_construct();
         $this->setTemplate('mercadopago/success.phtml');
-
     }
 
     public function getOrder()

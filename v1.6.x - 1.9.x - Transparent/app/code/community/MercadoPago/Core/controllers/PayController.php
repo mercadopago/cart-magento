@@ -17,7 +17,6 @@
 class MercadoPago_Core_PayController
     extends Mage_Core_Controller_Front_Action
 {
-
     public function indexAction()
     {
         $standard = Mage::getModel('mercadopago/standard_payment');
@@ -36,11 +35,10 @@ class MercadoPago_Core_PayController
         $this->getLayout()->getBlock('content')->append($block);
         $this->_initLayoutMessages('core/session');
 
-        //adiciona uma clean page 
+        //adiciona uma clean page
         $root = $this->getLayout()->getBlock('root');
         $root->setTemplate("mercadopago/clean.phtml");
 
         $this->renderLayout();
     }
-
 }

@@ -14,19 +14,19 @@
 * @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
-class MercadoPago_Core_Helper_Data extends Mage_Payment_Helper_Data{
-    
-    
-    public function log($message, $file = "mercadopago.log", $array = null){
-		//pega a configuração de log no admin, essa variavel vem como true por padrão
-		$action_log = Mage::getStoreConfig('payment/mercadopago/logs');
-		
-		//caso tenha um array, transforma em json para melhor visualização
-		if(!is_null($array))
-			$message .= " - " . json_encode($array);
-		
-		//set log
-		Mage::log($message, null, $file, $action_log);
-	}
-    
+class MercadoPago_Core_Helper_Data extends Mage_Payment_Helper_Data
+{
+    public function log($message, $file = "mercadopago.log", $array = null)
+    {
+        //pega a configuração de log no admin, essa variavel vem como true por padrão
+        $action_log = Mage::getStoreConfig('payment/mercadopago/logs');
+        
+        //caso tenha um array, transforma em json para melhor visualização
+        if (!is_null($array)) {
+            $message .= " - " . json_encode($array);
+        }
+        
+        //set log
+        Mage::log($message, null, $file, $action_log);
+    }
 }

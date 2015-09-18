@@ -22,11 +22,11 @@ class MercadoPago_Core_Model_Source_Country
     {
 
         $country = array();
-        $country[] = array('value' => "mla", 'label' => Mage::helper('adminhtml')->__("Argentina"));
-        $country[] = array('value' => "mlb", 'label' => Mage::helper('adminhtml')->__("Brasil"));
-        $country[] = array('value' => "mco", 'label' => Mage::helper('adminhtml')->__("Colombia"));
-        $country[] = array('value' => "mlm", 'label' => Mage::helper('adminhtml')->__("Mexico"));
-        $country[] = array('value' => "mlc", 'label' => Mage::helper('adminhtml')->__("Chile"));
+        $country[] = array('value' => "mla", 'label' => Mage::helper('mercadopago')->__("Argentina"));
+        $country[] = array('value' => "mlb", 'label' => Mage::helper('mercadopago')->__("Brasil"));
+        $country[] = array('value' => "mco", 'label' => Mage::helper('mercadopago')->__("Colombia"));
+        $country[] = array('value' => "mlm", 'label' => Mage::helper('mercadopago')->__("Mexico"));
+        $country[] = array('value' => "mlc", 'label' => Mage::helper('mercadopago')->__("Chile"));
 
         //force order by key
         ksort($country);

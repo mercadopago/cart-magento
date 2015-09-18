@@ -35,10 +35,10 @@ class MercadoPago_Core_Model_Source_CategoryId
         foreach ($response as $v):
             //force category others first
             if ($v['id'] == "others"):
-                $cat[0] = array('value' => $v['id'], 'label' => Mage::helper('adminhtml')->__($v['description']));
+                $cat[0] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
             else:
                 $count++;
-                $cat[$count] = array('value' => $v['id'], 'label' => Mage::helper('adminhtml')->__($v['description']));
+                $cat[$count] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
             endif;
 
         endforeach;

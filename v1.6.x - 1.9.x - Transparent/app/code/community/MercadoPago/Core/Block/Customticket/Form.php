@@ -18,14 +18,11 @@
 class MercadoPago_Core_Block_Customticket_Form
     extends Mage_Payment_Block_Form_Cc
 {
-
     protected function _construct()
     {
-
         parent::_construct();
 
         $this->setTemplate('mercadopago/custom_ticket/form.phtml');
-
     }
 
     protected function _prepareLayout()
@@ -55,7 +52,7 @@ class MercadoPago_Core_Block_Customticket_Form
         return parent::_prepareLayout();
     }
 
-    function getTicketsOptions()
+    public function getTicketsOptions()
     {
         $payment_methods = Mage::getModel('mercadopago/core')->getPaymentMethods();
         $tickets = array();

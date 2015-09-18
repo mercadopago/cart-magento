@@ -18,7 +18,6 @@
 class MercadoPago_Core_Block_Customticket_Info
     extends Mage_Payment_Block_Info_Cc
 {
-
     protected function _construct()
     {
         parent::_construct();
@@ -34,7 +33,6 @@ class MercadoPago_Core_Block_Customticket_Info
 
     public function getInfoPayment()
     {
-
         $order_id = $this->getInfo()->getOrder()->getIncrementId();
         $info_payments = Mage::getModel('mercadopago/core')->getInfoPaymentByOrder($order_id);
 

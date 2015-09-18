@@ -19,7 +19,6 @@ require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
 class MercadoPago_Core_Model_CustomTicket_Payment
     extends Mage_Payment_Model_Method_Abstract
 {
-
     //configura o lugar do arquivo para listar meios de pagamento
     protected $_formBlockType = 'mercadopago/customticket_form';
     protected $_infoBlockType = 'mercadopago/customticket_info';
@@ -45,11 +44,10 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         if ($response !== false):
             $this->getInfoInstance()->setAdditionalInformation('activation_uri', $response['response']['activation_uri']);
 
-            return true;
+        return true;
         endif;
 
         return false;
-
     }
 
     public function assignData($data)
@@ -83,7 +81,4 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         // requisicao vem da pagina de finalizacao de pedido
         return Mage::getUrl('mercadopago/success', array('_secure' => true));
     }
-
 }
-
-?>

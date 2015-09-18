@@ -17,12 +17,10 @@
 class MercadoPago_Core_ApiController
     extends Mage_Core_Controller_Front_Action
 {
-
     // action: /mercadopago/api/amount
 
     public function amountAction()
     {
-
         $core = Mage::getModel('mercadopago/core');
 
         $response = array(
@@ -32,7 +30,6 @@ class MercadoPago_Core_ApiController
         $jsonData = Mage::helper('core')->jsonEncode($response);
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody($jsonData);
-
     }
 
     // action: /mercadopago/api/cupom?id=:cupom_id
@@ -58,7 +55,6 @@ class MercadoPago_Core_ApiController
         $jsonData = Mage::helper('core')->jsonEncode($response);
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody($jsonData);
-
     }
 
 
@@ -82,7 +78,5 @@ class MercadoPago_Core_ApiController
         $jsonData = Mage::helper('core')->jsonEncode($response);
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody($jsonData);
-
     }
-
 }

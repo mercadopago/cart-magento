@@ -18,7 +18,6 @@
 class MercadoPago_Core_Block_Custom_Form
     extends Mage_Payment_Block_Form_Cc
 {
-
     protected function _construct()
     {
         parent::_construct();
@@ -57,16 +56,17 @@ class MercadoPago_Core_Block_Custom_Form
      * Only used in Mexico
      *
      */
-    function getCardsPaymentMethods(){
+    public function getCardsPaymentMethods()
+    {
         $payment_methods = Mage::getModel('mercadopago/core')->getPaymentMethods();
         $payment_methods_types = array("credit_card", "debit_card", "prepaid_card");
         $types = array();
         
         //percorre todos os payments methods
-        foreach($payment_methods['response'] as $pm){
+        foreach ($payment_methods['response'] as $pm) {
             
             //filtra por payment_methods
-            if(in_array($pm['payment_type_id'], $payment_methods_types)){
+            if (in_array($pm['payment_type_id'], $payment_methods_types)) {
                 $types[] = $pm;
             }
         }

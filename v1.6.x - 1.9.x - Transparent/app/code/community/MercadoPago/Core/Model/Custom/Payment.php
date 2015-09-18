@@ -19,7 +19,6 @@ require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
 class MercadoPago_Core_Model_Custom_Payment
     extends Mage_Payment_Model_Method_Abstract
 {
-
     //configura o block do formulario e de informações sobre o pagamento
     protected $_formBlockType = 'mercadopago/custom_form';
     protected $_infoBlockType = 'mercadopago/custom_info';
@@ -44,7 +43,7 @@ class MercadoPago_Core_Model_Custom_Payment
         if ($this->getInfoInstance()->getAdditionalInformation('payment_type_id') != "ticket" && $this->getInfoInstance()->getAdditionalInformation('card_token_id') == ""):
             Mage::throwException(Mage::helper('mercadopago')->__('Verify the form data or wait until the validation of the payment data'));
 
-            return false;
+        return false;
         endif;
 
 
@@ -60,9 +59,9 @@ class MercadoPago_Core_Model_Custom_Payment
 
             //set status
             $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
-            $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
+        $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
 
-            return true;
+        return true;
         endif;
 
         return false;
@@ -97,16 +96,16 @@ class MercadoPago_Core_Model_Custom_Payment
 
         if ($info_form['card_token_id'] != ""):
             $info->setAdditionalInformation('expiration_date', $info_form['cardExpirationMonth'] . "/" . $info_form['cardExpirationYear']);
-            $info->setAdditionalInformation('cardholderName', $info_form['cardholderName']);
-            $info->setAdditionalInformation('trunc_card', $info_form['trunc_card']);
+        $info->setAdditionalInformation('cardholderName', $info_form['cardholderName']);
+        $info->setAdditionalInformation('trunc_card', $info_form['trunc_card']);
         endif;
 
 
         //caso seja não tenha card_token_id
         /*if($info_form['card_token_id'] == ""):
-			Mage::throwException(Mage::helper('mercadopago')->__('Verify the form data or wait until the validation of the payment data'));
-			return false;
-		endif;*/
+            Mage::throwException(Mage::helper('mercadopago')->__('Verify the form data or wait until the validation of the payment data'));
+            return false;
+        endif;*/
 
 
         return $this;
@@ -200,10 +199,9 @@ class MercadoPago_Core_Model_Custom_Payment
         Mage::helper('mercadopago')->log("post pago", 'mercadopago-custom.log', $response);
 
         if ($response['status'] == 200 || $response['status'] == 201):
-            return $response;
-        else:
+            return $response; else:
             $e = "";
-            foreach ($response['response']['cause'] as $error):
+        foreach ($response['response']['cause'] as $error):
                 switch ($error['code']) {
                     case "106":
                         $e .= Mage::helper('mercadopago')->__('You can not make payments to users in other countries.');
@@ -259,19 +257,17 @@ class MercadoPago_Core_Model_Custom_Payment
                         break;
                 }
 
-            endforeach;
-            Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
-            Mage::helper('mercadopago')->log("response post pago: ", 'mercadopago-custom.log', $response);
-            Mage::throwException($e);
+        endforeach;
+        Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
+        Mage::helper('mercadopago')->log("response post pago: ", 'mercadopago-custom.log', $response);
+        Mage::throwException($e);
 
-            return false;
+        return false;
         endif;
-
     }
 
-    function makePreference()
+    public function makePreference()
     {
-
         $core = Mage::getModel('mercadopago/core');
         $quote = $this->_getQuote();
         $orderId = $quote->getReservedOrderId();
@@ -313,10 +309,9 @@ class MercadoPago_Core_Model_Custom_Payment
             $arr['card_issuer_id'] = (int)$payment->getAdditionalInformation("issuers");
         }
 
-        //monta array de produtos 
+        //monta array de produtos
         $arr['items'] = array();
         foreach ($order->getAllVisibleItems() as $item) {
-
             $produto = $item->getProduct();
 
             //get image
@@ -335,7 +330,6 @@ class MercadoPago_Core_Model_Custom_Payment
                 "quantity"    => (int)number_format($item->getQtyOrdered(), 0, '.', ''),
                 "unit_price"  => (float)number_format($produto->getPrice(), 2, '.', '')
             );
-
         }
 
 
@@ -408,7 +402,6 @@ class MercadoPago_Core_Model_Custom_Payment
 
 
         if ($payment->getAdditionalInformation("coupon_code") != "") {
-
             $coupon_code = $payment->getAdditionalInformation("coupon_code");
             Mage::helper('mercadopago')->log("Validating coupon_code: " . $coupon_code, 'mercadopago-custom.log');
 
@@ -438,7 +431,6 @@ class MercadoPago_Core_Model_Custom_Payment
                 $arr['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
                 $arr['coupon_code'] = $coupon_code;
                 Mage::helper('mercadopago')->log("Coupon applied. API response 200.", 'mercadopago-custom.log');
-
             }
         }
 
@@ -451,6 +443,5 @@ class MercadoPago_Core_Model_Custom_Payment
         }
 
         return $arr;
-
     }
 }

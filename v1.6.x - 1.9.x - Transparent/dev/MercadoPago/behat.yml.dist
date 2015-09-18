@@ -1,0 +1,15 @@
+default:
+  extensions:
+    MageTest\MagentoExtension\Extension: ~
+    Behat\MinkExtension:
+      base_url: "${base_url}"
+      goutte:
+        guzzle_parameters:
+        curl.options:
+          CURLOPT_SSL_VERIFYPEER: false
+          CURLOPT_CERTINFO: false
+          CURLOPT_TIMEOUT: 120
+        ssl.certificate_authority: false
+      selenium2:
+        wd_host: http://127.0.0.1:4444/wd/hub
+        browser: firefox

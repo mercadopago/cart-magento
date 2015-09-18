@@ -45,7 +45,7 @@ $route = $this->getRequest()->getRequestedRouteName();
             
             <?php
                 if($coupon_mercadopago):
-                    $block = $this->getLayout()->createBlock('MercadoPago_Block_Discount');
+                    $block = $this->getLayout()->createBlock('mercadopago/discount');
                     echo $block->toHtml();
                 endif;
             ?>

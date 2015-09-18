@@ -156,7 +156,7 @@
 				</mercadopago>
 				
 				
-				<mercadopago_custom translate="label" module="mercadopago_custom">
+				<mercadopago_custom translate="label" module="mercadopago">
                     <label>MercadoPago Custom - Credit Card</label>
                     <sort_order>100</sort_order>
                     <show_in_default>1</show_in_default>
@@ -224,7 +224,7 @@
                     </fields>
                 </mercadopago_custom>
 				
-				<mercadopago_customticket translate="label" module="mercadopago_customticket">
+				<mercadopago_customticket translate="label" module="mercadopago">
 					<label>MercadoPago Custom - Ticket</label>
 					<sort_order>101</sort_order>
 					<show_in_default>1</show_in_default>
@@ -284,7 +284,7 @@
 					</fields>
 				</mercadopago_customticket>
 				
-				<mercadopago_standard module="mercadopago_standard">
+				<mercadopago_standard module="mercadopago">
 					<label>MercadoPago Standard - Credit Card, Ticket and Account Money</label>
 					<sort_order>102</sort_order>
 					<show_in_default>1</show_in_default>

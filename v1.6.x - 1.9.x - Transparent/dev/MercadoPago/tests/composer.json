@@ -19,7 +19,8 @@
     "behat/mink-selenium2-driver": "*",
     "bossa/phpspec2-expect": "1.*",
     "magetest/magento-phpspec-extension": "~2.0",
-    "ciaranmcnulty/behat-stepthroughextension": "dev-master"
+    "ciaranmcnulty/behat-stepthroughextension": "dev-master",
+    "phpmd/phpmd": "@stable"
   },
   "autoload": {
     "psr-0": {

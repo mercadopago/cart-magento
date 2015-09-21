@@ -1,0 +1,17 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+
+before_script:
+#  - cp -f .travis/composer.json composer.json
+#  - composer install
+#  - git clone https://github.com/magento-ecg/coding-standard
+  - cd v1.6.x\ -\ 1.9.x\ -\ Transparent/dev/MercadoPago/tests/
+  - composer install --no-interaction
+  - cd ../../../
+  - pwd
+
+script:
+  - dev/MercadoPago/tests/vendor/bin/phpmd app/code/community/MercadoPago text dev/MercadoPago/tests/static/phpmd/ruleset.xml

@@ -68,11 +68,11 @@
         </routers>
         <translate>
             <modules>
-                <mercadopago>
+                <mercadopago_core>
                     <files>
-                        <default>mercadopago.csv</default>
+                        <default>MercadoPago_Core.csv</default>
                     </files>
-                </mercadopago>
+                </mercadopago_core>
             </modules>
         </translate>
     </frontend>
@@ -81,11 +81,11 @@
     <adminhtml>
         <translate>
             <modules>
-                <translations>
+                <mercadopago_core>
                     <files>
-                        <default>mercadopago.csv</default>
+                        <default>MercadoPago_Core.csv</default>
                     </files>
-                </translations>
+                </mercadopago_core>
             </modules>
         </translate>
     </adminhtml>

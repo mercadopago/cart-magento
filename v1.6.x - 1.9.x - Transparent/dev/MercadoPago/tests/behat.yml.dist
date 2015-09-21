@@ -1,15 +1,14 @@
 default:
+  autoload:
+    '': %paths.base%/functional/features/bootstrap
+  suites:
+    default:
+      paths:
+        features: functional/features
   extensions:
     MageTest\MagentoExtension\Extension: ~
     Behat\MinkExtension:
-      base_url: "${base_url}"
-      goutte:
-        guzzle_parameters:
-        curl.options:
-          CURLOPT_SSL_VERIFYPEER: false
-          CURLOPT_CERTINFO: false
-          CURLOPT_TIMEOUT: 120
-        ssl.certificate_authority: false
+      base_url: "%MAGENTO_URL%"
       selenium2:
         wd_host: http://127.0.0.1:4444/wd/hub
-        browser: firefox
+        browser: %BROWSER_DRIVER%

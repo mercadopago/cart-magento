@@ -21,16 +21,8 @@ class MercadoPago_Core_SuccessController
     {
         $this->loadLayout();
 
-        //instancia block de success
-        $block = Mage::app()->getLayout()->createBlock('mercadopago/success');
 
-        //insere o block
-        $this->getLayout()->getBlock('content')->append($block);
         $this->_initLayoutMessages('core/session');
-
-        //adiciona uma clean page
-        $root = $this->getLayout()->getBlock('root');
-        $root->setTemplate("mercadopago/clean.phtml");
 
         $this->renderLayout();
     }

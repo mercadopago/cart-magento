@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+
+    <mercadopago_success_index>
+
+        <reference name="content">
+            <block type="mercadopago/success" name="mercadopago.success" as="success" template="mercadopago/success.phtml"/>
+        </reference>
+        <reference name="root">
+            <action method="setTemplate"><template>mercadopago/clean.phtml</template></action>
+        </reference>
+
+    </mercadopago_success_index>
+
+</layout>

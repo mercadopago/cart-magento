@@ -20,7 +20,8 @@
     "bossa/phpspec2-expect": "1.*",
     "magetest/magento-phpspec-extension": "~2.0",
     "ciaranmcnulty/behat-stepthroughextension": "dev-master",
-    "phpmd/phpmd": "@stable"
+    "phpmd/phpmd": "@stable",
+    "squizlabs/php_codesniffer": "2.*"
   },
   "autoload": {
     "psr-0": {

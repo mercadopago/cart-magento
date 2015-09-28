@@ -22,7 +22,6 @@ class MercadoPago_Core_Block_Customticket_Info
     {
         parent::_construct();
         $this->setTemplate('mercadopago/custom_ticket/info.phtml');
-        $this->setModuleName('Mage_Payment');
     }
 
 

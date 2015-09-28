@@ -75,6 +75,13 @@
                 </mercadopago_core>
             </modules>
         </translate>
+        <layout>
+            <updates>
+                <mercadopago_core>
+                    <file>mercadopago.xml</file>
+                </mercadopago_core>
+            </updates>
+        </layout>
     </frontend>
 
 
@@ -147,4 +154,5 @@
             
         </payment>
     </default>
+
 </config>

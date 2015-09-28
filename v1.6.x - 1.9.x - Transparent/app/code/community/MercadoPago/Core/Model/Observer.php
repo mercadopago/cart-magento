@@ -61,15 +61,15 @@ class MercadoPago_Core_Model_Observer
     public function availableCheckout()
     {
         //verifica se o pais selecionado possui integracao para utilizar os checkouts transparents
-        $core = new Mage_Core_Model_Resource_Setup('core_setup');
+
         $country = Mage::getStoreConfig('payment/mercadopago/country');
         
         if (!in_array($country, $this->available_transparent_credit_cart)) {
-            $core->setConfigData('payment/mercadopago_custom/active', 0);
+            Mage::getConfig()->saveConfig('payment/mercadopago_custom/active', 0);
         }
         
         if (!in_array($country, $this->available_transparent_ticket)) {
-            $core->setConfigData('payment/mercadopago_customticket/active', 0);
+            Mage::getConfig()->saveConfig('payment/mercadopago_customticket/active', 0);
         }
     }
     
@@ -93,8 +93,7 @@ class MercadoPago_Core_Model_Observer
             
             if ($default_banner != $current_banner) {
                 //set o novo banner atualiza o banner
-                $core = new Mage_Core_Model_Resource_Setup('core_setup');
-                $core->setConfigData('payment/' . $type_checkout . '/banner_checkout', $default_banner);
+                Mage::getConfig()->saveConfig('payment/' . $type_checkout . '/banner_checkout', $default_banner);
                 
                 Mage::helper('mercadopago')->log('payment/' . $type_checkout . '/banner_checkout setted ' . $default_banner, 'mercadopago.log');
             }
@@ -142,8 +141,7 @@ class MercadoPago_Core_Model_Observer
             Mage::helper('mercadopago')->log("Sponsor id setted", 'mercadopago.log', $sponsor_id);
         }
         
-        $core = new Mage_Core_Model_Resource_Setup('core_setup');
-        $core->setConfigData('payment/mercadopago/sponsor_id', $sponsor_id);
+        Mage::getConfig()->saveConfig('payment/mercadopago/sponsor_id',$sponsor_id);
         Mage::helper('mercadopago')->log("Sponsor saved", 'mercadopago.log', $sponsor_id);
     }
 }

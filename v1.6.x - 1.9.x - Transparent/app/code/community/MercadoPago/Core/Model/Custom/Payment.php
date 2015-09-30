@@ -198,19 +198,23 @@ class MercadoPago_Core_Model_Custom_Payment
         $response = $mp->create_custon_payment($pref);
         Mage::helper('mercadopago')->log("post pago", 'mercadopago-custom.log', $response);
 
-        if ($response['status'] == 200 || $response['status'] == 201):
-            return $response; else:
+        if ($response['status'] == 200 || $response['status'] == 201) {
+            return $response;
+        } else {
             $e = "";
-        foreach ($response['response']['cause'] as $error){
-            $e .= Mage::helper('mercadopago/messages')->getMessage($response['status'],$error['code']);
+            $exception = Mage::helper('mercadopago')->getModelException();
+            foreach ($response['response']['cause'] as $error) {
+                $e .= $exception->getUserMessage($error) . " ";
+            }
+
+            Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
+            Mage::helper('mercadopago')->log("response post pago: ", 'mercadopago-custom.log', $response);
+
+            $exception->setMessage($e);
+            throw $exception;
+
+            return false;
         }
-
-        Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
-        Mage::helper('mercadopago')->log("response post pago: ", 'mercadopago-custom.log', $response);
-        Mage::throwException($e);
-
-        return false;
-        endif;
     }
 
     public function makePreference()

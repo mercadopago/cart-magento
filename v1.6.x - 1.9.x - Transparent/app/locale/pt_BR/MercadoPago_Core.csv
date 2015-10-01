@@ -148,3 +148,13 @@
 
 "Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials","Obtenha seu public_key no seguinte endereço: https://www.mercadopago.com/mlb/account/credentials"
 "Choose the status when payment was chargeback", "Escolha o status dos pedidos para pagamentos com status Chargeback"
+
+"Cannot operate between users from different countries.","Não é possível operar entre usuários de diferentes países."
+"Payment method does not process installments.","Payment method does not process installments. Choose another credit card or payment method."
+"Cannot pay this amount with this paymentMethod","Forma de pagamento não processa parcelas. Escolha um outro cartão de crédito ou método de pagamento."
+"You user cannot do payments currently","Você usuário não pode fazer pagamentos atualmente."
+"You user cannot do payments currently with this payment method.","Você usuário não pode fazer pagamentos actualmente com este método de pagamento ."
+"Unavailable paymentmethod currently.","Método de pagamento actualmente indisponíveis."
+"Already posted the same request in the last minute.","Já postou o mesmo pedido no último minuto . Tente novamente mais tarde."
+"Doesn't find a campaign with the given code.", "Não encontrar uma campanha com o código dado."
+"We could not process your payment in this moment. Please check the form data and retry later","Não foi possível processar seu pagamento , neste momento . Por favor verifique os dados do formulário e tente novamente mais tarde"

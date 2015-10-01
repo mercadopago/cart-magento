@@ -7,7 +7,7 @@ class MercadoPago_Core_Model_MpException
     extends Mage_Core_Exception
 {
 
-    const GENERIC_USER_MESSAGE = "We could not process your payment in this moment. Please check the form data";
+    const GENERIC_USER_MESSAGE = "We could not process your payment in this moment. Please check the form data and retry later";
 
     protected $messagesMap;
 

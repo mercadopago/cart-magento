@@ -60,25 +60,26 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         
         if ($response['status'] == 200 || $response['status'] == 201):
             $payment = $response['response'];
-        $init_point = $payment['init_point'];
+            $init_point = $payment['init_point'];
             
-        $array_assign = array(
-                "init_point" => $init_point,
-                "type_checkout" => $this->getConfigData('type_checkout'),
-                "iframe_width" => $this->getConfigData('iframe_width'),
-                "iframe_height" => $this->getConfigData('iframe_height'),
-                "banner_checkout" => $this->getConfigData('banner_checkout'),
-                "status" => 201
-            );
+            $array_assign = array(
+                    "init_point" => $init_point,
+                    "type_checkout" => $this->getConfigData('type_checkout'),
+                    "iframe_width" => $this->getConfigData('iframe_width'),
+                    "iframe_height" => $this->getConfigData('iframe_height'),
+                    "banner_checkout" => $this->getConfigData('banner_checkout'),
+                    "status" => 201
+                );
             
-        Mage::helper('mercadopago')->log("Array preference ok", 'mercadopago-standard.log'); else:
+            Mage::helper('mercadopago')->log("Array preference ok", 'mercadopago-standard.log');
+        else:
             $array_assign = array(
                 "message" => Mage::helper('mercadopago')->__('An error has occurred. Please refresh the page.'),
                 "json" => json_encode($response),
                 "status" => 400
             );
             
-        Mage::helper('mercadopago')->log("Array preference error", 'mercadopago-standard.log');
+            Mage::helper('mercadopago')->log("Array preference error", 'mercadopago-standard.log');
         endif;
 
         return $array_assign;

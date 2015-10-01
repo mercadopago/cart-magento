@@ -29,4 +29,19 @@ class MercadoPago_Core_Helper_Data extends Mage_Payment_Helper_Data
         //set log
         Mage::log($message, null, $file, $action_log);
     }
+
+    /**
+     * Return Exception model dependig on api version configured
+     *
+     * @return false|MercadoPago_Core_Model_MpException
+     */
+    public function getModelException() {
+        $version = Mage::getStoreConfig('payment/mercadopago/api_version');
+        if ($version == 'v0') {
+            return new MercadoPago_Core_Model_MpV0Exception();
+        } elseif ($version == 'v1') {
+            return new MercadoPago_Core_Model_MpV1Exception();
+        }
+        return new MercadoPago_Core_Model_MpException();
+    }
 }

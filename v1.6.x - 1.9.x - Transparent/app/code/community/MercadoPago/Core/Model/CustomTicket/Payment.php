@@ -14,7 +14,6 @@
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
 
 class MercadoPago_Core_Model_CustomTicket_Payment
     extends Mage_Payment_Model_Method_Abstract

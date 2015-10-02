@@ -198,14 +198,14 @@ class FeatureContext
     public function userExists($arg1, $arg2)
     {
         $customer = Mage::getModel("customer/customer");
-        $storeId = Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStore();
-
-        $customer->setWebsiteId(1);
+        $store = Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStore();
+        $websiteId = $store->getWebsiteId();
+        $customer->setWebsiteId($websiteId);
         $customer->loadByEmail($arg1);
 
         if (!$customer->getId()) {
-            $customer->setWebsiteId(1)
-                ->setStore($storeId)
+            $customer->setWebsiteId($websiteId)
+                ->setStore($store)
                 ->setFirstname('John')
                 ->setLastname('Doe')
                 ->setEmail($arg1)

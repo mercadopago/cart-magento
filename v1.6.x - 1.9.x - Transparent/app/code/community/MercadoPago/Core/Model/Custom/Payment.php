@@ -22,6 +22,7 @@ class MercadoPago_Core_Model_Custom_Payment
     //configura o block do formulario e de informações sobre o pagamento
     protected $_formBlockType = 'mercadopago/custom_form';
     protected $_infoBlockType = 'mercadopago/custom_info';
+    protected $_successBlockType = 'mercadopago/custom_success';
 
     protected $_code = 'mercadopago_custom';
 
@@ -443,5 +444,10 @@ class MercadoPago_Core_Model_Custom_Payment
         }
 
         return $arr;
+    }
+
+    public function getSuccessBlockType()
+    {
+        return $this->_successBlockType;
     }
 }

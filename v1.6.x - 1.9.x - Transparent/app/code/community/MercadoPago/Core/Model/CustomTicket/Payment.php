@@ -22,6 +22,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
     //configura o lugar do arquivo para listar meios de pagamento
     protected $_formBlockType = 'mercadopago/customticket_form';
     protected $_infoBlockType = 'mercadopago/customticket_info';
+    protected $_successBlockType = 'mercadopago/customticket_success';
 
     protected $_code = 'mercadopago_customticket';
 
@@ -80,5 +81,10 @@ class MercadoPago_Core_Model_CustomTicket_Payment
     {
         // requisicao vem da pagina de finalizacao de pedido
         return Mage::getUrl('mercadopago/success', array('_secure' => true));
+    }
+
+    public function getSuccessBlockType()
+    {
+        return $this->_successBlockType;
     }
 }

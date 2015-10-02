@@ -14,8 +14,6 @@
 * @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
-require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
-
 class MercadoPago_Core_Model_Observer
 {
     private $banners = array(
@@ -114,7 +112,7 @@ class MercadoPago_Core_Model_Observer
         $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
         Mage::helper('mercadopago')->log("Get client secret: " . $client_secret, 'mercadopago.log');
         
-        $mp = new MP($client_id, $client_secret);
+        $mp = new MercadoPago_Lib_Api($client_id, $client_secret);
         $user = $mp->get("/users/me");
         Mage::helper('mercadopago')->log("API Users response", 'mercadopago.log', $user);
         

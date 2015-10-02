@@ -39,10 +39,10 @@ class MercadoPago_Core_Model_CustomTicket_Payment
     public function initialize($paymentAction, $stateObject)
     {
         //chama model para fazer o post do pagamento
-        $response = Mage::getModel('mercadopago/custom_payment')->postPago();
+        $response = $this->preparePostPayment();
 
         if ($response !== false):
-            $this->getInfoInstance()->setAdditionalInformation('activation_uri', $response['response']['activation_uri']);
+            $this->getInfoInstance()->setAdditionalInformation('activation_uri', $response['response']['transaction_details']['external_resource_url']);
 
         return true;
         endif;
@@ -60,14 +60,12 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
         //get array info
         $info_form = $data->getData();
+        $info_form = $info_form['mercadopago_customticket'];
+
+        Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $info_form);
 
         $info = $this->getInfoInstance();
-        $info->setAdditionalInformation('payment_type_id', "ticket");
-        $info->setAdditionalInformation('payment_method', $info_form['payment_method_boleto']);
-        $info->setAdditionalInformation('card_token_id', "");
-        $info->setAdditionalInformation('issuers', "");
-        $info->setAdditionalInformation('installments', 1);
-        $info->setAdditionalInformation('doc_number', "");
+        $info->setAdditionalInformation('payment_method', $info_form['payment_method_ticket']);
 
         if (isset($info_form['coupon_code'])) {
             $info->setAdditionalInformation('coupon_code', $info_form['coupon_code']);
@@ -76,9 +74,90 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         return $this;
     }
 
+    public function preparePostPayment()
+    {
+        Mage::helper('mercadopago')->log("Ticket -> init prepare post payment", 'mercadopago-custom.log');
+        $core = Mage::getModel('mercadopago/core');
+        $quote = $this->_getQuote();
+        $order_id = $quote->getReservedOrderId();
+        $order = $this->_getOrder($order_id);
+
+        //pega payment dentro da order para pegar as informacoes adicionadas pela funcao assignData()
+        $payment = $order->getPayment();
+
+        $payment_info = array();
+
+        /* verifica se o pagamento possui coupon_code */
+        if ($payment->getAdditionalInformation("coupon_code") != "") {
+            $payment_info['coupon_code'] = $payment->getAdditionalInformation("coupon_code");
+        }
+
+        /* cria a preferencia padrão */
+        $preference = $core->makeDefaultPreferencePaymentV1($payment_info);
+
+        /* adiciona informações sobre pagamento com ticket */
+        $preference['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
+
+        Mage::helper('mercadopago')->log("Ticket -> PREFERENCE to POST /v1/payments", 'mercadopago-custom.log', $preference);
+
+        /* POST /v1/payments */
+
+        return $core->postPaymentV1($preference);
+    }
+
     public function getOrderPlaceRedirectUrl()
     {
         // requisicao vem da pagina de finalizacao de pedido
         return Mage::getUrl('mercadopago/success', array('_secure' => true));
+    }
+
+    /**
+     * @return Mage_Checkout_Model_Session
+     */
+    protected function _getCheckout()
+    {
+        return Mage::getSingleton('checkout/session');
+    }
+
+    /**
+     * Get admin checkout session namespace
+     *
+     * @return Mage_Adminhtml_Model_Session_Quote
+     */
+    protected function _getAdminCheckout()
+    {
+        return Mage::getSingleton('adminhtml/session_quote');
+    }
+
+    /**
+     * Retrieves Quote
+     *
+     * @param integer $quoteId
+     *
+     * @return Mage_Sales_Model_Quote
+     */
+    protected function _getQuote($quoteId = null)
+    {
+        if (!empty($quoteId)) {
+            return Mage::getModel('sales/quote')->load($quoteId);
+        } else {
+            if (Mage::app()->getStore()->isAdmin()) {
+                return $this->_getAdminCheckout()->getQuote();
+            } else {
+                return $this->_getCheckout()->getQuote();
+            }
+        }
+    }
+
+    /**
+     * Retrieves Order
+     *
+     * @param integer $incrementId
+     *
+     * @return Mage_Sales_Model_Order
+     */
+    protected function _getOrder($incrementId)
+    {
+        return Mage::getModel('sales/order')->loadByIncrementId($incrementId);
     }
 }

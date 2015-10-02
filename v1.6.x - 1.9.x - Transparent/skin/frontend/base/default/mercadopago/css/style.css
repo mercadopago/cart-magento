@@ -4,121 +4,78 @@
  *
  */
 
-#mercadopago_custom_code{
-    width: 60px !important;    
-}
-
-#mercadopago_custom_doc{
-    width: 190px !important;
-}
-
-.sp-methods .form-list.mercadopago{
-    padding:0 !important;
-}
-.sp-methods .form-list.form-mercadopago{
-    padding:0 !important;
-}
-
-.banner_checkout_mp{
-    
-}
-
-#img_payment_method{
+#mercadopago_checkout_custom ul li{
     float: left;
     width: 100%;
-    margin: 5px 0 0 0;    
 }
 
-.box-mes{
+#mercadopago_checkout_custom ul li label{
+    width: 100%;
+    float: left;
+}
+
+#mercadopago_checkout_custom ul li input, #mercadopago_checkout_custom ul li select{
+    height: 20px;
+}
+
+#cardId{
+    background-position: 93% 50% !important;
+    height: 25px !important;
+    background-color: #fff !important;
+}
+
+#cardNumber{
+    background-position: 98% 50% !important;
+    width: 190px;
+    background-color: #fff !important;
+}
+
+#cardholderName{
     width: 160px;
+}
+
+#securityCode, #securityCodeOCP{
+    width: 53px;
+}
+
+#securityCodeOCP__mp{
+    margin: 0 0 -10px;
+}
+
+#docNumber{
+    width: 106px;
+}
+
+#box_month, #box_year{
+    width: 130px;
     float: left;
-    margin: 0 10px 0 0;
 }
 
-.box-mes select{
-    width: 150px;
-}
-.box-ano{
-    width: 135px;
-    float: left;
+#box_month select, #box_year select{
+    width: 130px;
 }
 
-.box-ano select{
-    width: 90px;
-}
-
-.box-input{
-    float: left;
-    width: 100%;
-    margin: 10px 0 0 0;
-}
-
-.input-box.box-installments{
-    margin: 0 0 10px 0;
+#box_month{
+    margin: 0 5px 0 0;
 }
 
 
-
-#docType{
-    width: 60px;
-}
-
-
-#installments{
-    margin: 0 0 5px 0;
-}
-#status{
-    float: left;
-    margin: 10px 0 10px 0;
-    width: 100%;
-    border: 1px solid transparent;
-    border-radius: 4px;
+.message-error{
     display: none;
 }
 
-#status.msg-alert{
-    color: #31708f;
-    background-color: #d9edf7;
-    border-color: #bce8f1;
+
+#mercadopago_checkout_custom_ticket .form-mercadopago{
+    padding-left: 0px;
 }
 
-#status.msg-success{
-    color: #3c763d;
-    background-color: #dff0d8;
-    border-color: #d6e9c6;
+.action_ocp{
+    cursor: pointer;
+    width: 160px;
 }
 
-#status.msg-error{
-    color: #a94442;
-    background-color: #f2dede;
-    border-color: #ebccd1;
-}
-
-#status .box{
-    float: left;
-    width: 100%;
-    padding: 15px;
-}
-
-#status .loading-mp{
-    float: left;
-    margin: 0 10px 0 0;
-}
-
-#status .text-mp{
-    float: left;
-}
-
-p.msg-status{
-    margin: 0 0 !important;
-}
-
-#mercadopago_transparent_doc{
-    width: 120px;
-}
-
-#mercadopago_transparent_code{
-    width: 50px;
+#return_list_card_mp{
+    display: none;
 }
 
 /*
@@ -190,16 +147,16 @@ p.msg-status{
         width: 100%;
         margin: 0 0 5px 0;
     }
-    
+
     .box-mes {
         width: 100%;
     }
-    
+
     .box-ano{
         width: 100%;
         margin: 10px 0 0 0;
     }
-    
+
     .box-mes select{
         width: 50%;
     }
@@ -210,16 +167,16 @@ p.msg-status{
     #mercadopago_transparent_doc {
         width: 50%;
     }
-    
+
     #status{
         margin: 0 0 10px 0;
     }
-    
+
     iframe#checkout_mercadopago{
         float: left;
         width: 100% !important;
     }
-    
+
     .form-list.mercadopago{
         float: left;
         min-width: 100%;
@@ -241,9 +198,9 @@ p.msg-status{
 }
 
 .mercadopago-message-coupon{
-    margin: 5px 0 0 0px;
+    margin: 5px 0 -5px 0px;
     float: left;
-    width: 100%;
+    width: 92%;
 }
 
 .mercadopago-message-coupon li{
@@ -254,7 +211,12 @@ p.msg-status{
     cursor: pointer;
     float: left;
     font-size: 10px;
+    border: 1px solid #cecece;
     text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background-color: #F0F0F0;
+    margin: 5px 0 0 0;
 }
 
 .mercadopago-coupon-action-remove{
@@ -262,7 +224,7 @@ p.msg-status{
 }
 
 .mercadopago-message-coupon p{
-      margin: 0 0 0 0;
+    margin: 0 0 0 0;
 }
 
 .mercadopago-focus{

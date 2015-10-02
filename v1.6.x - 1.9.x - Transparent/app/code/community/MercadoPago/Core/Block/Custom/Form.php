@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * NOTICE OF LICENSE
@@ -13,8 +14,6 @@
  * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
-
 class MercadoPago_Core_Block_Custom_Form
     extends Mage_Payment_Block_Form_Cc
 {
@@ -28,15 +27,15 @@ class MercadoPago_Core_Block_Custom_Form
     {
 
         //pega public key para settar no aquivo mercadopago.js
-        $model = Mage::getModel('mercadopago/custom_payment');
-        $public_key = $model->getConfigData('public_key');
+        $public_key = Mage::getStoreConfig('payment/mercadopago/public_key');
 
         //init js no header
         $block = Mage::app()->getLayout()->createBlock('core/text', 'js_mercadopago');
         $block->setText(
             sprintf(
                 '
-                <script type="text/javascript">var PublicKeyMercadoPagoTransparent = "' . $public_key . '";</script>
+                <script type="text/javascript">var PublicKeyMercadoPagoCustom = "' . $public_key . '";</script>
+                <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
                 <script type="text/javascript" src="%s"></script>',
                 Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/mercadopago.js'
             )
@@ -61,16 +60,23 @@ class MercadoPago_Core_Block_Custom_Form
         $payment_methods = Mage::getModel('mercadopago/core')->getPaymentMethods();
         $payment_methods_types = array("credit_card", "debit_card", "prepaid_card");
         $types = array();
-        
+
         //percorre todos os payments methods
         foreach ($payment_methods['response'] as $pm) {
-            
+
             //filtra por payment_methods
             if (in_array($pm['payment_type_id'], $payment_methods_types)) {
                 $types[] = $pm;
             }
         }
-        
+
         return $types;
+    }
+
+    public function getCustomerAndCards()
+    {
+        $customer = Mage::getModel('mercadopago/custom_payment')->getCustomerAndCards();
+
+        return $customer;
     }
 }

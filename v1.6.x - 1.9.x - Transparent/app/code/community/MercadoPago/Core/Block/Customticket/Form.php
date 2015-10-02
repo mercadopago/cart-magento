@@ -29,15 +29,15 @@ class MercadoPago_Core_Block_Customticket_Form
     {
 
         //pega public key para settar no aquivo mercadopago.js
-        $model = Mage::getModel('mercadopago/custom_payment');
-        $public_key = $model->getConfigData('public_key');
+        $public_key = $public_key = Mage::getStoreConfig('payment/mercadopago/public_key');
 
         //init js no header
         $block = Mage::app()->getLayout()->createBlock('core/text', 'js_mercadopago');
         $block->setText(
             sprintf(
                 '
-                <script type="text/javascript">var PublicKeyMercadoPagoTransparent = "' . $public_key . '";</script>
+                <script type="text/javascript">var PublicKeyMercadoPagoCustom = "' . $public_key .'";</script>
+                <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
                 <script type="text/javascript" src="%s"></script>',
                 Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/mercadopago.js'
             )

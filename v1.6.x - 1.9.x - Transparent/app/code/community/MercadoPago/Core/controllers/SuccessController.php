@@ -19,11 +19,23 @@ class MercadoPago_Core_SuccessController
 {
     public function indexAction()
     {
-        $this->loadLayout();
+        $checkoutTypeHandle = $this->getCheckoutHandle();
+        $this->loadLayout(['default', $checkoutTypeHandle]);
 
 
         $this->_initLayoutMessages('core/session');
 
         $this->renderLayout();
+    }
+
+    public function getCheckoutHandle()
+    {
+        $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+        $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
+
+        $handle = $order->getPayment()->getMethod();
+        $handle .= '_success';
+
+        return $handle;
     }
 }

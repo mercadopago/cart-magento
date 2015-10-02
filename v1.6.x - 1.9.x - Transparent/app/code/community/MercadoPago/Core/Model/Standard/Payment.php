@@ -21,8 +21,7 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
     //configura o lugar do arquivo para listar meios de pagamento
     protected $_formBlockType = 'mercadopago/standard_form';
     protected $_infoBlockType = 'mercadopago/standard_info';
-    protected $_successBlockType = 'mercadopago/standard_success';
-    
+
     protected $_code = 'mercadopago_standard';
     
     protected $_isGateway                   = true;

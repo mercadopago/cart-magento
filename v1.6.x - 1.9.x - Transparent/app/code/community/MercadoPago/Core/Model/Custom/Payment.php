@@ -199,72 +199,23 @@ class MercadoPago_Core_Model_Custom_Payment
         $response = $mp->create_custon_payment($pref);
         Mage::helper('mercadopago')->log("post pago", 'mercadopago-custom.log', $response);
 
-        if ($response['status'] == 200 || $response['status'] == 201):
-            return $response; else:
+        if ($response['status'] == 200 || $response['status'] == 201) {
+            return $response;
+        } else {
             $e = "";
-        foreach ($response['response']['cause'] as $error):
-                switch ($error['code']) {
-                    case "106":
-                        $e .= Mage::helper('mercadopago')->__('You can not make payments to users in other countries.');
-                        break;
+            $exception = new MercadoPago_Core_Model_Api_V0_Exception();
+            foreach ($response['response']['cause'] as $error) {
+                $e .= $exception->getUserMessage($error) . " ";
+            }
 
-                    case "109":
-                        $e .= Mage::helper('mercadopago')->__('Payment Method selected does not process payments in installments selected. Choose another card or another payment method.');
-                        break;
+            Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
+            Mage::helper('mercadopago')->log("response post pago: ", 'mercadopago-custom.log', $response);
 
-                    case "126":
-                        $e .= Mage::helper('mercadopago')->__('We could not process your payment. Error code: 126.');
-                        break;
+            $exception->setMessage($e);
+            throw $exception;
 
-                    case "129":
-                        $e .= Mage::helper('mercadopago')->__('Payment Method selected does not process payments for the selected amount. Choose another card or another payment method.');
-                        break;
-
-                    case "137":
-                        $e .= Mage::helper('mercadopago')->__('The amount is required.');
-                        break;
-
-                    case "145":
-                        $e .= Mage::helper('mercadopago')->__('We could not process your payment. Error code: 145.');
-                        break;
-
-                    case "150":
-                        $e .= Mage::helper('mercadopago')->__('You can not make payments. Error code: 150.');
-                        break;
-
-                    case "151":
-                        $e .= Mage::helper('mercadopago')->__('You can not make payments.');
-                        break;
-
-                    case "160":
-                        $e .= Mage::helper('mercadopago')->__('We could not process your payment. Error code: 160.');
-                        break;
-
-                    case "204":
-                        $e .= Mage::helper('mercadopago')->__('Payment Method selected is not available at this time. Choose another card or another payment method.');
-                        break;
-
-                    case "801":
-                        $e .= Mage::helper('mercadopago')->__('You made a similar payment moments ago. Try again in a few minutes.');
-                        break;
-
-                    //validacao do coupon
-                    case "campaign_code_doesnt_match":
-                        $e .= Mage::helper('mercadopago')->__("Doesn't find a campaign with the given code.");
-                        break;
-
-                    default:
-                        $e .= Mage::helper('mercadopago')->__("We could not process your payment. %s", json_encode($response));
-                        break;
-                }
-
-        endforeach;
-        Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
-        Mage::helper('mercadopago')->log("response post pago: ", 'mercadopago-custom.log', $response);
-        Mage::throwException($e);
-
-        return false;
-        endif;
+            return false;
+        }
     }
 
     public function makePreference()

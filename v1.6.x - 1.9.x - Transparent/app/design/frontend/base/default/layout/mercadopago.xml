@@ -3,9 +3,16 @@
 
     <mercadopago_success_index>
 
-        <reference name="content">
-            <block type="mercadopago/success" name="mercadopago.success" as="success" template="mercadopago/success.phtml"/>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>mercadopago/css/style-success.css</stylesheet>
+            </action>
         </reference>
+
+        <reference name="content">
+            <block type="mercadopago/success" name="mercadopago.success" as="success" />
+        </reference>
+
         <reference name="root">
             <action method="setTemplate"><template>mercadopago/clean.phtml</template></action>
         </reference>

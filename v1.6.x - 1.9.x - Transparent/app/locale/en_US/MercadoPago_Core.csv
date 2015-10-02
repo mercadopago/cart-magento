@@ -124,7 +124,7 @@
 
 "Cannot operate between users from different countries.","Cannot operate between users from different countries."
 "Payment method does not process installments.","Payment method does not process installments. Choose another credit card or payment method."
-"Cannot pay this amount with this paymentMethod","Cannot pay this amount with this paymentMethod. Choose another credit card or payment method."
+"Cannot pay this amount with this paymentMethod.","Cannot pay this amount with this paymentMethod. Choose another credit card or payment method."
 "You user cannot do payments currently","You user cannot do payments currently."
 "You user cannot do payments currently with this payment method.","You user cannot do payments currently with this payment method."
 "Unavailable paymentmethod currently.","Unavailable paymentmethod currently."

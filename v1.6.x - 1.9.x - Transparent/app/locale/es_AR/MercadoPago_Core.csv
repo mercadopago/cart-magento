@@ -124,7 +124,7 @@
 
 "Cannot operate between users from different countries.","No es posible realizar pagos a usuarios de otros países."
 "Payment method does not process installments.","El medio de pago no procesa pagos en cuotas. Elige otra tarjeta u otro medio de pago."
-"Cannot pay this amount with this paymentMethod","El medio de pago no procesa pagos del monto seleccionado. Elige otra tarjeta u otro medio de pago."
+"Cannot pay this amount with this paymentMethod.","El medio de pago no procesa pagos del monto seleccionado. Elige otra tarjeta u otro medio de pago."
 "You user cannot do payments currently","No puedes realizar pagos en este momento."
 "You user cannot do payments currently with this payment method.","No puedes realizar pagos con este medio de pago en este momento."
 "Unavailable paymentmethod currently.","El medio de pago no está disponible en este momento, elige otra tarjeta o medio de pago."

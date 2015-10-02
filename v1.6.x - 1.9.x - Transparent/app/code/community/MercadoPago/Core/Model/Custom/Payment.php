@@ -202,7 +202,7 @@ class MercadoPago_Core_Model_Custom_Payment
             return $response;
         } else {
             $e = "";
-            $exception = Mage::helper('mercadopago')->getModelException();
+            $exception = new MercadoPago_Core_Model_Api_V0_Exception();
             foreach ($response['response']['cause'] as $error) {
                 $e .= $exception->getUserMessage($error) . " ";
             }

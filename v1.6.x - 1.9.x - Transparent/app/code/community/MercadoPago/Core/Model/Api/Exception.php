@@ -3,7 +3,7 @@
 /**
  * Exception which thrown by MercadoPago API in case of processable error codes
  */
-class MercadoPago_Core_Model_MpException
+class MercadoPago_Core_Model_Api_Exception
     extends Mage_Core_Exception
 {
 

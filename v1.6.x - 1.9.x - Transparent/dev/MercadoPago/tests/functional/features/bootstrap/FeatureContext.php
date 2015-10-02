@@ -191,4 +191,29 @@ class FeatureContext
 
         }
     }
+
+    /**
+     * @Given User :arg1 :arg2 exists
+     */
+    public function userExists($arg1, $arg2)
+    {
+        $customer = Mage::getModel("customer/customer");
+        $store = Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStore();
+        $websiteId = $store->getWebsiteId();
+        $customer->setWebsiteId($websiteId);
+        $customer->loadByEmail($arg1);
+
+        if (!$customer->getId()) {
+            $customer->setWebsiteId($websiteId)
+                ->setStore($store)
+                ->setFirstname('John')
+                ->setLastname('Doe')
+                ->setEmail($arg1)
+                ->setPassword($arg2);
+
+            $customer->save();
+        }
+
+    }
+
 }

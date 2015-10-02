@@ -1,7 +1,8 @@
 Feature: Payment results in MercadoPago Custom Checkout
 
   Background:
-    Given I am logged in as "test_user_2135227@testuser.com" "magento"
+    Given User "test_user_2135227@testuser.com" "magento" exists
+    And I am logged in as "test_user_2135227@testuser.com" "magento"
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element

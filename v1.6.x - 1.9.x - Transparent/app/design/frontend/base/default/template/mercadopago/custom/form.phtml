@@ -129,7 +129,7 @@ $customer = $this->getCustomerAndCards();
 
                     <li id="doc_type__mp">
                         <label for="docType"><?php echo $this->__('Document Type'); ?></label>
-                        <select id="docType" data-checkout="docType" data-element-id="#doc_type__mp"></select>
+                        <select id="docType" data-checkout="docType" data-element-id="#doc_type__mp" name="payment[<?php echo $_code; ?>][doc_type]"></select>
 
                         <p class="message-error error-322 error-212 validation-advice"><?php echo $this->__('Document Type is invalid.'); ?></p>
                     </li>

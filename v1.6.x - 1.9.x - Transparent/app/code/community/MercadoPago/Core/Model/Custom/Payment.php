@@ -84,6 +84,7 @@ class MercadoPago_Core_Model_Custom_Payment
         $info->setAdditionalInformation('token', $info_form['token']);
         $info->setAdditionalInformation('payment_method', $info_form['payment_method_id']);
         $info->setAdditionalInformation('installments', $info_form['installments']);
+        $info->setAdditionalInformation('doc_type', $info_form['doc_type']);
         $info->setAdditionalInformation('doc_number', $info_form['doc_number']);
 
         //caso tenha banco, adiciona nas informações adicionais
@@ -142,7 +143,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
         /* verifica se o pagamento possui doc_number */
         if ($payment->getAdditionalInformation("doc_number") != "") {
-            $payment_info['identification_type'] = "CPF";
+            $payment_info['identification_type'] = $payment->getAdditionalInformation("doc_type");
             $payment_info['identification_number'] = $payment->getAdditionalInformation("doc_number");
         }
 

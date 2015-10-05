@@ -100,6 +100,8 @@ function defineInputs(){
 
     }
 
+    exclude_inputs.push("#issuer")
+
     for (var x = 0; x < data_checkout.length; x++) {
         var $id = "#" + data_checkout[x].id;
 

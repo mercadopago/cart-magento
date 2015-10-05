@@ -14,8 +14,6 @@
 * @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
-require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
-
 class MercadoPago_Core_Model_Observer
 {
     private $banners = array(
@@ -61,15 +59,15 @@ class MercadoPago_Core_Model_Observer
     public function availableCheckout()
     {
         //verifica se o pais selecionado possui integracao para utilizar os checkouts transparents
-        $core = new Mage_Core_Model_Resource_Setup('core_setup');
+
         $country = Mage::getStoreConfig('payment/mercadopago/country');
         
         if (!in_array($country, $this->available_transparent_credit_cart)) {
-            $core->setConfigData('payment/mercadopago_custom/active', 0);
+            Mage::getConfig()->saveConfig('payment/mercadopago_custom/active', 0);
         }
         
         if (!in_array($country, $this->available_transparent_ticket)) {
-            $core->setConfigData('payment/mercadopago_customticket/active', 0);
+            Mage::getConfig()->saveConfig('payment/mercadopago_customticket/active', 0);
         }
     }
     
@@ -93,8 +91,7 @@ class MercadoPago_Core_Model_Observer
             
             if ($default_banner != $current_banner) {
                 //set o novo banner atualiza o banner
-                $core = new Mage_Core_Model_Resource_Setup('core_setup');
-                $core->setConfigData('payment/' . $type_checkout . '/banner_checkout', $default_banner);
+                Mage::getConfig()->saveConfig('payment/' . $type_checkout . '/banner_checkout', $default_banner);
                 
                 Mage::helper('mercadopago')->log('payment/' . $type_checkout . '/banner_checkout setted ' . $default_banner, 'mercadopago.log');
             }
@@ -115,7 +112,7 @@ class MercadoPago_Core_Model_Observer
         $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
         Mage::helper('mercadopago')->log("Get client secret: " . $client_secret, 'mercadopago.log');
         
-        $mp = new MP($client_id, $client_secret);
+        $mp = new MercadoPago_Lib_Api($client_id, $client_secret);
         $user = $mp->get("/users/me");
         Mage::helper('mercadopago')->log("API Users response", 'mercadopago.log', $user);
         
@@ -142,8 +139,7 @@ class MercadoPago_Core_Model_Observer
             Mage::helper('mercadopago')->log("Sponsor id setted", 'mercadopago.log', $sponsor_id);
         }
         
-        $core = new Mage_Core_Model_Resource_Setup('core_setup');
-        $core->setConfigData('payment/mercadopago/sponsor_id', $sponsor_id);
+        Mage::getConfig()->saveConfig('payment/mercadopago/sponsor_id',$sponsor_id);
         Mage::helper('mercadopago')->log("Sponsor saved", 'mercadopago.log', $sponsor_id);
     }
 }

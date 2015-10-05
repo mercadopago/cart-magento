@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+
+    <mercadopago_success_index>
+
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>mercadopago/css/style-success.css</stylesheet>
+            </action>
+        </reference>
+
+        <reference name="root">
+            <action method="setTemplate"><template>mercadopago/clean.phtml</template></action>
+        </reference>
+
+    </mercadopago_success_index>
+
+    <mercadopago_custom_success>
+        <reference name="content">
+            <block type="mercadopago/custom_success" name="mercadopago.success" as="success" />
+        </reference>
+    </mercadopago_custom_success>
+
+    <mercadopago_standard_success>
+        <reference name="content">
+            <block type="mercadopago/standard_success" name="mercadopago.success" as="success" />
+        </reference>
+    </mercadopago_standard_success>
+
+    <mercadopago_customticket_success>
+        <reference name="content">
+            <block type="mercadopago/customticket_success" name="mercadopago.success" as="success"/>
+        </reference>
+    </mercadopago_customticket_success>
+
+</layout>

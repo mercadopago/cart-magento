@@ -14,14 +14,12 @@
 * @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
-require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
-
 class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_Abstract
 {
     //configura o lugar do arquivo para listar meios de pagamento
     protected $_formBlockType = 'mercadopago/standard_form';
     protected $_infoBlockType = 'mercadopago/standard_info';
-    
+
     protected $_code = 'mercadopago_standard';
     
     protected $_isGateway                   = true;
@@ -46,7 +44,7 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         //seta sdk php mercadopago
         $client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
         $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
-        $mp = new MP($client_id, $client_secret);
+        $mp = new MercadoPago_Lib_Api($client_id, $client_secret);
         
         //monta a prefernecia
         $pref = $this->makePreference();
@@ -61,7 +59,8 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         if ($response['status'] == 200 || $response['status'] == 201):
             $payment = $response['response'];
         $init_point = $payment['init_point'];
-            
+        $init_point = $payment['sandbox_init_point'];
+
         $array_assign = array(
                 "init_point" => $init_point,
                 "type_checkout" => $this->getConfigData('type_checkout'),
@@ -291,5 +290,10 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         
         
         return $arr;
+    }
+
+    public function getSuccessBlockType()
+    {
+        return $this->_successBlockType;
     }
 }

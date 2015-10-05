@@ -75,6 +75,13 @@
                 </mercadopago_core>
             </modules>
         </translate>
+        <layout>
+            <updates>
+                <mercadopago_core>
+                    <file>mercadopago.xml</file>
+                </mercadopago_core>
+            </updates>
+        </layout>
     </frontend>
 
 
@@ -104,6 +111,7 @@
                 <order_status_cancelled>pending</order_status_cancelled>
                 <order_status_chargeback>pending</order_status_chargeback>
                 <logs>0</logs>
+                <debug_mode>0</debug_mode>
             </mercadopago>
             
             <mercadopago_custom>
@@ -147,4 +155,5 @@
             
         </payment>
     </default>
+
 </config>

@@ -39,6 +39,7 @@ class FeatureContext
      */
     public function iPressElement($cssClass)
     {
+        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
         $button = $this->findElement($cssClass);
         $button->press();
     }
@@ -51,11 +52,17 @@ class FeatureContext
     {
         $page = $this->getSession()->getPage();
 
+        if ($page->findById('billing-address-select')){
+            $page->selectFieldOption('billing-address-select','');
+        }
+
         $page->fillField('billing:firstname', 'John');
         $page->fillField('billing:middlename', 'George');
         $page->fillField('billing:lastname', 'Doe');
         $page->fillField('billing:company', 'MercadoPago');
-        $page->fillField('billing:email', 'johndoe@mercadopago.com');
+        if ($page->findById('billing:email')){
+            $page->fillField('billing:email', 'johndoe@mercadopago.com');
+        }
 
         $page->selectFieldOption('billing:country_id','AR');
         $page->fillField('billing:region', 'Buenos Aires');
@@ -90,6 +97,7 @@ class FeatureContext
     public function iSelectRadio($id)
     {
         $page = $this->getSession()->getPage();
+        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
         $element = $page->findById($id);
         if(null === $element){
             throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'id', $id);
@@ -120,4 +128,92 @@ class FeatureContext
 
         expect($element->getText())->toBe("MercadoPago");
     }
+
+
+
+    /**
+     * @Given I fill text field :arg1 with :arg2
+     */
+    public function iFillTextFieldWith($arg1, $arg2)
+    {
+        $page = $this->getSession()->getPage();
+
+        $page->fillField($arg1, $arg2);
+    }
+
+    /**
+     * @Given I select option field :arg1 with :arg2
+     */
+    public function iSelectOptionFieldWith($arg1, $arg2)
+    {
+        $page = $this->getSession()->getPage();
+
+        $page->selectFieldOption($arg1,$arg2);
+    }
+
+    /**
+     * @Then I should see :arg1
+     */
+    public function iShouldSee($arg1)
+    {
+        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
+        $actual = $this->getSession()->getPage()->getText();
+        $actual = preg_replace('/\s+/u', ' ', $actual);
+        $regex = '/'.preg_quote($arg1, '/').'/ui';
+        $message = sprintf('The text "%s" was not found anywhere in the text of the current page.', $arg1);
+
+        if ((bool) preg_match($regex, $actual)) {
+            return;
+        }
+
+        throw new ElementNotFoundException($this->getSession()->getDriver(), $message);
+    }
+
+    /**
+     * @Given I am logged in as :arg1 :arg2
+     */
+    public function iAmLoggedInAs($arg1, $arg2)
+    {
+        $session = $this->getSession();
+
+        $session->visit($this->locatePath('customer/account/login'));
+
+        $login = $session->getPage()->find('css', '#email');
+        $pwd = $session->getPage()->find('css', '#pass');
+        $submit = $session->getPage()->find('css', '#send2');
+        if ($login && $pwd && $submit) {
+            $email = $arg1;
+            $password = $arg2;
+            $login->setValue($email);
+            $pwd->setValue($password);
+            $submit->click();
+            $this->findElement('div.welcome-msg');
+
+        }
+    }
+
+    /**
+     * @Given User :arg1 :arg2 exists
+     */
+    public function userExists($arg1, $arg2)
+    {
+        $customer = Mage::getModel("customer/customer");
+        $store = Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStore();
+        $websiteId = $store->getWebsiteId();
+        $customer->setWebsiteId($websiteId);
+        $customer->loadByEmail($arg1);
+
+        if (!$customer->getId()) {
+            $customer->setWebsiteId($websiteId)
+                ->setStore($store)
+                ->setFirstname('John')
+                ->setLastname('Doe')
+                ->setEmail($arg1)
+                ->setPassword($arg2);
+
+            $customer->save();
+        }
+
+    }
+
 }

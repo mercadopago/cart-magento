@@ -14,7 +14,6 @@
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-require_once(Mage::getBaseDir('lib') . '/mercadopago/mercadopago.php');
 
 class MercadoPago_Core_Model_Source_CategoryId
     extends Mage_Payment_Model_Method_Abstract
@@ -23,7 +22,7 @@ class MercadoPago_Core_Model_Source_CategoryId
     {
         Mage::helper('mercadopago')->log("Get Categories... ", 'mercadopago.log');
 
-        $response = MPRestClient::get("/item_categories");
+        $response = MercadoPago_Lib_RestClient::get("/item_categories");
         Mage::helper('mercadopago')->log("API item_categories", 'mercadopago.log', $response);
 
         $response = $response['response'];

@@ -22,7 +22,6 @@ class MercadoPago_Core_Block_Custom_Info
     {
         parent::_construct();
         $this->setTemplate('mercadopago/custom/info.phtml');
-        $this->setModuleName('Mage_Payment');
     }
 
     public function getOrder()

@@ -244,8 +244,7 @@ class MercadoPago_Core_Model_Core extends Mage_Payment_Model_Method_Abstract
         $model = $this;
         $this->client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
         $this->client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
-        $mp = new MercadoPago_Lib_Api($this->client_id, $this->client_secret);
-        $mp->sandbox_mode(Mage::getStoreConfig('payment/mercadopago/sandbox_mode'));
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->client_id, $this->client_secret);
         return $mp->get_payment($payment_id);
     }
     
@@ -254,7 +253,7 @@ class MercadoPago_Core_Model_Core extends Mage_Payment_Model_Method_Abstract
         $model = $this;
         $this->client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
         $this->client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
-        $mp = new MercadoPago_Lib_Api($this->client_id, $this->client_secret);
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->client_id, $this->client_secret);
         
         return $mp->get("/merchant_orders/" . $merchant_order_id);
     }
@@ -264,7 +263,7 @@ class MercadoPago_Core_Model_Core extends Mage_Payment_Model_Method_Abstract
         $this->client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
         $this->client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
         
-        $mp = new MercadoPago_Lib_Api($this->client_id, $this->client_secret);
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->client_id, $this->client_secret);
 
         $payment_methods = $mp->get("/v1/payment_methods");
     
@@ -303,7 +302,7 @@ class MercadoPago_Core_Model_Core extends Mage_Payment_Model_Method_Abstract
         $this->client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
         $this->client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
         
-        $mp = new MercadoPago_Lib_Api($this->client_id, $this->client_secret);
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->client_id, $this->client_secret);
 
         $params = array(
             "transaction_amount" => $this->getAmount(),

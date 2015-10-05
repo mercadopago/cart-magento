@@ -29,7 +29,7 @@ class MercadoPago_Core_Model_Source_PaymentMethods extends Mage_Payment_Model_Me
         
         //verifico se as credenciais não são vazias, caso sejam não é possível obte-los
         if ($client_id != "" && $client_secret != "") {
-            $mp = new MercadoPago_Lib_Api($client_id, $client_secret);
+            $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
             $access_token = $mp->get_access_token();
             
             Mage::helper('mercadopago')->log("Get payment methods by country... ", 'mercadopago.log');

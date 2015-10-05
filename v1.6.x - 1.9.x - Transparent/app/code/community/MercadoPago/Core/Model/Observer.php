@@ -112,7 +112,7 @@ class MercadoPago_Core_Model_Observer
         $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
         Mage::helper('mercadopago')->log("Get client secret: " . $client_secret, 'mercadopago.log');
         
-        $mp = new MercadoPago_Lib_Api($client_id, $client_secret);
+        $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
         $user = $mp->get("/users/me");
         Mage::helper('mercadopago')->log("API Users response", 'mercadopago.log', $user);
         

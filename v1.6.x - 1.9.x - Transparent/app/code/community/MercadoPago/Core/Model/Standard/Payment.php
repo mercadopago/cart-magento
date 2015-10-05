@@ -46,7 +46,7 @@ class MercadoPago_Core_Model_Standard_Payment
         //seta sdk php mercadopago
         $client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
         $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
-        $mp = new MercadoPago_Lib_Api($client_id, $client_secret);
+        $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
 
         //monta a prefernecia
         $pref = $this->makePreference();

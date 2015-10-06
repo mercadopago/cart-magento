@@ -105,12 +105,11 @@ class MercadoPago_Core_Model_Observer
         
         $sponsor_id = "";
         Mage::helper('mercadopago')->log("Valid user test", 'mercadopago.log');
-
+        
         $access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
         Mage::helper('mercadopago')->log("Get access_token: " . $access_token, 'mercadopago.log');
-
-        $mp = new MercadoPago_Lib_Api($access_token);
-
+        
+        $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
         $user = $mp->get("/users/me");
         Mage::helper('mercadopago')->log("API Users response", 'mercadopago.log', $user);
         

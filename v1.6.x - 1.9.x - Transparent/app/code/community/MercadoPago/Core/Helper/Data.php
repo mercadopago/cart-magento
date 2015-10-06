@@ -31,4 +31,21 @@ class MercadoPago_Core_Helper_Data
         Mage::log($message, null, $file, $action_log);
     }
 
+    public function getApiInstance() {
+        $params = func_num_args();
+        if ($params > 2 || $params < 1) {
+            Mage::throwException("Invalid arguments. Use CLIENT_ID and CLIENT SECRET, or ACCESS_TOKEN");
+        }
+        if ($params == 1) {
+            $api = new MercadoPago_Lib_Api(func_get_arg(0));
+        } else {
+            $api = new MercadoPago_Lib_Api(func_get_arg(0),func_get_arg(1));
+        }
+        if (Mage::getStoreConfigFlag('payment/mercadopago/sandbox_mode')){
+            $api->sandbox_mode(true);
+        }
+        return $api;
+
+    }
+
 }

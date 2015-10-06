@@ -205,7 +205,7 @@ class MercadoPago_Core_Model_Custom_Payment
         $access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
 
         //seta sdk php mercadopago
-        $mp = new MercadoPago_Lib_Api($access_token);
+        $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
 
         $customer = $mp->get("/v1/customers/search", array(
                 "email" => $email
@@ -249,7 +249,7 @@ class MercadoPago_Core_Model_Custom_Payment
         $access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
 
         //seta sdk php mercadopago
-        $mp = new MercadoPago_Lib_Api($access_token);
+        $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
 
         foreach ($customer['cards'] as $card) {
 

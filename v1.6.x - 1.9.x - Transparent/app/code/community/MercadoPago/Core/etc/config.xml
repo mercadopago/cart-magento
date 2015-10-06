@@ -112,6 +112,7 @@
                 <order_status_chargeback>pending</order_status_chargeback>
                 <logs>0</logs>
                 <debug_mode>0</debug_mode>
+                <sandbox_mode>0</sandbox_mode>
             </mercadopago>
             
             <mercadopago_custom>

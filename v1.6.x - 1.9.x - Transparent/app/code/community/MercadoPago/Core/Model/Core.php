@@ -425,7 +425,7 @@ class MercadoPago_Core_Model_Core
         Mage::helper('mercadopago')->log("Access Token for Post", 'mercadopago-custom.log', $access_token);
 
         //seta sdk php mercadopago
-        $mp = new MercadoPago_Lib_Api($access_token);
+        $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
 
         $response = $mp->post("/v1/payments", $preference);
         Mage::helper('mercadopago')->log("POST /v1/payments", 'mercadopago-custom.log', $response);
@@ -500,34 +500,37 @@ class MercadoPago_Core_Model_Core
 
     public function getPayment($payment_id)
     {
+        $model = $this;
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
-        $mp = new MercadoPago_Lib_Api($this->access_token);
-
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
         return $mp->get_payment($payment_id);
     }
 
     public function getPaymentV1($payment_id)
     {
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
-        $mp = new MercadoPago_Lib_Api($this->access_token);
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 
         return $mp->get("/v1/payments/" . $payment_id);
     }
 
     public function getMerchantOrder($merchant_order_id)
     {
+        $model = $this;
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
-        $mp = new MercadoPago_Lib_Api($this->access_token);
-
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
+        
         return $mp->get("/merchant_orders/" . $merchant_order_id);
     }
 
     public function getPaymentMethods()
     {
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
-        $mp = new MercadoPago_Lib_Api($this->access_token);
-        $payment_methods = $mp->get("/v1/payment_methods");
+        
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 
+        $payment_methods = $mp->get("/v1/payment_methods");
+    
         return $payment_methods;
     }
 
@@ -549,19 +552,21 @@ class MercadoPago_Core_Model_Core
     {
         $quote = $this->_getQuote();
         $total = $quote->getBaseGrandTotal();
-
+        
         //caso o valor seja null setta um valor 0
         if (is_null($total)) {
             $total = 0;
         }
-
-        return (float)$total;
+        
+        return (float) $total;
     }
-
+    
     public function validCoupon($id)
     {
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
-        $mp = new MercadoPago_Lib_Api($this->access_token);
+        
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
+
         $params = array(
             "transaction_amount" => $this->getAmount(),
             "payer_email"        => $this->getEmailCustomer(),

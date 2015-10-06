@@ -33,8 +33,8 @@ class MercadoPago_Core_Model_Observer
             "mla" => "http://imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg",
             "mlb" => "http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg",
             "mco" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
-            "mlm" => "http://imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG",
-            "mlc" => "https://secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif"
+            "mlc" => "https://secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
+            "mlv" => "https://imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg"
         )
     );
     
@@ -105,14 +105,12 @@ class MercadoPago_Core_Model_Observer
         
         $sponsor_id = "";
         Mage::helper('mercadopago')->log("Valid user test", 'mercadopago.log');
-        
-        $client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
-        Mage::helper('mercadopago')->log("Get client id: " . $client_id, 'mercadopago.log');
-        
-        $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
-        Mage::helper('mercadopago')->log("Get client secret: " . $client_secret, 'mercadopago.log');
-        
-        $mp = new MercadoPago_Lib_Api($client_id, $client_secret);
+
+        $access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
+        Mage::helper('mercadopago')->log("Get access_token: " . $access_token, 'mercadopago.log');
+
+        $mp = new MercadoPago_Lib_Api($access_token);
+
         $user = $mp->get("/users/me");
         Mage::helper('mercadopago')->log("API Users response", 'mercadopago.log', $user);
         

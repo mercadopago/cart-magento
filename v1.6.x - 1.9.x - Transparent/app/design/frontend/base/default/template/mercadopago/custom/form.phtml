@@ -21,7 +21,7 @@ $customer = $this->getCustomerAndCards();
 
             <?php
             if ($coupon_mercadopago):
-                $block = $this->getLayout()->createBlock('MercadoPago_Block_Discount')->setCode($_code);
+                $block = $this->getLayout()->createBlock('mercadopago/discount')->setCode($_code);
                 echo $block->toHtml();
                 ?>
                 <script type="text/javascript">

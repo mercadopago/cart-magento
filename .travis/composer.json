@@ -9,7 +9,8 @@
   ],
   "require": {
     "aydin-hassan/magento-core-composer-installer": "~1.0",
-    "magento/magento": "1.9.2.1"
+    "magento/magento": "1.9.2.1",
+    "phing/phing": "^2.13@dev"
   },
   "repositories": [
     {

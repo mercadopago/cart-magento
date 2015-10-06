@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Mercado Pago Magento Plugin" basedir="." default="main">
+
+    <property name="build.basedir" value=".travis/build" />
+
+    <property file="${build.basedir}/build.properties"/>
+    <property file="${build.basedir}/build.properties.local" override="true"/>
+
+    <if>
+        <isset property="env.PLUGIN_COUNTRY" />
+        <then>
+            <property name="plugin.country" value="${env.PLUGIN_COUNTRY}" override="true" />
+        </then>
+    </if>
+
+    <property file="${build.basedir}/properties/build.properties.${plugin.country}" override="true" />
+
+    <import file="${build.basedir}/build-tools.xml" />
+
+    <target name="main">
+        <echo>Mercado Pago - Main Build File</echo>
+    </target>
+
+    <target name="magento_configuration" depends="check-n98magerun">
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set dev/template/allow_symlink 1" logoutput="true" />
+
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/country ${plugin.country}" logoutput="true" />
+
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/client_id ${setting.payment.mercadopago.client_id}" logoutput="true" />
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/client_secret ${setting.payment.mercadopago.client_secret}" logoutput="true" />
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/public_key ${setting.payment.mercadopago.public_key}" logoutput="true" />
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/access_token ${setting.payment.mercadopago.access_token}" logoutput="true" />
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_custom/active ${setting.payment.mercadopago_custom.active}" logoutput="true" />
+    </target>
+
+    <!-- ============================================  -->
+    <!-- Target: setup                                 -->
+    <!-- ============================================  -->
+    <target name="setup">
+        <echo>--------------------------------</echo>
+        <echo msg="Creating Temporal Folder"/>
+        <echo>--------------------------------</echo>
+
+        <delete dir="./tmp/" includeemptydirs="true" failonerror="true" quiet="true"/>
+        <mkdir dir="./tmp/"/>
+
+        <echo>--------------------------------</echo>
+        <echo msg="Getting Magento Sample Data"/>
+        <echo>--------------------------------</echo>
+        <exec command="curl -o ./tmp/sample-data.tgz ${dev.sample.data.url}" />
+        <exec command="tar -xzf ./tmp/sample-data.tgz -C ./tmp/" logoutput="true" />
+
+        <if>
+            <isset property="db.password" />
+            <then>
+                <property name="db.password.string" value="-p${db.password}" />
+            </then>
+            <else>
+                <property name="db.password" value="" />
+                <property name="db.password.string" value="" />
+            </else>
+        </if>
+
+        <property name="sample.data.folder" value="./tmp/magento-sample-data-1.9.1.0" />
+
+        <exec command="mysql -u${db.user} ${db.password.string} -e 'DROP DATABASE IF EXISTS ${db.name}; CREATE DATABASE ${db.name};'" logoutput="true" />
+        <exec command="mysql -u${db.user} ${db.password.string} -e 'USE ${db.name};SOURCE ${sample.data.folder}/magento_sample_data_for_1.9.1.0.sql;'" logoutput="true" />
+
+
+        <delete dir="${magento.root.folder}/media" includeemptydirs="true" failonerror="true" quiet="true"/>
+        <mkdir dir="${magento.root.folder}/media" />
+
+        <copy todir="${magento.root.folder}/media">
+            <fileset dir="${sample.data.folder}/media">
+                <include name="**"></include>
+            </fileset>
+        </copy>
+
+        <copy todir="${magento.root.folder}/skin" overwrite="true">
+            <fileset dir="${sample.data.folder}/skin">
+                <include name="**"></include>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${magento.root.folder}/var" />
+
+        <echo>--------------------------------</echo>
+        <echo msg="Installing Magento"/>
+        <echo>--------------------------------</echo>
+
+        <delete file="${magento.root.folder}/app/etc/local.xml" quiet="true" />
+        <exec command="php ${magento.root.folder}/install.php -- \
+       --license_agreement_accepted 'yes' \
+       --locale 'en_US' \
+       --timezone 'America/Los_Angeles' \
+        --default_currency 'USD' \
+        --db_host '${db.host}' \
+        --db_name '${db.name}' \
+        --skip_url_validation 'yes' \
+        --db_user '${db.user}' \
+        --db_pass '${db.password}' \
+        --url 'http://${magento.domain}' \
+        --secure_base_url 'http://${magento.domain}' \
+        --use_rewrites 'yes' \
+        --use_secure 'no' \
+        --use_secure_admin 'no' \
+        --session_save 'db' \
+        --admin_firstname '${magento.admin.firstname}' \
+        --admin_lastname '${magento.admin.lastname}' \
+        --admin_email '${magento.admin.email}' \
+        --admin_username '${magento.admin.user}' \
+        --admin_password '${magento.admin.password}'" logoutput="true" />
+    </target>
+
+</project>

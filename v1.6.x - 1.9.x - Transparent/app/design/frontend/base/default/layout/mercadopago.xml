@@ -9,14 +9,28 @@
             </action>
         </reference>
 
-        <reference name="content">
-            <block type="mercadopago/success" name="mercadopago.success" as="success" />
-        </reference>
-
         <reference name="root">
             <action method="setTemplate"><template>mercadopago/clean.phtml</template></action>
         </reference>
 
     </mercadopago_success_index>
+
+    <mercadopago_custom_success>
+        <reference name="content">
+            <block type="mercadopago/custom_success" name="mercadopago.success" as="success" />
+        </reference>
+    </mercadopago_custom_success>
+
+    <mercadopago_standard_success>
+        <reference name="content">
+            <block type="mercadopago/standard_success" name="mercadopago.success" as="success" />
+        </reference>
+    </mercadopago_standard_success>
+
+    <mercadopago_customticket_success>
+        <reference name="content">
+            <block type="mercadopago/customticket_success" name="mercadopago.success" as="success"/>
+        </reference>
+    </mercadopago_customticket_success>
 
 </layout>

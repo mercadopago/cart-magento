@@ -1,48 +1,46 @@
 <?php
-
 /**
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL).
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * @category       Payment Gateway
- * @package        MercadoPago
- * @author         Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
- * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
- * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
-class MercadoPago_Core_Model_Standard_Payment
-    extends Mage_Payment_Model_Method_Abstract
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL).
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+*
+* @category   	Payment Gateway
+* @package    	MercadoPago
+* @author      	Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
+* @copyright  	Copyright (c) MercadoPago [http://www.mercadopago.com]
+* @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+
+class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_Abstract
 {
     //configura o lugar do arquivo para listar meios de pagamento
     protected $_formBlockType = 'mercadopago/standard_form';
     protected $_infoBlockType = 'mercadopago/standard_info';
-    protected $_successBlockType = 'mercadopago/standard_success';
 
     protected $_code = 'mercadopago_standard';
-
-    protected $_isGateway = true;
-    protected $_canOrder = true;
-    protected $_canAuthorize = true;
-    protected $_canCapture = true;
-    protected $_canCapturePartial = true;
-    protected $_canRefund = true;
-    protected $_canRefundInvoicePartial = true;
-    protected $_canVoid = true;
-    protected $_canUseInternal = true;
-    protected $_canUseCheckout = true;
-    protected $_canUseForMultishipping = true;
-    protected $_canFetchTransactionInfo = true;
-    protected $_canCreateBillingAgreement = true;
-    protected $_canReviewPayment = true;
+    
+    protected $_isGateway                   = true;
+    protected $_canOrder                    = true;
+    protected $_canAuthorize                = true;
+    protected $_canCapture                  = true;
+    protected $_canCapturePartial           = true;
+    protected $_canRefund                   = true;
+    protected $_canRefundInvoicePartial     = true;
+    protected $_canVoid                     = true;
+    protected $_canUseInternal              = true;
+    protected $_canUseCheckout              = true;
+    protected $_canUseForMultishipping      = true;
+    protected $_canFetchTransactionInfo     = true;
+    protected $_canCreateBillingAgreement   = true;
+    protected $_canReviewPayment            = true;
 
     public function postPago()
     {
         $core = Mage::getModel('mercadopago/core');
-
+        
         //seta sdk php mercadopago
         $client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
         $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
@@ -51,14 +49,14 @@ class MercadoPago_Core_Model_Standard_Payment
         //monta a prefernecia
         $pref = $this->makePreference();
         Mage::helper('mercadopago')->log("make array", 'mercadopago-standard.log', $pref);
-
+        
         //faz o posto do pagamento
         $response = $mp->create_preference($pref);
         Mage::helper('mercadopago')->log("create preference result", 'mercadopago-standard.log', $response);
-
+        
         $array_assign = array();
-
-        if ($response['status'] == 200 || $response['status'] == 201) {
+        
+        if ($response['status'] == 200 || $response['status'] == 201):
             $payment = $response['response'];
             if (Mage::getStoreConfigFlag('payment/mercadopago/sandbox_mode')) {
                 $init_point = $payment['sandbox_init_point'];

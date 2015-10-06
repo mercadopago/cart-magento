@@ -1,566 +1,850 @@
-//load dinamico de js externo
-function loadJsAsync(url, callback) {
-    var head = document.getElementsByTagName('head')[0];
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = url;
-    script.onreadystatechange = callback;
-    script.onload = callback;
-    head.appendChild(script);
-}
-
-var mercadopago_log = false;
+// MERCADO LOG
+var mercadopago_log = true;
 function showLogMercadoPago(message) {
     if (mercadopago_log) {
         console.debug(message);
     }
 }
 
-loadJsAsync("//code.jquery.com/jquery-1.11.0.min.js", function () {
-    showLogMercadoPago("jQuery Running ...");
-    $.noConflict();
-    
-    loadJsAsync("https://secure.mlstatic.com/org-img/checkout/custom/1.0/checkout.js?nocache=" + Math.random() * 10, function () {
-            showLogMercadoPago("MercadoPago Running ...");
-            Checkout.setPublishableKey(PublicKeyMercadoPagoTransparent);
-        
-    });//end load mp
-    
-});//end load js
-
-
-function loadFilesMP() {
-    (function($){
-        $.noConflict();
-        jQuery(document).ready(function ($) {
-            showLogMercadoPago("jquery ready...");
-            
-            // form custom payment
-            var $form_custom_payment = $("#payment_form_mercadopago_custom");
-            
-            //variables translates
-            var currency_text_mercadopago = $form_custom_payment.find(".mercadopago-text-currency").html();
-            var choice_text_mercadopago = $form_custom_payment.find(".mercadopago-text-choice").html();
-            var default_issuer_text_mercadopago = $form_custom_payment.find(".mercadopago-text-default-issuer").html();
-            
-            
-            //hide loading and msg-status
-            $form_custom_payment.find(".msg-status").hide();
-            
-            //caso tenha alteração no campo de banco
-            $("#issuers").change(function(){
-                
-                //pega o bin
-                var card = $("input[data-checkout='cardNumber']").val().replace(/ /g, '').replace(/-/g, '').replace(/\./g, '');
-                var bin = card.substr(0,6);
-                
-                //verifica installments para o banco, pode ocorrer de ter desconto
-                Checkout.getInstallmentsByIssuerId(
-                    bin,
-                    this.value,
-                    parseFloat($form_custom_payment.find(".amount").val()),
-                    setInstallmentInfo
-                );
-
-            });
-            
-            //caso o cartão copie e cole
-            $("input[data-checkout='cardNumber']").focusout(function () {
-                getBin();
-            });
-            
-            //pega o bin enquanto digita
-            $("input[data-checkout='cardNumber']").bind("keyup", function () {
-                getBin();
-            });
-            
-            function getBin(){
-                var card = $("input[data-checkout='cardNumber']").val()
-                
-                if (card != undefined && card != "") {
-                    card = card.replace(/ /g, '').replace(/-/g, '').replace(/\./g, '');
-                    var bin = card.substr(0,6);
-                    
-                    if (bin.length == 6) {
-                        if ($("#mercadopago-country").html() == 'mlm') {
-                            Checkout.getPaymentMethod(bin, parseFloat($form_custom_payment.find(".amount").val()), setPaymentMethodInfo, $('#payment_method option:checked').val());
-                        }else{
-                            Checkout.getPaymentMethod(bin, setPaymentMethodInfo);
-                        }
-                    }
-                }else{
-                    showLogMercadoPago("Cartão invalido ou não foi preenchido");
-                }
-                
-            }
-        
-            function setPaymentMethodInfo(status, result){
-                showLogMercadoPago("Get Payment Method: ");
-                showLogMercadoPago(status);
-                showLogMercadoPago(result);
-                
-                if (status == 200) {
-                    var method_payment = result[0];
-                            
-                    $("input[data-checkout='cardNumber']").css(
-                        "background",
-                        "url(" + method_payment.secure_thumbnail + ") 98% 50% no-repeat #fff"
-                    );
-                    
-                    //setta o meio de pagamento
-                    $("#payment_method").val(method_payment.id);
-                    
-                    //lista parcelas
-                    getInstallments(method_payment.id);
-                    if(method_payment.exceptions_by_card_issuer.length > 0){
-                        showIssuers(method_payment.exceptions_by_card_issuer)
-                    }else{
-                        setOneIssuer(method_payment.card_issuer);    
-                    }
-                    
-                    //Checkout.getCardIssuers(method_payment.id, showIssuers);   
-                }else{
-                    //show errors
-                    if (result.error == "bad_request") {
-                        $.each(result.cause, function(p, e){
-                            $form_custom_payment.find(".msg-status").hide();
-                            $(".error-" + e.code).show();
-                        });
-                    }
-                } 
-            }
-            
-            $("#mp-form input").focusout(function () {
-                validCreateToken();
-            });
-            
-            $("#mp-form select").change(function () {
-                validCreateToken();
-            });
-            
-            function validCreateToken(){
-                
-                var valid = true;
-                
-                //verifica os elementos "input"
-                $("#mp-form input[data-checkout]").each(function () {
-
-                    if ($(this).val() == "") {
-                        valid = false
-                    }else if($(this).attr('data-checkout') == 'docNumber'){
-                        
-                        //caso o documento seja CPF, faz a validação em um função especifica
-                        if($("#docType").val() == "CPF"){
-                            
-                            //forca todas as mensagens sumirem
-                            $form_custom_payment.find(".msg-status").hide();
-                            
-                            if(validCpf($(this).val())){
-                                //hide msg
-                                $(".error-324").hide();
-                            }else{
-                                showLogMercadoPago("Erro validation: 324 - doc number invalid");
-                                
-                                valid = false;
-                                //show msg cpf
-                                $(".error-324").show();
-                            }
-                        }
-                    }
-
-                });
-
-                //verifica os elementos "select"
-                $("#mp-form select[data-checkout]").each(function () {
-                    if ($(this).find("option:selected").val() == "") {
-                        valid = false
-                    }
-                });
-                
-                if (valid) {
-                    showLogMercadoPago("Request created card_token...");
-                    
-                    //hide all msg status
-                    $form_custom_payment.find(".msg-status").hide();
-                    
-                    //show loading
-                    $("#mercadopago-loading").show();
-                    
-                    //show form
-                    var $form = $("#mp-form");
-
-                    Checkout.createToken($form, function (status, response) {
-                        showLogMercadoPago("Card_token created: ");
-                        showLogMercadoPago(status);
-                        showLogMercadoPago(response);
-                        
-                        var html = ""
-                        if (status == 200  || status == 201) {
-                            showLogMercadoPago("card_token_id: " + response.id);
-                            
-                            $("#card_token_id").val(response.id);
-                            $("#trunc_card").val(response.trunc_card_number);
-                        }else{
-                            
-                            $.each(response.cause, function(p, e){
-                                showLogMercadoPago("Erro validation: " + e.code + " - " + e.description);
-                                
-                                //mapea os erros
-                                switch (e.code) {
-                                    case "011":
-                                    case "E301":
-                                    case "E302":
-                                    case "316":
-                                    case "322":
-                                    case "324":
-                                    case "325":
-                                    case "326":
-                                        $form_custom_payment.find(".error-" + e.code).show();
-                                        break;
-                                    default:
-                                        $form_custom_payment.find(".error-other").show();
-                                }
-                                
-                                // remove card_token_id - ele é invalido!
-                                $("#card_token_id").val("");
-                            });
-                            
-                        }
-                        
-                        //hide loading
-                        $("#mercadopago-loading").hide();
-                        
-                    });
-                }
-            }
-
-            
-            function validCpf(cpf){
-                var soma;
-                var resto;
-                soma = 0;
-                if (cpf == "00000000000")
-                    return false;
-                    
-                for (i=1; i<=9; i++){
-                    soma = soma + parseInt(cpf.substring(i-1, i)) * (11 - i);
-                    resto = (soma * 10) % 11;
-                }
-                
-                if ((resto == 10) || (resto == 11))
-                    resto = 0;
-                    
-                if (resto != parseInt(cpf.substring(9, 10)) )
-                    return false;
-                    
-                soma = 0;
-                
-                for (i = 1; i <= 10; i++){
-                    soma = soma + parseInt(cpf.substring(i-1, i)) * (12 - i);
-                    resto = (soma * 10) % 11;
-                }
-                
-                if ((resto == 10) || (resto == 11))
-                    resto = 0;
-                
-                if (resto != parseInt(cpf.substring(10, 11))){
-                    return false;
-                }else{
-                    return true;    
-                }
-            }
-            
-            
-            /*
-             *
-             * Installments 
-             *
-             */
-            
-            
-            
-            $(".error-installment-not-work").click(function(){
-                //caso retorne erro na consulta do amount, disponibiliza a opção do usuario tentar novamente    
-                getBin();
-                
-                //esconde erro
-                $(this).hide();
-            });
-            
-            function getInstallments(payment_method) {
-                
-                //set loading
-                $("#mercadopago-loading").show();
-                
-                //get route
-                var route = $form_custom_payment.find(".mercado_route").val();
-
-                var discount_amount = parseFloat($form_custom_payment.find(".mercadopago-discount-amount").val());
-                
-                // caso seja diferente do standard
-                // é feito uma consulta em um controller interno
-                // para pegar informações do pedido atualizado
-                // com isso, o box de installments sempre estará atualizado
-                
-                if (route != "checkout") {
-                    //caso seja OSC forca atualização do valor
-                    var base_url = $form_custom_payment.find(".mercado_base_url").val();
-                    
-                    showLogMercadoPago("get api internal (magento) - amount");
-                    $.ajax({
-                        type: "GET",
-                        url: base_url + "mercadopago/api/amount",
-                        success: function(response){
-                            showLogMercadoPago("Response amount: ");
-                            showLogMercadoPago(response);
-                            
-                            //atualiza valor no input 
-                            $form_custom_payment.find(".amount").attr("value", response.amount);
-                            
-                            //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
-                            var total = parseFloat(response.amount) - discount_amount;
-                            
-                            showLogMercadoPago("Valores para calculo da parcela: ");
-                            showLogMercadoPago({total: total, amount: response.amount, discount: discount_amount});
-                            
-                            //busca installment na API do MercadoPago passando valor atualizado
-                            Checkout.getInstallments(payment_method, total, setInstallmentInfo);    
-                        },
-                        error: function(){
-                            //hide loading
-                            $("#mercadopago-loading").hide();
-                            
-                            showLogMercadoPago("Error request - get amount!!");
-                            
-                            //caso ocorra um erro na consulta do magento
-                            $form_custom_payment.find(".error-installment-not-work").show();
-                        }
-                    });
-                }else{
-                    
-                    //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
-                    var total = parseFloat($form_custom_payment.find(".amount").val()) - discount_amount;
-                    
-                    showLogMercadoPago("Valores para calculo da parcela: ");
-                    showLogMercadoPago({total: total, amount: parseFloat($form_custom_payment.find(".amount").val()), discount: discount_amount});
-                            
-                    //caso não seja OSC faz a requisição usando o valor do input
-                    Checkout.getInstallments(payment_method, total, setInstallmentInfo);    
-                }
-                
-            }
-            
-            
-            //setta parcelas
-            function setInstallmentInfo(status, installments){
-                //hide loading
-                $("#mercadopago-loading").hide();
-                
-                showLogMercadoPago("Set installment: ");
-                showLogMercadoPago(status);
-                showLogMercadoPago(installments);
-                
-                var html_options = '<option value="">' + choice_text_mercadopago + '... </option>';
-                for(i=0; installments && i<installments.length; i++){
-                    if (installments[i] != undefined) {
-                        html_options += "<option value='"+installments[i].installments+"'>"+installments[i].installments +" de " + currency_text_mercadopago + " " + installments[i].share_amount+" ("+ currency_text_mercadopago + " "+ installments[i].total_amount+")</option>";
-                    }
-                };
-                $("#installments").html(html_options);
-            }
-            
-            
-            /**
-             *
-             *
-             * Issuers
-             *
-             */
-            
-            function setOneIssuer(issuer) {
-                showLogMercadoPago("Issuer set payment method.");
-                
-                var input_issuer = '<input type="text" name="payment[issuers]" id="issuers" data-checkout="issuers" class="input-text" autocomplete="off" value="' + issuer.id + '">';
-                $("#issuers").html(input_issuer);
-                $("#issuersOptions").hide();
-            }
-            
-            function showIssuers(issuers) {
-                showLogMercadoPago("Issuer set exceptions by card issuer.");
-                
-                var options = '<select name="payment[issuers]" id="issuers" data-checkout="issuers" class="input-text" autocomplete="off">'
-                    options += '<option value="-1">' + choice_text_mercadopago + '...</option>';
-                    
-                for(i=0; issuers && i<issuers.length;i++){
-                    var issuer = issuers[i].card_issuer
-                    if (issuer.name == "default") {
-                        issuer.name = default_issuer_text_mercadopago;
-                    }
-                    
-                    options+="<option value='"+issuer.id+"'>"+issuer.name +" </option>";
-                }
-                
-                options += "</select>";
-                
-                $("#issuers").html(options);
-            }
-            
-            //para listar todas as issuer
-            /*function showIssuers(status, issuers){
-                showLogMercadoPago("Set Issuer: ");
-                showLogMercadoPago({status, issuers});
-
-                //caso tenha apenas um registro, pega o valor dele e setta em um input escondido
-                if (issuers.length == 1) {
-                    showLogMercadoPago("Issuer set by payment.");
-                    var input_issuers = '<input type="text" name="payment[issuers]" id="issuers" data-checkout="issuers" class="input-text" autocomplete="off" value="' + issuers[0].id + '">';
-                    $("#issuers").html(input_issuers);
-                    $("#issuersOptions").hide();
-                } else{
-                    
-                    var options = '<select name="payment[issuers]" id="issuers" data-checkout="issuers" class="input-text" autocomplete="off">'
-                    options += '<option value="-1">' + choice_text_mercadopago + '...</option>';
-                    
-                    for(i=0; issuers && i<issuers.length;i++){
-                        
-                        if (issuers[i].name == "default") {
-                            issuers[i].name = default_issuer_text_mercadopago;
-                        }
-                        
-                        options+="<option value='"+issuers[i].id+"'>"+issuers[i].name +" </option>";
-                    }
-                    
-                    options += "</select>";
-                    
-                    if(issuers.length > 1){
-                        $("#issuers").html(options);
-                        $("#issuersOptions").show();
-                    }else{
-                        $("#issuers").html("");
-                        $("#issuersOptions").hide();
-                    }
-                }
-            }*/
-
-            /*
-             *
-             * COUPON
-             *
-             */
-            
-            //hide all info
-            $(".mercadopago-message-coupon li").hide();
-
-            //action apply            
-            $(".mercadopago-coupon-action-apply").click(function(){
-                
-                // obtem de qual formulario esta vindo a requisição
-                // a partir do formulario ele trabalha as variaveis e as informações que serão
-                // mostradas ao comprador
-                var $form_payment = $(this).parent().parent();
-                
-                showLogMercadoPago("Form action:");
-                showLogMercadoPago($form_payment);
-                showLogMercadoPago("Validating coupon...");
-                
-                //Esconde todas as mensagens
-                $form_payment.find(".mercadopago-message-coupon li").hide();
-                
-                //show loading
-                $form_payment.find(".mercadopago-message-coupon .loading").show();
-                
-                
-                //obtem algumas informações para montar o request
-                var base_url = $form_payment.find(".mercado_base_url").val();
-                var coupon = $form_payment.find(".mercadopago_coupon").val();
-            
-                
-                showLogMercadoPago("get api internal (magento) - coupon");
-                //verifica se o coupon de desconto é valida
-                $.ajax({
-                    type: "GET",
-                    url: base_url + "mercadopago/api/coupon?id=" + coupon,
-                    success: function(r){
-                        
-                        showLogMercadoPago("Response validating coupon: ");
-                        showLogMercadoPago(r);
-                        
-                        //hide loading
-                        $form_payment.find(".mercadopago-message-coupon .loading").hide();
-                        
-                        if(r.status == 200){
-                            //caso o coupon seja valido, mostra uma mensagem + termos e condições
-                            //obtem informações sobre o coupon
-                            var coupon_amount = (r.response.coupon_amount).toFixed(2)
-                            var transaction_amount = (r.response.transaction_amount).toFixed(2)
-                            var id_coupon = r.response.id;
-                            var currency = $form_payment.find(".mercadopago-text-currency").html();
-                            var url_term = "https://api.mercadolibre.com/campaigns/" + id_coupon + "/terms_and_conditions?format_type=html"
-                            
-                            $form_payment.find(".mercadopago-message-coupon .discount-ok .amount-discount").html(currency + coupon_amount);
-                            $form_payment.find(".mercadopago-message-coupon .discount-ok .total-amount").html(currency + transaction_amount);
-                            $form_payment.find(".mercadopago-message-coupon .discount-ok .total-amount-discount").html(currency + (transaction_amount - coupon_amount));
-                            
-                            
-                            $form_payment.find(".mercadopago-message-coupon .discount-ok .mercadopago-coupon-terms").attr("href", url_term);
-                            $form_payment.find(".mercadopago-discount-amount").attr("value", coupon_amount);
-                            
-                            //show mensagem ok
-                            $form_payment.find(".mercadopago-message-coupon .discount-ok").show();
-                            $form_payment.find(".mercadopago-coupon-action-apply").hide();
-                            $form_payment.find(".mercadopago-coupon-action-remove").show();
-                        }else{
-                            
-                            //reset input amount
-                            $form_payment.find(".mercadopago-discount-amount").attr("value", "0");
-                            
-                            //caso não seja mostra a mensagem de validação
-                            $form_payment.find(".mercadopago-message-coupon").find("." + r.response.error).show();
-                        }
-                        
-                        //forca atualização do bin/installment para atualizar os valores de installment
-                        getBin();
-                    },
-                    error: function(){
-                        
-                        //hide loading
-                        $form_payment.find(".mercadopago-message-coupon .loading").hide();
-                        
-                        showLogMercadoPago("Error request - get coupon!!");
-                        
-                        //reset input amount
-                        $form_payment.find(".mercadopago-discount-amount").attr("value", "0");
-                        
-                        //caso ocorra um erro na consulta do magento
-                        $form_payment.find(".mercadopago-message-coupon .error-get").show();
-                        
-                        //forca atualização do bin/installment para atualizar os valores de installment
-                        getBin();
-                        
-                    }
-                });
-            });
-            
-            
-            //caso o usuario não deseja usar coupon de desconto
-            $(".mercadopago-coupon-action-remove").click(function(){
-                var $form_payment = $(this).parent().parent();
-                
-                //hide all info
-                $form_payment.find(".mercadopago-message-coupon li").hide();
-                $form_payment.find(".mercadopago-coupon-action-apply").show();
-                $form_payment.find(".mercadopago-coupon-action-remove").hide();
-                $form_payment.find(".mercadopago_coupon").val("");
-                $form_payment.find(".mercadopago-discount-amount").attr("value", "0");
-                
-                //forca atualização do bin/installment para atualizar os valores de installment
-                getBin();
-                
-                showLogMercadoPago("Remove coupon!");
-            });
-            
+// função responsável por adicionar os eventos nos elementos
+function addEvent(el, eventName, handler){
+    if (el.addEventListener) {
+        el.addEventListener(eventName, handler);
+    } else {
+        el.attachEvent('on' + eventName, function(){
+            handler.call(el);
         });
-        //end load js
-    })(jQuery);
+    }
+}
 
+if (typeof PublicKeyMercadoPagoCustom != "undefined") {
+    Mercadopago.setPublishableKey(PublicKeyMercadoPagoCustom);
+}
+
+// Inicializa o formulario de pagamento com cartão de credito
+function initMercadoPagoJs(){
+    showLogMercadoPago("Init MercadoPago JS");
+
+    var site_id = document.querySelector('.site_id').value;
+
+    if (typeof PublicKeyMercadoPagoCustom == "undefined") {
+        alert("MercadoPago was not configured correctly. Public Key not found.")
+    }
+
+    //Show public key
+    showLogMercadoPago("Public Key: " + PublicKeyMercadoPagoCustom);
+    //Show site
+    showLogMercadoPago("SITE_ID: " + site_id);
+
+    if (site_id != 'MLM') {
+        //caso não seja o mexico puxa os documentos aceitos
+        Mercadopago.getIdentificationTypes();
+    }
+
+    //add inputs para cada país
+    defineInputs();
+
+    //Adiciona evento nos elementos
+    addEvent(document.querySelector('input[data-checkout="cardNumber"]'), 'keyup', guessingPaymentMethod);
+    addEvent(document.querySelector('input[data-checkout="cardNumber"]'), 'keyup', clearOptions);
+    addEvent(document.querySelector('input[data-checkout="cardNumber"]'), 'change', guessingPaymentMethod);
+    addEvent(document.querySelector('.error-installment-not-work'), 'click', guessingPaymentMethod);
+
+    //adiciona evento para a criação do card_token
+    releaseEventCreateCardToken();
+
+    //inicia o formulario verificando se ja tem cartão selecionado para obter o bin
+    cardsHandler();
+
+}
+
+//init one click pay
+function initMercadoPagoOCP() {
+    showLogMercadoPago("Init MercadoPago OCP");
+
+    addEvent(document.querySelector('select[data-checkout="cardId"]'),'change', cardsHandler);
+
+    //açoes para one click pay
+    addEvent(document.querySelector('#use_other_card_mp'), 'click', actionUseOneClickPayOrNo);
+    addEvent(document.querySelector('#return_list_card_mp'), 'click', actionUseOneClickPayOrNo);
+
+    //show botão de retornar para lista de cartões
+    document.querySelector('#return_list_card_mp').style.display = 'block';
+}
+
+function defineInputs(){
+    showLogMercadoPago("Define Inputs");
+
+    var site_id = document.querySelector('#mercadopago_checkout_custom .site_id').value;
+    var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
+    var data_checkout = document.querySelectorAll("[data-checkout]");
+    var exclude_inputs = ["#cardId", "#securityCodeOCP"];
+    var data_inputs = [];
+
+    if (one_click_pay == true) {
+
+        exclude_inputs = [
+            "#cardNumber", "#issuer", "#cardExpirationMonth", "#cardExpirationYear",
+            "#cardholderName", "#docType", "#docNumber", "#securityCode"
+        ]
+
+    }else if (site_id == 'MLB') {
+
+        exclude_inputs.push("#issuer")
+        exclude_inputs.push("#docType")
+
+    }else if(site_id == 'MLM'){
+
+        exclude_inputs.push("#docType")
+        exclude_inputs.push("#docNumber")
+
+    }
+
+    exclude_inputs.push("#issuer")
+
+    for (var x = 0; x < data_checkout.length; x++) {
+        var $id = "#" + data_checkout[x].id;
+
+        var el_pai = data_checkout[x].getAttribute('data-element-id');
+
+        //esconde o elemento, para validar se ele deve aparecer ou não
+        document.querySelector(el_pai).style.display = 'none';
+
+        if (exclude_inputs.indexOf($id) == -1) {
+            //mostra apenas os elementos que serão utilizados pelo checkout
+            document.querySelector(el_pai).removeAttribute('style');
+            data_inputs.push($id);
+        }
+    }
+
+
+    //Show inputs
+    showLogMercadoPago(data_inputs);
+
+    //retorna a lista de inputs aceita para esse pais/metodo de pagamento (cartão ou one click pay)
+    return data_inputs;
+
+}
+
+function actionUseOneClickPayOrNo(){
+    showLogMercadoPago("Action One Click Pay User");
+
+    var ocp = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
+
+    showLogMercadoPago("OCP? " + ocp);
+
+    if (ocp == true) {
+        document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value = 0;
+        document.querySelector('#cardId').disabled = true;
+    }else{
+        document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value = 1;
+        document.querySelector('#cardId').removeAttribute('disabled');
+    }
+
+    //verifica os inputs para esse opção de pagamento
+    defineInputs();
+
+    //cria um novo card_token, por que se estiver vinculado ao card_id não da para dar put nas informações
+    Mercadopago.clearSession();
+
+    //esconde todos os erros
+    hideMessageError();
+
+    //forca a validação para criacao do card token
+    checkCreateCardToken();
+
+}
+
+// caso não tenha bin, ele reseta as installment e os issuer
+function clearOptions() {
+    showLogMercadoPago("Clear Option");
+
+    var bin = getBin();
+    if (bin.length == 0) {
+        var message_installment = document.querySelector(".mercadopago-text-installment").value;
+
+        document.querySelector("#issuer__mp").style.display = 'none';
+        document.querySelector("#issuer").style.display = 'none';
+        document.querySelector("#issuer").innerHTML = "";
+
+        var selectorInstallments = document.querySelector("#installments"),
+            fragment = document.createDocumentFragment(),
+            option = new Option(message_installment, '-1');
+
+        selectorInstallments.options.length = 0;
+        fragment.appendChild(option);
+        selectorInstallments.appendChild(fragment);
+        selectorInstallments.setAttribute('disabled', 'disabled');
+    }
+}
+
+//verifica se tem cartão selecionado
+function cardsHandler() {
+    showLogMercadoPago("card Handler");
+
+    clearOptions();
+
+    var cardSelector = document.querySelector("#cardId");
+    var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
+
+    // verifica se a seleção do cartão existe
+    // se ele foi selecionado
+    // e se o formulário esta ativo, pois o cliente pode estar digitando o cartão
+    if (cardSelector && cardSelector[cardSelector.options.selectedIndex].value != "-1" && one_click_pay == true) {
+        var _bin = cardSelector[cardSelector.options.selectedIndex].getAttribute("first_six_digits");
+        Mercadopago.getPaymentMethod({
+            "bin": _bin
+        }, setPaymentMethodInfo);
+    }
+}
+
+//obtem o bin do cartão
+function getBin() {
+    showLogMercadoPago("Get bin");
+
+    var cardSelector = document.querySelector("#cardId");
+    var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
+
+    // verifica se a seleção do cartão existe
+    // se ele foi selecionado
+    // e se o formulário esta ativo, pois o cliente pode estar digitando o cartão
+
+    if (cardSelector && cardSelector[cardSelector.options.selectedIndex].value != "-1" && one_click_pay == true) {
+        return cardSelector[cardSelector.options.selectedIndex].getAttribute('first_six_digits');
+    }
+    var ccNumber = document.querySelector('input[data-checkout="cardNumber"]');
+    return ccNumber.value.replace(/[ .-]/g, '').slice(0, 6);
+}
+
+
+// action para identificar qual a bandeira do cartão digitado
+function guessingPaymentMethod(event) {
+    showLogMercadoPago("Guessing Payment");
+
+    //hide all errors
+    hideMessageError();
+
+    var bin = getBin();
+    var amount = document.querySelector('.amount').value;
+
+    if (event.type == "keyup") {
+        if (bin.length == 6) {
+            Mercadopago.getPaymentMethod({
+                "bin": bin,
+                "amount": amount
+            }, setPaymentMethodInfo);
+        }
+    } else {
+        setTimeout(function() {
+            if (bin.length >= 6) {
+                Mercadopago.getPaymentMethod({
+                    "bin": bin,
+                    "amount": amount
+                }, setPaymentMethodInfo);
+            }
+        }, 100);
+    }
+};
+
+// obtem o retorno da indentificação e setta alguns informações
+// actions para installment e issuer
+function setPaymentMethodInfo(status, response) {
+    showLogMercadoPago("Set payment method info: ");
+    showLogMercadoPago(status);
+    showLogMercadoPago(response);
+
+    //hide loading
+    hideLoading();
+
+    if (status == 200) {
+        // do somethings ex: show logo of the payment method
+        var form = document.querySelector('#mercadopago_checkout_custom');
+
+        //adiciona o payment_method no form
+        var payment_method_id = form.querySelector('.payment_method_id');
+        payment_method_id.value = response[0].id;
+
+        //ADICIONA A BANDEIRA DO CARTÃO DENTRO DO INPUT
+        var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
+
+        if (one_click_pay == true) {
+            document.querySelector('select[data-checkout="cardId"]').style.background = "url(" + response[0].secure_thumbnail + ") no-repeat"
+        }else{
+            document.querySelector('input[data-checkout="cardNumber"]').style.background = "url(" + response[0].secure_thumbnail + ") no-repeat"
+        }
+
+
+
+
+        var bin = getBin();
+        var amount = document.querySelector('.amount').value;
+
+        /*
+         * check if the security code (ex: Tarshop) is required
+         var cardConfiguration = response[0].settings;
+         for (var index = 0; index < cardConfiguration.length; index++) {
+         if (bin.match(cardConfiguration[index].bin.pattern) != null && cardConfiguration[index].security_code.length == 0) {
+         * In this case you do not need the Security code. You can hide the input.
+         } else {
+         * In this case you NEED the Security code. You MUST show the input.
+         }
+         }
+         *  
+         */
+
+        //get installments
+        getInstallments({
+            "bin": bin,
+            "amount": amount
+        });
+
+        // check if the issuer is necessary to pay
+        var issuerMandatory = false;
+        var additionalInfo = response[0].additional_info_needed;
+
+        for (var i = 0; i < additionalInfo.length; i++) {
+            if (additionalInfo[i] == "issuer_id") {
+                issuerMandatory = true;
+            }
+        };
+
+        showLogMercadoPago("Issuer is mandatory? " + issuerMandatory);
+
+        if (issuerMandatory) {
+            Mercadopago.getIssuers(response[0].id, showCardIssuers);
+            addEvent(document.querySelector('#issuer'), 'change', setInstallmentsByIssuerId);
+        } else {
+            document.querySelector("#issuer__mp").style.display = 'none';
+            document.querySelector("#issuer").style.display = 'none';
+            document.querySelector("#issuer").options.length = 0;
+        }
+
+    }else{
+
+        showMessageErrorForm(".error-payment-method-not-found");
+
+    }
+};
+
+function showCardIssuers(status, issuers) {
+    showLogMercadoPago("Set Issuer...");
+    showLogMercadoPago(status);
+    showLogMercadoPago(issuers);
+
+    var message_choose = document.querySelector(".mercadopago-text-choice").value;
+    var message_default_issuer = document.querySelector(".mercadopago-text-default-issuer").value;
+
+    var issuersSelector = document.querySelector("#issuer"),
+        fragment = document.createDocumentFragment();
+
+    issuersSelector.options.length = 0;
+    var option = new Option(message_choose + "...", '-1');
+    fragment.appendChild(option);
+
+    for (var i = 0; i < issuers.length; i++) {
+        if (issuers[i].name != "default") {
+            option = new Option(issuers[i].name, issuers[i].id);
+        } else {
+            option = new Option(message_default_issuer, issuers[i].id);
+        }
+        fragment.appendChild(option);
+    }
+
+    issuersSelector.appendChild(fragment);
+    issuersSelector.removeAttribute('disabled');
+    document.querySelector("#issuer__mp").removeAttribute('style');
+    document.querySelector("#issuer").removeAttribute('style');
+};
+
+function setInstallmentsByIssuerId(status, response) {
+    showLogMercadoPago("Set install by issuer id");
+
+    var issuerId = document.querySelector('#issuer').value;
+    var amount = document.querySelector('.amount').value;
+
+    if (issuerId === '-1') {
+        return;
+    }
+
+    getInstallments({
+        "bin": getBin(),
+        "amount": amount,
+        "issuer_id": issuerId
+    });
+
+}
+
+function getInstallments(options){
+    showLogMercadoPago("Get Installments");
+
+    hideMessageError();
+    showLoading();
+
+    var route = document.querySelector('.mercado_route').value;
+    var base_url = document.querySelector('.mercado_base_url').value;
+    var discount_amount = parseFloat(document.querySelector("#mercadopago_checkout_custom .mercadopago-discount-amount").value);
+
+    if (route != "checkout") {
+        showLogMercadoPago("Using checkout customized Magento...");
+
+        AJAX({
+            method : 'GET',
+            url : base_url + "mercadopago/api/amount",
+            timeout: 5000,
+            success : function (status, response){
+                showLogMercadoPago("Success in get amount: ");
+                showLogMercadoPago(status);
+                showLogMercadoPago(response);
+
+                //atualiza valor no input 
+                document.querySelector("#mercadopago_checkout_custom .amount").value = response.amount;
+
+                //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
+                options.amount = parseFloat(response.amount) - discount_amount;
+
+                //mostra nos logs os valores
+                showLogMercadoPago("Valor para calculo da parcela: " + response.amount);
+                showLogMercadoPago("Valor do desconto: " + discount_amount);
+                showLogMercadoPago("Valor final: " + options.amount);
+
+                Mercadopago.getInstallments(options, setInstallmentInfo);
+            },
+            error : function (status, response){
+                showLogMercadoPago("Erro in get amount: ");
+                showLogMercadoPago(status);
+                showLogMercadoPago(response);
+
+                //hide loaging
+                hideLoading();
+
+                //mostra message de erro e adiciona evento na action
+                showMessageErrorForm(".error-installment-not-work");
+            }
+        });
+    }else{
+
+        showLogMercadoPago("Using checkout standard Magento...");
+
+        //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
+        options.amount = parseFloat(options.amount) - discount_amount;
+
+        //mostra nos logs os valores
+        showLogMercadoPago("Valor para calculo da parcela: " + options.amount);
+        showLogMercadoPago("Valor do desconto: " + discount_amount);
+        showLogMercadoPago("Valor final: " + options.amount);
+
+        //caso seja o checkout padrao, nao faz consulta do amount
+        Mercadopago.getInstallments(options, setInstallmentInfo);
+    }
+
+}
+
+function setInstallmentInfo(status, response) {
+    showLogMercadoPago("Set Installment info");
+    showLogMercadoPago(status);
+    showLogMercadoPago(response);
+
+    //hide loaging
+    hideLoading();
+
+    var selectorInstallments = document.querySelector("#installments");
+    var fragment = document.createDocumentFragment();
+
+    selectorInstallments.options.length = 0;
+
+    if (response.length > 0) {
+        var message_choose= document.querySelector(".mercadopago-text-choice").value;
+
+        var option = new Option(message_choose + "... ", '-1'),
+            payerCosts = response[0].payer_costs;
+
+        fragment.appendChild(option);
+        for (var i = 0; i < payerCosts.length; i++) {
+            option = new Option(payerCosts[i].recommended_message || payerCosts[i].installments, payerCosts[i].installments);
+            fragment.appendChild(option);
+        }
+        selectorInstallments.appendChild(fragment);
+        selectorInstallments.removeAttribute('disabled');
+
+
+        //função para tarjeta mercadopago
+        setTimeout(function() {
+            var site_id = document.querySelector('.site_id').value;
+            if (site_id == 'MLM') {
+
+                var issuers = document.querySelector("#issuer");
+                var issuer_exist = false;
+
+                for (i = 0; i < issuers.length; ++i){
+                    if (issuers.options[i].value == response[0].issuer.id){
+                        issuers.value = response[0].issuer.id;
+                        issuer_exist = true;
+                    }
+                }
+
+                if (issuer_exist === false) {
+                    var option = new Option(response[0].issuer.name, response[0].issuer.id);
+                    issuers.appendChild(option);
+                }
+
+                showLogMercadoPago("Issuer setted: " + response[0].issuer);
+            }
+        }, 100);
+    }else{
+        //mostra erro caso não tenha parcelas
+        showMessageErrorForm(".error-payment-method-min-amount");
+    }
+}
+
+/*
+ *
+ * Função de validações / POST final
+ * 
+ */
+
+
+//função responsável por adicionar os eventos nos elementos
+function releaseEventCreateCardToken(){
+    showLogMercadoPago("Release event create card token");
+
+    var data_checkout = document.querySelectorAll("[data-checkout]");
+
+    for (var x = 0; x < data_checkout.length; x++) {
+        addEvent(data_checkout[x], 'focusout', checkCreateCardToken);
+        addEvent(data_checkout[x], 'change', checkCreateCardToken);
+    }
+}
+
+//verifica se os inputs estão preenchidos
+function checkCreateCardToken(){
+    showLogMercadoPago("Check create card token");
+
+    var submit = true;
+    var data_inputs = defineInputs();
+
+    for (var x = 0; x < data_inputs.length; x++) {
+        if (document.querySelector(data_inputs[x]).value == "" || document.querySelector(data_inputs[x]).value == -1) {
+            submit = false;
+        }
+    }
+
+    if (submit) {
+        var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
+        var $form = document.querySelector('#mercadopago_checkout_custom_card');
+
+        //caso one click esteja ativo, é enviado outro form (div)
+        if (one_click_pay == true) {
+            $form = document.querySelector('#mercadopago_checkout_custom_ocp');
+        }
+
+        showLoading();
+        Mercadopago.createToken($form, sdkResponseHandler);
+    }
+}
+
+//recebe o retorno da criação do token
+function sdkResponseHandler(status, response) {
+    showLogMercadoPago("Response create/update card_token: ");
+    showLogMercadoPago(status);
+    showLogMercadoPago(response);
+
+    //hide all errors
+    hideMessageError();
+    hideLoading();
+
+    if (status == 200 || status == 201) {
+
+        var form = document.querySelector('#mercadopago_checkout_custom');
+
+        //preenche o token no form
+        form.querySelector('.token').setAttribute('value', response.id);
+
+        showLogMercadoPago(response);
+
+    }else{
+
+        for(var x = 0; x < Object.keys(response.cause).length; x++){
+            var error = response.cause[x];
+            showMessageErrorForm(".error-" + error.code);
+        }
+
+    }
+};
+
+
+/*
+ * Functions de error & loading
+ */
+
+
+function hideMessageError(){
+    showLogMercadoPago("Hide all errors ...");
+    // hide todas as mensagens de errors
+    var all_message_errors = document.querySelectorAll('.message-error');
+
+    for (var x = 0; x < all_message_errors.length; x++) {
+        all_message_errors[x].style.display = 'none';
+    }
+}
+
+function showMessageErrorForm(el_error){
+    showLogMercadoPago("Show Message Error Form");
+    showLogMercadoPago(el_error);
+
+    var el_message = document.querySelectorAll(el_error);
+
+    for (var x = 0; x < el_message.length; x++) {
+        el_message[x].style.display = 'block';
+    }
+}
+
+
+function showLoading() {
+    showLogMercadoPago("Show loading...");
+    document.querySelector("#mercadopago-loading").style.display = 'block';
+}
+
+function hideLoading() {
+    showLogMercadoPago("Hide loading...");
+    document.querySelector("#mercadopago-loading").style.display = 'none';
+}
+
+/*
+ *
+ * function para fazer ajax
+ *
+ */
+
+function AJAX(options) {
+
+    var req = window.XDomainRequest ? (new XDomainRequest()) : (new XMLHttpRequest());
+    var data;
+
+    //inicia a requisição
+    req.open(options.method, options.url, true);
+
+    //caso não tenha timeout definido
+    req.timeout = options.timeout || 1000;
+
+    if (window.XDomainRequest) {
+        req.onload = function() {
+            data = JSON.parse(req.responseText);
+            if (typeof options.success === "function") {
+                options.success(options.method === 'POST' ? 201 : 200, data);
+            }
+        };
+        req.onerror = req.ontimeout = function() {
+            if (typeof options.error === "function") {
+                options.error(400, {
+                    user_agent: window.navigator.userAgent,
+                    error: "bad_request",
+                    cause: []
+                });
+            }
+        };
+        req.onprogress = function() {};
+    } else {
+        req.setRequestHeader('Accept', 'application/json');
+
+        if (options.contentType !== null) {
+            req.setRequestHeader('Content-Type', options.contentType);
+        } else {
+            req.setRequestHeader('Content-Type', 'application/json');
+        }
+
+        req.onreadystatechange = function() {
+            if (this.readyState === 4) {
+                if (this.status >= 200 && this.status < 400) {
+                    // Success!
+                    data = JSON.parse(this.responseText);
+                    if (typeof options.success === "function") {
+                        options.success(this.status, data);
+                    }
+                } else if (this.status >= 400) {
+
+                    //caso o retorno não seja um json
+                    try{
+                        data = JSON.parse(this.responseText);
+                    }catch(e){
+                        data = this.responseText;
+                    }
+
+                    if (typeof options.error === "function") {
+                        options.error(this.status, data);
+                    }
+                } else if (typeof options.error === "function") {
+                    options.error(503, {});
+                }
+            }
+        }
+    }
+
+
+    //envia o request
+    if (options.method === 'GET' || options.data == null || options.data == undefined) {
+        req.send();
+    } else {
+        data = JSON.stringify(options.data);
+        req.send(data);
+    }
+}
+
+/*
+ *
+ * Discount
+ *
+ */
+
+//funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
+function initDiscountMercadoPagoCustom() {
+    showLogMercadoPago("Init MercadoPago Custom Discount");
+    //inicia o objeto
+    addEvent(document.querySelector('#mercadopago_checkout_custom .mercadopago-coupon-action-apply'), 'click', applyDiscountCustom);
+    addEvent(document.querySelector('#mercadopago_checkout_custom .mercadopago-coupon-action-remove'), 'click', removeDiscountCustom);
+}
+
+//funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
+function initDiscountMercadoPagoCustomTicket() {
+    showLogMercadoPago("Init MercadoPago Custom Ticket");
+    //inicia o objeto
+    addEvent(document.querySelector('#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-apply'), 'click', applyDiscountCustomTicket);
+    addEvent(document.querySelector('#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-remove'), 'click', removeDiscountCustomTicket);
+}
+
+function applyDiscountCustom() {
+    validDiscount("#mercadopago_checkout_custom");
+}
+
+function applyDiscountCustomTicket() {
+    validDiscount("#mercadopago_checkout_custom_ticket");
+}
+
+function validDiscount(form_payment_method){
+    showLogMercadoPago("Valid Discount");
+
+    var $form_payment = document.querySelector(form_payment_method);
+    var coupon_code = $form_payment.querySelector('.mercadopago_coupon').value
+    var base_url = document.querySelector('.mercado_base_url').value;
+
+
+    //Esconde todas as mensagens
+    hideMessageCoupon($form_payment);
+
+    //show loading
+    $form_payment.querySelector(".mercadopago-message-coupon .loading").style.display = 'block';
+
+    AJAX({
+        method : 'GET',
+        url : base_url + "mercadopago/api/coupon?id=" + coupon_code,
+        timeout: 5000,
+        success : function (status, r){
+            console.log(r);
+            showLogMercadoPago("Response validating coupon: ");
+            showLogMercadoPago({status: status, response: r});
+
+            $form_payment.querySelector(".mercadopago-message-coupon .loading").style.display = 'none';
+
+            if(r.status == 200){
+                //caso o coupon seja valido, mostra uma mensagem + termos e condições
+                //obtem informações sobre o coupon
+                var coupon_amount = (r.response.coupon_amount).toFixed(2)
+                var transaction_amount = (r.response.transaction_amount).toFixed(2)
+                var id_coupon = r.response.id;
+                var currency = $form_payment.querySelector(".mercadopago-text-currency").value;
+                var url_term = "https://api.mercadolibre.com/campaigns/" + id_coupon + "/terms_and_conditions?format_type=html"
+
+                $form_payment.querySelector(".mercadopago-message-coupon .discount-ok .amount-discount").innerHTML = currency + coupon_amount;
+                $form_payment.querySelector(".mercadopago-message-coupon .discount-ok .total-amount").innerHTML = currency + transaction_amount;
+                $form_payment.querySelector(".mercadopago-message-coupon .discount-ok .total-amount-discount").innerHTML = currency + (transaction_amount - coupon_amount);
+
+
+                $form_payment.querySelector(".mercadopago-message-coupon .discount-ok .mercadopago-coupon-terms").setAttribute("href", url_term);
+                $form_payment.querySelector(".mercadopago-discount-amount").value = coupon_amount;
+
+                //show mensagem ok
+                $form_payment.querySelector(".mercadopago-message-coupon .discount-ok").style.display = 'block';
+                $form_payment.querySelector(".mercadopago-coupon-action-remove").style.display = 'block';
+                $form_payment.querySelector(".mercadopago-coupon-action-apply").style.display = 'none';
+
+                if (form_payment_method == "#mercadopago_checkout_custom") {
+                    //forca atualização do bin/installment para atualizar os valores de installment
+                    guessingPaymentMethod(event.type = "keyup");
+                }
+            }else{
+
+                //reset input amount
+                $form_payment.querySelector(".mercadopago-discount-amount").value = 0;
+
+                //caso não seja mostra a mensagem de validação
+                console.log(r.response.error);
+                $form_payment.querySelector(".mercadopago-message-coupon ." + r.response.error).style.display = 'block';
+            }
+        },
+        error : function (status, response){
+            console.log(status, response);
+        }
+    });
+}
+
+function removeDiscountCustom() {
+    removeDiscount("#mercadopago_checkout_custom");
+}
+
+function removeDiscountCustomTicket() {
+    removeDiscount("#mercadopago_checkout_custom_ticket");
+}
+
+function removeDiscount(form_payment_method){
+    showLogMercadoPago("Remove Discount");
+    var $form_payment = document.querySelector(form_payment_method);
+
+    //hide all info
+    hideMessageCoupon($form_payment)
+    $form_payment.querySelector(".mercadopago-coupon-action-apply").style.display = 'block';
+    $form_payment.querySelector(".mercadopago-coupon-action-remove").style.display = 'none';
+    $form_payment.querySelector(".mercadopago_coupon").value = "";
+    $form_payment.querySelector(".mercadopago-discount-amount").value = 0;
+
+    if (form_payment_method == "#mercadopago_checkout_custom") {
+        //forca atualização do bin/installment para atualizar os valores de installment
+        guessingPaymentMethod(event.type = "keyup");
+    }
+
+    showLogMercadoPago("Remove coupon!");
+}
+
+function hideMessageCoupon($form_payment){
+    showLogMercadoPago("Hide all message coupon ...");
+
+    // hide todas as mensagens de errors
+    var message_coupon = $form_payment.querySelectorAll('.mercadopago-message-coupon li');
+
+    for (var x = 0; x < message_coupon.length; x++) {
+        message_coupon[x].style.display = 'none';
+    }
+}
+
+
+
+/*
+ *
+ * TESTE
+ *
+ */
+
+
+function mercadopago_case_1(){
+    showLogMercadoPago("Case teste 1");
+
+    //adiciona dados para o pagamento teste
+    document.querySelector("#cardNumber").setAttribute('value', "4235647728025682");
+
+    //forca o guessing com dados de test (para não fazer a digitacao)
+    guessingPaymentMethod({type: "keyup"});
+
+    document.querySelector("#cardExpirationMonth").value = "11";
+    document.querySelector("#cardExpirationYear").value = "2018";
+    document.querySelector("#cardholderName").setAttribute('value', "APRO APRO");
+    document.querySelector("#securityCode").setAttribute('value', "123");
+    document.querySelector("#docNumber").setAttribute('value', "19119119100");
 }

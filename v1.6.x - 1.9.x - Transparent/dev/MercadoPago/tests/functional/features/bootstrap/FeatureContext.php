@@ -64,14 +64,13 @@ class FeatureContext
             $page->fillField('billing:email', 'johndoe@mercadopago.com');
         }
 
-        $page->selectFieldOption('billing:country_id','AR');
+        $page->selectFieldOption('billing:country_id', 'AR');
         $page->fillField('billing:region', 'Buenos Aires');
         $page->fillField('billing:city', 'billing:city');
         $page->fillField('billing:street1', 'Street 123');
         $page->fillField('billing:postcode', '1414');
 
         $page->fillField('billing:telephone', '123456');
-
     }
 
     /**
@@ -84,7 +83,7 @@ class FeatureContext
     {
         $page = $this->getSession()->getPage();
         $element = $page->find('css', $cssClass);
-        if(null === $element){
+        if (null === $element) {
             throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'css', $cssClass);
         }
 
@@ -99,7 +98,7 @@ class FeatureContext
         $page = $this->getSession()->getPage();
         $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
         $element = $page->findById($id);
-        if(null === $element){
+        if (null === $element) {
             throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'id', $id);
         }
 
@@ -113,7 +112,7 @@ class FeatureContext
     {
         $page = $this->getSession()->getPage();
 
-        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
+        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $page->fillField('shipping_method', 'flatrate_flatrate');
         $page->findById('s_method_flatrate_flatrate')->press();
     }
@@ -123,7 +122,7 @@ class FeatureContext
      */
     public function iShouldSeeMercadopagoAvailable()
     {
-        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
+        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $element = $this->findElement('#dt_method_mercadopago_standard');
 
         expect($element->getText())->toBe("MercadoPago");
@@ -191,4 +190,29 @@ class FeatureContext
 
         }
     }
+
+    /**
+     * @Given User :arg1 :arg2 exists
+     */
+    public function userExists($arg1, $arg2)
+    {
+        $customer = Mage::getModel("customer/customer");
+        $store = Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStore();
+        $websiteId = $store->getWebsiteId();
+        $customer->setWebsiteId($websiteId);
+        $customer->loadByEmail($arg1);
+
+        if (!$customer->getId()) {
+            $customer->setWebsiteId($websiteId)
+                ->setStore($store)
+                ->setFirstname('John')
+                ->setLastname('Doe')
+                ->setEmail($arg1)
+                ->setPassword($arg2);
+
+            $customer->save();
+        }
+
+    }
+
 }

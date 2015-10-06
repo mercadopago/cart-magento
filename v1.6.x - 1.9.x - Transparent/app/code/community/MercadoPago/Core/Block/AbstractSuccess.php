@@ -4,20 +4,20 @@ class MercadoPago_Core_Block_AbstractSuccess
     extends Mage_Core_Block_Template
 {
 
-    public function getOrder()
-    {
-        $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
-        $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
-
-        return $order;
-    }
-
     public function getPayment()
     {
         $order = $this->getOrder();
         $payment = $order->getPayment();
 
         return $payment;
+    }
+
+    public function getOrder()
+    {
+        $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+        $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
+
+        return $order;
     }
 
     public function getTotal()

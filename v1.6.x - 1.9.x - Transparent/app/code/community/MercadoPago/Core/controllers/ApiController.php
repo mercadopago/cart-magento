@@ -72,7 +72,7 @@ class MercadoPago_Core_ApiController
 
         $response = array(
             "getPaymentMethods" => $payment_methods['status'],
-            "public_key"        => Mage::getStoreConfig('payment/mercadopago_custom/public_key')
+            "public_key"        => Mage::getStoreConfig('payment/mercadopago/public_key')
         );
 
         $jsonData = Mage::helper('core')->jsonEncode($response);

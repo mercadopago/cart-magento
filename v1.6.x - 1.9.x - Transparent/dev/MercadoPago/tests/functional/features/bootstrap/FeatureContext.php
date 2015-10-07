@@ -145,6 +145,7 @@ class FeatureContext
      */
     public function iSelectOptionFieldWith($arg1, $arg2)
     {
+        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
         $page = $this->getSession()->getPage();
 
         $page->selectFieldOption($arg1,$arg2);

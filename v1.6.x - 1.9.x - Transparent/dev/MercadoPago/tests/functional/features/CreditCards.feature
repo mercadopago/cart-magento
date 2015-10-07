@@ -11,16 +11,16 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I select shipping method
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_custom"
+    And I press "#use_other_card_mp" element
 
   @APRO
   Scenario: See payment approved
-    Given I fill text field "mercadopago_custom_cn" with "4509 9535 6623 3704"
-    And I select option field "mercadopago_custom_month" with "01"
-    And I select option field "mercadopago_custom_year" with "2017"
-    And I fill text field "mercadopago_custom_name" with "APRO"
-    And I select option field "docType" with "DNI"
-    And I fill text field "mercadopago_custom_doc" with "12345678"
-    And I fill text field "mercadopago_custom_code" with "123"
+    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
+    And I select option field "cardExpirationMonth" with "01"
+    And I fill text field "cardholderName" with "APRO"
+    And I fill text field "docNumber" with "12345678"
+    And I fill text field "securityCode" with "123"
+    And I select option field "cardExpirationYear" with "2017"
     And I select option field "installments" with "1"
     And I press "#payment-buttons-container .button" element
 
@@ -32,13 +32,13 @@ Feature: Payment results in MercadoPago Custom Checkout
 
   @CONT
   Scenario: See payment in process, pending contingency
-    Given I fill text field "mercadopago_custom_cn" with "4509 9535 6623 3704"
-    And I select option field "mercadopago_custom_month" with "01"
-    And I select option field "mercadopago_custom_year" with "2017"
-    And I fill text field "mercadopago_custom_name" with "CONT"
+    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
+    And I select option field "cardExpirationMonth" with "01"
+    And I fill text field "cardholderName" with "CONT"
     And I select option field "docType" with "DNI"
-    And I fill text field "mercadopago_custom_doc" with "12345678"
-    And I fill text field "mercadopago_custom_code" with "123"
+    And I fill text field "docNumber" with "12345678"
+    And I fill text field "securityCode" with "123"
+    And I select option field "cardExpirationYear" with "2017"
     And I select option field "installments" with "1"
     And I press "#payment-buttons-container .button" element
 
@@ -50,13 +50,13 @@ Feature: Payment results in MercadoPago Custom Checkout
 
   @CALL
   Scenario: See payment rejected, call for authorize
-    Given I fill text field "mercadopago_custom_cn" with "4509 9535 6623 3704"
-    And I select option field "mercadopago_custom_month" with "01"
-    And I select option field "mercadopago_custom_year" with "2017"
-    And I fill text field "mercadopago_custom_name" with "CALL"
+    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
+    And I select option field "cardExpirationMonth" with "01"
+    And I fill text field "cardholderName" with "CALL"
     And I select option field "docType" with "DNI"
-    And I fill text field "mercadopago_custom_doc" with "12345678"
-    And I fill text field "mercadopago_custom_code" with "123"
+    And I fill text field "docNumber" with "12345678"
+    And I fill text field "securityCode" with "123"
+    And I select option field "cardExpirationYear" with "2017"
     And I select option field "installments" with "1"
     And I press "#payment-buttons-container .button" element
 
@@ -68,13 +68,13 @@ Feature: Payment results in MercadoPago Custom Checkout
 
   @FUND
   Scenario: See payment rejected, insufficient amount
-    Given I fill text field "mercadopago_custom_cn" with "4509 9535 6623 3704"
-    And I select option field "mercadopago_custom_month" with "01"
-    And I select option field "mercadopago_custom_year" with "2017"
-    And I fill text field "mercadopago_custom_name" with "FUND"
+    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
+    And I select option field "cardExpirationMonth" with "01"
+    And I fill text field "cardholderName" with "FUND"
     And I select option field "docType" with "DNI"
-    And I fill text field "mercadopago_custom_doc" with "12345678"
-    And I fill text field "mercadopago_custom_code" with "123"
+    And I fill text field "docNumber" with "12345678"
+    And I fill text field "securityCode" with "123"
+    And I select option field "cardExpirationYear" with "2017"
     And I select option field "installments" with "1"
     And I press "#payment-buttons-container .button" element
 
@@ -87,13 +87,13 @@ Feature: Payment results in MercadoPago Custom Checkout
 
   @SECU
   Scenario: See payment rejected, bad filled security code
-    Given I fill text field "mercadopago_custom_cn" with "4509 9535 6623 3704"
-    And I select option field "mercadopago_custom_month" with "01"
-    And I select option field "mercadopago_custom_year" with "2017"
-    And I fill text field "mercadopago_custom_name" with "SECU"
+    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
+    And I select option field "cardExpirationMonth" with "01"
+    And I fill text field "cardholderName" with "SECU"
     And I select option field "docType" with "DNI"
-    And I fill text field "mercadopago_custom_doc" with "12345678"
-    And I fill text field "mercadopago_custom_code" with "123"
+    And I fill text field "docNumber" with "12345678"
+    And I fill text field "securityCode" with "123"
+    And I select option field "cardExpirationYear" with "2017"
     And I select option field "installments" with "1"
     And I press "#payment-buttons-container .button" element
 
@@ -105,13 +105,13 @@ Feature: Payment results in MercadoPago Custom Checkout
 
   @FORM
   Scenario: See payment rejected, bad filled other
-    Given I fill text field "mercadopago_custom_cn" with "4509 9535 6623 3704"
-    And I select option field "mercadopago_custom_month" with "01"
-    And I select option field "mercadopago_custom_year" with "2017"
-    And I fill text field "mercadopago_custom_name" with "FORM"
+    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
+    And I select option field "cardExpirationMonth" with "01"
+    And I fill text field "cardholderName" with "FORM"
     And I select option field "docType" with "DNI"
-    And I fill text field "mercadopago_custom_doc" with "12345678"
-    And I fill text field "mercadopago_custom_code" with "123"
+    And I fill text field "docNumber" with "12345678"
+    And I fill text field "securityCode" with "123"
+    And I select option field "cardExpirationYear" with "2017"
     And I select option field "installments" with "1"
     And I press "#payment-buttons-container .button" element
 
@@ -123,13 +123,13 @@ Feature: Payment results in MercadoPago Custom Checkout
 
   @OTHE
   Scenario: See payment rejected, other reason
-    Given I fill text field "mercadopago_custom_cn" with "4509 9535 6623 3704"
-    And I select option field "mercadopago_custom_month" with "01"
-    And I select option field "mercadopago_custom_year" with "2017"
-    And I fill text field "mercadopago_custom_name" with "OTHE"
+    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
+    And I select option field "cardExpirationMonth" with "01"
+    And I fill text field "cardholderName" with "OTHE"
     And I select option field "docType" with "DNI"
-    And I fill text field "mercadopago_custom_doc" with "12345678"
-    And I fill text field "mercadopago_custom_code" with "123"
+    And I fill text field "docNumber" with "12345678"
+    And I fill text field "securityCode" with "123"
+    And I select option field "cardExpirationYear" with "2017"
     And I select option field "installments" with "1"
     And I press "#payment-buttons-container .button" element
 

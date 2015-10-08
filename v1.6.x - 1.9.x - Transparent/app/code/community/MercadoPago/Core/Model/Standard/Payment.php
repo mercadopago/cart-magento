@@ -39,8 +39,6 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
 
     public function postPago()
     {
-        $core = Mage::getModel('mercadopago/core');
-        
         //seta sdk php mercadopago
         $client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
         $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
@@ -112,7 +110,6 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
         $customer = Mage::getSingleton('customer/session')->getCustomer();
-        $model = Mage::getModel('catalog/product');
 
         //pega payment dentro da order para pegar as informacoes adicionadas pela funcao assignData()
         $payment = $order->getPayment();

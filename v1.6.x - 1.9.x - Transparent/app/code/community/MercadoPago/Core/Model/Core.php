@@ -249,7 +249,6 @@ class MercadoPago_Core_Model_Core
         $order = $this->_getOrder($order_id);
 
         $customer = Mage::getSingleton('customer/session')->getCustomer();
-        $model = Mage::getModel('catalog/product');
 
         $billing_address = $quote->getBillingAddress();
         $billing_address = $billing_address->getData();
@@ -450,7 +449,6 @@ class MercadoPago_Core_Model_Core
 
     public function getPayment($payment_id)
     {
-        $model = $this;
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 
@@ -467,7 +465,6 @@ class MercadoPago_Core_Model_Core
 
     public function getMerchantOrder($merchant_order_id)
     {
-        $model = $this;
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 

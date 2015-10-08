@@ -41,7 +41,6 @@ class MercadoPago_Core_NotificationsController
             if ($response['status'] == 200 || $response['status'] == 201) {
                 $data = array();
                 $merchant_order = $response['response'];
-                $order = Mage::getModel('sales/order')->loadByIncrementId($merchant_order["external_reference"]);
 
                 //FIXIT: PRECISA ALTERAR PARA PEGAR TODOS OS PAGAMENTOS APROVADOS E VALIDAR SE O VALOR APROVADO É MAIOR OU IGUAL AO VALOR DA TRANSAÇAO
                 if (count($merchant_order['payments']) > 0) {
@@ -132,7 +131,6 @@ class MercadoPago_Core_NotificationsController
         Mage::helper('mercadopago')->log("Update Order", 'mercadopago-notification.log');
 
         try {
-            $core = Mage::getModel('mercadopago/core');
             $order = Mage::getModel('sales/order')->loadByIncrementId($data["external_reference"]);
 
             //update info de status no pagamento
@@ -193,11 +191,7 @@ class MercadoPago_Core_NotificationsController
     public function setStatusOrder($payment)
     {
         try {
-            $core = Mage::getModel('mercadopago/core');
             Mage::helper('mercadopago')->log("Received Payment data", 'mercadopago-notification.log', $payment);
-
-            $message = "";
-            $status = "";
 
             // obtem a order para atualizar o status
             $order = Mage::getModel('sales/order')->loadByIncrementId($payment["external_reference"]);

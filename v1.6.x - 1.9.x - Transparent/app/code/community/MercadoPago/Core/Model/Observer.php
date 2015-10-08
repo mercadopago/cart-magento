@@ -40,7 +40,12 @@ class MercadoPago_Core_Model_Observer
     
     private $available_transparent_credit_cart = array('mla', 'mlb', 'mlm');
     private $available_transparent_ticket = array('mla', 'mlb', 'mlm');
-    
+
+    /**
+     * @param $observer
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function checkAndValidData($observer)
     {
         //verifica se o usuario é de teste ou nao

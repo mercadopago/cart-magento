@@ -34,6 +34,14 @@ class MercadoPago_Core_Model_Custom_Payment
     protected $_canCreateBillingAgreement = true;
     protected $_canReviewPayment = true;
 
+    /**
+     * @param string $paymentAction
+     * @param object $stateObject
+     *
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function initialize($paymentAction, $stateObject)
     {
 

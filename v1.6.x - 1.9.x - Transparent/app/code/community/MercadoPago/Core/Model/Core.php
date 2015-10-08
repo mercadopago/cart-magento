@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * NOTICE OF LICENSE
@@ -13,8 +14,6 @@
  * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
-
 class MercadoPago_Core_Model_Core
     extends Mage_Payment_Model_Method_Abstract
 {
@@ -107,11 +106,11 @@ class MercadoPago_Core_Model_Core
         foreach ($fields as $field):
             if ($payment->getAdditionalInformation($field['field']) != ""):
                 $text = Mage::helper('mercadopago')->__($field['title'], $payment->getAdditionalInformation($field['field']));
-        $info_payments[$field['field']] = array(
+                $info_payments[$field['field']] = array(
                     "text"  => $text,
                     "value" => $payment->getAdditionalInformation($field['field'])
                 );
-        endif;
+            endif;
         endforeach;
 
         return $info_payments;
@@ -430,72 +429,23 @@ class MercadoPago_Core_Model_Core
         $response = $mp->post("/v1/payments", $preference);
         Mage::helper('mercadopago')->log("POST /v1/payments", 'mercadopago-custom.log', $response);
 
-        if ($response['status'] == 200 || $response['status'] == 201):
-            return $response; else:
+        if ($response['status'] == 200 || $response['status'] == 201) {
+            return $response;
+        } else {
             $e = "";
-        foreach ($response['response']['cause'] as $error):
-                switch ($error['code']) {
-                    case "106":
-                        $e .= Mage::helper('mercadopago')->__('You can not make payments to users in other countries.');
-                        break;
+            $exception = new MercadoPago_Core_Model_Api_V1_Exception();
+            foreach ($response['response']['cause'] as $error) {
+                $e .= $exception->getUserMessage($error) . " ";
+            }
 
-                    case "109":
-                        $e .= Mage::helper('mercadopago')->__('Payment Method selected does not process payments in installments selected. Choose another card or another payment method.');
-                        break;
+            Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
+            Mage::helper('mercadopago')->log("response post pago: ", 'mercadopago-custom.log', $response);
 
-                    case "126":
-                        $e .= Mage::helper('mercadopago')->__('We could not process your payment. Error code: 126.');
-                        break;
+            $exception->setMessage($e);
+            throw $exception;
 
-                    case "129":
-                        $e .= Mage::helper('mercadopago')->__('Payment Method selected does not process payments for the selected amount. Choose another card or another payment method.');
-                        break;
-
-                    case "137":
-                        $e .= Mage::helper('mercadopago')->__('The amount is required.');
-                        break;
-
-                    case "145":
-                        $e .= Mage::helper('mercadopago')->__('We could not process your payment. Error code: 145.');
-                        break;
-
-                    case "150":
-                        $e .= Mage::helper('mercadopago')->__('You can not make payments. Error code: 150.');
-                        break;
-
-                    case "151":
-                        $e .= Mage::helper('mercadopago')->__('You can not make payments.');
-                        break;
-
-                    case "160":
-                        $e .= Mage::helper('mercadopago')->__('We could not process your payment. Error code: 160.');
-                        break;
-
-                    case "204":
-                        $e .= Mage::helper('mercadopago')->__('Payment Method selected is not available at this time. Choose another card or another payment method.');
-                        break;
-
-                    case "801":
-                        $e .= Mage::helper('mercadopago')->__('You made a similar payment moments ago. Try again in a few minutes.');
-                        break;
-
-                    //validacao do coupon
-                    case "campaign_code_doesnt_match":
-                        $e .= Mage::helper('mercadopago')->__("Doesn't find a campaign with the given code.");
-                        break;
-
-                    default:
-                        $e .= Mage::helper('mercadopago')->__("We could not process your payment. %s", json_encode($response));
-                        break;
-                }
-
-        endforeach;
-        Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
-        Mage::helper('mercadopago')->log("response post pago: ", 'mercadopago-custom.log', $response);
-        Mage::throwException($e);
-
-        return false;
-        endif;
+            return false;
+        }
     }
 
     public function getPayment($payment_id)
@@ -503,6 +453,7 @@ class MercadoPago_Core_Model_Core
         $model = $this;
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
+
         return $mp->get_payment($payment_id);
     }
 
@@ -519,18 +470,18 @@ class MercadoPago_Core_Model_Core
         $model = $this;
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
-        
+
         return $mp->get("/merchant_orders/" . $merchant_order_id);
     }
 
     public function getPaymentMethods()
     {
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
-        
+
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 
         $payment_methods = $mp->get("/v1/payment_methods");
-    
+
         return $payment_methods;
     }
 
@@ -552,19 +503,19 @@ class MercadoPago_Core_Model_Core
     {
         $quote = $this->_getQuote();
         $total = $quote->getBaseGrandTotal();
-        
+
         //caso o valor seja null setta um valor 0
         if (is_null($total)) {
             $total = 0;
         }
-        
-        return (float) $total;
+
+        return (float)$total;
     }
-    
+
     public function validCoupon($id)
     {
         $this->access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
-        
+
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 
         $params = array(

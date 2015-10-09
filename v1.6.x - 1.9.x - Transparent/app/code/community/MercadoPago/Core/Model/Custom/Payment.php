@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * NOTICE OF LICENSE
@@ -13,7 +14,6 @@
  * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
 class MercadoPago_Core_Model_Custom_Payment
     extends Mage_Payment_Model_Method_Abstract
 {
@@ -34,6 +34,14 @@ class MercadoPago_Core_Model_Custom_Payment
     protected $_canCreateBillingAgreement = true;
     protected $_canReviewPayment = true;
 
+    /**
+     * @param string $paymentAction
+     * @param object $stateObject
+     *
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function initialize($paymentAction, $stateObject)
     {
 
@@ -49,9 +57,6 @@ class MercadoPago_Core_Model_Custom_Payment
         if ($response !== false):
 
             $payment = $response['response'];
-
-            //set order_id
-            $order = Mage::getModel('sales/order')->loadByIncrementId($payment['external_reference']);
 
             //set status
             $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
@@ -192,10 +197,8 @@ class MercadoPago_Core_Model_Custom_Payment
         $customer = $this->getOrCreateCustomer($payment_created['payer']['email']);
 
         if ($customer !== false) {
-            $card = $this->checkAndcreateCard($customer, $token, $payment_created);
+            $this->checkAndcreateCard($customer, $token, $payment_created);
         }
-
-        return true;
     }
 
     public function getOrCreateCustomer($email)

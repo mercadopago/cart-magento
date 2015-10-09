@@ -118,6 +118,17 @@ class FeatureContext
     }
 
     /**
+     * @Given I select installment :arg1
+     */
+
+    public function iSelectInstallment($installment)
+    {
+        $page = $this->getSession()->getPage();
+        $this->getSession()->wait(20000, "jQuery('#installments').children().length > 1");
+        $page->selectFieldOption('installments',$installment);
+    }
+
+    /**
      * @Then I should see MercadoPago available
      */
     public function iShouldSeeMercadopagoAvailable()

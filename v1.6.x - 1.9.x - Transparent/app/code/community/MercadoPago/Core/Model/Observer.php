@@ -40,7 +40,12 @@ class MercadoPago_Core_Model_Observer
     
     private $available_transparent_credit_cart = array('mla', 'mlb', 'mlm');
     private $available_transparent_ticket = array('mla', 'mlb', 'mlm');
-    
+
+    /**
+     * @param $observer
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function checkAndValidData($observer)
     {
         //verifica se o usuario é de teste ou nao
@@ -115,9 +120,7 @@ class MercadoPago_Core_Model_Observer
         
             //caso api retorne 403 (error no get) verifica se a mensagem e do usuario com test credentials
         if ($user['status'] == 200 && !in_array("test_user", $user['response']['tags'])) {
-            $sponsor_id = 1;
-            $country = Mage::getStoreConfig('payment/mercadopago/country');
-            
+
             switch ($user['response']['site_id']) {
                 case 'MLA':
                     $sponsor_id = 186172525;

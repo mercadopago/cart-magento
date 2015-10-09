@@ -149,93 +149,15 @@ class MercadoPago_Core_Model_Core
             "message" => ""
         );
 
-
-        switch ($status) {
-            case "approved":
-                $message['title'] = Mage::helper('mercadopago')->__('Done, your payment was accredited!');
-                break;
-
-            case "in_process":
-                $message['title'] = Mage::helper('mercadopago')->__('We are processing the payment.');
-                $message['message'] = Mage::helper('mercadopago')->__('In less than 2 business days we will tell you by e-mail if it is accredited or if we need more information.');
-                break;
-
-            case 'authorized':
-            case "pending":
-                $message['title'] = Mage::helper('mercadopago')->__('We are processing the payment.');
-                $message['message'] = Mage::helper('mercadopago')->__('In less than an hour we will send you by e-mail the result.');
-                break;
-
-            case "rejected":
-                $message['title'] = Mage::helper('mercadopago')->__('We could not process your payment.');
-
-                switch ($status_detail) {
-                    case "cc_rejected_bad_filled_card_number":
-                        $message['message'] = Mage::helper('mercadopago')->__('Check the card number.');
-                        break;
-
-                    case "cc_rejected_bad_filled_date":
-                        $message['message'] = Mage::helper('mercadopago')->__('Check the expiration date.');
-                        break;
-
-                    case "cc_rejected_bad_filled_other":
-                        $message['message'] = Mage::helper('mercadopago')->__('Check the data.');
-                        break;
-
-                    case "cc_rejected_bad_filled_security_code":
-                        $message['message'] = Mage::helper('mercadopago')->__('Check the security code.');
-                        break;
-
-                    case "cc_rejected_blacklist":
-                        $message['message'] = Mage::helper('mercadopago')->__('We could not process your payment.');
-                        break;
-
-                    case "cc_rejected_call_for_authorize":
-                        $message['message'] = Mage::helper('mercadopago')->__('You must authorize to %s the payment of $ %s to MercadoPago.', strtoupper($payment_method), strtoupper($amount));
-                        break;
-
-                    case "cc_rejected_card_disabled":
-                        $message['message'] = Mage::helper('mercadopago')->__('Call %s to activate your card.<br/>The phone is on the back of your card.', strtoupper($payment_method));
-                        break;
-
-                    case "cc_rejected_card_error":
-                        $message['message'] = Mage::helper('mercadopago')->__('We could not process your payment.');
-                        break;
-
-                    case "cc_rejected_duplicated_payment":
-                        $message['message'] = Mage::helper('mercadopago')->__('You already made a payment by that value.<br/>If you need to repay, use another card or other payment method.');
-                        break;
-
-                    case "cc_rejected_high_risk":
-                        $message['message'] = Mage::helper('mercadopago')->__('Your payment was rejected.<br/>Choose another payment method, we recommend cash methods.');
-                        break;
-
-                    case "cc_rejected_insufficient_amount":
-                        $message['message'] = Mage::helper('mercadopago')->__('Your %s do not have sufficient funds.', strtoupper($payment_method));
-                        break;
-
-                    case "cc_rejected_invalid_installments":
-                        $message['message'] = Mage::helper('mercadopago')->__('%s does not process payments in %s installments.', strtoupper($payment_method), $installment);
-                        break;
-
-                    case "cc_rejected_max_attempts":
-                        $message['message'] = Mage::helper('mercadopago')->__('You have got to the limit of allowed attempts.<br/>Choose another card or another payment method.');
-                        break;
-
-                    case "cc_rejected_other_reason":
-                        $message['message'] = Mage::helper('mercadopago')->__('%s did not process the payment.', strtoupper($payment_method));
-                        break;
-
-                }
-
-                break;
-            case "cancelled":
-                $message['title'] = Mage::helper('mercadopago')->__('Payments were canceled.');
-                $message['message'] = Mage::helper('mercadopago')->__('Contact for more information.');
-                break;
-            case "other":
-                $message['title'] = Mage::helper('mercadopago')->__('Thank you for your purchase!');
-                break;
+        $message = Mage::helper('mercadopago/statusMessage')->getMessage($status);
+        if ($status == 'rejected'){
+            if ($status_detail=='cc_rejected_invalid_installments') {
+                $message['message'] = Mage::helper('mercadopago/statusDetailMessage')->getMessage($status_detail, strtoupper($payment_method),$installment);
+            } elseif ($status_detail == 'cc_rejected_call_for_authorize'){
+                $message['message'] = Mage::helper('mercadopago/statusDetailMessage')->getMessage($status_detail, strtoupper($payment_method), $amount);
+            } else {
+                $message['message'] = Mage::helper('mercadopago/statusDetailMessage')->getMessage($status_detail, strtoupper($payment_method));
+            }
         }
 
         return $message;

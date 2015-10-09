@@ -36,7 +36,7 @@ $customer = $this->getCustomerAndCards();
                     <ul id="mercadopago_checkout_custom_ocp">
                         <li id="cardId__mp">
 
-                            <div id="use_other_card_mp" class="action_ocp"><?php echo $this->__('Utilizar outro cartão'); ?></div>
+                            <div id="use_other_card_mp" class="action_ocp"><?php echo $this->__('Use other card'); ?></div>
 
                             <label for="cardNumber"><?php echo $this->__('Payment Method'); ?></label>
                             <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp">
@@ -69,7 +69,7 @@ $customer = $this->getCustomerAndCards();
             <li>
                 <ul id="mercadopago_checkout_custom_card">
                     <li id="cardNumber__mp">
-                        <div id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Voltar para lista de Cartões'); ?></div>
+                        <div id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></div>
 
                         <label for="cardNumber"><?php echo $this->__('Card Number'); ?></label>
                         <input type="text" id="cardNumber" data-checkout="cardNumber" data-element-id="#cardNumber__mp"/>

@@ -1,5 +1,6 @@
 // MERCADO LOG
 var mercadopago_log = true;
+var issuerMandatory = false;
 function showLogMercadoPago(message) {
     if (mercadopago_log) {
         console.debug(message);
@@ -99,21 +100,21 @@ function defineInputs(){
         exclude_inputs.push("#docNumber")
 
     }
-
-    exclude_inputs.push("#issuer")
+    if (!this.issuerMandatory) {
+        exclude_inputs.push("#issuer");
+    }
 
     for (var x = 0; x < data_checkout.length; x++) {
         var $id = "#" + data_checkout[x].id;
 
         var el_pai = data_checkout[x].getAttribute('data-element-id');
 
-        //esconde o elemento, para validar se ele deve aparecer ou não
-        document.querySelector(el_pai).style.display = 'none';
 
         if (exclude_inputs.indexOf($id) == -1) {
-            //mostra apenas os elementos que serão utilizados pelo checkout
             document.querySelector(el_pai).removeAttribute('style');
             data_inputs.push($id);
+        }else{
+            document.querySelector(el_pai).style.display = 'none';
         }
     }
 
@@ -299,18 +300,19 @@ function setPaymentMethodInfo(status, response) {
         });
 
         // check if the issuer is necessary to pay
-        var issuerMandatory = false;
+        this.issuerMandatory;
+        this.issuerMandatory = false;
         var additionalInfo = response[0].additional_info_needed;
 
         for (var i = 0; i < additionalInfo.length; i++) {
             if (additionalInfo[i] == "issuer_id") {
-                issuerMandatory = true;
+                this.issuerMandatory = true;
             }
         };
 
-        showLogMercadoPago("Issuer is mandatory? " + issuerMandatory);
+        showLogMercadoPago("Issuer is mandatory? " + this.issuerMandatory);
 
-        if (issuerMandatory) {
+        if (this.issuerMandatory) {
             Mercadopago.getIssuers(response[0].id, showCardIssuers);
             addEvent(document.querySelector('#issuer'), 'change', setInstallmentsByIssuerId);
         } else {

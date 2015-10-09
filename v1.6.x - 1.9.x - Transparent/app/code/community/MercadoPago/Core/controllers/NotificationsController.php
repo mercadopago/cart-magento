@@ -26,13 +26,14 @@ class MercadoPago_Core_NotificationsController
 
     public function standardAction()
     {
+        $request = $this->getRequest();
         //notification received
-        Mage::helper('mercadopago')->log("Standard Received notification", 'mercadopago-notification.log', $_REQUEST);
+        Mage::helper('mercadopago')->log("Standard Received notification", 'mercadopago-notification.log', $request->getParams());
 
         $core = Mage::getModel('mercadopago/core');
 
-        $id = $this->getRequest()->getParam('id');
-        $topic = $this->getRequest()->getParam('topic');
+        $id = $request->getParam('id');
+        $topic = $request->getParam('topic');
 
         if (!empty($id) && $topic == 'merchant_order') {
             $response = $core->getMerchantOrder($id);
@@ -81,19 +82,20 @@ class MercadoPago_Core_NotificationsController
             }
         }
 
-        Mage::helper('mercadopago')->log("Merchant Order not found", 'mercadopago-notification.log', $_REQUEST);
+        Mage::helper('mercadopago')->log("Merchant Order not found", 'mercadopago-notification.log', $request->getParams());
         $this->getResponse()->setBody("Merchant Order not found");
         $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
     }
 
     public function customAction()
     {
-        Mage::helper('mercadopago')->log("Custom Received notification", 'mercadopago-notification.log', $_REQUEST);
+        $request = $this->getRequest();
+        Mage::helper('mercadopago')->log("Custom Received notification", 'mercadopago-notification.log',  $request->getParams());
 
         $core = Mage::getModel('mercadopago/core');
 
-        $dataId = $this->getRequest()->getParam('data_id');
-        $type = $this->getRequest()->getParam('type');
+        $dataId = $request->getParam('data_id');
+        $type = $request->getParam('type');
         if (!empty($dataId) && $type == 'payment') {
             $response = $core->getPaymentV1($dataId);
             Mage::helper('mercadopago')->log("Return payment", 'mercadopago-notification.log', $response);
@@ -118,7 +120,7 @@ class MercadoPago_Core_NotificationsController
             }
         }
 
-        Mage::helper('mercadopago')->log("Payment not found", 'mercadopago-notification.log', $_REQUEST);
+        Mage::helper('mercadopago')->log("Payment not found", 'mercadopago-notification.log', $request->getParams());
         $this->getResponse()->getBody("Payment not found");
         $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
     }

@@ -200,9 +200,66 @@ class MercadoPago_Core_Model_Core
         return array('email' => $email, 'first_name' => $first_name, 'last_name' => $last_name);
     }
 
+    protected function getItemsInfo($order) {
+        $dataItems = array();
+        foreach ($order->getAllVisibleItems() as $item) {
+            $product = $item->getProduct();
+            try {
+                $image = $product->getImageUrl();
+            } catch (Exception $e) {
+                $image = "";
+            }
+
+            $dataItems[] = array(
+                "id"          => $item->getSku(),
+                "title"       => $product->getName(),
+                "description" => $product->getName(),
+                "picture_url" => $image,
+                "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
+                "quantity"    => (int)number_format($item->getQtyOrdered(), 0, '.', ''),
+                "unit_price"  => (float)number_format($product->getPrice(), 2, '.', '')
+            );
+        }
+
+        /* verify discount and add it like an item */
+        $discount = $this->getDiscount();
+        if ($discount != 0) {
+            $dataItems[] = array(
+                "title"       => "Discount by the Store",
+                "description" => "Discount by the Store",
+                "quantity"    => 1,
+                "unit_price"  => (float)number_format($discount, 2, '.', '')
+            );
+        }
+
+    }
+
+    protected function getCouponInfo($coupon,$coupon_code) {
+        $infoCoupon = array();
+        if ($coupon['status'] != 200) {
+            if ($coupon['response']['error'] != "campaign-code-doesnt-match" &&
+                $coupon['response']['error'] != "amount-doesnt-match" &&
+                $coupon['response']['error'] != "transaction_amount_invalid"
+            ) {
+                $infoCoupon['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
+                $infoCoupon['coupon_code'] = $coupon_code;
+                Mage::helper('mercadopago')->log("Coupon applied. API response 400, error not mapped", 'mercadopago-custom.log');
+            } else {
+                $infoCoupon['coupon_amount'] = null;
+                $infoCoupon['coupon_code'] = null;
+                Mage::helper('mercadopago')->log("Coupon invalid, not applied.", 'mercadopago-custom.log');
+            }
+        } else {
+            $preference['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
+            $preference['coupon_code'] = $coupon_code;
+            Mage::helper('mercadopago')->log("Coupon applied. API response 200.", 'mercadopago-custom.log');
+        }
+
+        return $infoCoupon;
+    }
+
     public function makeDefaultPreferencePaymentV1($payment_info = array())
     {
-        $core = Mage::getModel('mercadopago/core');
         $quote = $this->_getQuote();
         $order_id = $quote->getReservedOrderId();
         $order = $this->_getOrder($order_id);
@@ -223,37 +280,7 @@ class MercadoPago_Core_Model_Core
             $preference['payer']['identification']['type'] = $payment_info['identification_type'];
             $preference['payer']['identification']['number'] = $payment_info['identification_number'];
         }
-        $preference['additional_info']['items'] = array();
-
-        foreach ($order->getAllVisibleItems() as $item) {
-            $product = $item->getProduct();
-            try {
-                $image = $product->getImageUrl();
-            } catch (Exception $e) {
-                $image = "";
-            }
-
-            $preference['additional_info']['items'][] = array(
-                "id"          => $item->getSku(),
-                "title"       => $product->getName(),
-                "description" => $product->getName(),
-                "picture_url" => $image,
-                "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
-                "quantity"    => (int)number_format($item->getQtyOrdered(), 0, '.', ''),
-                "unit_price"  => (float)number_format($product->getPrice(), 2, '.', '')
-            );
-        }
-
-        /* verify discount and add it like an item */
-        $discount = $this->getDiscount();
-        if ($discount != 0) {
-            $preference['additional_info']['items'][] = array(
-                "title"       => "Discount by the Store",
-                "description" => "Discount by the Store",
-                "quantity"    => (int)1,
-                "unit_price"  => (float)number_format($discount, 2, '.', '')
-            );
-        }
+        $preference['additional_info']['items'] = $this->getItemsInfo();
 
         $preference['additional_info']['payer']['first_name'] = $customerInfo['first_name'];
         $preference['additional_info']['payer']['last_name'] = $customerInfo['last_name'];
@@ -266,54 +293,38 @@ class MercadoPago_Core_Model_Core
 
         $preference['additional_info']['payer']['registration_date'] = date('Y-m-d', $customer->getCreatedAtTimestamp()) . "T" . date('H:i:s', $customer->getCreatedAtTimestamp());
 
-        if (method_exists($order->getShippingAddress(), "getData")) {
-            $shipping = $order->getShippingAddress()->getData();
+        $shipping = $order->getShippingAddress()->getData();
 
-            $preference['additional_info']['shipments']['receiver_address'] = array(
-                "zip_code"      => $shipping['postcode'],
-                "street_name"   => $shipping['street'] . " - " . $shipping['city'] . " - " . $shipping['country_id'],
-                "street_number" => 0,
-                "floor"         => "-",
-                "apartment"     => "-",
+        $preference['additional_info']['shipments']['receiver_address'] = array(
+            "zip_code"      => $shipping['postcode'],
+            "street_name"   => $shipping['street'] . " - " . $shipping['city'] . " - " . $shipping['country_id'],
+            "street_number" => 0,
+            "floor"         => "-",
+            "apartment"     => "-",
 
-            );
+        );
 
-            $preference['additional_info']['payer']['phone'] = array(
-                "area_code" => "0",
-                "number"    => $shipping['telephone']
-            );
-        }
+        $preference['additional_info']['payer']['phone'] = array(
+            "area_code" => "0",
+            "number"    => $shipping['telephone']
+        );
 
-        if (isset($payment_info['coupon_code']) && $payment_info['coupon_code'] != "") {
+        if (!empty($payment_info['coupon_code'])) {
             $coupon_code = $payment_info['coupon_code'];
             Mage::helper('mercadopago')->log("Validating coupon_code: " . $coupon_code, 'mercadopago-custom.log');
 
-            $coupon = $core->validCoupon($coupon_code);
+            $coupon = $this->validCoupon($coupon_code);
             Mage::helper('mercadopago')->log("Response API Coupon: ", 'mercadopago-custom.log', $coupon);
 
-            if ($coupon['status'] != 200) {
-                if ($coupon['response']['error'] != "campaign-code-doesnt-match" &&
-                    $coupon['response']['error'] != "amount-doesnt-match" &&
-                    $coupon['response']['error'] != "transaction_amount_invalid"
-                ) {
+            $couponInfo = $this->getCouponInfo($coupon,$coupon_code);
+            $preference['coupon_amount'] = $couponInfo['coupon_amount'];
+            $preference['coupon_code'] = $couponInfo['coupon_code'];
 
-                    $preference['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
-                    $preference['coupon_code'] = $coupon_code;
-                    Mage::helper('mercadopago')->log("Coupon applied. API response 400, error not mapped", 'mercadopago-custom.log');
-                } else {
-                    Mage::helper('mercadopago')->log("Coupon invalid, not applied.", 'mercadopago-custom.log');
-                }
-            } else {
-
-                $preference['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
-                $preference['coupon_code'] = $coupon_code;
-                Mage::helper('mercadopago')->log("Coupon applied. API response 200.", 'mercadopago-custom.log');
-            }
         }
 
         $sponsor_id = Mage::getStoreConfig('payment/mercadopago/sponsor_id');
         Mage::helper('mercadopago')->log("Sponsor_id", 'mercadopago-standard.log', $sponsor_id);
-        if ($sponsor_id != null && $sponsor_id != "") {
+        if (!empty($sponsor_id)) {
             Mage::helper('mercadopago')->log("Sponsor_id identificado", 'mercadopago-custom.log', $sponsor_id);
             $preference['sponsor_id'] = (int)$sponsor_id;
         }

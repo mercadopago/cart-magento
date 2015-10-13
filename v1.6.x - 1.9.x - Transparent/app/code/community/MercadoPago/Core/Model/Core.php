@@ -331,7 +331,6 @@ class MercadoPago_Core_Model_Core
             $preference['sponsor_id'] = (int)$sponsor_id;
         }
 
-        Mage::helper('mercadopago')->log("TEST", 'mercadopago-test.log',$preference);
         return $preference;
     }
 

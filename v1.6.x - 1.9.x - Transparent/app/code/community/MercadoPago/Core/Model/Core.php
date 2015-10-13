@@ -280,7 +280,7 @@ class MercadoPago_Core_Model_Core
             $preference['payer']['identification']['type'] = $payment_info['identification_type'];
             $preference['payer']['identification']['number'] = $payment_info['identification_number'];
         }
-        $preference['additional_info']['items'] = $this->getItemsInfo();
+        $preference['additional_info']['items'] = $this->getItemsInfo($order);
 
         $preference['additional_info']['payer']['first_name'] = $customerInfo['first_name'];
         $preference['additional_info']['payer']['last_name'] = $customerInfo['last_name'];
@@ -329,6 +329,7 @@ class MercadoPago_Core_Model_Core
             $preference['sponsor_id'] = (int)$sponsor_id;
         }
 
+        Mage::helper('mercadopago')->log("TEST", 'mercadopago-test.log',$preference);
         return $preference;
     }
 
@@ -360,8 +361,6 @@ class MercadoPago_Core_Model_Core
 
             $exception->setMessage($e);
             throw $exception;
-
-            return false;
         }
     }
 

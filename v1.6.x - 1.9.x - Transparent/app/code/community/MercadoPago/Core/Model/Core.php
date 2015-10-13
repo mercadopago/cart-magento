@@ -232,6 +232,8 @@ class MercadoPago_Core_Model_Core
             );
         }
 
+        return $dataItems;
+
     }
 
     protected function getCouponInfo($coupon,$coupon_code) {

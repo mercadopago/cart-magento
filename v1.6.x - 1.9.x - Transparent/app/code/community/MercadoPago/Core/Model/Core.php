@@ -149,15 +149,22 @@ class MercadoPago_Core_Model_Core
             "message" => ""
         );
 
-        $message = Mage::helper('mercadopago/statusMessage')->getMessage($status);
+        $rawMessage = Mage::helper('mercadopago/statusMessage')->getMessage($status);
+        $message['title'] = Mage::helper('mercadopago')->__($rawMessage['title']);
+
         if ($status == 'rejected'){
             if ($status_detail=='cc_rejected_invalid_installments') {
-                $message['message'] = Mage::helper('mercadopago/statusDetailMessage')->getMessage($status_detail, strtoupper($payment_method),$installment);
+                $message['message'] = Mage::helper('mercadopago')
+                    ->__(Mage::helper('mercadopago/statusDetailMessage')->getMessage($status_detail),strtoupper($payment_method),$installment);
             } elseif ($status_detail == 'cc_rejected_call_for_authorize'){
-                $message['message'] = Mage::helper('mercadopago/statusDetailMessage')->getMessage($status_detail, strtoupper($payment_method), $amount);
+                $message['message'] = Mage::helper('mercadopago')
+                    ->__(Mage::helper('mercadopago/statusDetailMessage')->getMessage($status_detail), strtoupper($payment_method), $amount);
             } else {
-                $message['message'] = Mage::helper('mercadopago/statusDetailMessage')->getMessage($status_detail, strtoupper($payment_method));
+                $message['message'] = Mage::helper('mercadopago')
+                ->__(Mage::helper('mercadopago/statusDetailMessage')->getMessage($status_detail), strtoupper($payment_method));
             }
+        } else {
+            $message['message'] = Mage::helper('mercadopago')->__($rawMessage['message']);
         }
 
         return $message;

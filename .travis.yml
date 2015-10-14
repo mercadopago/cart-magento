@@ -73,8 +73,6 @@ before_script:
   - bin/phing -f .travis/build/build.xml magento_configuration
   - rm -rf htdocs/var/cache
   - cd v1.6.x\ -\ 1.9.x\ -\ Transparent/dev/MercadoPago/tests/
-  - mkdir static/phpcs
-  - git clone https://github.com/magento-ecg/coding-standard static/phpcs/Ecg
   - cp behat.yml.dist behat.yml
   - sed -e "s?%MAGENTO_URL%?http://${MAGENTO_URL}/?g" --in-place behat.yml
   - sed -e "s?%BROWSER_DRIVER%?firefox?g" --in-place behat.yml

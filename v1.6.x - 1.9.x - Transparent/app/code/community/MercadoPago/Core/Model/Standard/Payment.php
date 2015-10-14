@@ -155,20 +155,18 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         $arr = array();
 
         $arr['external_reference'] = $orderIncrementId;
-
         $arr['items'] = $this->getItems();
+
         $total_item = $this->getTotalItems($arr['items']);
+        $total_item += (float)$order->getBaseShippingAmount();
 
         $order_amount = (float)$order->getBaseGrandTotal();
         if (!$order_amount) {
             $order_amount = (float)$order->getBasePrice() + $order->getBaseShippingAmount();
         }
 
-        $total_item += (float)$order->getBaseShippingAmount();
-
         if ($total_item > $order_amount || $total_item < $order_amount) {
             $diff_price = $order_amount - $total_item;
-
             $arr['items'][] = array(
                 "title"       => "Difference amount of the items with a total",
                 "description" => "Difference amount of the items with a total",
@@ -176,7 +174,6 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
                 "quantity"    => 1,
                 "unit_price"  => (float)$diff_price
             );
-
             Mage::helper('mercadopago')->log("Total itens: " . $total_item, 'mercadopago-standard.log');
             Mage::helper('mercadopago')->log("Total order: " . $order_amount, 'mercadopago-standard.log');
             Mage::helper('mercadopago')->log("Difference add itens: " . $diff_price, 'mercadopago-standard.log');
@@ -195,14 +192,12 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
             "number"    => $shipping['telephone']
         );
 
-        //adiciona o valor do frete nas preferencias
         $shippingCost = $order->getBaseShippingAmount();
         if (!empty($shippingCost)) {
             $arr['shipments']['cost'] = (float)$order->getBaseShippingAmount();
         }
 
-        $billing_address = $order->getBillingAddress();
-        $billing_address = $billing_address->getData();
+        $billing_address = $order->getBillingAddress()->getData();
 
         $arr['payer']['date_created'] = date('Y-m-d', $customer->getCreatedAtTimestamp()) . "T" . date('H:i:s', $customer->getCreatedAtTimestamp());
         $arr['payer']['email'] = htmlentities($customer->getEmail());
@@ -234,7 +229,6 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods($checkout);
         $installments = $checkout->getConfigData('installments');
         $arr['payment_methods']['installments'] = (int)$installments;
-
 
         $auto_return = $checkout->getConfigData('auto_return');
         if ($auto_return == 1) {

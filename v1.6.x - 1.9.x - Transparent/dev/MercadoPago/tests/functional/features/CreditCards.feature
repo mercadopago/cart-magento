@@ -21,7 +21,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "123"
     And I select option field "cardExpirationYear" with "2017"
-    And I select installment "2"
+    And I select installment "1"
     And I press "#payment-buttons-container .button" element
 
     When I press "#review-buttons-container .button" element

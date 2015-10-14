@@ -1,10 +1,11 @@
 <?php
 
-class MercadoPago_Core_Helper_Message
+abstract class MercadoPago_Core_Helper_Message_Abstract
     extends Mage_Core_Helper_Abstract
 {
 
-    protected $messageMap;
+    public abstract function getMessageMap();
+
 
     /**
      * @param      $key
@@ -14,10 +15,12 @@ class MercadoPago_Core_Helper_Message
      */
     public function getMessage($key)
     {
-        if (isset($this->messagesMap[$key])) {
-            return $this->messagesMap[$key];
+        $messageMap = $this->getMessageMap();
+        if (isset($messageMap[$key])) {
+            return $messageMap[$key];
         }
 
         return '';
     }
+
 }

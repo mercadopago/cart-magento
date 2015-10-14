@@ -133,15 +133,16 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         return $total;
     }
 
-    protected function getExcludedPaymentsMethods($checkout) {
+    protected function getExcludedPaymentsMethods() {
         $excludedMethods = array();
-        $excluded_payment_methods = $checkout->getConfigData('excluded_payment_methods');
+        $excluded_payment_methods = $this->getConfigData('excluded_payment_methods');
         $arr_epm = explode(",", $excluded_payment_methods);
         if (count($arr_epm) > 0) {
             foreach ($arr_epm as $m) {
                 $excludedMethods[] = array("id" => $m);
             }
         }
+        return $excludedMethods;
     }
 
     public function makePreference()
@@ -155,7 +156,7 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         $arr = array();
 
         $arr['external_reference'] = $orderIncrementId;
-        $arr['items'] = $this->getItems();
+        $arr['items'] = $this->getItems($order);
 
         $total_item = $this->getTotalItems($arr['items']);
         $total_item += (float)$order->getBaseShippingAmount();
@@ -225,12 +226,11 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
 
         $arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/notifications?checkout=standard";
 
-        $checkout = Mage::getModel('mercadopago/standard_payment');
-        $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods($checkout);
-        $installments = $checkout->getConfigData('installments');
+        $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods();
+        $installments = $this->getConfigData('installments');
         $arr['payment_methods']['installments'] = (int)$installments;
 
-        $auto_return = $checkout->getConfigData('auto_return');
+        $auto_return = $this->getConfigData('auto_return');
         if ($auto_return == 1) {
             $arr['auto_return'] = "approved";
         }

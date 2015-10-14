@@ -134,26 +134,21 @@ class MercadoPago_Core_Model_Custom_Payment
         $order_id = $quote->getReservedOrderId();
         $order = $this->_getOrder($order_id);
 
-        //pega payment dentro da order para pegar as informacoes adicionadas pela funcao assignData()
         $payment = $order->getPayment();
 
         $payment_info = array();
 
-        /* verifica se o pagamento possui coupon_code */
         if ($payment->getAdditionalInformation("coupon_code") != "") {
             $payment_info['coupon_code'] = $payment->getAdditionalInformation("coupon_code");
         }
 
-        /* verifica se o pagamento possui doc_number */
         if ($payment->getAdditionalInformation("doc_number") != "") {
             $payment_info['identification_type'] = $payment->getAdditionalInformation("doc_type");
             $payment_info['identification_number'] = $payment->getAdditionalInformation("doc_number");
         }
 
-        /* cria a preferencia padrão */
         $preference = $core->makeDefaultPreferencePaymentV1($payment_info);
 
-        /* adiciona informações sobre pagamento com cartão de crédito */
         $preference['installments'] = (int)$payment->getAdditionalInformation("installments");
         $preference['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
         $preference['token'] = $payment->getAdditionalInformation("token");
@@ -166,8 +161,6 @@ class MercadoPago_Core_Model_Custom_Payment
             $preference['payer']['id'] = $payment->getAdditionalInformation("customer_id");
         }
 
-
-        /* informações padrões para cartão de crédito */
         $preference['binary_mode'] = Mage::getStoreConfig('payment/mercadopago_custom/binary_mode') == 1 ? true : false;
         $preference['statement_descriptor'] = Mage::getStoreConfig('payment/mercadopago_custom/statement_descriptor');
 
@@ -179,15 +172,9 @@ class MercadoPago_Core_Model_Custom_Payment
         /*
          * REMOVER: SERÁ INSERIDO NA IPN
          */
-        if ($response !== false):
-
-            $payment = $response['response'];
-
-            if ($payment['status'] == "approved") {
-                $this->CustomerAndCards($preference['token'], $payment);
-            }
-
-        endif;
+        if ($response !== false && $response['response']['status'] == 'approved') {
+            $this->CustomerAndCards($preference['token'], $response['response']);
+        }
 
         return $response;
     }

@@ -126,16 +126,7 @@ class MercadoPago_Core_Model_Custom_Payment
         return $discount;
     }
 
-    public function preparePostPayment()
-    {
-        Mage::helper('mercadopago')->log("Credit Card -> init prepare post payment", 'mercadopago-custom.log');
-        $core = Mage::getModel('mercadopago/core');
-        $quote = $this->_getQuote();
-        $order_id = $quote->getReservedOrderId();
-        $order = $this->_getOrder($order_id);
-
-        $payment = $order->getPayment();
-
+    protected function getPaymentInfo($payment) {
         $payment_info = array();
 
         if ($payment->getAdditionalInformation("coupon_code") != "") {
@@ -146,6 +137,19 @@ class MercadoPago_Core_Model_Custom_Payment
             $payment_info['identification_type'] = $payment->getAdditionalInformation("doc_type");
             $payment_info['identification_number'] = $payment->getAdditionalInformation("doc_number");
         }
+        return $payment_info;
+    }
+
+    public function preparePostPayment()
+    {
+        Mage::helper('mercadopago')->log("Credit Card -> init prepare post payment", 'mercadopago-custom.log');
+        $core = Mage::getModel('mercadopago/core');
+        $quote = $this->_getQuote();
+        $order_id = $quote->getReservedOrderId();
+        $order = $this->_getOrder($order_id);
+
+        $payment = $order->getPayment();
+        $payment_info = $this->getPaymentInfo($payment);
 
         $preference = $core->makeDefaultPreferencePaymentV1($payment_info);
 

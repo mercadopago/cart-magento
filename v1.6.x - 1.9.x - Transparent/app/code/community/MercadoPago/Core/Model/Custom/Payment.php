@@ -173,9 +173,6 @@ class MercadoPago_Core_Model_Custom_Payment
         /* POST /v1/payments */
         $response = $core->postPaymentV1($preference);
 
-        /*
-         * REMOVER: SERÁ INSERIDO NA IPN
-         */
         if ($response !== false && $response['response']['status'] == 'approved') {
             $this->CustomerAndCards($preference['token'], $response['response']);
         }

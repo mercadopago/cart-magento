@@ -21,7 +21,8 @@
     "magetest/magento-phpspec-extension": "~2.0",
     "ciaranmcnulty/behat-stepthroughextension": "dev-master",
     "phpmd/phpmd": "@stable",
-    "squizlabs/php_codesniffer": "2.*"
+    "squizlabs/php_codesniffer": "2.*",
+    "sebastian/phpcpd": "*"
   },
   "autoload": {
     "psr-0": {

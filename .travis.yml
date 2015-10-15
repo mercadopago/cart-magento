@@ -69,22 +69,10 @@ before_script:
   - php ./htdocs/install.php --license_agreement_accepted 'yes' --locale 'en_US' --db_host '127.0.0.1' --db_name ${MAGENTO_DB_NAME} --db_user 'travis' --timezone 'America/Los_Angeles' --default_currency 'USD' --skip_url_validation 'yes' --url "http://${MAGENTO_URL}/" --secure_base_url "http://${MAGENTO_URL}/" --use_rewrites 'yes' --use_secure 'no' --use_secure_admin 'no' --session_save 'db' --admin_firstname 'Facundo' --admin_lastname 'Capua' --admin_email 'fcapua@summasolutions.net' --admin_username 'admin' --admin_password 'MercadoPago123'
   - cp -R v1.6.x\ -\ 1.9.x\ -\ Transparent/* htdocs/
   - ls -al htdocs/app/code/community/
-  - wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
-  - chmod +x ./n98-magerun.phar
-  - ./n98-magerun.phar config:set dev/template/allow_symlink 1
-  - ./n98-magerun.phar config:set payment/mercadopago/client_id 446950613712741
-  - ./n98-magerun.phar config:set payment/mercadopago/client_secret 0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv
-  - ./n98-magerun.phar config:set payment/mercadopago_custom/active 1
-  - ./n98-magerun.phar config:set payment/mercadopago_custom/public_key TEST-d5a3d71b-6bd4-4bfc-a1f3-7ed77987d5aa
-  - ./n98-magerun.phar config:set payment/mercadopago/access_token TEST-446950613712741-091715-092a6109a25bb763aa94c61688ada0cd__LC_LA__-192627424
-  - ./n98-magerun.phar config:set carriers/ups/active 0
-  - ./n98-magerun.phar config:set carriers/usps/active 0
-  - ./n98-magerun.phar config:set carriers/freeshipping/active 1
-  - ./n98-magerun.phar config:set carriers/freeshipping/free_shipping_subtotal 1
+  - ls -al bin/
+  - bin/phing -f .travis/build/build.xml magento_configuration
   - rm -rf htdocs/var/cache
   - cd v1.6.x\ -\ 1.9.x\ -\ Transparent/dev/MercadoPago/tests/
-  - mkdir static/phpcs
-  - git clone https://github.com/magento-ecg/coding-standard static/phpcs/Ecg
   - cp behat.yml.dist behat.yml
   - sed -e "s?%MAGENTO_URL%?http://${MAGENTO_URL}/?g" --in-place behat.yml
   - sed -e "s?%BROWSER_DRIVER%?firefox?g" --in-place behat.yml
@@ -96,4 +84,5 @@ before_script:
 script:
   - vendor/bin/phpmd ../../../app/code/community/MercadoPago text static/phpmd/ruleset.xml
   - vendor/bin/phpcs --standard=static/phpcs/Ecg --colors ../../../app/
+  - vendor/bin/phpcpd ../../../ --exclude=dev
   - vendor/bin/behat --config behat.yml

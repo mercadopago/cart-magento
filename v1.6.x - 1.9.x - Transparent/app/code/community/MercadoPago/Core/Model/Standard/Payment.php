@@ -103,13 +103,7 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         $items = array();
         foreach ($order->getAllVisibleItems() as $item) {
             $product = $item->getProduct();
-
-            //get image
-            try {
-                $image = (string) Mage::helper('catalog/image')->init($product, 'image');
-            } catch (Exception $e) {
-                $image = "";
-            }
+            $image = (string) Mage::helper('catalog/image')->init($product, 'image');
 
             $items[] = array(
                 "id"          => $item->getSku(),

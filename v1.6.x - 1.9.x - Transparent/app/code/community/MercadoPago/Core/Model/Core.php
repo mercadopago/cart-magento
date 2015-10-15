@@ -204,11 +204,7 @@ class MercadoPago_Core_Model_Core
         $dataItems = array();
         foreach ($order->getAllVisibleItems() as $item) {
             $product = $item->getProduct();
-            try {
-                $image = (string) Mage::helper('catalog/image')->init($product, 'image');
-            } catch (Exception $e) {
-                $image = "";
-            }
+            $image = (string) Mage::helper('catalog/image')->init($product, 'image');
 
             $dataItems[] = array(
                 "id"          => $item->getSku(),

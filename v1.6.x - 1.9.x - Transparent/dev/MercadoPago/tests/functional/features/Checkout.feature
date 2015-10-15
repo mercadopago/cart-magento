@@ -15,4 +15,4 @@ Scenario: See MercadoPago option as a payment method
     And I select shipping method
     And I press "#shipping-method-buttons-container .button" element
 
-  Then I should see MercadoPago available
+  Then I should see MercadoPago Custom available

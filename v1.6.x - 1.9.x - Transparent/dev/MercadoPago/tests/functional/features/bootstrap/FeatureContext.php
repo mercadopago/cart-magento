@@ -129,14 +129,14 @@ class FeatureContext
     }
 
     /**
-     * @Then I should see MercadoPago available
+     * @Then I should see MercadoPago Custom available
      */
-    public function iShouldSeeMercadopagoAvailable()
+    public function iShouldSeeMercadopagoCustomAvailable()
     {
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
-        $element = $this->findElement('#dt_method_mercadopago_standard');
+        $element = $this->findElement('#dt_method_mercadopago_custom');
 
-        expect($element->getText())->toBe("MercadoPago");
+        expect($element->getText())->toBe("Credit Card - MercadoPago");
     }
 
 

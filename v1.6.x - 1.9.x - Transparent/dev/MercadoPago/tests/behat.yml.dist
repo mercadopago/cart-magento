@@ -6,6 +6,7 @@ default:
       paths:
         features: functional/features
   extensions:
+    Cjm\Behat\StepThroughExtension: ~
     MageTest\MagentoExtension\Extension: ~
     Behat\MinkExtension:
       base_url: "%MAGENTO_URL%"

@@ -54,7 +54,7 @@ $customer = $this->getCustomerAndCards();
 
                         <li id="securityCodeOCP__mp">
                             <label for="securityCode"><?php echo $this->__('CVV'); ?></label>
-                            <input type="text" id="securityCodeOCP" data-checkout="securityCode" maxlength="4" data-element-id="#securityCodeOCP__mp"/>
+                            <input type="text" id="securityCodeOCP" class="required-entry" data-checkout="securityCode" maxlength="4" data-element-id="#securityCodeOCP__mp"/>
 
                             <p class="message-error error-E302 error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
                         </li>
@@ -168,7 +168,7 @@ $customer = $this->getCustomerAndCards();
                 <?php endif; ?>
 
                 <input type="hidden" class="amount" name="amount" value="<?php echo $grant_total; ?>"/>
-                <input type="hidden" class="mercadopago-discount-amount" name="mercadopago-discount-amount" value="0"/>
+                <input type="hidden" class="mercadopago-discount-amount validate-discount" name="mercadopago-discount-amount" value="0"/>
                 <input type="hidden" class="site_id" name="site_id" value="<?php echo strtoupper($country); ?>"/>
                 <input type="hidden" class="mercadopago-text-currency" value="<?php echo $this->__('$'); ?>">
                 <input type="hidden" class="mercadopago-text-choice" value="<?php echo $this->__('Choice'); ?>">
@@ -185,3 +185,8 @@ $customer = $this->getCustomerAndCards();
         </ul>
     </div>
 </fieldset>
+<script>
+    //<![CDATA[
+        payment.switchMethod('mercadopago_custom');
+    //]]>
+</script>

@@ -2,7 +2,7 @@
     <div class="box-input">
         <label for="mercadopago_coupon"><?php echo $this->__('Discount coupon'); ?></label>
         <div class="input-box">
-            <input class="mercadopago_coupon" type="text" class="input-text" type="text" name="payment[<?php echo $this->code; ?>][coupon_code]"/>
+            <input class="mercadopago_coupon input-text" id="input-coupon-discount" type="text" type="text" name="payment[<?php echo $this->code; ?>][coupon_code]"/>
         </div>
     </div>
     
@@ -45,3 +45,11 @@
     <span class="mercadopago-coupon-action-apply"><?php echo $this->__('Apply discount'); ?></span>
     <span class="mercadopago-coupon-action-remove"><?php echo $this->__('Remove discount'); ?></span>
 </li>
+
+<script>
+    //<![CDATA[
+        Validation.add('validate-discount', ' ', function(v) {
+            return (v != 0 || jQuery('#input-coupon-discount').val().length == 0);
+        });
+    //]]>
+</script>

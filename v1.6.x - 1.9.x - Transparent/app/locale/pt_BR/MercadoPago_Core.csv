@@ -183,6 +183,8 @@
 "Expiration year is invalid. Please check the form data and retry.", "Ano de expiração é inválido. Por favor verifique os dados do formulário e tente novamente."
 "Installments attribute can not be empty. Please check the form data and retry.", "Atributo parcelas não pode estar vazio . Por favor verifique os dados do formulário e tente novamente."
 "Coupon amount is invalid. Please check the form data and retry.", "Valor do cupom é válido. Por favor verifique os dados do formulário e tente novamente."
+"Doesn't find a campaign to amount given", "Não Encontrado um coicida campanha para o montante da ordem"
+"Amount discount is invalid", "Valor do desconto é inválido"
 
 "Use other card","Utilizar outro cartão"
 "Return to cards list","Voltar para lista de Cartões"

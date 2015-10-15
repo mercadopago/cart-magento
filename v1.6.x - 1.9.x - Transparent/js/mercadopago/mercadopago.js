@@ -800,6 +800,7 @@ function validDiscount(form_payment_method){
 
                 //reset input amount
                 $form_payment.querySelector(".mercadopago-discount-amount").value = 0;
+                $form_payment.querySelector(".mercadopago-coupon-action-remove").style.display = 'block';
 
                 //caso não seja mostra a mensagem de validação
                 console.log(r.response.error);

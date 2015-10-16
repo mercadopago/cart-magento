@@ -64,6 +64,28 @@ function initMercadoPagoJs(){
     Validation.add('validate-discount', ' ', function(v,element) {
         return (!element.hasClassName('invalid_coupon'));
     });
+
+    Validation.add('mp-validate-docnumber','Document Number is invalid.',function (v,element) {
+        return checkDocNumber(v);
+    });
+}
+
+function checkDocNumber(v) {
+    Mercadopago.getIdentificationTypes(function (status,identificationsTypes) {
+        if (status != 200) {
+            return false;
+        } else {
+            var type = jQuery('#docType').val();
+            identificationsTypes.each(function (dataType) {
+                if (dataType.id == type) {
+                    if (v.length > dataType.max_length || v.length < dataType.min_length) {
+                        return false;
+                    }
+                }
+            });
+        }
+    });
+    return true;
 }
 
 //init one click pay

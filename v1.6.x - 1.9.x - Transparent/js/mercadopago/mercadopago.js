@@ -57,6 +57,13 @@ function initMercadoPagoJs(){
     //inicia o formulario verificando se ja tem cartão selecionado para obter o bin
     cardsHandler();
 
+    if (jQuery('#p_method_mercadopago_custom').is(':checked')) {
+        payment.switchMethod('mercadopago_custom');
+    }
+
+    Validation.add('validate-discount', ' ', function(v,element) {
+        return (!element.hasClassName('invalid_coupon'));
+    });
 }
 
 //init one click pay

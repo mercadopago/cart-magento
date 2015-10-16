@@ -45,11 +45,3 @@
     <span class="mercadopago-coupon-action-apply"><?php echo $this->__('Apply discount'); ?></span>
     <span class="mercadopago-coupon-action-remove"><?php echo $this->__('Remove discount'); ?></span>
 </li>
-
-<script>
-    //<![CDATA[
-        Validation.add('validate-discount', ' ', function(v,element) {
-            return (!element.hasClassName('invalid_coupon'));
-        });
-    //]]>
-</script>

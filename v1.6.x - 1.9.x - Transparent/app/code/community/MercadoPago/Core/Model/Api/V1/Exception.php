@@ -7,7 +7,7 @@ class MercadoPago_Core_Model_Api_V1_Exception
     extends MercadoPago_Core_Model_Api_Exception
 {
     protected $messagesMap =
-        array(
+        [
             1000 => 'The items Quantity has exceeded the limits. We could not process your payment.',
             2001 => 'Already posted the same request in the last minute.',
             2017 => 'The transaction amount is invalid. We could not process your payment.',
@@ -35,7 +35,9 @@ class MercadoPago_Core_Model_Api_V1_Exception
             3030 => 'Expiration year is invalid. Please check the form data and retry.',
             4004 => 'Installments attribute can not be empty. Please check the form data and retry.',
             4026 => 'Coupon amount is invalid. Please check the form data and retry.',
-            'campaign_code_doesnt_match' => "Doesn't find a campaign with the given code."
-        );
+            'campaign_code_doesnt_match' => "Doesn't find a campaign with the given code.",
+            'amount_doesnt_match' => "Doesn't find a campaign to amount given",
+            'transaction_amount_invalid' => "Amount discount is invalid"
+        ];
 
 }

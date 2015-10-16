@@ -36,7 +36,7 @@ $customer = $this->getCustomerAndCards();
                     <ul id="mercadopago_checkout_custom_ocp">
                         <li id="cardId__mp">
 
-                            <div id="use_other_card_mp" class="action_ocp"><?php echo $this->__('Use other card'); ?></div>
+                            <div><a id="use_other_card_mp" class="action_ocp"><?php echo $this->__('Use other card'); ?></a></div>
 
                             <label for="cardNumber"><?php echo $this->__('Payment Method'); ?></label>
                             <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp">
@@ -69,7 +69,7 @@ $customer = $this->getCustomerAndCards();
             <li>
                 <ul id="mercadopago_checkout_custom_card">
                     <li id="cardNumber__mp">
-                        <div id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></div>
+                        <div><a id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></a></div>
 
                         <label for="cardNumber"><?php echo $this->__('Card Number'); ?></label>
                         <input type="text" id="cardNumber" data-checkout="cardNumber" data-element-id="#cardNumber__mp"/>
@@ -168,7 +168,7 @@ $customer = $this->getCustomerAndCards();
                 <?php endif; ?>
 
                 <input type="hidden" class="amount" name="amount" value="<?php echo $grant_total; ?>"/>
-                <input type="hidden" class="mercadopago-discount-amount validate-discount" name="mercadopago-discount-amount" value="0"/>
+                <input type="hidden" class="mercadopago-discount-amount" name="mercadopago-discount-amount" value="0"/>
                 <input type="hidden" class="site_id" name="site_id" value="<?php echo strtoupper($country); ?>"/>
                 <input type="hidden" class="mercadopago-text-currency" value="<?php echo $this->__('$'); ?>">
                 <input type="hidden" class="mercadopago-text-choice" value="<?php echo $this->__('Choice'); ?>">
@@ -187,6 +187,8 @@ $customer = $this->getCustomerAndCards();
 </fieldset>
 <script>
     //<![CDATA[
-        payment.switchMethod('mercadopago_custom');
+        if (jQuery('#p_method_mercadopago_custom').is(':checked')) {
+            payment.switchMethod('mercadopago_custom');
+        }
     //]]>
 </script>

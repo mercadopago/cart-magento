@@ -792,6 +792,7 @@ function validDiscount(form_payment_method){
                 $form_payment.querySelector(".mercadopago-coupon-action-remove").style.display = 'block';
                 $form_payment.querySelector(".mercadopago-coupon-action-apply").style.display = 'none';
 
+                jQuery('#input-coupon-discount').removeClass('invalid_coupon');
                 if (form_payment_method == "#mercadopago_checkout_custom") {
                     //forca atualização do bin/installment para atualizar os valores de installment
                     guessingPaymentMethod(event.type = "keyup");
@@ -805,6 +806,7 @@ function validDiscount(form_payment_method){
                 //caso não seja mostra a mensagem de validação
                 console.log(r.response.error);
                 $form_payment.querySelector(".mercadopago-message-coupon ." + r.response.error).style.display = 'block';
+                jQuery('#input-coupon-discount').addClass('invalid_coupon');
             }
         },
         error : function (status, response){
@@ -836,7 +838,7 @@ function removeDiscount(form_payment_method){
         //forca atualização do bin/installment para atualizar os valores de installment
         guessingPaymentMethod(event.type = "keyup");
     }
-
+    jQuery('#input-coupon-discount').removeClass('invalid_coupon');
     showLogMercadoPago("Remove coupon!");
 }
 

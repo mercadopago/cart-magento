@@ -156,3 +156,5 @@
 "Expiration year is invalid. Please check the form data and retry.", "Expiration year is invalid. Please check the form data and retry."
 "Installments attribute can not be empty. Please check the form data and retry.", "Installments attribute can not be empty Please check the form data and retry."
 "Coupon amount is invalid. Please check the form data and retry.", "Coupon amount is invalid. Please check the form data and retry."
+"Doesn't find a campaign to amount given", "Doesn't find a campaign to amount given"
+"Amount discount is invalid", "Amount discount is invalid"

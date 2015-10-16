@@ -156,6 +156,8 @@
 "Expiration year is invalid. Please check the form data and retry.", "El año de expiración de la tarjeta es inválido. Por favor verifique los datos ingresados y vuelva a intentarlo."
 "Installments attribute can not be empty. Please check the form data and retry.", "Debe ingresar la cantidad de cuotas del pago. Por favor verifique los datos ingresados y vuelva a intentarlo."
 "Coupon amount is invalid. Please check the form data and retry.", "El monto de descuento es inválido. Por favor verifique los datos ingresados y vuelva a intentarlo."
+"Doesn't find a campaign to amount given", "No se ha encontrado una campaña que coicida con el monto de la orden"
+"Amount discount is invalid", "El monto de descuento no es válido"
 
 "Use other card","Utilizar otra tarjeta"
 "Return to cards list","Volver a lista de tarjetas"

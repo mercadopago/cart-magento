@@ -57,6 +57,13 @@ function initMercadoPagoJs(){
     //inicia o formulario verificando se ja tem cartão selecionado para obter o bin
     cardsHandler();
 
+    if (jQuery('#p_method_mercadopago_custom').is(':checked')) {
+        payment.switchMethod('mercadopago_custom');
+    }
+
+    Validation.add('validate-discount', ' ', function(v,element) {
+        return (!element.hasClassName('invalid_coupon'));
+    });
 }
 
 //init one click pay
@@ -127,6 +134,28 @@ function defineInputs(){
 
 }
 
+function setRequiredFields(required) {
+    if (required) {
+        jQuery('#cardNumber').addClass('required-entry');
+        jQuery('#cardholderName').addClass('required-entry');
+        jQuery('#docNumber').addClass('required-entry');
+        jQuery('#cardExpirationMonth').addClass('validate-select');
+        jQuery('#cardExpirationYear').addClass('validate-select');
+        jQuery('#docType').addClass('validate-select');
+        jQuery('#securityCodeOCP').removeClass('required-entry');
+        jQuery('#securityCode').addClass('required-entry');
+    } else {
+        jQuery('#cardNumber').removeClass('required-entry');
+        jQuery('#cardholderName').removeClass('required-entry');
+        jQuery('#docNumber').removeClass('required-entry');
+        jQuery('#securityCode').removeClass('required-entry');
+        jQuery('#securityCodeOCP').addClass('required-entry');
+        jQuery('#cardExpirationMonth').removeClass('validate-select');
+        jQuery('#cardExpirationYear').removeClass('validate-select');
+        jQuery('#docType').removeClass('validate-select');
+    }
+}
+
 function actionUseOneClickPayOrNo(){
     showLogMercadoPago("Action One Click Pay User");
 
@@ -137,9 +166,11 @@ function actionUseOneClickPayOrNo(){
     if (ocp == true) {
         document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value = 0;
         document.querySelector('#cardId').disabled = true;
+        setRequiredFields(true);
     }else{
         document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value = 1;
         document.querySelector('#cardId').removeAttribute('disabled');
+        setRequiredFields(false);
     }
 
     //verifica os inputs para esse opção de pagamento
@@ -170,7 +201,7 @@ function clearOptions() {
 
         var selectorInstallments = document.querySelector("#installments"),
             fragment = document.createDocumentFragment(),
-            option = new Option(message_installment, '-1');
+            option = new Option(message_installment, '');
 
         selectorInstallments.options.length = 0;
         fragment.appendChild(option);
@@ -457,7 +488,7 @@ function setInstallmentInfo(status, response) {
     if (response.length > 0) {
         var message_choose= document.querySelector(".mercadopago-text-choice").value;
 
-        var option = new Option(message_choose + "... ", '-1'),
+        var option = new Option(message_choose + "... ", ''),
             payerCosts = response[0].payer_costs;
 
         fragment.appendChild(option);
@@ -768,6 +799,7 @@ function validDiscount(form_payment_method){
                 $form_payment.querySelector(".mercadopago-coupon-action-remove").style.display = 'block';
                 $form_payment.querySelector(".mercadopago-coupon-action-apply").style.display = 'none';
 
+                jQuery('#input-coupon-discount').removeClass('invalid_coupon');
                 if (form_payment_method == "#mercadopago_checkout_custom") {
                     //forca atualização do bin/installment para atualizar os valores de installment
                     guessingPaymentMethod(event.type = "keyup");
@@ -776,10 +808,12 @@ function validDiscount(form_payment_method){
 
                 //reset input amount
                 $form_payment.querySelector(".mercadopago-discount-amount").value = 0;
+                $form_payment.querySelector(".mercadopago-coupon-action-remove").style.display = 'block';
 
                 //caso não seja mostra a mensagem de validação
                 console.log(r.response.error);
                 $form_payment.querySelector(".mercadopago-message-coupon ." + r.response.error).style.display = 'block';
+                jQuery('#input-coupon-discount').addClass('invalid_coupon');
             }
         },
         error : function (status, response){
@@ -811,7 +845,7 @@ function removeDiscount(form_payment_method){
         //forca atualização do bin/installment para atualizar os valores de installment
         guessingPaymentMethod(event.type = "keyup");
     }
-
+    jQuery('#input-coupon-discount').removeClass('invalid_coupon');
     showLogMercadoPago("Remove coupon!");
 }
 

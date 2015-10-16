@@ -41,6 +41,8 @@ class MercadoPago_Core_Model_Observer
     private $available_transparent_credit_cart = array('mla', 'mlb', 'mlm');
     private $available_transparent_ticket = array('mla', 'mlb', 'mlm');
 
+    protected static $_accessTokenConfigPath = 'payment/mercadopago_custom_checkout/access_token';
+
     /**
      * @param $observer
      *
@@ -111,7 +113,7 @@ class MercadoPago_Core_Model_Observer
         $sponsor_id = "";
         Mage::helper('mercadopago')->log("Valid user test", 'mercadopago.log');
         
-        $access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
+        $access_token = Mage::getStoreConfig(self::$_accessTokenConfigPath);
         Mage::helper('mercadopago')->log("Get access_token: " . $access_token, 'mercadopago.log');
         
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);

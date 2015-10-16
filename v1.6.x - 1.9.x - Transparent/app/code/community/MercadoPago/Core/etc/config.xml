@@ -30,7 +30,7 @@
                 <class>MercadoPago_Core_Model</class>
             </mercadopago>
         </models>
-        
+
         <blocks>
             <mercadopago>
                 <class>MercadoPago_Core_Block</class>
@@ -95,6 +95,13 @@
                 </mercadopago_core>
             </modules>
         </translate>
+        <layout>
+            <updates>
+                <mercadopago_core>
+                    <file>mercadopago.xml</file>
+                </mercadopago_core>
+            </updates>
+        </layout>
     </adminhtml>
     
                 

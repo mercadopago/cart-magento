@@ -26,10 +26,10 @@
 
         <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/country ${plugin.country}" logoutput="true" />
 
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/client_id ${setting.payment.mercadopago.client_id}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/client_secret ${setting.payment.mercadopago.client_secret}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/public_key ${setting.payment.mercadopago.public_key}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/access_token ${setting.payment.mercadopago.access_token}" logoutput="true" />
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_standard/client_id ${setting.payment.mercadopago.client_id}" logoutput="true" />
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_standard/client_secret ${setting.payment.mercadopago.client_secret}" logoutput="true" />
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_custom_checkout/public_key ${setting.payment.mercadopago.public_key}" logoutput="true" />
+        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_custom_checkout/access_token ${setting.payment.mercadopago.access_token}" logoutput="true" />
         <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_custom/active ${setting.payment.mercadopago_custom.active}" logoutput="true" />
 
         <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set carriers/ups/active ${setting.carriers.ups.active}" logoutput="true" />

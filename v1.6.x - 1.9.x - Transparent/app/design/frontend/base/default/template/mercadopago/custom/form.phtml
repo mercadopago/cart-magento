@@ -136,7 +136,7 @@ $customer = $this->getCustomerAndCards();
 
                     <li id="doc_number__mp">
                         <label for="docNumber"><?php echo $this->__('Document Number'); ?></label>
-                        <input type="text" id="docNumber" data-checkout="docNumber" name="payment[<?php echo $_code; ?>][doc_number]" data-element-id="#doc_number__mp"/>
+                        <input type="text" id="docNumber" class="mp-validate-docnumber" data-checkout="docNumber" name="payment[<?php echo $_code; ?>][doc_number]" data-element-id="#doc_number__mp"/>
 
                         <p class="message-error error-324 error-213 error-214 validation-advice"><?php echo $this->__('Document Number is invalid.'); ?></p>
                     </li>

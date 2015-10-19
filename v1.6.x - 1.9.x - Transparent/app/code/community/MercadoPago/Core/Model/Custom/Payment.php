@@ -34,7 +34,7 @@ class MercadoPago_Core_Model_Custom_Payment
     protected $_canCreateBillingAgreement = true;
     protected $_canReviewPayment = true;
 
-    protected static $_accessTokenConfigPath = 'payment/mercadopago_custom_checkout/access_token';
+    const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
 
     /**
      * @param string $paymentAction
@@ -195,7 +195,7 @@ class MercadoPago_Core_Model_Custom_Payment
     {
 
         //obtem access_token
-        $access_token = Mage::getStoreConfig(self::$_accessTokenConfigPath);
+        $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
 
         //seta sdk php mercadopago
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
@@ -239,7 +239,7 @@ class MercadoPago_Core_Model_Custom_Payment
     public function checkAndcreateCard($customer, $token, $payment)
     {
         //obtem access_token
-        $access_token = Mage::getStoreConfig(self::$_accessTokenConfigPath);
+        $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
 
         //seta sdk php mercadopago
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);

@@ -34,7 +34,7 @@ class MercadoPago_Core_Model_Core
     protected $_canCreateBillingAgreement = true;
     protected $_canReviewPayment = true;
 
-    protected static $_accessTokenConfigPath = 'payment/mercadopago_custom_checkout/access_token';
+    const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
     /**
      * @return Mage_Checkout_Model_Session
      */
@@ -326,7 +326,7 @@ class MercadoPago_Core_Model_Core
     {
 
         //obtem access_token
-        $access_token = Mage::getStoreConfig(self::$_accessTokenConfigPath);
+        $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
         Mage::helper('mercadopago')->log("Access Token for Post", 'mercadopago-custom.log', $access_token);
 
         //seta sdk php mercadopago
@@ -354,7 +354,7 @@ class MercadoPago_Core_Model_Core
 
     public function getPayment($payment_id)
     {
-        $this->access_token = Mage::getStoreConfig(self::$_accessTokenConfigPath);
+        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 
         return $mp->get_payment($payment_id);
@@ -362,7 +362,7 @@ class MercadoPago_Core_Model_Core
 
     public function getPaymentV1($payment_id)
     {
-        $this->access_token = Mage::getStoreConfig(self::$_accessTokenConfigPath);
+        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 
         return $mp->get("/v1/payments/" . $payment_id);
@@ -370,7 +370,7 @@ class MercadoPago_Core_Model_Core
 
     public function getMerchantOrder($merchant_order_id)
     {
-        $this->access_token = Mage::getStoreConfig(self::$_accessTokenConfigPath);
+        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 
         return $mp->get("/merchant_orders/" . $merchant_order_id);
@@ -378,7 +378,7 @@ class MercadoPago_Core_Model_Core
 
     public function getPaymentMethods()
     {
-        $this->access_token = Mage::getStoreConfig(self::$_accessTokenConfigPath);
+        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
 
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 
@@ -416,7 +416,7 @@ class MercadoPago_Core_Model_Core
 
     public function validCoupon($id)
     {
-        $this->access_token = Mage::getStoreConfig(self::$_accessTokenConfigPath);
+        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
 
         $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
 

@@ -200,7 +200,8 @@ class MercadoPago_Core_Model_Core
         return array('email' => $email, 'first_name' => $first_name, 'last_name' => $last_name);
     }
 
-    protected function getItemsInfo($order) {
+    protected function getItemsInfo($order)
+    {
         $dataItems = array();
         foreach ($order->getAllVisibleItems() as $item) {
             $product = $item->getProduct();
@@ -232,25 +233,15 @@ class MercadoPago_Core_Model_Core
 
     }
 
-    protected function getCouponInfo($coupon,$coupon_code) {
+    protected function getCouponInfo($coupon, $coupon_code)
+    {
         $infoCoupon = array();
-        if ($coupon['status'] != 200) {
-            if ($coupon['response']['error'] != "campaign-code-doesnt-match" &&
-                $coupon['response']['error'] != "amount-doesnt-match" &&
-                $coupon['response']['error'] != "transaction_amount_invalid"
-            ) {
-                $infoCoupon['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
-                $infoCoupon['coupon_code'] = $coupon_code;
-                Mage::helper('mercadopago')->log("Coupon applied. API response 400, error not mapped", 'mercadopago-custom.log');
-            } else {
-                $infoCoupon['coupon_amount'] = null;
-                $infoCoupon['coupon_code'] = null;
-                Mage::helper('mercadopago')->log("Coupon invalid, not applied.", 'mercadopago-custom.log');
-            }
-        } else {
-            $preference['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
-            $preference['coupon_code'] = $coupon_code;
+        $infoCoupon['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
+        $infoCoupon['coupon_code'] = $coupon_code;
+        if ($coupon['status'] == 200) {
             Mage::helper('mercadopago')->log("Coupon applied. API response 200.", 'mercadopago-custom.log');
+        } else {
+            Mage::helper('mercadopago')->log("Coupon invalid, not applied.", 'mercadopago-custom.log');
         }
 
         return $infoCoupon;

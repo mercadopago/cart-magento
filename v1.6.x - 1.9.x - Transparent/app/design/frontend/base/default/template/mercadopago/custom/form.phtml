@@ -36,7 +36,7 @@ $customer = $this->getCustomerAndCards();
                     <ul id="mercadopago_checkout_custom_ocp">
                         <li id="cardId__mp">
 
-                            <div id="use_other_card_mp" class="action_ocp"><?php echo $this->__('Use other card'); ?></div>
+                            <div><a id="use_other_card_mp" class="action_ocp"><?php echo $this->__('Use other card'); ?></a></div>
 
                             <label for="cardNumber"><?php echo $this->__('Payment Method'); ?></label>
                             <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp">
@@ -54,7 +54,7 @@ $customer = $this->getCustomerAndCards();
 
                         <li id="securityCodeOCP__mp">
                             <label for="securityCode"><?php echo $this->__('CVV'); ?></label>
-                            <input type="text" id="securityCodeOCP" data-checkout="securityCode" maxlength="4" data-element-id="#securityCodeOCP__mp"/>
+                            <input type="text" id="securityCodeOCP" class="required-entry" data-checkout="securityCode" maxlength="4" data-element-id="#securityCodeOCP__mp"/>
 
                             <p class="message-error error-E302 error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
                         </li>
@@ -69,7 +69,7 @@ $customer = $this->getCustomerAndCards();
             <li>
                 <ul id="mercadopago_checkout_custom_card">
                     <li id="cardNumber__mp">
-                        <div id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></div>
+                        <div><a id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></a></div>
 
                         <label for="cardNumber"><?php echo $this->__('Card Number'); ?></label>
                         <input type="text" id="cardNumber" data-checkout="cardNumber" data-element-id="#cardNumber__mp"/>
@@ -94,7 +94,7 @@ $customer = $this->getCustomerAndCards();
                             <label for="cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
                             <select id="cardExpirationMonth" data-checkout="cardExpirationMonth" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#expiration_date__mp">
                                 <?php foreach ($this->getCcMonths() as $m => $v): ?>
-                                    <option value="<?php echo $m ? $m : '-1'; ?>"><?php echo $v; ?></option>
+                                    <option value="<?php echo $m ? $m : ''; ?>"><?php echo $v; ?></option>
                                 <?php endforeach ?>
                             </select>
 
@@ -105,7 +105,7 @@ $customer = $this->getCustomerAndCards();
                             <label for="cardExpirationYear"><?php echo $this->__('Year'); ?></label>
                             <select id="cardExpirationYear" data-checkout="cardExpirationYear" name="payment[<?php echo $_code; ?>][card_expiration_year]" data-element-id="#expiration_date__mp">
                                 <?php foreach ($this->getCcYears() as $y => $v): ?>
-                                    <option value="<?php echo $y ? $y : '-1'; ?>"><?php echo $v; ?></option>
+                                    <option value="<?php echo $y ? $y : ''; ?>"><?php echo $v; ?></option>
                                 <?php endforeach ?>
                             </select>
 
@@ -122,7 +122,7 @@ $customer = $this->getCustomerAndCards();
 
                     <li id="securityCode__mp">
                         <label for="securityCode"><?php echo $this->__('CVV'); ?></label>
-                        <input type="text" id="securityCode" data-checkout="securityCode" maxlength="4" data-element-id="#securityCode__mp"/>
+                        <input type="text" id="securityCode" data-checkout="securityCode" maxlength="4" data-element-id="#securityCode__mp" class="required-entry"/>
 
                         <p class="message-error error-E302 error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
                     </li>
@@ -146,7 +146,7 @@ $customer = $this->getCustomerAndCards();
 
             <li id="installments__mp">
                 <label for="installments"><?php echo $this->__('Installments'); ?></label>
-                <select id="installments" name="payment[<?php echo $_code; ?>][installments]" data-element-id="#installments__mp"></select>
+                <select id="installments" name="payment[<?php echo $_code; ?>][installments]" data-element-id="#installments__mp" class="validate-select"></select>
 
                 <p class="message-error error-installment-not-work validation-advice"><?php echo $this->__('It was not possible to calculate the installments, click here and try again.'); ?></p>
 

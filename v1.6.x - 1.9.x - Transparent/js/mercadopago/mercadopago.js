@@ -71,21 +71,20 @@ function initMercadoPagoJs(){
 }
 
 function checkDocNumber(v) {
+    var flagReturn = true;
     Mercadopago.getIdentificationTypes(function (status,identificationsTypes) {
-        if (status != 200) {
-            return false;
-        } else {
+        if (status == 200) {
             var type = jQuery('#docType').val();
             identificationsTypes.each(function (dataType) {
                 if (dataType.id == type) {
                     if (v.length > dataType.max_length || v.length < dataType.min_length) {
-                        return false;
+                        flagReturn = false;
                     }
                 }
             });
         }
     });
-    return true;
+    return flagReturn;
 }
 
 //init one click pay
@@ -582,6 +581,12 @@ function checkCreateCardToken(){
             submit = false;
         }
     }
+
+    if (document.querySelector('#docNumber').value != '' && !checkDocNumber(document.querySelector('#docNumber').value)){
+        submit = false;
+    }
+
+
 
     if (submit) {
         var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;

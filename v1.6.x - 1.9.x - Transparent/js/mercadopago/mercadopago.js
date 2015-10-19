@@ -586,8 +586,6 @@ function checkCreateCardToken(){
         submit = false;
     }
 
-
-
     if (submit) {
         var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
         var $form = document.querySelector('#mercadopago_checkout_custom_card');

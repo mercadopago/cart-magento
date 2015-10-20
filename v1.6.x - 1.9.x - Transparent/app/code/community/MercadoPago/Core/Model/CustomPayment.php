@@ -24,8 +24,6 @@ abstract class MercadoPago_Core_Model_CustomPayment
     /**
      * Check whether payment method can be used
      *
-     * TODO: payment method instance is not supposed to know about quote
-     *
      * @param Mage_Sales_Model_Quote|null $quote
      *
      * @return bool

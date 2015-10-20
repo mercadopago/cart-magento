@@ -24,6 +24,34 @@ class MercadoPago_Core_NotificationsController
     protected $_sendemail = false;
     protected $_hash = null;
 
+    protected function getDataPayments($merchantOrder) {
+        $data = array();
+        $core = Mage::getModel('mercadopago/core');
+        foreach ($merchantOrder['payments'] as $payment) {
+            $response = $core->getPayment($payment['id']);
+            $payment = $response['response']['collection'];
+            $data = $this->formatArrayPayment($data, $payment);
+        }
+        return $data;
+    }
+
+    protected function getStatusFinal($dataStatus)
+    {
+        $status_final = "";
+        $statuses = explode('|',$dataStatus);
+        foreach ($statuses as $status) {
+            if ($status_final == "") {
+                $status_final = $status;
+            } else {
+                if ($status_final != $status) {
+                    $status_final = false;
+                }
+            }
+        }
+        return $status_final;
+    }
+
+
     public function standardAction()
     {
         $request = $this->getRequest();
@@ -38,45 +66,20 @@ class MercadoPago_Core_NotificationsController
         if (!empty($id) && $topic == 'merchant_order') {
             $response = $core->getMerchantOrder($id);
             Mage::helper('mercadopago')->log("Return merchant_order", 'mercadopago-notification.log', $response);
-
             if ($response['status'] == 200 || $response['status'] == 201) {
                 $data = array();
                 $merchant_order = $response['response'];
 
-                //FIXIT: PRECISA ALTERAR PARA PEGAR TODOS OS PAGAMENTOS APROVADOS E VALIDAR SE O VALOR APROVADO É MAIOR OU IGUAL AO VALOR DA TRANSAÇAO
                 if (count($merchant_order['payments']) > 0) {
-                    //status final para pagamento com mais de um cartão
-                    $status_final = "";
+                    $data = $this->getDataPayments($merchant_order);
+                    $status_final = $this->getStatusFinal($data['status']);
 
-                    foreach ($merchant_order['payments'] as $payment) {
-                        $response = $core->getPayment($payment['id']);
-                        $payment = $response['response']['collection'];
-                        $data = $this->formatArrayPayment($data, $payment);
-
-                        //caso ele não esteja settado
-                        if ($status_final == "") {
-                            $status_final = $payment['status'];
-                        } else {
-                            //verifica se o status inicial é igual ao atual
-                            //para alterar o status da order, todos tem que estarem iguais
-                            if ($status_final != $payment['status']) {
-                                $status_final = false;
-                            }
-                        }
-                    }
-
-                    //atualiza a order com os dados do pagamento
                     $this->updateOrder($data);
 
-
-                    //caso seja false, eles não são iguais, logo não faz nada.
                     if ($status_final != false) {
                         $data['status_final'] = $status_final;
-                        //atualiza status da order de acordo com a notificação do pagamento
                         $this->setStatusOrder($data);
                     }
-
-                    //forca return
                     return;
                 }
             }

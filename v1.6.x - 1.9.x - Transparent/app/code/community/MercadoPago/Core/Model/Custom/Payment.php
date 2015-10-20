@@ -104,13 +104,16 @@ class MercadoPago_Core_Model_Custom_Payment
         if (isset($info_form['customer_id'])) {
             $info->setAdditionalInformation('customer_id', $info_form['customer_id']);
         }
-
-        if ($info_form['token'] != ""):
+        if ($info_form['token'] != "") {
             if ($info_form['card_expiration_month'] != "-1" && $info_form['card_expiration_year'] != "-1") {
                 $info->setAdditionalInformation('expiration_date', $info_form['card_expiration_month'] . "/" . $info_form['card_expiration_year']);
             }
             $info->setAdditionalInformation('cardholderName', $info_form['card_holder_name']);
-        endif;
+        } else {
+            $exception = new MercadoPago_Core_Model_Api_V1_Exception();
+            $exception->setMessage($exception->getUserMessage());
+            throw $exception;
+        }
 
         return $this;
     }
@@ -128,7 +131,8 @@ class MercadoPago_Core_Model_Custom_Payment
         return $discount;
     }
 
-    protected function getPaymentInfo($payment) {
+    protected function getPaymentInfo($payment)
+    {
         $payment_info = array();
 
         if ($payment->getAdditionalInformation("coupon_code") != "") {
@@ -139,6 +143,7 @@ class MercadoPago_Core_Model_Custom_Payment
             $payment_info['identification_type'] = $payment->getAdditionalInformation("doc_type");
             $payment_info['identification_number'] = $payment->getAdditionalInformation("doc_number");
         }
+
         return $payment_info;
     }
 

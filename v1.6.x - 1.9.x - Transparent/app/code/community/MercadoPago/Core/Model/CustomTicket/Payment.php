@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * NOTICE OF LICENSE
@@ -13,8 +14,6 @@
  * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
-
 class MercadoPago_Core_Model_CustomTicket_Payment
     extends Mage_Payment_Model_Method_Abstract
 {
@@ -45,14 +44,12 @@ class MercadoPago_Core_Model_CustomTicket_Payment
      */
     public function initialize($paymentAction, $stateObject)
     {
-        //chama model para fazer o post do pagamento
         $response = $this->preparePostPayment();
 
-        if ($response !== false):
+        if ($response !== false) {
             $this->getInfoInstance()->setAdditionalInformation('activation_uri', $response['response']['transaction_details']['external_resource_url']);
-
-        return true;
-        endif;
+            return true;
+        }
 
         return false;
     }
@@ -122,7 +119,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
     public function getSuccessBlockType()
     {
         return $this->_successBlockType;
-    }    
+    }
 
     /**
      * @return Mage_Checkout_Model_Session

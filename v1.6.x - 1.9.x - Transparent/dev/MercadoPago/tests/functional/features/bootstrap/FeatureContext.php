@@ -44,6 +44,14 @@ class FeatureContext
         $button->press();
     }
 
+    /**
+     * @Given I press :cssClass input element
+     */
+    public function iPressInputElement($cssClass)
+    {
+        $button = $this->findElement($cssClass);
+        $button->click();
+    }
 
     /**
      * @When I fill the billing address
@@ -156,7 +164,7 @@ class FeatureContext
      */
     public function iSelectOptionFieldWith($arg1, $arg2)
     {
-        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
+        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $page = $this->getSession()->getPage();
 
         $page->selectFieldOption($arg1,$arg2);
@@ -233,6 +241,74 @@ class FeatureContext
             $customer->save();
         }
 
+    }
+
+    /**
+     * @Given Setting value :arg1 is :arg2
+     */
+    public function settingValueIs($arg1, $arg2)
+    {
+        $config = new Mage_Core_Model_Config();
+        $config->saveConfig($arg1, "1", 'default', 0);
+
+        Mage::app()->getCacheInstance()->cleanType('config');
+    }
+
+    /**
+     * @Given /^I switch to the iframe "([^"]*)"$/
+     */
+    public function iSwitchToIframe($arg1 = null)
+    {
+        $this->getSession()->wait(20000);
+        $this->getSession()->switchToIFrame($arg1);
+    }
+
+    /**
+     * @Given I switch to the site
+     */
+    public function iSwitchToSite()
+    {
+        $this->getSession()->wait(20000);
+        $this->getSession()->switchToIFrame(null);
+    }
+
+    /**
+     * @When I fill the iframe fields
+     */
+    public function iFillTheIframeFields()
+    {
+        $page = $this->getSession()->getPage();
+
+        $page->selectFieldOption('pmtOption','visa');
+
+        $page->fillField('cardNumber', '4444 4444 4444 0008');
+        $this->getSession()->wait(3000);
+        $page->selectFieldOption('creditCardIssuerOption','1');
+        $page->selectFieldOption('cardExpirationMonth','01');
+        $page->selectFieldOption('cardExpirationYear','2017');
+        $page->fillField('securityCode', '123');
+        $page->fillField('cardholderName', 'Name');
+        $page->selectFieldOption('docType','DNI');
+
+        $page->fillField('docNumber', '12345678');
+
+        $page->selectFieldOption('installments', '1');
+    }
+
+
+    /**
+     * @Then I should be on :arg1
+     */
+    public function iShouldBeOn($arg1)
+    {
+        $session = $this->getSession();
+        $session->wait(20000);
+        $currentUrl = $session->getCurrentUrl();
+
+        if (strpos($currentUrl, $arg1))
+            return;
+
+        throw new Exception($this->getSession()->getDriver(), 'Wrong url');
     }
 
 }

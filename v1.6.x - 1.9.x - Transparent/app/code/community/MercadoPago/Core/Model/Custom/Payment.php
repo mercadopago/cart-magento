@@ -15,24 +15,13 @@
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class MercadoPago_Core_Model_Custom_Payment
-    extends Mage_Payment_Model_Method_Abstract
+    extends MercadoPago_Core_Model_CustomPayment
 {
     //configura o block do formulario e de informações sobre o pagamento
     protected $_formBlockType = 'mercadopago/custom_form';
     protected $_infoBlockType = 'mercadopago/custom_info';
 
     protected $_code = 'mercadopago_custom';
-
-    protected $_canSaveCc = false;
-    protected $_isGateway = true;
-    protected $_canAuthorize = true;
-    protected $_canCapture = true;
-    protected $_canVoid = true;
-    protected $_canCancelInvoice = true;
-    protected $_isInitializeNeeded = true;
-    protected $_canFetchTransactionInfo = true;
-    protected $_canCreateBillingAgreement = true;
-    protected $_canReviewPayment = true;
 
     const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
 
@@ -299,53 +288,5 @@ class MercadoPago_Core_Model_Custom_Payment
         return Mage::getUrl('mercadopago/success', array('_secure' => true));
     }
 
-    /**
-     * @return Mage_Checkout_Model_Session
-     */
-    protected function _getCheckout()
-    {
-        return Mage::getSingleton('checkout/session');
-    }
 
-    /**
-     * Get admin checkout session namespace
-     *
-     * @return Mage_Adminhtml_Model_Session_Quote
-     */
-    protected function _getAdminCheckout()
-    {
-        return Mage::getSingleton('adminhtml/session_quote');
-    }
-
-    /**
-     * Retrieves Quote
-     *
-     * @param integer $quoteId
-     *
-     * @return Mage_Sales_Model_Quote
-     */
-    protected function _getQuote($quoteId = null)
-    {
-        if (!empty($quoteId)) {
-            return Mage::getModel('sales/quote')->load($quoteId);
-        } else {
-            if (Mage::app()->getStore()->isAdmin()) {
-                return $this->_getAdminCheckout()->getQuote();
-            } else {
-                return $this->_getCheckout()->getQuote();
-            }
-        }
-    }
-
-    /**
-     * Retrieves Order
-     *
-     * @param integer $incrementId
-     *
-     * @return Mage_Sales_Model_Order
-     */
-    protected function _getOrder($incrementId)
-    {
-        return Mage::getModel('sales/order')->loadByIncrementId($incrementId);
-    }
 }

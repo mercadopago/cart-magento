@@ -22,7 +22,19 @@ class MercadoPago_Core_Block_Adminhtml_System_Config_Fieldset_Payment
             . $this->getUrl('*/*/state') . '\'); return false;"><span class="state-closed">'
             . $this->__('Configure') . '</span><span class="state-opened">'
             . $this->__('Close') . '</span></button></div></div>';
+
         return $html;
+    }
+
+    /**
+     * Collapsed or expanded fieldset when page loaded
+     *
+     * @param Varien_Data_Form_Element_Abstract $element
+     * @return bool
+     */
+    protected function _getCollapseState($element)
+    {
+        return false;
     }
 
 }

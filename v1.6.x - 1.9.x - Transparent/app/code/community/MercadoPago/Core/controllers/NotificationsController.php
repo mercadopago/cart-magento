@@ -110,7 +110,6 @@ class MercadoPago_Core_NotificationsController
             if ($response['status'] == 200 || $response['status'] == 201) {
                 $payment = $response['response'];
 
-                //Atualiza informações da order
                 $payment["trunc_card"] = "xxxx xxxx xxxx " . $payment['card']["last_four_digits"];
                 $payment["cardholder_name"] = $payment['card']["cardholder"]["name"];
                 $payment['payer_first_name'] = $payment['payer']['first_name'];
@@ -118,11 +117,7 @@ class MercadoPago_Core_NotificationsController
                 $payment['payer_email'] = $payment['payer']['email'];
 
                 $this->updateOrder($payment);
-
-                //atualiza status da order de acordo com a notificação do pagamento
                 $this->setStatusOrder($payment);
-
-                //forca return
                 return;
             }
         }
@@ -278,12 +273,7 @@ class MercadoPago_Core_NotificationsController
         }
     }
 
-    /*
-    * Funcao responsavel por formatar o array para atualizar informações do pedido
-    */
-
-    public
-    function formatArrayPayment($data, $payment)
+    public function formatArrayPayment($data, $payment)
     {
         Mage::helper('mercadopago')->log("Format Array", 'mercadopago-notification.log');
 
@@ -326,8 +316,6 @@ class MercadoPago_Core_NotificationsController
             $data['statement_descriptor'] = $payment['statement_descriptor'];
         }
 
-
-        //esses dados não precisam concatenar pois se repetem..
         $data['external_reference'] = $payment['external_reference'];
         $data['payer_first_name'] = $payment['payer']['first_name'];
         $data['payer_last_name'] = $payment['payer']['last_name'];

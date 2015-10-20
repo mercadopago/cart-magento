@@ -17,6 +17,11 @@
     box-sizing: border-box;
 }
 
+.config-heading.meli .heading
+{
+    margin-top: 18px;
+}
+
 fieldset[id^="payment_mercadopago"] table
 {
     width: 100% !important;

@@ -163,11 +163,19 @@ class FeatureContext
     }
 
     /**
+     * @When I wait for :secs seconds
+     */
+    public function iWaitForSeconds($secs)
+    {
+        $milliseconds = $secs * 1000;
+        $this->getSession()->wait($milliseconds);
+    }
+
+    /**
      * @Then I should see :arg1
      */
     public function iShouldSee($arg1)
     {
-        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
         $actual = $this->getSession()->getPage()->getText();
         $actual = preg_replace('/\s+/u', ' ', $actual);
         $regex = '/'.preg_quote($arg1, '/').'/ui';

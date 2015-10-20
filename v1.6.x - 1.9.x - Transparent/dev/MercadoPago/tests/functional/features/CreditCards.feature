@@ -13,7 +13,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I select radio "p_method_mercadopago_custom"
     And I press "#use_other_card_mp" element
 
-  @APRO
+  @CheckoutCustom @APRO
   Scenario: See payment approved
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "01"
@@ -25,12 +25,13 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I press "#payment-buttons-container .button" element
 
     When I press "#review-buttons-container .button" element
+    And I wait for "20" seconds
 
     Then I should see "Payment Status: approved"
     And I should see "Payment Detail: accredited"
 
 
-  @CONT
+  @CheckoutCustom @CONT
   Scenario: See payment in process, pending contingency
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "01"
@@ -43,12 +44,13 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I press "#payment-buttons-container .button" element
 
     When I press "#review-buttons-container .button" element
+    And I wait for "20" seconds
 
     Then I should see "Payment Status: in_process"
     And I should see "Payment Detail: pending_contingency"
 
 
-  @CALL
+  @CheckoutCustom @CALL
   Scenario: See payment rejected, call for authorize
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "01"
@@ -61,12 +63,13 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I press "#payment-buttons-container .button" element
 
     When I press "#review-buttons-container .button" element
+    And I wait for "20" seconds
 
     Then I should see "Payment Status: rejected"
     And I should see "Payment Detail: cc_rejected_call_for_authorize"
 
 
-  @FUND
+  @CheckoutCustom @FUND
   Scenario: See payment rejected, insufficient amount
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "01"
@@ -79,13 +82,13 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I press "#payment-buttons-container .button" element
 
     When I press "#review-buttons-container .button" element
-
+    And I wait for "20" seconds
 
     Then I should see "Payment Status: rejected"
     And I should see "Payment Detail: cc_rejected_insufficient_amount"
 
 
-  @SECU
+  @CheckoutCustom @SECU
   Scenario: See payment rejected, bad filled security code
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "01"
@@ -98,12 +101,13 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I press "#payment-buttons-container .button" element
 
     When I press "#review-buttons-container .button" element
+    And I wait for "20" seconds
 
     Then I should see "Payment Status: rejected"
     And I should see "Payment Detail: cc_rejected_bad_filled_security_code"
 
 
-  @FORM
+  @CheckoutCustom @FORM
   Scenario: See payment rejected, bad filled other
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "01"
@@ -116,12 +120,13 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I press "#payment-buttons-container .button" element
 
     When I press "#review-buttons-container .button" element
+    And I wait for "20" seconds
 
     Then I should see "Payment Status: rejected"
     And I should see "Payment Detail: cc_rejected_bad_filled_other"
 
 
-  @OTHE
+  @CheckoutCustom @OTHE
   Scenario: See payment rejected, other reason
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "01"
@@ -134,6 +139,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I press "#payment-buttons-container .button" element
 
     When I press "#review-buttons-container .button" element
+    And I wait for "20" seconds
 
     Then I should see "Payment Status: rejected"
     And I should see "Payment Detail: cc_rejected_other_reason"

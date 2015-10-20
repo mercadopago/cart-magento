@@ -29,15 +29,15 @@ class MercadoPago_Core_Model_Source_CategoryId
 
         $cat = array();
         $count = 0;
-        foreach ($response as $v):
+        foreach ($response as $v) {
             //force category others first
-            if ($v['id'] == "others"):
-                $cat[0] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description'])); else:
+            if ($v['id'] == "others") {
+                $cat[0] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
+            }else {
                 $count++;
-        $cat[$count] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
-        endif;
-
-        endforeach;
+                $cat[$count] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
+            }
+        }
 
         //force order by key
         ksort($cat);

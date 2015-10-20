@@ -51,7 +51,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         if ($response !== false):
             $this->getInfoInstance()->setAdditionalInformation('activation_uri', $response['response']['transaction_details']['external_resource_url']);
 
-        return true;
+            return true;
         endif;
 
         return false;

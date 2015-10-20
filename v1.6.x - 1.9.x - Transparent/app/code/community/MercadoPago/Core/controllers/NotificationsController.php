@@ -128,9 +128,6 @@ class MercadoPago_Core_NotificationsController
         $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
     }
 
-    /*
-    * Funcao responsavel por adicionar informação do pagamento no pedido
-    */
     public function updateOrder($data)
     {
         Mage::helper('mercadopago')->log("Update Order", 'mercadopago-notification.log');
@@ -140,35 +137,32 @@ class MercadoPago_Core_NotificationsController
 
             //update info de status no pagamento
             $payment_order = $order->getPayment();
-            $payment_order->setAdditionalInformation('status', $data['status']);
-            $payment_order->setAdditionalInformation('status_detail', $data['status_detail']);
-            $payment_order->setAdditionalInformation('payment_id', $data['id']);
-            $payment_order->setAdditionalInformation('transaction_amount', $data['transaction_amount']);
 
-            if (isset($data['cardholder_name'])) {
-                $payment_order->setAdditionalInformation('cardholderName', $data['cardholder_name']);
-            }
+            $additionalFields = array(
+                'status',
+                'status_detail',
+                'payment_id',
+                'transaction_amount',
+                'cardholderName',
+                'installments',
+                'statement_descriptor',
+                'trunc_card'
 
-            if (isset($data['installments'])) {
-                $payment_order->setAdditionalInformation('installments', $data['installments']);
+            );
+
+            foreach ($additionalFields as $field) {
+                if (isset($data[$field])){
+                    $payment_order->setAdditionalInformation($field,$data[$field]);
+                }
             }
 
             if (isset($data['payment_method_id'])) {
                 $payment_order->setAdditionalInformation('payment_method', $data['payment_method_id']);
             }
 
-            if (isset($data['statement_descriptor'])) {
-                $payment_order->setAdditionalInformation('statement_descriptor', $data['statement_descriptor']);
-            }
-
-            if (isset($data['trunc_card'])) {
-                $payment_order->setAdditionalInformation('trunc_card', $data['trunc_card']);
-            }
-
             $payment_status = $payment_order->save();
             Mage::helper('mercadopago')->log("Update Payment", 'mercadopago-notification.log', $payment_status->toString());
 
-            //adiciona informações sobre o comprador na order
             if ($data['payer_first_name']) {
                 $order->setCustomerFirstname($data['payer_first_name']);
             }

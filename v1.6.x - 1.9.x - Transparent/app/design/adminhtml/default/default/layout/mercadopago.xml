@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<layout>
+    <default>
+        <reference name="head">
+            <action method="addCss"><name>mercadopago/styles.css</name></action>
+        </reference>
+    </default>
+</layout>

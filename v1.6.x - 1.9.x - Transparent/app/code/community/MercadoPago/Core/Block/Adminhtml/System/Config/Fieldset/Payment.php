@@ -31,6 +31,9 @@ class MercadoPago_Core_Block_Adminhtml_System_Config_Fieldset_Payment
      *
      * @param Varien_Data_Form_Element_Abstract $element
      * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     protected function _getCollapseState($element)
     {

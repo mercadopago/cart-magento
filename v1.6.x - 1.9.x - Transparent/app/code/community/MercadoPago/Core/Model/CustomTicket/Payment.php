@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * NOTICE OF LICENSE
@@ -13,27 +14,14 @@
  * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
-
 class MercadoPago_Core_Model_CustomTicket_Payment
-    extends Mage_Payment_Model_Method_Abstract
+    extends MercadoPago_Core_Model_CustomPayment
 {
     //configura o lugar do arquivo para listar meios de pagamento
     protected $_formBlockType = 'mercadopago/customticket_form';
     protected $_infoBlockType = 'mercadopago/customticket_info';
 
     protected $_code = 'mercadopago_customticket';
-
-    protected $_canSaveCc = false;
-    protected $_isGateway = true;
-    protected $_canAuthorize = true;
-    protected $_canCapture = true;
-    protected $_canVoid = true;
-    protected $_canCancelInvoice = true;
-    protected $_isInitializeNeeded = true;
-    protected $_canFetchTransactionInfo = true;
-    protected $_canCreateBillingAgreement = true;
-    protected $_canReviewPayment = true;
 
     /**
      * @param string $paymentAction
@@ -45,14 +33,13 @@ class MercadoPago_Core_Model_CustomTicket_Payment
      */
     public function initialize($paymentAction, $stateObject)
     {
-        //chama model para fazer o post do pagamento
         $response = $this->preparePostPayment();
 
-        if ($response !== false):
+        if ($response !== false) {
             $this->getInfoInstance()->setAdditionalInformation('activation_uri', $response['response']['transaction_details']['external_resource_url']);
 
-        return true;
-        endif;
+            return true;
+        }
 
         return false;
     }
@@ -122,55 +109,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
     public function getSuccessBlockType()
     {
         return $this->_successBlockType;
-    }    
-
-    /**
-     * @return Mage_Checkout_Model_Session
-     */
-    protected function _getCheckout()
-    {
-        return Mage::getSingleton('checkout/session');
     }
 
-    /**
-     * Get admin checkout session namespace
-     *
-     * @return Mage_Adminhtml_Model_Session_Quote
-     */
-    protected function _getAdminCheckout()
-    {
-        return Mage::getSingleton('adminhtml/session_quote');
-    }
 
-    /**
-     * Retrieves Quote
-     *
-     * @param integer $quoteId
-     *
-     * @return Mage_Sales_Model_Quote
-     */
-    protected function _getQuote($quoteId = null)
-    {
-        if (!empty($quoteId)) {
-            return Mage::getModel('sales/quote')->load($quoteId);
-        } else {
-            if (Mage::app()->getStore()->isAdmin()) {
-                return $this->_getAdminCheckout()->getQuote();
-            } else {
-                return $this->_getCheckout()->getQuote();
-            }
-        }
-    }
-
-    /**
-     * Retrieves Order
-     *
-     * @param integer $incrementId
-     *
-     * @return Mage_Sales_Model_Order
-     */
-    protected function _getOrder($incrementId)
-    {
-        return Mage::getModel('sales/order')->loadByIncrementId($incrementId);
-    }
 }

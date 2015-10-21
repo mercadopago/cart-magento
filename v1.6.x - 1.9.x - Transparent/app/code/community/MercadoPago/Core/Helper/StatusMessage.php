@@ -3,8 +3,7 @@
 class MercadoPago_Core_Helper_StatusMessage
     extends MercadoPago_Core_Helper_Message_Abstract
 {
-    protected $messagesMap =
-        [
+    protected $messagesMap = [
             "approved"   => [
                 'title'   => 'Done, your payment was accredited!',
                 'message' => ''
@@ -39,7 +38,7 @@ class MercadoPago_Core_Helper_StatusMessage
                 'title'   => 'Thank you for your purchase!',
                 'message' => ''
             ]
-        ];
+    ];
 
     public function getMessageMap()
     {

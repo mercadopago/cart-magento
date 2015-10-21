@@ -3,8 +3,7 @@
 class MercadoPago_Core_Helper_StatusDetailMessage
     extends MercadoPago_Core_Helper_Message_Abstract
 {
-    protected $messagesMap =
-        [
+    protected $messagesMap = [
             "cc_rejected_bad_filled_card_number"   => 'Check the card number.',
             "cc_rejected_bad_filled_date"          => 'Check the expiration date.',
             "cc_rejected_bad_filled_other"         => 'Check the data.',
@@ -19,7 +18,7 @@ class MercadoPago_Core_Helper_StatusDetailMessage
             "cc_rejected_invalid_installments"     => '%s does not process payments in %s installments.',
             "cc_rejected_max_attempts"             => 'You have got to the limit of allowed attempts.<br/>Choose another card or another payment method.',
             "cc_rejected_other_reason"             => '%s did not process the payment.',
-        ];
+    ];
 
     public function getMessageMap()
     {

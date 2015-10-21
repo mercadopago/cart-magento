@@ -256,7 +256,7 @@ class MercadoPago_Core_Model_Standard_Payment
      */
     public function isAvailable($quote = null)
     {
-        $parent = parent::isAvailable();
+        $parent = parent::isAvailable($quote);
         $custom = (Mage::getStoreConfig('payment/mercadopago_standard/client_id') != ''
             && Mage::getStoreConfig('payment/mercadopago_standard/client_secret') != '');
 

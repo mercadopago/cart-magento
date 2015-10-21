@@ -30,7 +30,7 @@ abstract class MercadoPago_Core_Model_CustomPayment
      */
     public function isAvailable($quote = null)
     {
-        $parent = parent::isAvailable();
+        $parent = parent::isAvailable($quote);
         $custom = (Mage::getStoreConfig('payment/mercadopago_custom_checkout/public_key') != ''
             && Mage::getStoreConfig('payment/mercadopago_custom_checkout/access_token') != '');
 

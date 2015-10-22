@@ -81,10 +81,8 @@ class MercadoPago_Core_Model_Custom_Payment
         $info->setAdditionalInformation('doc_type', $info_form['doc_type']);
         $info->setAdditionalInformation('doc_number', $info_form['doc_number']);
 
-        //caso tenha banco, adiciona nas informações adicionais
-        if (isset($info_form['issuer_id'])) {
-            $info->setAdditionalInformation('issuer_id', $info_form['issuer_id']);
-        }
+        $issuer = (empty($info_form['issuer_id']))?'':$info_form['issuer_id'];
+        $info->setAdditionalInformation('issuer_id', $issuer);
 
         if (isset($info_form['coupon_code'])) {
             $info->setAdditionalInformation('coupon_code', $info_form['coupon_code']);
@@ -94,7 +92,7 @@ class MercadoPago_Core_Model_Custom_Payment
             $info->setAdditionalInformation('customer_id', $info_form['customer_id']);
         }
         if ($info_form['token'] != "") {
-            if ($info_form['card_expiration_month'] != "-1" && $info_form['card_expiration_year'] != "-1") {
+            if (!empty($info_form['card_expiration_month']) && !empty($info_form['card_expiration_year'])) {
                 $info->setAdditionalInformation('expiration_date', $info_form['card_expiration_month'] . "/" . $info_form['card_expiration_year']);
             }
             $info->setAdditionalInformation('cardholderName', $info_form['card_holder_name']);

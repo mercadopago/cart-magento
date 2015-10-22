@@ -248,6 +248,7 @@ function cardsHandler() {
         Mercadopago.getPaymentMethod({
             "bin": _bin
         }, setPaymentMethodInfo);
+        document.querySelector('#issuer').value = '';
     }
 }
 
@@ -392,7 +393,7 @@ function showCardIssuers(status, issuers) {
         fragment = document.createDocumentFragment();
 
     issuersSelector.options.length = 0;
-    var option = new Option(message_choose + "...", '-1');
+    var option = new Option(message_choose + "...", '');
     fragment.appendChild(option);
 
     for (var i = 0; i < issuers.length; i++) {

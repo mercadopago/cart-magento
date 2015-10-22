@@ -885,28 +885,3 @@ function hideMessageCoupon($form_payment){
         message_coupon[x].style.display = 'none';
     }
 }
-
-
-
-/*
- *
- * TESTE
- *
- */
-
-
-function mercadopago_case_1(){
-    showLogMercadoPago("Case teste 1");
-
-    //adiciona dados para o pagamento teste
-    document.querySelector("#cardNumber").setAttribute('value', "4235647728025682");
-
-    //forca o guessing com dados de test (para não fazer a digitacao)
-    guessingPaymentMethod({type: "keyup"});
-
-    document.querySelector("#cardExpirationMonth").value = "11";
-    document.querySelector("#cardExpirationYear").value = "2018";
-    document.querySelector("#cardholderName").setAttribute('value', "APRO APRO");
-    document.querySelector("#securityCode").setAttribute('value', "123");
-    document.querySelector("#docNumber").setAttribute('value', "19119119100");
-}

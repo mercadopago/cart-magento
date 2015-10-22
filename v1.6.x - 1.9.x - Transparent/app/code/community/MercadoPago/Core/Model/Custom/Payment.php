@@ -24,6 +24,7 @@ class MercadoPago_Core_Model_Custom_Payment
     protected $_code = 'mercadopago_custom';
 
     const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
+    protected $_exclude_inputs_opc = array('issuer_id','card_expiration_month','card_expiration_year','card_holder_name','doc_type','doc_number');
 
     /**
      * @param string $paymentAction
@@ -59,6 +60,13 @@ class MercadoPago_Core_Model_Custom_Payment
         return false;
     }
 
+    protected function cleanFieldsOcp($info) {
+        foreach ($this->_exclude_inputs_opc as $field) {
+            $info[$field] = '';
+        }
+        return $info;
+    }
+
     public function assignData($data)
     {
 
@@ -67,9 +75,12 @@ class MercadoPago_Core_Model_Custom_Payment
             $data = new Varien_Object($data);
         }
 
-        //get array info
         $info_form = $data->getData();
         $info_form = $info_form['mercadopago_custom'];
+
+        if (isset($info_form['one_click_pay']) && $info_form['one_click_pay'] == 1) {
+            $info_form = $this->cleanFieldsOcp($info_form);
+        }
 
         Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $info_form);
 

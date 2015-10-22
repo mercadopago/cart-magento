@@ -146,6 +146,7 @@ function defineInputs(){
         }
     }
 
+    clearOptions();
 
     //Show inputs
     showLogMercadoPago(data_inputs);
@@ -196,7 +197,7 @@ function actionUseOneClickPayOrNo(){
 
     //verifica os inputs para esse opção de pagamento
     defineInputs();
-
+    clearOptions();
     //cria um novo card_token, por que se estiver vinculado ao card_id não da para dar put nas informações
     Mercadopago.clearSession();
 
@@ -213,7 +214,7 @@ function clearOptions() {
     showLogMercadoPago("Clear Option");
 
     var bin = getBin();
-    if (bin.length == 0) {
+    if (bin.length == 0 || document.querySelector('input[data-checkout="cardNumber"]').value == '') {
         var message_installment = document.querySelector(".mercadopago-text-installment").value;
 
         document.querySelector("#issuer__mp").style.display = 'none';

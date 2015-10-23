@@ -114,7 +114,7 @@ class MercadoPago_Core_Model_Standard_Payment
                 "picture_url" => $image,
                 "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
                 "quantity"    => (int)number_format($item->getQtyOrdered(), 0, '.', ''),
-                "unit_price"  => (float)number_format($product->getFinalPrice(), 2, '.', '')
+                "unit_price"  => (float)number_format($item->getPrice(), 2, '.', '')
             );
         }
 
@@ -125,7 +125,7 @@ class MercadoPago_Core_Model_Standard_Payment
     {
         $total = 0;
         foreach ($items as $item) {
-            $total += $item['unit_price'];
+            $total += $item['unit_price'] * $item['quantity'];
         }
 
         return $total;
@@ -157,6 +157,25 @@ class MercadoPago_Core_Model_Standard_Payment
 
         $arr['external_reference'] = $orderIncrementId;
         $arr['items'] = $this->getItems($order);
+
+        if ($order->getDiscountAmount()){
+            $arr['items'][] = array(
+                "title"       => "Store discount coupon",
+                "description" => "Store discount coupon",
+                "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
+                "quantity"    => 1,
+                "unit_price"  => (float)$order->getDiscountAmount()
+            );
+        }
+        if ($order->getBaseTaxAmount()){
+            $arr['items'][] = array(
+                "title"       => "Store taxes",
+                "description" => "Store taxes",
+                "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
+                "quantity"    => 1,
+                "unit_price"  => (float)$order->getBaseTaxAmount()
+            );
+        }
 
         $total_item = $this->getTotalItems($arr['items']);
         $total_item += (float)$order->getBaseShippingAmount();

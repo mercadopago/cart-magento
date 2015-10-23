@@ -379,6 +379,8 @@ function setPaymentMethodInfo(status, response) {
         showMessageErrorForm(".error-payment-method-not-found");
 
     }
+
+    defineInputs();
 };
 
 function showCardIssuers(status, issuers) {
@@ -409,6 +411,8 @@ function showCardIssuers(status, issuers) {
     issuersSelector.removeAttribute('disabled');
     document.querySelector("#issuer__mp").removeAttribute('style');
     document.querySelector("#issuer").removeAttribute('style');
+
+    defineInputs();
 };
 
 function setInstallmentsByIssuerId(status, response) {

@@ -161,4 +161,6 @@
 
 "Use other card","Utilizar otra tarjeta"
 "Return to cards list","Volver a lista de tarjetas"
+"Mercado Pago - Classic Checkout: Invalid client id or client secret","Mercado Pago - Classic Checkout: El id de cliente o la clave secreta, son inválidas"
+"Mercado Pago - Custom Checkout: Invalid access token", "Mercado Pago - Custom Checkout: El token de acceso es inválido"
 

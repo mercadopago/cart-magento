@@ -257,9 +257,15 @@ class MercadoPago_Core_Model_Standard_Payment
     public function isAvailable($quote = null)
     {
         $parent = parent::isAvailable($quote);
-        $custom = (Mage::getStoreConfig('payment/mercadopago_standard/client_id') != ''
-            && Mage::getStoreConfig('payment/mercadopago_standard/client_secret') != '');
+        $clientId = Mage::getStoreConfig('payment/mercadopago_standard/client_id');
+        $clientSecret = Mage::getStoreConfig('payment/mercadopago_standard/client_secret');
+        $standard = (!empty($clientId) && !empty($clientSecret));
 
-        return $parent && $custom;
+        if (!$parent || !$standard) {
+            return false;
+        }
+
+        return Mage::helper('mercadopago')->validateClientCredentials($clientId,$clientSecret);
+
     }
 }

@@ -31,7 +31,8 @@ class MercadoPago_Core_Helper_Data
         Mage::log($message, null, $file, $action_log);
     }
 
-    public function getApiInstance() {
+    public function getApiInstance()
+    {
         $params = func_num_args();
         if ($params > 2 || $params < 1) {
             Mage::throwException("Invalid arguments. Use CLIENT_ID and CLIENT SECRET, or ACCESS_TOKEN");
@@ -39,13 +40,35 @@ class MercadoPago_Core_Helper_Data
         if ($params == 1) {
             $api = new MercadoPago_Lib_Api(func_get_arg(0));
         } else {
-            $api = new MercadoPago_Lib_Api(func_get_arg(0),func_get_arg(1));
+            $api = new MercadoPago_Lib_Api(func_get_arg(0), func_get_arg(1));
         }
-        if (Mage::getStoreConfigFlag('payment/mercadopago/sandbox_mode')){
+        if (Mage::getStoreConfigFlag('payment/mercadopago/sandbox_mode')) {
             $api->sandbox_mode(true);
         }
+
         return $api;
 
+    }
+
+    public function validateAccessToken($accessToken)
+    {
+        $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
+        $response = $mp->get("/v1/payment_methods");
+        if ($response['status'] == 401 || $response['status'] == 400) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function validateClientCredentials($clientId,$clientSecret) {
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId,$clientSecret);
+        try {
+            $mp->get_access_token();
+        } catch(Exception $e) {
+            return false;
+        }
+        return true;
     }
 
 }

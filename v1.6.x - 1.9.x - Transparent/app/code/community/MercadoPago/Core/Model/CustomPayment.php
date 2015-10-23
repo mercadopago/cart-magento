@@ -31,10 +31,15 @@ abstract class MercadoPago_Core_Model_CustomPayment
     public function isAvailable($quote = null)
     {
         $parent = parent::isAvailable($quote);
-        $custom = (Mage::getStoreConfig('payment/mercadopago_custom_checkout/public_key') != ''
-            && Mage::getStoreConfig('payment/mercadopago_custom_checkout/access_token') != '');
+        $accessToken = Mage::getStoreConfig('payment/mercadopago_custom_checkout/access_token');
 
-        return $parent && $custom;
+        $custom = (Mage::getStoreConfig('payment/mercadopago_custom_checkout/public_key') != '' && !empty($accessToken));
+
+        if (!$parent || !$custom) {
+            return false;
+        }
+
+        return Mage::helper('mercadopago')->validateAccessToken($accessToken);
     }
 
     /**

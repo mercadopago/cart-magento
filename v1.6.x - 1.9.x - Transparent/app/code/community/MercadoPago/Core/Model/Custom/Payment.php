@@ -69,12 +69,6 @@ class MercadoPago_Core_Model_Custom_Payment
     public function assignData($data)
     {
 
-        if (empty($info_form['token'])) {
-            $exception = new MercadoPago_Core_Model_Api_V1_Exception();
-            $exception->setMessage($exception->getUserMessage());
-            throw $exception;
-        }
-
         // route /checkout/onepage/savePayment
         if (!($data instanceof Varien_Object)) {
             $data = new Varien_Object($data);
@@ -86,14 +80,20 @@ class MercadoPago_Core_Model_Custom_Payment
             $info_form = $this->cleanFieldsOcp($info_form);
         }
 
-        Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $info_form);
+        if (empty($info_form['token'])) {
+            $exception = new MercadoPago_Core_Model_Api_V1_Exception();
+            $exception->setMessage($exception->getUserMessage());
+            throw $exception;
+        }
 
+        Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $info_form);
         $info = $this->getInfoInstance();
         $info->setAdditionalInformation($info_form);
         $info->setAdditionalInformation('payment_type_id', "credit_card");
         if (!empty($info_form['card_expiration_month']) && !empty($info_form['card_expiration_year'])) {
             $info->setAdditionalInformation('expiration_date', $info_form['card_expiration_month'] . "/" . $info_form['card_expiration_year']);
         }
+        $info->setAdditionalInformation('payment_method', $info_form['payment_method_id']);
         $info->setAdditionalInformation('cardholderName', $info_form['card_holder_name']);
 
         return $this;

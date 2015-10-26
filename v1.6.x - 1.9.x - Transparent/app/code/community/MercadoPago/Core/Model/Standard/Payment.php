@@ -37,8 +37,8 @@ class MercadoPago_Core_Model_Standard_Payment
     public function postPago()
     {
         //seta sdk php mercadopago
-        $client_id = Mage::getStoreConfig('payment/mercadopago_standard/client_id');
-        $client_secret = Mage::getStoreConfig('payment/mercadopago_standard/client_secret');
+        $client_id = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $client_secret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
         $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
 
         //monta a prefernecia
@@ -257,9 +257,15 @@ class MercadoPago_Core_Model_Standard_Payment
     public function isAvailable($quote = null)
     {
         $parent = parent::isAvailable($quote);
-        $custom = (Mage::getStoreConfig('payment/mercadopago_standard/client_id') != ''
-            && Mage::getStoreConfig('payment/mercadopago_standard/client_secret') != '');
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        $standard = (!empty($clientId) && !empty($clientSecret));
 
-        return $parent && $custom;
+        if (!$parent || !$standard) {
+            return false;
+        }
+
+        return Mage::helper('mercadopago')->isValidClientCredentials($clientId,$clientSecret);
+
     }
 }

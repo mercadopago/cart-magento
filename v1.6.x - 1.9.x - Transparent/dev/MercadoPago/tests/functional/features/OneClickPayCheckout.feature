@@ -1,0 +1,1 @@
+Feature: Validation of custom checkout with one click pay

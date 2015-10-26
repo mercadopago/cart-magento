@@ -39,7 +39,7 @@ class FeatureContext
      */
     public function iPressElement($cssClass)
     {
-        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
+        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $button = $this->findElement($cssClass);
         $button->press();
     }
@@ -60,15 +60,15 @@ class FeatureContext
     {
         $page = $this->getSession()->getPage();
 
-        if ($page->findById('billing-address-select')){
-            $page->selectFieldOption('billing-address-select','');
+        if ($page->findById('billing-address-select')) {
+            $page->selectFieldOption('billing-address-select', '');
         }
 
         $page->fillField('billing:firstname', 'John');
         $page->fillField('billing:middlename', 'George');
         $page->fillField('billing:lastname', 'Doe');
         $page->fillField('billing:company', 'MercadoPago');
-        if ($page->findById('billing:email')){
+        if ($page->findById('billing:email')) {
             $page->fillField('billing:email', 'johndoe@mercadopago.com');
         }
 
@@ -104,7 +104,7 @@ class FeatureContext
     public function iSelectRadio($id)
     {
         $page = $this->getSession()->getPage();
-        $this->getSession()->wait(20000,'(0 === Ajax.activeRequestCount)');
+        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $element = $page->findById($id);
         if (null === $element) {
             throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'id', $id);
@@ -133,7 +133,7 @@ class FeatureContext
     {
         $page = $this->getSession()->getPage();
         $this->getSession()->wait(20000, "jQuery('#installments').children().length > 1");
-        $page->selectFieldOption('installments',$installment);
+        $page->selectFieldOption('installments', $installment);
     }
 
     /**
@@ -148,6 +148,38 @@ class FeatureContext
     }
 
 
+    /**
+     * @Then I should not see MercadoPago Custom available
+     *
+     */
+    public function iShouldNotSeeMercadopagoCustomAvailable() {
+        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
+        if ($this->findElement('#dt_method_mercadopago_custom')) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @Then I should see MercadoPago Standard available
+     */
+    public function iShouldSeeMercadopagoStandardAvailable()
+    {
+        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
+        $element = $this->findElement('#dt_method_mercadopago_standard');
+
+        expect($element->getText())->toBe("MercadoPago");
+    }
+
+
+    /**
+     * @Then I should not see MercadoPago Standard available
+     *
+     */
+    public function iShouldNotSeeMercadopagoStandardAvailable() {
+        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
+        $element = $this->findElement('#dt_method_mercadopago_standard');
+    }
 
     /**
      * @Given I fill text field :arg1 with :arg2
@@ -167,7 +199,7 @@ class FeatureContext
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $page = $this->getSession()->getPage();
 
-        $page->selectFieldOption($arg1,$arg2);
+        $page->selectFieldOption($arg1, $arg2);
     }
 
     /**
@@ -186,10 +218,10 @@ class FeatureContext
     {
         $actual = $this->getSession()->getPage()->getText();
         $actual = preg_replace('/\s+/u', ' ', $actual);
-        $regex = '/'.preg_quote($arg1, '/').'/ui';
+        $regex = '/' . preg_quote($arg1, '/') . '/ui';
         $message = sprintf('The text "%s" was not found anywhere in the text of the current page.', $arg1);
 
-        if ((bool) preg_match($regex, $actual)) {
+        if ((bool)preg_match($regex, $actual)) {
             return;
         }
 
@@ -220,6 +252,27 @@ class FeatureContext
     }
 
     /**
+     * @Given I am admin logged in as :arg1 :arg2
+     */
+    public function iAmAdminLoggedInAs($arg1, $arg2)
+    {
+        $session = $this->getSession();
+
+        $session->visit($this->locatePath('admin'));
+
+        $login = $this->findElement('#username');
+        $pwd = $this->findElement('login');
+        if ($login && $pwd) {
+            $email = $arg1;
+            $password = $arg2;
+            $login->setValue($email);
+            $pwd->setValue($password);
+            $this->iPressInputElement('form-button');
+            $this->findElement('body. adminhtml-dashboard-index');
+        }
+    }
+
+    /**
      * @Given User :arg1 :arg2 exists
      */
     public function userExists($arg1, $arg2)
@@ -244,12 +297,37 @@ class FeatureContext
     }
 
     /**
-     * @Given Setting value :arg1 is :arg2
+     * @Given Admin User :arg1 :arg2 exists
      */
-    public function settingValueIs($arg1, $arg2)
+    public function adminUserExists($arg1, $arg2)
+    {
+        $user = Mage::getModel('admin/user');
+        $user->loadByEmail($arg1);
+        if (!$user->getId()) {
+            $user->setData(array(
+                'username'  => 'admin',
+                'firstname' => 'Admin',
+                'lastname'  => 'Admin',
+                'email'     => 'admin@mail.com',
+                'password'  => 'Summa2015',
+                'is_active' => 1
+            ))->save();
+
+            $user->setRoleIds(array(1))
+            ->setRoleUserId($user->getUserId())
+                ->saveRelations();
+        }
+
+    }
+
+    /**
+     * @Given Setting Config :arg1 is :arg2
+     */
+    public
+    function settingConfig($arg1, $arg2)
     {
         $config = new Mage_Core_Model_Config();
-        $config->saveConfig($arg1, "1", 'default', 0);
+        $config->saveConfig($arg1, $arg2, 'default', 0);
 
         Mage::app()->getCacheInstance()->cleanType('config');
     }
@@ -257,7 +335,8 @@ class FeatureContext
     /**
      * @Given /^I switch to the iframe "([^"]*)"$/
      */
-    public function iSwitchToIframe($arg1 = null)
+    public
+    function iSwitchToIframe($arg1 = null)
     {
         $this->getSession()->wait(20000);
         $this->getSession()->switchToIFrame($arg1);
@@ -266,7 +345,8 @@ class FeatureContext
     /**
      * @Given I switch to the site
      */
-    public function iSwitchToSite()
+    public
+    function iSwitchToSite()
     {
         $this->getSession()->wait(20000);
         $this->getSession()->switchToIFrame(null);
@@ -275,20 +355,21 @@ class FeatureContext
     /**
      * @When I fill the iframe fields
      */
-    public function iFillTheIframeFields()
+    public
+    function iFillTheIframeFields()
     {
         $page = $this->getSession()->getPage();
 
-        $page->selectFieldOption('pmtOption','visa');
+        $page->selectFieldOption('pmtOption', 'visa');
 
         $page->fillField('cardNumber', '4444 4444 4444 0008');
         $this->getSession()->wait(3000);
-        $page->selectFieldOption('creditCardIssuerOption','1');
-        $page->selectFieldOption('cardExpirationMonth','01');
-        $page->selectFieldOption('cardExpirationYear','2017');
+        $page->selectFieldOption('creditCardIssuerOption', '1');
+        $page->selectFieldOption('cardExpirationMonth', '01');
+        $page->selectFieldOption('cardExpirationYear', '2017');
         $page->fillField('securityCode', '123');
         $page->fillField('cardholderName', 'Name');
-        $page->selectFieldOption('docType','DNI');
+        $page->selectFieldOption('docType', 'DNI');
 
         $page->fillField('docNumber', '12345678');
 
@@ -299,7 +380,8 @@ class FeatureContext
     /**
      * @Then I should be on :arg1
      */
-    public function iShouldBeOn($arg1)
+    public
+    function iShouldBeOn($arg1)
     {
         $session = $this->getSession();
         $session->wait(20000);
@@ -311,4 +393,19 @@ class FeatureContext
         throw new Exception($this->getSession()->getDriver(), 'Wrong url');
     }
 
+
+    /**
+     * @AfterFeature @MercadoPagoConfig
+     */
+    public
+    function resetConfigs()
+    {
+        $this->settingConfig('payment/mercadopago_standard/client_id', '446950613712741');
+        $this->settingConfig('payment/mercadopago_standard/client_secret', '0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv');
+        $this->settingConfig('payment/mercadopago_standard/active', '1');
+        $this->settingConfig('payment/mercadopago_custom_checkout/public_key', 'TEST - d5a3d71b - 6bd4 - 4bfc - a1f3 - 7ed77987d5aa');
+        $this->settingConfig('payment/mercadopago_standard/access_token', 'TEST - 446950613712741 - 091715 - 092a6109a25bb763aa94c61688ada0cd__LC_LA__ - 192627424');
+        $this->settingConfig('payment/mercadopago_standard/active', '1');
+
+    }
 }

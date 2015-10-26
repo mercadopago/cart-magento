@@ -143,3 +143,21 @@ Feature: Payment results in MercadoPago Custom Checkout
 
     Then I should see "Payment Status: rejected"
     And I should see "Payment Detail: cc_rejected_other_reason"
+
+  @CheckoutCustom @EXPI
+  Scenario: See payment rejected, invalid card expiration date
+    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
+    And I select option field "cardExpirationMonth" with "01"
+    And I fill text field "cardholderName" with "EXPI"
+    And I select option field "docType" with "DNI"
+    And I fill text field "docNumber" with "12345678"
+    And I fill text field "securityCode" with "123"
+    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "installments" with "1"
+    And I press "#payment-buttons-container .button" element
+
+    When I press "#review-buttons-container .button" element
+    And I wait for "20" seconds
+
+    Then I should see "Payment Status: rejected"
+    And I should see "Payment Detail: cc_rejected_bad_filled_date"

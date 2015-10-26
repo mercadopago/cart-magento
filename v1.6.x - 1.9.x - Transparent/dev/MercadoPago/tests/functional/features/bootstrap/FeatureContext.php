@@ -386,7 +386,6 @@ class FeatureContext
         throw new Exception($this->getSession()->getDriver(), 'Wrong url');
     }
 
-
     /**
      * @AfterScenario @Availability
      */
@@ -431,4 +430,29 @@ class FeatureContext
         throw new ExpectationException('I am not stay in '.$arg1, $this->getSession()->getDriver());
 
     }
+    /**
+     * @Given Product with sku :arg1 has a price of :arg2
+     */
+    public function productWithSkuHasAPriceOf($arg1, $arg2)
+    {
+        $product = Mage::getModel('catalog/product');
+        $product->load($product->getIdBySku($arg1));
+
+        $product->setPrice($arg2);
+        $product->save();
+    }
+
+    /**
+     * @Then I should see element :arg1 value :arg2
+     */
+    public function iShouldSeeElementValue($arg1, $arg2)
+    {
+        $element = $this->findElement($arg1);
+        if (strpos($arg2, $element->getText())) {
+            return;
+        }
+
+        throw new Exception($this->getSession()->getDriver(), 'Wrong total value');
+    }
+
 }

@@ -435,24 +435,10 @@ class FeatureContext
      */
     public function productWithSkuHasAPriceOf($arg1, $arg2)
     {
-        $product = Mage::getModel('catalog/product');
-        $product->load($product->getIdBySku($arg1));
+        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+        $product = Mage::getModel('catalog/product')->loadByAttribute('sku', $arg1);;
 
-        $product->setPrice($arg2);
-        $product->save();
-    }
-
-    /**
-     * @Then I should see element :arg1 value :arg2
-     */
-    public function iShouldSeeElementValue($arg1, $arg2)
-    {
-        $element = $this->findElement($arg1);
-        if (strpos($arg2, $element->getText())) {
-            return;
-        }
-
-        throw new Exception($this->getSession()->getDriver(), 'Wrong total value');
+        $product->setPrice($arg2)->save();
     }
 
 }

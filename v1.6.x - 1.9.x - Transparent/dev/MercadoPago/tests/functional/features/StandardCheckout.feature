@@ -8,7 +8,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     And Product with sku "acj005" has a price of "100"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I fill text field "coupon_code" with "RTL25OFF"
-    And I press "button[title=apply]" element
+    And I press "#discount-coupon-form .button-wrapper > button" element
     And I press ".btn-proceed-checkout" element
     And I fill the billing address
     And I press "#billing-buttons-container .button" element
@@ -31,4 +31,4 @@ Feature: Payment results in MercadoPago Standard Checkout
   Scenario: Check total displayed in iframe
     Given I switch to the iframe "checkout_mercadopago"
 
-    Then I should see element "#dtl-total" value "75"
+    Then I should see "$ 75"

@@ -41,10 +41,7 @@ class MercadoPago_Core_Model_Observer
     private $available_transparent_credit_cart =  ['mla', 'mlb', 'mlm'];
     private $available_transparent_ticket = ['mla', 'mlb', 'mlm'];
 
-    const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
-    const XML_PATH_PUBLIC_KEY = 'payment/mercadopago_custom_checkout/public_key';
-    const XML_PATH_CLIENT_ID = 'payment/mercadopago_standard/client_id';
-    const XML_PATH_CLIENT_SECRET = 'payment/mercadopago_standard/client_secret';
+
 
     /**
      * @param $observer
@@ -113,7 +110,7 @@ class MercadoPago_Core_Model_Observer
         $sponsor_id = "";
         Mage::helper('mercadopago')->log("Valid user test", 'mercadopago.log');
         
-        $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
         Mage::helper('mercadopago')->log("Get access_token: " . $access_token, 'mercadopago.log');
         
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
@@ -145,19 +142,19 @@ class MercadoPago_Core_Model_Observer
     }
 
     protected function validateAccessToken() {
-        $accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        $accessToken = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
         if (!empty($accessToken)) {
-            if (!Mage::helper('mercadopago')->validateAccessToken($accessToken)) {
+            if (!Mage::helper('mercadopago')->isValidAccessToken($accessToken)) {
                 Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Custom Checkout: Invalid access token'));
             }
         }
     }
 
     protected function validateClientCredentials() {
-        $clientId = Mage::getStoreConfig(self::XML_PATH_CLIENT_ID);
-        $clientSecret = Mage::getStoreConfig(self::XML_PATH_CLIENT_SECRET);
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
         if (!empty($clientId) &&  !empty($clientSecret)) {
-            if (!Mage::helper('mercadopago')->validateClientCredentials($clientId,$clientSecret)){
+            if (!Mage::helper('mercadopago')->isValidClientCredentials($clientId,$clientSecret)){
                 Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Classic Checkout: Invalid client id or client secret'));
             }
         }

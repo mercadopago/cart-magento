@@ -64,6 +64,27 @@ function initMercadoPagoJs(){
     Validation.add('validate-discount', ' ', function(v,element) {
         return (!element.hasClassName('invalid_coupon'));
     });
+
+    Validation.add('mp-validate-docnumber','Document Number is invalid.',function (v,element) {
+        return checkDocNumber(v);
+    });
+}
+
+function checkDocNumber(v) {
+    var flagReturn = true;
+    Mercadopago.getIdentificationTypes(function (status,identificationsTypes) {
+        if (status == 200) {
+            var type = jQuery('#docType').val();
+            identificationsTypes.each(function (dataType) {
+                if (dataType.id == type) {
+                    if (v.length > dataType.max_length || v.length < dataType.min_length) {
+                        flagReturn = false;
+                    }
+                }
+            });
+        }
+    });
+    return flagReturn;
 }
 
 //init one click pay
@@ -125,6 +146,7 @@ function defineInputs(){
         }
     }
 
+    clearOptions();
 
     //Show inputs
     showLogMercadoPago(data_inputs);
@@ -175,7 +197,7 @@ function actionUseOneClickPayOrNo(){
 
     //verifica os inputs para esse opção de pagamento
     defineInputs();
-
+    clearOptions();
     //cria um novo card_token, por que se estiver vinculado ao card_id não da para dar put nas informações
     Mercadopago.clearSession();
 
@@ -192,7 +214,7 @@ function clearOptions() {
     showLogMercadoPago("Clear Option");
 
     var bin = getBin();
-    if (bin.length == 0) {
+    if (bin.length == 0 || document.querySelector('input[data-checkout="cardNumber"]').value == '') {
         var message_installment = document.querySelector(".mercadopago-text-installment").value;
 
         document.querySelector("#issuer__mp").style.display = 'none';
@@ -227,6 +249,7 @@ function cardsHandler() {
         Mercadopago.getPaymentMethod({
             "bin": _bin
         }, setPaymentMethodInfo);
+        document.querySelector('#issuer').value = '';
     }
 }
 
@@ -357,6 +380,8 @@ function setPaymentMethodInfo(status, response) {
         showMessageErrorForm(".error-payment-method-not-found");
 
     }
+
+    defineInputs();
 };
 
 function showCardIssuers(status, issuers) {
@@ -371,7 +396,7 @@ function showCardIssuers(status, issuers) {
         fragment = document.createDocumentFragment();
 
     issuersSelector.options.length = 0;
-    var option = new Option(message_choose + "...", '-1');
+    var option = new Option(message_choose + "...", '');
     fragment.appendChild(option);
 
     for (var i = 0; i < issuers.length; i++) {
@@ -387,6 +412,8 @@ function showCardIssuers(status, issuers) {
     issuersSelector.removeAttribute('disabled');
     document.querySelector("#issuer__mp").removeAttribute('style');
     document.querySelector("#issuer").removeAttribute('style');
+
+    defineInputs();
 };
 
 function setInstallmentsByIssuerId(status, response) {
@@ -559,6 +586,10 @@ function checkCreateCardToken(){
         if (document.querySelector(data_inputs[x]).value == "" || document.querySelector(data_inputs[x]).value == -1) {
             submit = false;
         }
+    }
+
+    if (document.querySelector('#docNumber').value != '' && !checkDocNumber(document.querySelector('#docNumber').value)){
+        submit = false;
     }
 
     if (submit) {
@@ -858,29 +889,4 @@ function hideMessageCoupon($form_payment){
     for (var x = 0; x < message_coupon.length; x++) {
         message_coupon[x].style.display = 'none';
     }
-}
-
-
-
-/*
- *
- * TESTE
- *
- */
-
-
-function mercadopago_case_1(){
-    showLogMercadoPago("Case teste 1");
-
-    //adiciona dados para o pagamento teste
-    document.querySelector("#cardNumber").setAttribute('value', "4235647728025682");
-
-    //forca o guessing com dados de test (para não fazer a digitacao)
-    guessingPaymentMethod({type: "keyup"});
-
-    document.querySelector("#cardExpirationMonth").value = "11";
-    document.querySelector("#cardExpirationYear").value = "2018";
-    document.querySelector("#cardholderName").setAttribute('value', "APRO APRO");
-    document.querySelector("#securityCode").setAttribute('value', "123");
-    document.querySelector("#docNumber").setAttribute('value', "19119119100");
 }

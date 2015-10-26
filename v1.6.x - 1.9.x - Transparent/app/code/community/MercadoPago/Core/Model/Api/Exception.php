@@ -16,14 +16,16 @@ class MercadoPago_Core_Model_Api_Exception
      *
      * @return string
      */
-    public function getUserMessage($error)
+    public function getUserMessage($error=null)
     {
-        if (Mage::getStoreConfigFlag('payment/mercadopago/debug_mode')) {
-            return $error['description'];
-        } else {
-            $code = $error['code'];
-            if (isset($this->messagesMap[$code])) {
-                return Mage::helper('mercadopago')->__($this->messagesMap[$code]);
+        if (!empty($error)) {
+            if (Mage::getStoreConfigFlag('payment/mercadopago/debug_mode')) {
+                return $error['description'];
+            } else {
+                $code = $error['code'];
+                if (isset($this->messagesMap[$code])) {
+                    return Mage::helper('mercadopago')->__($this->messagesMap[$code]);
+                }
             }
         }
 

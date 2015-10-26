@@ -1,56 +1,57 @@
 <?php
-/**
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Open Software License (OSL).
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/osl-3.0.php
-*
-* @category   	Payment Gateway
-* @package    	MercadoPago
-* @author      	Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
-* @copyright  	Copyright (c) MercadoPago [http://www.mercadopago.com]
-* @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
-*/
 
-class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_Abstract
+/**
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL).
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category       Payment Gateway
+ * @package        MercadoPago
+ * @author         Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
+ * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
+ * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+class MercadoPago_Core_Model_Standard_Payment
+    extends Mage_Payment_Model_Method_Abstract
 {
     protected $_formBlockType = 'mercadopago/standard_form';
     protected $_infoBlockType = 'mercadopago/standard_info';
 
     protected $_code = 'mercadopago_standard';
-    
-    protected $_isGateway                   = true;
-    protected $_canOrder                    = true;
-    protected $_canAuthorize                = true;
-    protected $_canCapture                  = true;
-    protected $_canCapturePartial           = true;
-    protected $_canRefund                   = true;
-    protected $_canRefundInvoicePartial     = true;
-    protected $_canVoid                     = true;
-    protected $_canFetchTransactionInfo     = true;
-    protected $_canCreateBillingAgreement   = true;
-    protected $_canReviewPayment            = true;
+
+    protected $_isGateway = true;
+    protected $_canOrder = true;
+    protected $_canAuthorize = true;
+    protected $_canCapture = true;
+    protected $_canCapturePartial = true;
+    protected $_canRefund = true;
+    protected $_canRefundInvoicePartial = true;
+    protected $_canVoid = true;
+    protected $_canFetchTransactionInfo = true;
+    protected $_canCreateBillingAgreement = true;
+    protected $_canReviewPayment = true;
 
     public function postPago()
     {
         //seta sdk php mercadopago
-        $client_id = Mage::getStoreConfig('payment/mercadopago/client_id');
-        $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
+        $client_id = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $client_secret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
         $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
 
         //monta a prefernecia
         $pref = $this->makePreference();
         Mage::helper('mercadopago')->log("make array", 'mercadopago-standard.log', $pref);
-        
+
         //faz o posto do pagamento
         $response = $mp->create_preference($pref);
         Mage::helper('mercadopago')->log("create preference result", 'mercadopago-standard.log', $response);
-        
+
         $array_assign = array();
-        
-        if ($response['status'] == 200 || $response['status'] == 201){
+
+        if ($response['status'] == 200 || $response['status'] == 201) {
             $payment = $response['response'];
             if (Mage::getStoreConfigFlag('payment/mercadopago/sandbox_mode')) {
                 $init_point = $payment['sandbox_init_point'];
@@ -99,11 +100,12 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         return $discount;
     }
 
-    protected function getItems($order) {
+    protected function getItems($order)
+    {
         $items = array();
         foreach ($order->getAllVisibleItems() as $item) {
             $product = $item->getProduct();
-            $image = (string) Mage::helper('catalog/image')->init($product, 'image');
+            $image = (string)Mage::helper('catalog/image')->init($product, 'image');
 
             $items[] = array(
                 "id"          => $item->getSku(),
@@ -119,15 +121,18 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         return $items;
     }
 
-    protected function getTotalItems($items) {
+    protected function getTotalItems($items)
+    {
         $total = 0;
         foreach ($items as $item) {
             $total += $item['unit_price'];
         }
+
         return $total;
     }
 
-    protected function getExcludedPaymentsMethods() {
+    protected function getExcludedPaymentsMethods()
+    {
         $excludedMethods = array();
         $excluded_payment_methods = $this->getConfigData('excluded_payment_methods');
         $arr_epm = explode(",", $excluded_payment_methods);
@@ -136,6 +141,7 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
                 $excludedMethods[] = array("id" => $m);
             }
         }
+
         return $excludedMethods;
     }
 
@@ -232,11 +238,34 @@ class MercadoPago_Core_Model_Standard_Payment extends Mage_Payment_Model_Method_
         $sponsor_id = Mage::getStoreConfig('payment/mercadopago/sponsor_id');
         Mage::helper('mercadopago')->log("Sponsor_id identificado", 'mercadopago-standard.log', $sponsor_id);
         $arr['sponsor_id'] = (int)$sponsor_id;
+
         return $arr;
     }
 
     public function getSuccessBlockType()
     {
         return $this->_successBlockType;
+    }
+
+    /**
+     * Check whether payment method can be used
+     *
+     * @param Mage_Sales_Model_Quote|null $quote
+     *
+     * @return bool
+     */
+    public function isAvailable($quote = null)
+    {
+        $parent = parent::isAvailable($quote);
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        $standard = (!empty($clientId) && !empty($clientSecret));
+
+        if (!$parent || !$standard) {
+            return false;
+        }
+
+        return Mage::helper('mercadopago')->isValidClientCredentials($clientId,$clientSecret);
+
     }
 }

@@ -26,8 +26,7 @@ class MercadoPago_Core_Block_Custom_Form
     protected function _prepareLayout()
     {
 
-        //pega public key para settar no aquivo mercadopago.js
-        $public_key = Mage::getStoreConfig('payment/mercadopago/public_key');
+        $public_key = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_PUBLIC_KEY);
 
         //init js no header
         $block = Mage::app()->getLayout()->createBlock('core/text', 'js_mercadopago');

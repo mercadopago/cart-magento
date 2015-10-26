@@ -1,21 +1,20 @@
 <?php
 
 /**
- *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL).
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
- * @category       Payment Gateway
- * @package        MercadoPago
- * @author         Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
- * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
- * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @category  Payment Gateway
+ * @package   MercadoPago
+ * @author    Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
+ * @copyright Copyright (c) MercadoPago [http://www.mercadopago.com]
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class MercadoPago_Core_Model_Custom_Payment
-    extends Mage_Payment_Model_Method_Abstract
+    extends MercadoPago_Core_Model_CustomPayment
 {
     //configura o block do formulario e de informações sobre o pagamento
     protected $_formBlockType = 'mercadopago/custom_form';
@@ -23,16 +22,9 @@ class MercadoPago_Core_Model_Custom_Payment
 
     protected $_code = 'mercadopago_custom';
 
-    protected $_canSaveCc = false;
-    protected $_isGateway = true;
-    protected $_canAuthorize = true;
-    protected $_canCapture = true;
-    protected $_canVoid = true;
-    protected $_canCancelInvoice = true;
-    protected $_isInitializeNeeded = true;
-    protected $_canFetchTransactionInfo = true;
-    protected $_canCreateBillingAgreement = true;
-    protected $_canReviewPayment = true;
+    const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
+
+    public static $exclude_inputs_opc = ['issuer_id', 'card_expiration_month', 'card_expiration_year', 'card_holder_name', 'doc_type', 'doc_number'];
 
     /**
      * @param string $paymentAction
@@ -45,13 +37,10 @@ class MercadoPago_Core_Model_Custom_Payment
     public function initialize($paymentAction, $stateObject)
     {
 
-        //verifica se o pagamento não é boleto, caso seja não tem card_token_id
         if ($this->getInfoInstance()->getAdditionalInformation('token') == "") {
             Mage::throwException(Mage::helper('mercadopago')->__('Verify the form data or wait until the validation of the payment data'));
         }
 
-
-        //continua o processo de pagamento
         $response = $this->preparePostPayment();
 
         if ($response !== false):
@@ -68,6 +57,15 @@ class MercadoPago_Core_Model_Custom_Payment
         return false;
     }
 
+    protected function cleanFieldsOcp($info)
+    {
+        foreach (self::$exclude_inputs_opc as $field) {
+            $info[$field] = '';
+        }
+
+        return $info;
+    }
+
     public function assignData($data)
     {
 
@@ -76,39 +74,27 @@ class MercadoPago_Core_Model_Custom_Payment
             $data = new Varien_Object($data);
         }
 
-        //get array info
         $info_form = $data->getData();
         $info_form = $info_form['mercadopago_custom'];
+        if (isset($info_form['one_click_pay']) && $info_form['one_click_pay'] == 1) {
+            $info_form = $this->cleanFieldsOcp($info_form);
+        }
+
+        if (empty($info_form['token'])) {
+            $exception = new MercadoPago_Core_Model_Api_V1_Exception();
+            $exception->setMessage($exception->getUserMessage());
+            throw $exception;
+        }
 
         Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $info_form);
-
         $info = $this->getInfoInstance();
+        $info->setAdditionalInformation($info_form);
         $info->setAdditionalInformation('payment_type_id', "credit_card");
-        $info->setAdditionalInformation('token', $info_form['token']);
+        if (!empty($info_form['card_expiration_month']) && !empty($info_form['card_expiration_year'])) {
+            $info->setAdditionalInformation('expiration_date', $info_form['card_expiration_month'] . "/" . $info_form['card_expiration_year']);
+        }
         $info->setAdditionalInformation('payment_method', $info_form['payment_method_id']);
-        $info->setAdditionalInformation('installments', $info_form['installments']);
-        $info->setAdditionalInformation('doc_type', $info_form['doc_type']);
-        $info->setAdditionalInformation('doc_number', $info_form['doc_number']);
-
-        //caso tenha banco, adiciona nas informações adicionais
-        if (isset($info_form['issuer_id'])) {
-            $info->setAdditionalInformation('issuer_id', $info_form['issuer_id']);
-        }
-
-        if (isset($info_form['coupon_code'])) {
-            $info->setAdditionalInformation('coupon_code', $info_form['coupon_code']);
-        }
-
-        if (isset($info_form['customer_id'])) {
-            $info->setAdditionalInformation('customer_id', $info_form['customer_id']);
-        }
-
-        if ($info_form['token'] != ""):
-            if ($info_form['card_expiration_month'] != "-1" && $info_form['card_expiration_year'] != "-1") {
-                $info->setAdditionalInformation('expiration_date', $info_form['card_expiration_month'] . "/" . $info_form['card_expiration_year']);
-            }
-            $info->setAdditionalInformation('cardholderName', $info_form['card_holder_name']);
-        endif;
+        $info->setAdditionalInformation('cardholderName', $info_form['card_holder_name']);
 
         return $this;
     }
@@ -126,8 +112,9 @@ class MercadoPago_Core_Model_Custom_Payment
         return $discount;
     }
 
-    protected function getPaymentInfo($payment) {
-        $payment_info = array();
+    protected function getPaymentInfo($payment)
+    {
+        $payment_info = [];
 
         if ($payment->getAdditionalInformation("coupon_code") != "") {
             $payment_info['coupon_code'] = $payment->getAdditionalInformation("coupon_code");
@@ -137,6 +124,7 @@ class MercadoPago_Core_Model_Custom_Payment
             $payment_info['identification_type'] = $payment->getAdditionalInformation("doc_type");
             $payment_info['identification_number'] = $payment->getAdditionalInformation("doc_number");
         }
+
         return $payment_info;
     }
 
@@ -174,13 +162,13 @@ class MercadoPago_Core_Model_Custom_Payment
         $response = $core->postPaymentV1($preference);
 
         if ($response !== false && $response['response']['status'] == 'approved') {
-            $this->CustomerAndCards($preference['token'], $response['response']);
+            $this->customerAndCards($preference['token'], $response['response']);
         }
 
         return $response;
     }
 
-    public function CustomerAndCards($token, $payment_created)
+    public function customerAndCards($token, $payment_created)
     {
         $customer = $this->getOrCreateCustomer($payment_created['payer']['email']);
 
@@ -192,37 +180,25 @@ class MercadoPago_Core_Model_Custom_Payment
     public function getOrCreateCustomer($email)
     {
 
-        //obtem access_token
-        $access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
+        $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
 
-        //seta sdk php mercadopago
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
 
-        $customer = $mp->get("/v1/customers/search", array(
-                "email" => $email
-            )
-        );
+        $customer = $mp->get("/v1/customers/search", ["email" => $email]);
 
         Mage::helper('mercadopago')->log("Response search customer", 'mercadopago-custom.log', $customer);
 
         if ($customer['status'] == 200) {
 
-            //verifica se foi encontrado algum customer
             if ($customer['response']['paging']['total'] > 0) {
-                //retorna o customer encontrado
                 return $customer['response']['results'][0];
             } else {
                 Mage::helper('mercadopago')->log("Customer not found: " . $email, 'mercadopago-custom.log');
 
-                //caso não exista, cria o customer
-                $customer = $mp->post("/v1/customers", array(
-                        "email" => $email
-                    )
-                );
+                $customer = $mp->post("/v1/customers", ["email" => $email]);
 
                 Mage::helper('mercadopago')->log("Response create customer", 'mercadopago-custom.log', $customer);
 
-                //caso resposta 200 retorna o response
                 if ($customer['status'] == 201) {
                     return $customer['response'];
                 } else {
@@ -236,16 +212,13 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function checkAndcreateCard($customer, $token, $payment)
     {
-        //obtem access_token
-        $access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
+        $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
 
-        //seta sdk php mercadopago
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
 
         foreach ($customer['cards'] as $card) {
 
 
-            // verifica se o cartão ja existe a partir das info do payment e da api de customer
             if ($card['first_six_digits'] == $payment['card']['first_six_digits']
                 && $card['last_four_digits'] == $payment['card']['last_four_digits']
                 && $card['expiration_month'] == $payment['card']['expiration_month']
@@ -253,21 +226,14 @@ class MercadoPago_Core_Model_Custom_Payment
             ) {
                 Mage::helper('mercadopago')->log("Card already exists", 'mercadopago-custom.log', $card);
 
-                // return - cartão ja existe
                 return $card;
             }
         }
 
-        // caso chegue aqui, o cartão não existe
-        // faz o post na api para cadastrar
-        $card = $mp->post("/v1/customers/" . $customer['id'] . "/cards", array(
-                "token" => $token
-            )
-        );
+        $card = $mp->post("/v1/customers/" . $customer['id'] . "/cards", ["token" => $token]);
 
         Mage::helper('mercadopago')->log("Response create card", 'mercadopago-custom.log', $card);
 
-        //card created
         if ($card['status'] == 201) {
             return $card['response'];
         }
@@ -277,7 +243,6 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function getCustomerAndCards()
     {
-        /* não reaproveito o request getOrCreateCustomer(), pois é 2 api calls */
         $email = Mage::getModel('mercadopago/core')->getEmailCustomer();
 
         $customer = $this->getOrCreateCustomer($email);
@@ -288,57 +253,8 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function getOrderPlaceRedirectUrl()
     {
-        // requisicao vem da pagina de finalizacao de pedido
-        return Mage::getUrl('mercadopago/success', array('_secure' => true));
+        return Mage::getUrl('mercadopago/success', ['_secure' => true]);
     }
 
-    /**
-     * @return Mage_Checkout_Model_Session
-     */
-    protected function _getCheckout()
-    {
-        return Mage::getSingleton('checkout/session');
-    }
 
-    /**
-     * Get admin checkout session namespace
-     *
-     * @return Mage_Adminhtml_Model_Session_Quote
-     */
-    protected function _getAdminCheckout()
-    {
-        return Mage::getSingleton('adminhtml/session_quote');
-    }
-
-    /**
-     * Retrieves Quote
-     *
-     * @param integer $quoteId
-     *
-     * @return Mage_Sales_Model_Quote
-     */
-    protected function _getQuote($quoteId = null)
-    {
-        if (!empty($quoteId)) {
-            return Mage::getModel('sales/quote')->load($quoteId);
-        } else {
-            if (Mage::app()->getStore()->isAdmin()) {
-                return $this->_getAdminCheckout()->getQuote();
-            } else {
-                return $this->_getCheckout()->getQuote();
-            }
-        }
-    }
-
-    /**
-     * Retrieves Order
-     *
-     * @param integer $incrementId
-     *
-     * @return Mage_Sales_Model_Order
-     */
-    protected function _getOrder($incrementId)
-    {
-        return Mage::getModel('sales/order')->loadByIncrementId($incrementId);
-    }
 }

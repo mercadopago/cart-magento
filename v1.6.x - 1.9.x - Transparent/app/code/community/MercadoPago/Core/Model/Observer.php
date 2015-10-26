@@ -16,30 +16,32 @@
 
 class MercadoPago_Core_Model_Observer
 {
-    private $banners = array(
-        "mercadopago_custom" => array(
+    private $banners = [
+        "mercadopago_custom" => [
             "mla" => "http://imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg",
             "mlb" => "http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg",
             "mco" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlm" => "http://imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG"
-        ),
-        "mercadopago_customticket" => array(
+        ],
+        "mercadopago_customticket" => [
             "mla" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlb" => "http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/2014/230x60.png",
             "mco" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlm" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png"
-        ),
-        "mercadopago_standard" => array(
+        ],
+        "mercadopago_standard" => [
             "mla" => "http://imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg",
             "mlb" => "http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg",
             "mco" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlc" => "https://secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "https://imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg"
-        )
-    );
+        ]
+    ];
     
-    private $available_transparent_credit_cart = array('mla', 'mlb', 'mlm');
-    private $available_transparent_ticket = array('mla', 'mlb', 'mlm');
+    private $available_transparent_credit_cart =  ['mla', 'mlb', 'mlm'];
+    private $available_transparent_ticket = ['mla', 'mlb', 'mlm'];
+
+
 
     /**
      * @param $observer
@@ -48,13 +50,14 @@ class MercadoPago_Core_Model_Observer
      */
     public function checkAndValidData($observer)
     {
-        //verifica se o usuario é de teste ou nao
+        $this->validateAccessToken();
+
+        $this->validateClientCredentials();
+
         $this->setSponsor();
         
-        //verifica se o checkout esta disponível para o pais
         $this->availableCheckout();
         
-        //verifica se os banners estao de acordo com o pais
         $this->checkBanner('mercadopago_custom');
         $this->checkBanner('mercadopago_customticket');
         $this->checkBanner('mercadopago_standard');
@@ -82,20 +85,16 @@ class MercadoPago_Core_Model_Observer
         $country = Mage::getStoreConfig('payment/mercadopago/country');
         $default_banner = $this->banners[$type_checkout][$country];
         
-        //pega o banner do tipo de checkout
         $current_banner = Mage::getStoreConfig('payment/' . $type_checkout . '/banner_checkout');
         
         Mage::helper('mercadopago')->log("Type Checkout Path: " . $type_checkout, 'mercadopago.log');
         Mage::helper('mercadopago')->log("Current Banner: " . $current_banner, 'mercadopago.log');
         Mage::helper('mercadopago')->log("Default Banner: " . $default_banner, 'mercadopago.log');
         
-        //verifico se o banner esta na lista de banner default
-        //caso esteja verifico se esta de acordo com o pais
         if (in_array($current_banner, $this->banners[$type_checkout])) {
             Mage::helper('mercadopago')->log("Banner default need update...", 'mercadopago.log');
             
             if ($default_banner != $current_banner) {
-                //set o novo banner atualiza o banner
                 Mage::getConfig()->saveConfig('payment/' . $type_checkout . '/banner_checkout', $default_banner);
                 
                 Mage::helper('mercadopago')->log('payment/' . $type_checkout . '/banner_checkout setted ' . $default_banner, 'mercadopago.log');
@@ -111,14 +110,13 @@ class MercadoPago_Core_Model_Observer
         $sponsor_id = "";
         Mage::helper('mercadopago')->log("Valid user test", 'mercadopago.log');
         
-        $access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
+        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
         Mage::helper('mercadopago')->log("Get access_token: " . $access_token, 'mercadopago.log');
         
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
         $user = $mp->get("/users/me");
         Mage::helper('mercadopago')->log("API Users response", 'mercadopago.log', $user);
         
-            //caso api retorne 403 (error no get) verifica se a mensagem e do usuario com test credentials
         if ($user['status'] == 200 && !in_array("test_user", $user['response']['tags'])) {
 
             switch ($user['response']['site_id']) {
@@ -141,5 +139,24 @@ class MercadoPago_Core_Model_Observer
         
         Mage::getConfig()->saveConfig('payment/mercadopago/sponsor_id',$sponsor_id);
         Mage::helper('mercadopago')->log("Sponsor saved", 'mercadopago.log', $sponsor_id);
+    }
+
+    protected function validateAccessToken() {
+        $accessToken = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+        if (!empty($accessToken)) {
+            if (!Mage::helper('mercadopago')->isValidAccessToken($accessToken)) {
+                Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Custom Checkout: Invalid access token'));
+            }
+        }
+    }
+
+    protected function validateClientCredentials() {
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        if (!empty($clientId) &&  !empty($clientSecret)) {
+            if (!Mage::helper('mercadopago')->isValidClientCredentials($clientId,$clientSecret)){
+                Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Classic Checkout: Invalid client id or client secret'));
+            }
+        }
     }
 }

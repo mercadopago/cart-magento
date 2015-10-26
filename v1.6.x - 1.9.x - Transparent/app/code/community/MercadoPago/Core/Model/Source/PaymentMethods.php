@@ -17,6 +17,8 @@
 
 class MercadoPago_Core_Model_Source_PaymentMethods extends Mage_Payment_Model_Method_Abstract
 {
+    const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
+
     public function toOptionArray()
     {
         $methods = array();
@@ -24,7 +26,7 @@ class MercadoPago_Core_Model_Source_PaymentMethods extends Mage_Payment_Model_Me
         //adiciona um valor vazio caso nao queria excluir nada
         $methods[] = array("value" => "", "label" => "");
 
-        $access_token = Mage::getStoreConfig('payment/mercadopago/access_token');
+        $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
         
         //verifico se as credenciais não são vazias, caso sejam não é possível obte-los
         if ($access_token != "") {

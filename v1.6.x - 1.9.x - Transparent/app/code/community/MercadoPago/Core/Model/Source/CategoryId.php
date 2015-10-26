@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * NOTICE OF LICENSE
@@ -13,8 +14,6 @@
  * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
-
 class MercadoPago_Core_Model_Source_CategoryId
     extends Mage_Payment_Model_Method_Abstract
 {
@@ -33,11 +32,12 @@ class MercadoPago_Core_Model_Source_CategoryId
             //force category others first
             if ($v['id'] == "others") {
                 $cat[0] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
-            }else {
+            } else {
                 $count++;
                 $cat[$count] = array('value' => $v['id'], 'label' => Mage::helper('mercadopago')->__($v['description']));
             }
-        }
+
+        };
 
         //force order by key
         ksort($cat);

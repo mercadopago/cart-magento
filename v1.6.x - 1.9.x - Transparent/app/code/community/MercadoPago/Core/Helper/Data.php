@@ -17,6 +17,12 @@
 class MercadoPago_Core_Helper_Data
     extends Mage_Payment_Helper_Data
 {
+
+    const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
+    const XML_PATH_PUBLIC_KEY = 'payment/mercadopago_custom_checkout/public_key';
+    const XML_PATH_CLIENT_ID = 'payment/mercadopago_standard/client_id';
+    const XML_PATH_CLIENT_SECRET = 'payment/mercadopago_standard/client_secret';
+
     public function log($message, $file = "mercadopago.log", $array = null)
     {
         //pega a configuração de log no admin, essa variavel vem como true por padrão
@@ -50,7 +56,7 @@ class MercadoPago_Core_Helper_Data
 
     }
 
-    public function validateAccessToken($accessToken)
+    public function isValidAccessToken($accessToken)
     {
         $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
         $response = $mp->get("/v1/payment_methods");
@@ -61,13 +67,15 @@ class MercadoPago_Core_Helper_Data
         return true;
     }
 
-    public function validateClientCredentials($clientId,$clientSecret) {
-        $mp = Mage::helper('mercadopago')->getApiInstance($clientId,$clientSecret);
+    public function isValidClientCredentials($clientId, $clientSecret)
+    {
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
         try {
             $mp->get_access_token();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
+
         return true;
     }
 

@@ -146,7 +146,6 @@ function defineInputs(){
         }
     }
 
-    clearOptions();
 
     //Show inputs
     showLogMercadoPago(data_inputs);

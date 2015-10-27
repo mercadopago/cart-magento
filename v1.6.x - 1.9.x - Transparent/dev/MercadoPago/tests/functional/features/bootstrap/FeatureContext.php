@@ -4,6 +4,7 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Exception\ExpectationException;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use MageTest\MagentoExtension\Context\MagentoContext;
@@ -152,12 +153,14 @@ class FeatureContext
      * @Then I should not see MercadoPago Custom available
      *
      */
-    public function iShouldNotSeeMercadopagoCustomAvailable() {
+    public function iShouldNotSeeMercadopagoCustomAvailable()
+    {
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
-        if ($this->findElement('#dt_method_mercadopago_custom')) {
-            return false;
+        if ($this->getSession()->getPage()->find('css','#dt_method_mercadopago_custom')) {
+            throw new ExpectationException('I saw payment method available',$this->getSession()->getDriver());
         }
-        return true;
+
+        return;
     }
 
     /**
@@ -176,9 +179,13 @@ class FeatureContext
      * @Then I should not see MercadoPago Standard available
      *
      */
-    public function iShouldNotSeeMercadopagoStandardAvailable() {
+    public function iShouldNotSeeMercadopagoStandardAvailable()
+    {
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
-        $element = $this->findElement('#dt_method_mercadopago_standard');
+        if ($this->getSession()->getPage()->find('css','#dt_method_mercadopago_standard')) {
+            throw new ExpectationException('I saw payment method available',$this->getSession()->getDriver());
+        }
+        return;
     }
 
     /**
@@ -314,7 +321,7 @@ class FeatureContext
             ))->save();
 
             $user->setRoleIds(array(1))
-            ->setRoleUserId($user->getUserId())
+                ->setRoleUserId($user->getUserId())
                 ->saveRelations();
         }
 
@@ -323,8 +330,7 @@ class FeatureContext
     /**
      * @Given Setting Config :arg1 is :arg2
      */
-    public
-    function settingConfig($arg1, $arg2)
+    public function settingConfig($arg1, $arg2)
     {
         $config = new Mage_Core_Model_Config();
         $config->saveConfig($arg1, $arg2, 'default', 0);
@@ -335,8 +341,7 @@ class FeatureContext
     /**
      * @Given /^I switch to the iframe "([^"]*)"$/
      */
-    public
-    function iSwitchToIframe($arg1 = null)
+    public function iSwitchToIframe($arg1 = null)
     {
         $this->getSession()->wait(20000);
         $this->getSession()->switchToIFrame($arg1);
@@ -345,8 +350,7 @@ class FeatureContext
     /**
      * @Given I switch to the site
      */
-    public
-    function iSwitchToSite()
+    public function iSwitchToSite()
     {
         $this->getSession()->wait(20000);
         $this->getSession()->switchToIFrame(null);
@@ -355,8 +359,7 @@ class FeatureContext
     /**
      * @When I fill the iframe fields
      */
-    public
-    function iFillTheIframeFields()
+    public function iFillTheIframeFields()
     {
         $page = $this->getSession()->getPage();
 
@@ -380,8 +383,7 @@ class FeatureContext
     /**
      * @Then I should be on :arg1
      */
-    public
-    function iShouldBeOn($arg1)
+    public function iShouldBeOn($arg1)
     {
         $session = $this->getSession();
         $session->wait(20000);
@@ -395,17 +397,17 @@ class FeatureContext
 
 
     /**
-     * @AfterFeature @MercadoPagoConfig
+     * @AfterScenario @Availability
      */
-    public
-    function resetConfigs()
+    public static function resetConfigs()
     {
-        $this->settingConfig('payment/mercadopago_standard/client_id', '446950613712741');
-        $this->settingConfig('payment/mercadopago_standard/client_secret', '0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv');
-        $this->settingConfig('payment/mercadopago_standard/active', '1');
-        $this->settingConfig('payment/mercadopago_custom_checkout/public_key', 'TEST - d5a3d71b - 6bd4 - 4bfc - a1f3 - 7ed77987d5aa');
-        $this->settingConfig('payment/mercadopago_standard/access_token', 'TEST - 446950613712741 - 091715 - 092a6109a25bb763aa94c61688ada0cd__LC_LA__ - 192627424');
-        $this->settingConfig('payment/mercadopago_standard/active', '1');
+        $obj = new FeatureContext();
+        $obj->settingConfig('payment/mercadopago_standard/client_id', '446950613712741');
+        $obj->settingConfig('payment/mercadopago_standard/client_secret', '0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv');
+        $obj->settingConfig('payment/mercadopago_standard/active', '1');
+        $obj->settingConfig('payment/mercadopago_custom_checkout/public_key', 'TEST-d5a3d71b-6bd4-4bfc-a1f3-7ed77987d5aa');
+        $obj->settingConfig('payment/mercadopago_custom_checkout/access_token', 'TEST-446950613712741-091715-092a6109a25bb763aa94c61688ada0cd__LC_LA__-192627424');
+        $obj->settingConfig('payment/mercadopago_custom/active', '1');
 
     }
 }

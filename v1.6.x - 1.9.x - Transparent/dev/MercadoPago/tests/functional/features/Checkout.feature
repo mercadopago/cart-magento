@@ -17,6 +17,24 @@ Scenario: See MercadoPago option as a payment method
 
   Then I should see MercadoPago Custom available
 
+  @frontend @Availability @StandardActive
+  Scenario: Not See MercadoPago option as a payment method when is not available
+    Given Setting Config "payment/mercadopago_standard/active" is "0"
+    And I am on page "blue-horizons-bracelets.html"
+    And I press ".add-to-cart-buttons .btn-cart" element
+    And I press ".btn-proceed-checkout" element
+
+    When I press "#onepage-guest-register-button" element
+
+    And I fill the billing address
+    And I select radio "billing:use_for_shipping_yes"
+    And I press "#billing-buttons-container .button" element
+
+    And I select shipping method
+    And I press "#shipping-method-buttons-container .button" element
+
+    Then I should not see MercadoPago Standard available
+
   @frontend @Availability @ClientId
   Scenario: Not See MercadoPago option as a payment method when is not available
     Given Setting Config "payment/mercadopago_standard/client_id" is " "
@@ -34,3 +52,75 @@ Scenario: See MercadoPago option as a payment method
     And I press "#shipping-method-buttons-container .button" element
 
     Then I should not see MercadoPago Standard available
+
+  @frontend @Availability @ClientSecret
+  Scenario: Not See MercadoPago option as a payment method when is not available
+    Given Setting Config "payment/mercadopago_standard/client_secret" is " "
+    And I am on page "blue-horizons-bracelets.html"
+    And I press ".add-to-cart-buttons .btn-cart" element
+    And I press ".btn-proceed-checkout" element
+
+    When I press "#onepage-guest-register-button" element
+
+    And I fill the billing address
+    And I select radio "billing:use_for_shipping_yes"
+    And I press "#billing-buttons-container .button" element
+
+    And I select shipping method
+    And I press "#shipping-method-buttons-container .button" element
+
+    Then I should not see MercadoPago Standard available
+
+  @frontend @Availability @PublicKey
+  Scenario: Not See MercadoPago option as a payment method when is not available
+    Given Setting Config "payment/mercadopago_custom_checkout/public_key" is " "
+    And I am on page "blue-horizons-bracelets.html"
+    And I press ".add-to-cart-buttons .btn-cart" element
+    And I press ".btn-proceed-checkout" element
+
+    When I press "#onepage-guest-register-button" element
+
+    And I fill the billing address
+    And I select radio "billing:use_for_shipping_yes"
+    And I press "#billing-buttons-container .button" element
+
+    And I select shipping method
+    And I press "#shipping-method-buttons-container .button" element
+
+    Then I should not see MercadoPago Custom available
+
+  @frontend @Availability @AccessToken
+  Scenario: Not See MercadoPago option as a payment method when is not available
+    Given Setting Config "payment/mercadopago_custom_checkout/access_token" is " "
+    And I am on page "blue-horizons-bracelets.html"
+    And I press ".add-to-cart-buttons .btn-cart" element
+    And I press ".btn-proceed-checkout" element
+
+    When I press "#onepage-guest-register-button" element
+
+    And I fill the billing address
+    And I select radio "billing:use_for_shipping_yes"
+    And I press "#billing-buttons-container .button" element
+
+    And I select shipping method
+    And I press "#shipping-method-buttons-container .button" element
+
+    Then I should not see MercadoPago Custom available
+
+  @frontend @Availability @CustomActive
+  Scenario: Not See MercadoPago option as a payment method when is not available
+    Given Setting Config "payment/mercadopago_custom/active" is "0"
+    And I am on page "blue-horizons-bracelets.html"
+    And I press ".add-to-cart-buttons .btn-cart" element
+    And I press ".btn-proceed-checkout" element
+
+    When I press "#onepage-guest-register-button" element
+
+    And I fill the billing address
+    And I select radio "billing:use_for_shipping_yes"
+    And I press "#billing-buttons-container .button" element
+
+    And I select shipping method
+    And I press "#shipping-method-buttons-container .button" element
+
+    Then I should not see MercadoPago Custom available

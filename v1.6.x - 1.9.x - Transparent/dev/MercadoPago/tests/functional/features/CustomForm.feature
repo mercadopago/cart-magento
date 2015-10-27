@@ -2,6 +2,7 @@ Feature: Validation of custom checkout form
 
   Background:
     Given User "test_user_2135227@testuser.com" "magento" exists
+    And Setting Config "general/locale/code" is "en_US"
     And I am logged in as "test_user_2135227@testuser.com" "magento"
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
@@ -12,6 +13,19 @@ Feature: Validation of custom checkout form
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_custom"
     And I press "#use_other_card_mp" element
+
+  @CheckoutCustomForm @CardED
+  Scenario: Validate card expiration date
+    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
+    And I select option field "cardExpirationMonth" with "2"
+    And I fill text field "cardholderName" with "APRO"
+    And I fill text field "docNumber" with "12345678"
+    And I fill text field "securityCode" with "123"
+    And I select option field "cardExpirationYear" with "2015"
+    And I select installment "1"
+
+    Then I should see "Month is invalid."
+    And I should see "Year is invalid."
 
   @CheckoutCustomForm @CardHN
   Scenario: Validate cardholder name
@@ -27,25 +41,8 @@ Feature: Validation of custom checkout form
 
     Then I should see "Card Holder Name is invalid."
 
-  @CheckoutCustomForm @CardED
-  Scenario: Validate card expiration date
-    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
-    And I select option field "cardExpirationMonth" with "2"
-    And I fill text field "cardholderName" with "APRO"
-    And I fill text field "docNumber" with "12345678"
-    And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2015"
-    And I select installment "1"
-
-    And I press "#payment-buttons-container .button" element
-
-    Then I should see "Month is invalid."
-    And I should see "Year is invalid."
-
   @CheckoutCustomForm @CardSC
   Scenario: Validate card security code
-    Given I am on checkout process
-    When I complete credit card information:
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "2"
     And I fill text field "cardholderName" with "APRO"
@@ -54,12 +51,10 @@ Feature: Validation of custom checkout form
     And I select option field "cardExpirationYear" with "2015"
     And I select installment "1"
 
-    Then I should see "Your credit card security code is invalid"
+    Then I should see "CVV is invalid"
 
   @CheckoutCustomForm @CardDN
   Scenario: Validate card Document number
-    Given I am on checkout process
-    When I complete credit card information:
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "2"
     And I fill text field "cardholderName" with "APRO"
@@ -67,6 +62,8 @@ Feature: Validation of custom checkout form
     And I fill text field "securityCode" with "12345"
     And I select option field "cardExpirationYear" with "2017"
     And I select installment "1"
+
+    And I press "#payment-buttons-container .button" element
 
     Then I should see "Document Number is invalid."
 
@@ -107,7 +104,7 @@ Feature: Validation of custom checkout form
 
     And I press "#payment-buttons-container .button" element
 
-    Then I should see "This is a required field"
+    Then I should see "Document Number is invalid."
 
 
 

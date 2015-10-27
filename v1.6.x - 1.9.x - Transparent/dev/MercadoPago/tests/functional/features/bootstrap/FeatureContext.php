@@ -156,8 +156,8 @@ class FeatureContext
     public function iShouldNotSeeMercadopagoCustomAvailable()
     {
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
-        if ($this->getSession()->getPage()->find('css','#dt_method_mercadopago_custom')) {
-            throw new ExpectationException('I saw payment method available',$this->getSession()->getDriver());
+        if ($this->getSession()->getPage()->find('css', '#dt_method_mercadopago_custom')) {
+            throw new ExpectationException('I saw payment method available', $this->getSession()->getDriver());
         }
 
         return;
@@ -182,9 +182,10 @@ class FeatureContext
     public function iShouldNotSeeMercadopagoStandardAvailable()
     {
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
-        if ($this->getSession()->getPage()->find('css','#dt_method_mercadopago_standard')) {
-            throw new ExpectationException('I saw payment method available',$this->getSession()->getDriver());
+        if ($this->getSession()->getPage()->find('css', '#dt_method_mercadopago_standard')) {
+            throw new ExpectationException('I saw payment method available', $this->getSession()->getDriver());
         }
+
         return;
     }
 
@@ -304,30 +305,6 @@ class FeatureContext
     }
 
     /**
-     * @Given Admin User :arg1 :arg2 exists
-     */
-    public function adminUserExists($arg1, $arg2)
-    {
-        $user = Mage::getModel('admin/user');
-        $user->loadByEmail($arg1);
-        if (!$user->getId()) {
-            $user->setData(array(
-                'username'  => 'admin',
-                'firstname' => 'Admin',
-                'lastname'  => 'Admin',
-                'email'     => 'admin@mail.com',
-                'password'  => 'Summa2015',
-                'is_active' => 1
-            ))->save();
-
-            $user->setRoleIds(array(1))
-                ->setRoleUserId($user->getUserId())
-                ->saveRelations();
-        }
-
-    }
-
-    /**
      * @Given Setting Config :arg1 is :arg2
      */
     public function settingConfig($arg1, $arg2)
@@ -335,7 +312,7 @@ class FeatureContext
         $config = new Mage_Core_Model_Config();
         $config->saveConfig($arg1, $arg2, 'default', 0);
 
-        Mage::app()->getCacheInstance()->cleanType('config');
+        Mage::app()->getCacheInstance()->flush();
     }
 
     /**
@@ -408,6 +385,25 @@ class FeatureContext
         $obj->settingConfig('payment/mercadopago_custom_checkout/public_key', 'TEST-d5a3d71b-6bd4-4bfc-a1f3-7ed77987d5aa');
         $obj->settingConfig('payment/mercadopago_custom_checkout/access_token', 'TEST-446950613712741-091715-092a6109a25bb763aa94c61688ada0cd__LC_LA__-192627424');
         $obj->settingConfig('payment/mercadopago_custom/active', '1');
+
+    }
+
+    /**
+     * @Then I should see alert :arg1
+     */
+    public function iShouldSeeAlert($arg1)
+    {
+        $script = " var isAlertPresent = false;
+                    window.alert = function(al, $){
+                        return function(msg) {
+                        isAlertPresent = true;
+                        al(msg);
+                    };
+                }(window.alert, window.jQuery);";
+        $this->getSession()->executeScript($script);
+        $this->getSession()->wait(20000, '(isAlertPresent == true)');
+        $message = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
+        echo $message;
 
     }
 }

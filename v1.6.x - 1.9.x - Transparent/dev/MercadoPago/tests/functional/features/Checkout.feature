@@ -36,8 +36,8 @@ Scenario: See MercadoPago option as a payment method
     Then I should not see MercadoPago Standard available
 
   @frontend @Availability @ClientId
-  Scenario: Not See MercadoPago option as a payment method when is not available
-    Given Setting Config "payment/mercadopago_standard/client_id" is " "
+  Scenario: Not See MercadoPago option as a payment method when is not client id
+    Given Setting Config "payment/mercadopago_standard/client_id" is ""
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element
@@ -54,8 +54,8 @@ Scenario: See MercadoPago option as a payment method
     Then I should not see MercadoPago Standard available
 
   @frontend @Availability @ClientSecret
-  Scenario: Not See MercadoPago option as a payment method when is not available
-    Given Setting Config "payment/mercadopago_standard/client_secret" is " "
+  Scenario: Not See MercadoPago option as a payment method when is not available client secret
+    Given Setting Config "payment/mercadopago_standard/client_secret" is ""
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element
@@ -72,8 +72,8 @@ Scenario: See MercadoPago option as a payment method
     Then I should not see MercadoPago Standard available
 
   @frontend @Availability @PublicKey
-  Scenario: Not See MercadoPago option as a payment method when is not available
-    Given Setting Config "payment/mercadopago_custom_checkout/public_key" is " "
+  Scenario: Not See MercadoPago option as a payment method when is not public key
+    Given Setting Config "payment/mercadopago_custom_checkout/public_key" is ""
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element
@@ -90,8 +90,8 @@ Scenario: See MercadoPago option as a payment method
     Then I should not see MercadoPago Custom available
 
   @frontend @Availability @AccessToken
-  Scenario: Not See MercadoPago option as a payment method when is not available
-    Given Setting Config "payment/mercadopago_custom_checkout/access_token" is " "
+  Scenario: Not See MercadoPago option as a payment method when is not access token
+    Given Setting Config "payment/mercadopago_custom_checkout/access_token" is ""
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element

@@ -7,6 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Exception\ExpectationException;
+use Behat\Mink\Exception\ElementNotFoundException;
 use MageTest\MagentoExtension\Context\MagentoContext;
 
 /**
@@ -239,15 +240,16 @@ class FeatureContext
     public function iShouldSee($arg1)
     {
         $actual = $this->getSession()->getPage()->getText();
-        $actual = preg_replace('/\s+/u', ' ', $actual);
-        $regex = '/' . preg_quote($arg1, '/') . '/ui';
-        $message = sprintf('The text "%s" was not found anywhere in the text of the current page.', $arg1);
+        $this->stringMatch($actual, $arg1);
+    }
 
-        if ((bool)preg_match($regex, $actual)) {
-            return;
-        }
-
-        throw new ExpectationException($message, $this->getSession()->getDriver());
+    /**
+     * @Then I should see html :arg1
+     */
+    public function iShouldSeeHtml($arg1)
+    {
+        $actual = $this->getSession()->getPage()->getHtml();
+        $this->stringMatch($actual, $arg1);
     }
 
     /**
@@ -441,6 +443,22 @@ class FeatureContext
         $product = Mage::getModel('catalog/product')->loadByAttribute('sku', $arg1);;
 
         $product->setPrice($arg2)->save();
+    }
+
+    /*
+     *  Search for particular string in text
+     * */
+    private function stringMatch($content, $string)
+    {
+        $actual = preg_replace('/\s+/u', ' ', $content);
+        $regex = '/' . preg_quote($string, '/') . '/ui';
+        $message = sprintf('The text "%s" was not found anywhere in the text of the current page.', $string);
+
+        if ((bool)preg_match($regex, $actual)) {
+            return;
+        }
+
+        throw new ExpectationException($message, $this->getSession()->getDriver());
     }
 
 }

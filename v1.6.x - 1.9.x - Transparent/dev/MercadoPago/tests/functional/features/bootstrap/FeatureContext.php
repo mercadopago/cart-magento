@@ -6,7 +6,7 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Mink\Exception\ElementNotFoundException;
+use Behat\Mink\Exception\ExpectationException;
 use MageTest\MagentoExtension\Context\MagentoContext;
 
 /**
@@ -247,7 +247,7 @@ class FeatureContext
             return;
         }
 
-        throw new ElementNotFoundException($this->getSession()->getDriver(), $message);
+        throw new ExpectationException($message, $this->getSession()->getDriver());
     }
 
     /**
@@ -335,6 +335,7 @@ class FeatureContext
     public function iSwitchToIframe($arg1 = null)
     {
         $this->getSession()->wait(20000);
+        $this->findElement('iframe[id=' . $arg1 . ']');
         $this->getSession()->switchToIFrame($arg1);
     }
 
@@ -380,10 +381,11 @@ class FeatureContext
         $session->wait(20000);
         $currentUrl = $session->getCurrentUrl();
 
-        if (strpos($currentUrl, $arg1))
+        if (strpos($currentUrl, $arg1)) {
             return;
+        }
 
-        throw new Exception($this->getSession()->getDriver(), 'Wrong url');
+        throw new ExpectationException('Wrong url', $this->getSession()->getDriver());
     }
 
     /**

@@ -27,7 +27,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     And I switch to the site
     Then I should be on "/mercadopago/success"
 
-  @STANDARD @TOTAL
+  @TOTAL
   Scenario: Check total displayed in iframe
     Given I switch to the iframe "checkout_mercadopago"
 

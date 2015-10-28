@@ -220,6 +220,20 @@ class FeatureContext
     }
 
     /**
+     * @When I wait for :secs seconds avoiding alert
+     */
+    public function iWaitForSecondsAvoidingAlert($secs)
+    {
+        $milliseconds = $secs * 1000;
+        try {
+            $this->getSession()->wait($milliseconds,'(0 === Ajax.activeRequestCount)');
+        } catch (Exception $e) {
+            $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+        }
+    }
+
+
+    /**
      * @Then I should see :arg1
      */
     public function iShouldSee($arg1)
@@ -404,5 +418,17 @@ class FeatureContext
         }
 
         throw new ExpectationException('I did not see alert message', $this->getSession()->getDriver());
+    }
+
+    /**
+     * @Then I should stay step :arg1
+     */
+    public function iShouldStayStep($arg1)
+    {
+        if ($this->findElement($arg1)->hasClass('active')) {
+            return;
+        }
+        throw new ExpectationException('I am not stay in '.$arg1, $this->getSession()->getDriver());
+
     }
 }

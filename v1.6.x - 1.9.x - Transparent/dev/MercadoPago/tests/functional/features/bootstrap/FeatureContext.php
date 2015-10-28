@@ -397,6 +397,7 @@ class FeatureContext
             $this->getSession()->wait(20000, false);
         } catch (Exception $e) {
             $msg = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
+            echo $msg;
             if ($msg == $arg1) {
                 return;
             }

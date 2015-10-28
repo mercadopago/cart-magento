@@ -150,33 +150,14 @@ class MercadoPago_Core_Model_Standard_Payment
         $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
         $customer = Mage::getSingleton('customer/session')->getCustomer();
-
         $payment = $order->getPayment();
-
         $arr = array();
 
         $arr['external_reference'] = $orderIncrementId;
         $arr['items'] = $this->getItems($order);
 
-        if ($order->getDiscountAmount() < 0){
-            $arr['items'][] = array(
-                "title"       => "Store discount coupon",
-                "description" => "Store discount coupon",
-                "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
-                "quantity"    => 1,
-                "unit_price"  => (float)$order->getDiscountAmount()
-            );
-        }
-        if ($order->getBaseTaxAmount() > 0){
-            $arr['items'][] = array(
-                "title"       => "Store taxes",
-                "description" => "Store taxes",
-                "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
-                "quantity"    => 1,
-                "unit_price"  => (float)$order->getBaseTaxAmount()
-            );
-        }
-
+        $this->calculateDiscountAmount($arr['items'], $order);
+        $this->calculateBaseTaxAmount($arr['items'], $order);
         $total_item = $this->getTotalItems($arr['items']);
         $total_item += (float)$order->getBaseShippingAmount();
 
@@ -286,7 +267,34 @@ class MercadoPago_Core_Model_Standard_Payment
             return false;
         }
 
-        return Mage::helper('mercadopago')->isValidClientCredentials($clientId,$clientSecret);
+        return Mage::helper('mercadopago')->isValidClientCredentials($clientId, $clientSecret);
 
     }
+
+    private function calculateDiscountAmount(&$arr, $order)
+    {
+        if ($order->getDiscountAmount() < 0) {
+            $arr[] = array(
+                "title"       => "Store discount coupon",
+                "description" => "Store discount coupon",
+                "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
+                "quantity"    => 1,
+                "unit_price"  => (float)$order->getDiscountAmount()
+            );
+        }
+    }
+
+    private function calculateBaseTaxAmount(&$arr, $order)
+    {
+        if ($order->getBaseTaxAmount() > 0) {
+            $arr[] = array(
+                "title"       => "Store taxes",
+                "description" => "Store taxes",
+                "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
+                "quantity"    => 1,
+                "unit_price"  => (float)$order->getBaseTaxAmount()
+            );
+        }
+    }
+
 }

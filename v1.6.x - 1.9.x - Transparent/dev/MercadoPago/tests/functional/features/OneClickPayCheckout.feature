@@ -28,8 +28,8 @@ Feature: Validation of custom checkout with one click pay
   @OCP @InvalidSC
   Scenario: See payment pending and credit card saved in Mercado Pago
     Given I select option field "cardId" with "144422268"
-    And I select option field "installments" with "1"
     And I fill text field "securityCodeOCP" with "aaa"
+    And I select option field "installments" with "1"
     And I press "#payment-buttons-container .button" element
 
     Then I should see alert "We could not process your payment in this moment. Please check the form data and retry later"

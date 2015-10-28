@@ -393,17 +393,15 @@ class FeatureContext
      */
     public function iShouldSeeAlert($arg1)
     {
-        $script = " var isAlertPresent = false;
-                    window.alert = function(al, $){
-                        return function(msg) {
-                        isAlertPresent = true;
-                        al(msg);
-                    };
-                }(window.alert, window.jQuery);";
-        $this->getSession()->executeScript($script);
-        $this->getSession()->wait(20000, '(isAlertPresent == true)');
-        $message = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
-        echo $message;
+        try {
+            $this->getSession()->wait(20000, false);
+        } catch (Exception $e) {
+            $msg = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
+            if ($msg == $arg1) {
+                return;
+            }
+        }
 
+        throw new ExpectationException('I did not see alert message', $this->getSession()->getDriver());
     }
 }

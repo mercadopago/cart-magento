@@ -12,14 +12,14 @@ Feature: Validation of custom checkout with one click pay
   And I press "#shipping-method-buttons-container .button" element
   And I select radio "p_method_mercadopago_custom"
 
-  @OCP @APRO
+  @OCP @OCPAPRO
   Scenario: See payment approved in Mercado Pago with OCP
     Given I select option field "cardId" with "144422268"
     And I select option field "installments" with "1"
     And I fill text field "securityCodeOCP" with "123"
-    And I press "payment-buttons-container.button" element
+    And I press "#payment-buttons-container .button" element
 
-    When I press "review-buttons-container .button" element
+    When I press "#review-buttons-container .button" element
     And I wait for "20" seconds
 
     Then I should see "Payment Status: approved"
@@ -33,3 +33,21 @@ Feature: Validation of custom checkout with one click pay
     And I press "#payment-buttons-container .button" element
 
     Then I should see alert "We could not process your payment in this moment. Please check the form data and retry later"
+
+  @OCP @OPCrequiredFields
+  Scenario: See payment approved in Mercado Pago with OCP
+    Given I select option field "cardId" with "144422268"
+    And I fill text field "securityCodeOCP" with "123"
+
+    When I press "#payment-buttons-container .button" element
+
+    Then I should see "Please select an option."
+
+  @OCP @OPCrequiredFields
+  Scenario: See payment approved in Mercado Pago with OCP
+    Given I select option field "cardId" with "144422268"
+    And I select option field "installments" with "1"
+
+    When I press "#payment-buttons-container .button" element
+
+    Then I should see "This is a required field"

@@ -2,9 +2,9 @@ Feature: Payment results in MercadoPago Standard Checkout
 
   Background:
     Given User "test_user_2135227@testuser.com" "magento" exists
-    And Setting Config "payment/mercadopago/sandbox_mode" is "1"
+    And Setting Config  "payment/mercadopago/sandbox_mode" is "1"
     And I am logged in as "test_user_2135227@testuser.com" "magento"
-    And I am on page "blue-horizons-bracelets.html"
+    And I am on page "swiss-movement-sports-watch.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element
     And I fill the billing address

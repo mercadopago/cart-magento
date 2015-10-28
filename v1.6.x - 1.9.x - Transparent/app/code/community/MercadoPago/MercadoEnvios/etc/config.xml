@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <MercadoPago_MercadoEnvios>
+            <version>0.1.0</version>
+        </MercadoPago_MercadoEnvios>
+    </modules>
+    <global>
+        <models>
+            <mercadopago_mercadoenvios>
+                <class>MercadoPago_MercadoEnvios_Model</class>
+            </mercadopago_mercadoenvios>
+        </models>
+        <sales>
+            <shipping>
+                <carriers>
+                    <mercadoenvios>
+                        <class>mercadopago_mercadoenvios/shipping_carrier_mercadoenvios</class>
+                    </mercadoenvios>
+                </carriers>
+            </shipping>
+        </sales>
+        <blocks>
+            <mercadopago_mercadoenvios>
+                <class>MercadoPago_MercadoEnvios_Block</class>
+            </mercadopago_mercadoenvios>
+        </blocks>
+        <helpers>
+            <mercadopago_mercadoenvios>
+                <class>MercadoPago_MercadoEnvios_Helper</class>
+            </mercadopago_mercadoenvios>
+        </helpers>
+    </global>
+    <default>
+        <carriers>
+            <mercadoenvios>
+                <active>1</active>
+                <sallowspecific>0</sallowspecific>
+                <model>mercadopago_mercadoenvios/shipping_carrier_mercadoenvios</model>
+                <name>MercadoEnvios</name>
+                <title>MercadoEnvios</title>
+                <specificerrmsg>This shipping method is currently unavailable.</specificerrmsg>
+            </mercadoenvios>
+        </carriers>
+    </default>
+</config>

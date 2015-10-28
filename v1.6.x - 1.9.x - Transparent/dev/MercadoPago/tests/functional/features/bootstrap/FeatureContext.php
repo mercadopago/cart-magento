@@ -4,8 +4,8 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Exception\ExpectationException;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use MageTest\MagentoExtension\Context\MagentoContext;
 
@@ -239,7 +239,9 @@ class FeatureContext
     public function iShouldSee($arg1)
     {
         $actual = $this->getSession()->getPage()->getText();
-        $this->stringMatch($actual, $arg1);
+        if (!$this->_stringMatch($actual, $arg1)) {
+            throw new ExpectationException('Element'. $arg1 .' not found', $this->getSession()->getDriver());
+        }
     }
 
     /**
@@ -248,8 +250,22 @@ class FeatureContext
     public function iShouldSeeHtml($arg1)
     {
         $actual = $this->getSession()->getPage()->getHtml();
-        $this->stringMatch($actual, $arg1);
+        if (!$this->_stringMatch($actual, $arg1)){
+            throw new ExpectationException('Element'. $arg1 .' not found', $this->getSession()->getDriver());
+        }
     }
+
+    /**
+     * @Then I should not see :arg1
+     */
+    public function iShouldNotSee($arg1)
+    {
+        $actual = $this->getSession()->getPage()->getHtml();
+        if ($this->_stringMatch($actual, $arg1)){
+            throw new ExpectationException('Element'. $arg1 .' found', $this->getSession()->getDriver());
+        }
+    }
+
 
     /**
      * @Given I am logged in as :arg1 :arg2
@@ -271,27 +287,6 @@ class FeatureContext
             $submit->click();
             $this->findElement('div.welcome-msg');
 
-        }
-    }
-
-    /**
-     * @Given I am admin logged in as :arg1 :arg2
-     */
-    public function iAmAdminLoggedInAs($arg1, $arg2)
-    {
-        $session = $this->getSession();
-
-        $session->visit($this->locatePath('admin'));
-
-        $login = $this->findElement('#username');
-        $pwd = $this->findElement('login');
-        if ($login && $pwd) {
-            $email = $arg1;
-            $password = $arg2;
-            $login->setValue($email);
-            $pwd->setValue($password);
-            $this->iPressInputElement('form-button');
-            $this->findElement('body. adminhtml-dashboard-index');
         }
     }
 
@@ -390,6 +385,50 @@ class FeatureContext
     }
 
     /**
+     * @Given Product with sku :arg1 has a price of :arg2
+     */
+    public function productWithSkuHasAPriceOf($arg1, $arg2)
+    {
+        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+        $product = Mage::getModel('catalog/product')->loadByAttribute('sku', $arg1);;
+
+        $product->setPrice($arg2)->save();
+    }
+
+    /*
+     *  Search for particular string in text
+     * */
+    protected function _stringMatch($content, $string)
+    {
+        $actual = preg_replace('/\s+/u', ' ', $content);
+        $regex = '/' . preg_quote($string, '/') . '/ui';
+
+        return ((bool)preg_match($regex, $actual));
+
+    }
+
+    /**
+     * @Given I am admin logged in as :arg1 :arg2
+     */
+    public function iAmAdminLoggedInAs($arg1, $arg2)
+    {
+        $session = $this->getSession();
+
+        $session->visit($this->locatePath('admin'));
+
+        $login = $this->findElement('#username');
+        $pwd = $this->findElement('#login');
+        if ($login && $pwd) {
+            $email = $arg1;
+            $password = $arg2;
+            $login->setValue($email);
+            $pwd->setValue($password);
+            $this->iPressInputElement('.form-button');
+            $this->findElement('.adminhtml-dashboard-index');
+        }
+    }
+
+    /**
      * @AfterScenario @Availability
      */
     public static function resetConfigs()
@@ -433,31 +472,4 @@ class FeatureContext
         throw new ExpectationException('I am not stay in '.$arg1, $this->getSession()->getDriver());
 
     }
-    /**
-     * @Given Product with sku :arg1 has a price of :arg2
-     */
-    public function productWithSkuHasAPriceOf($arg1, $arg2)
-    {
-        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
-        $product = Mage::getModel('catalog/product')->loadByAttribute('sku', $arg1);;
-
-        $product->setPrice($arg2)->save();
-    }
-
-    /*
-     *  Search for particular string in text
-     * */
-    private function stringMatch($content, $string)
-    {
-        $actual = preg_replace('/\s+/u', ' ', $content);
-        $regex = '/' . preg_quote($string, '/') . '/ui';
-        $message = sprintf('The text "%s" was not found anywhere in the text of the current page.', $string);
-
-        if ((bool)preg_match($regex, $actual)) {
-            return;
-        }
-
-        throw new ExpectationException($message, $this->getSession()->getDriver());
-    }
-
 }

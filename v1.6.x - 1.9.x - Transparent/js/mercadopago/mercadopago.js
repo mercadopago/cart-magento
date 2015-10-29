@@ -314,6 +314,11 @@ function loadFilesMP() {
                             showLogMercadoPago("Response amount: ");
                             showLogMercadoPago(response);
                             
+                            //case api return string in object
+                            if(typeof response == 'string'){
+                                response = $.parseJSON(response)
+                            }
+                            
                             //atualiza valor no input 
                             $form_custom_payment.find(".amount").attr("value", response.amount);
                             

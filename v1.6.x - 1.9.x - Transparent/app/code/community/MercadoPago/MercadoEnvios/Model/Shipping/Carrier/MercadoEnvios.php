@@ -20,16 +20,16 @@
  *
  * @category    Mage
  * @package     Mage_Usa
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
- * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright   Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 /**
  * UPS shipping implementation
  *
- * @category   Mage
- * @package    Mage_Usa
+ * @category    Mage
+ * @package     Mage_Usa
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
@@ -42,28 +42,31 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
      *
      * @var string
      */
-    const CODE = 'mercadoenvios';
+    protected $_code = 'mercadoenvios';
+    protected $_methods;
 
 
     /**
      * Collect and get rates
      *
      * @param Mage_Shipping_Model_Rate_Request $request
+     *
      * @return Mage_Shipping_Model_Rate_Result|bool|null
      */
 
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
-        if (!$this->getConfigFlag($this->_activeFlag)) {
+        if (!$this->getConfigFlag('active')) {
             return false;
         }
 
-        $this->setRequest($request);
-
-        $this->_result = $this->_getQuotes();
-        $this->_updateFreeMethodQuote($request);
-
-        return $this->getResult();
+        /** @var Mage_Shipping_Model_Rate_Result $result */
+        $result = Mage::getModel('shipping/rate_result');
+        foreach ($this->getAllowedMethods() as $methodId=>$methodName) {
+            $rate = $this->_getRate($methodId);
+            $result->append($rate);
+        }
+        return $result;
     }
 
     /**
@@ -73,27 +76,85 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
      */
     public function getAllowedMethods()
     {
-         $allowed = explode(',', $this->getConfigData('allowed_methods'));
-         $arr = array();
-         $isByCode = $this->getConfigData('type') == 'UPS_XML';
-         foreach ($allowed as $k) {
-             $arr[$k] = $isByCode ? $this->getShipmentByCode($k) : $this->getCode('method', $k);
-         }
-         return $arr;
+        $methods = $this->getDataAllowedMethods();
+        $allowedMethods =  [];
+        foreach ($methods as $method) {
+            $allowedMethods[$method['shipping_method_id']] = $method['name'];
+        }
+        return $allowedMethods;
     }
 
-    protected function _getStandardRate()
+    protected function getDataAllowedMethods() {
+        if (empty($this->_methods)) {
+            $quote = $this->_getQuote();
+
+            $shippingAddress = $quote->getShippingAddress();
+            if (empty($shippingAddress)) {
+                return null;
+            }
+            $postcode = $shippingAddress->getPostcode();
+
+            //seta sdk php mercadopago
+            $client_id = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+            $client_secret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+            $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
+
+            $params = array(
+                "dimensions" => "30x30x30,500",
+                "zip_code" => $postcode,
+                "item_price"=>"100.58",
+//            "free_method" => "73328" // optional
+            );
+
+            $response = $mp->get("/shipping_options", $params);
+            if ($response['status'] == 200) {
+                $this->_methods = $response['response']['options'];
+            }
+         }
+        return $this->_methods;
+    }
+
+    public function getDataMethod($methodId){
+        $methods = $this->getDataAllowedMethods();
+        if (!empty($methods)) {
+            foreach ($methods as $method) {
+                if ($method['shipping_method_id'] == $methodId){
+                    return new Varien_Object($method);
+                }
+            }
+        }
+        new Varien_Object();
+    }
+
+    protected function _getRate($methodId)
     {
         /** @var Mage_Shipping_Model_Rate_Result_Method $rate */
         $rate = Mage::getModel('shipping/rate_result_method');
 
+        $dataMethod = $this->getDataMethod($methodId);
         $rate->setCarrier($this->_code);
         $rate->setCarrierTitle($this->getConfigData('title'));
-        $rate->setMethod('large');
-        $rate->setMethodTitle('Standard delivery');
-        $rate->setPrice(1.23);
-        $rate->setCost(0);
+        $rate->setMethod($methodId);
+        $rate->setMethodTitle($dataMethod->getName());
+        $rate->setPrice($dataMethod->getCost());
+        $rate->setCost($dataMethod->getListCost());
 
         return $rate;
     }
+
+
+    /**
+     * @return Mage_Sales_Model_Quote
+     */
+    protected function _getQuote()
+    {
+        if (Mage::app()->getStore()->isAdmin()) {
+            $quote = Mage::getSingleton('adminhtml/session_quote')->getQuote();
+        } else {
+            $quote = Mage::getModel('checkout/cart')->getQuote();
+        }
+
+        return $quote;
+    }
+
 }

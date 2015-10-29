@@ -5,8 +5,8 @@
         <carriers>
             <groups>
                 <mercadoenvios translate="label">
-                    <label>Carrier Name</label>
-                    <sort_order>13</sort_order>
+                    <label>MercadoEnvíos</label>
+                    <sort_order>70</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>

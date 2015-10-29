@@ -35,7 +35,7 @@
         <carriers>
             <mercadoenvios>
                 <active>1</active>
-                <title>JAJAJAJAJA</title>
+                <title>MercadoEnvíos</title>
                 <model>MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios</model>
                 <sort_order>10</sort_order>
                 <sallowspecific>0</sallowspecific>

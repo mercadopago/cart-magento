@@ -220,6 +220,15 @@ class FeatureContext
     }
 
     /**
+     * @When I wait for :secs seconds with :cond
+     */
+    public function iWaitForSecondsWithCondition($secs,$condition)
+    {
+        $milliseconds = $secs * 1000;
+        $this->getSession()->wait($milliseconds,$condition);
+    }
+
+    /**
      * @Then I should see :arg1
      */
     public function iShouldSee($arg1)
@@ -403,5 +412,27 @@ class FeatureContext
         }
 
         throw new ExpectationException('I did not see alert message', $this->getSession()->getDriver());
+    }
+
+    /**
+     * @Then I should find element :arg1
+     */
+    public function iShouldFindElement($arg1)
+    {
+        $this->findElement($arg1);
+    }
+
+    /**
+     * @Then I should see element :arg1 with text :arg2
+     */
+    public function iShouldSeeElementWithText($arg1, $arg2)
+    {
+        $elements = $this->getSession()->getPage()->findAll('css', $arg1);
+        foreach ($elements as $element) {
+            if (strtolower($element->getText()) == strtolower($arg2)) {
+                return;
+            }
+        }
+        throw new ExpectationException('Element with text ' . $arg2 . ' not found', $this->getSession()->getDriver());
     }
 }

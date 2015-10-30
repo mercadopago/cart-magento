@@ -92,7 +92,7 @@ $customer = $this->getCustomerAndCards();
                     <li id="expiration_date__mp">
                         <div id="box_month">
                             <label for="cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
-                            <select id="cardExpirationMonth" data-checkout="cardExpirationMonth" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#expiration_date__mp">
+                            <select id="cardExpirationMonth" data-checkout="cardExpirationMonth" class="mp-validate-cc-exp" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#expiration_date__mp">
                                 <?php foreach ($this->getCcMonths() as $m => $v): ?>
                                     <option value="<?php echo $m ? $m : ''; ?>"><?php echo $v; ?></option>
                                 <?php endforeach ?>

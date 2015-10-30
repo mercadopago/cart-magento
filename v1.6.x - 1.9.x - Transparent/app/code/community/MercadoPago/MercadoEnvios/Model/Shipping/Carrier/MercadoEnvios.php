@@ -62,10 +62,11 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
         /** @var Mage_Shipping_Model_Rate_Result $result */
         $result = Mage::getModel('shipping/rate_result');
-        foreach ($this->getAllowedMethods() as $methodId=>$methodName) {
+        foreach ($this->getAllowedMethods() as $methodId => $methodName) {
             $rate = $this->_getRate($methodId);
             $result->append($rate);
         }
+
         return $result;
     }
 
@@ -77,14 +78,16 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
     public function getAllowedMethods()
     {
         $methods = $this->getDataAllowedMethods();
-        $allowedMethods =  [];
+        $allowedMethods = [];
         foreach ($methods as $method) {
             $allowedMethods[$method['shipping_method_id']] = $method['name'];
         }
+
         return $allowedMethods;
     }
 
-    protected function getDataAllowedMethods() {
+    protected function getDataAllowedMethods()
+    {
         if (empty($this->_methods)) {
             $quote = $this->_getQuote();
 
@@ -100,23 +103,24 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
             $params = array(
                 "dimensions" => "30x30x30,500",
-                "zip_code" => $postcode,
-                "item_price"=>"100.58",
+                "zip_code"   => $postcode,
 //            "free_method" => "73328" // optional
             );
             $response = $mp->get("/shipping_options", $params);
             if ($response['status'] == 200) {
                 $this->_methods = $response['response']['options'];
             }
-         }
+        }
+
         return $this->_methods;
     }
 
-    public function getDataMethod($methodId){
+    public function getDataMethod($methodId)
+    {
         $methods = $this->getDataAllowedMethods();
         if (!empty($methods)) {
             foreach ($methods as $method) {
-                if ($method['shipping_method_id'] == $methodId){
+                if ($method['shipping_method_id'] == $methodId) {
                     return new Varien_Object($method);
                 }
             }
@@ -135,14 +139,15 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         $estimatedDate = $this->_getEstimatedDate($dataMethod->getEstimatedDeliveryTime());
         $rate->setCarrierTitle($this->getConfigData('title'));
         $rate->setMethod($methodId);
-        $rate->setMethodTitle($dataMethod->getName().' '.Mage::helper('mercadopago')->__('(estimated date %s)',$estimatedDate));
+        $rate->setMethodTitle($dataMethod->getName() . ' ' . Mage::helper('mercadopago')->__('(estimated date %s)', $estimatedDate));
         $rate->setPrice($dataMethod->getCost());
         $rate->setCost($dataMethod->getListCost());
 
         return $rate;
     }
 
-    protected function _getEstimatedDate($dataTime) {
+    protected function _getEstimatedDate($dataTime)
+    {
         $current = new Zend_Date();
         $current->setTime(0);
         $nextNotificationDate = $current->add($dataTime['shipping'], Zend_Date::HOUR);

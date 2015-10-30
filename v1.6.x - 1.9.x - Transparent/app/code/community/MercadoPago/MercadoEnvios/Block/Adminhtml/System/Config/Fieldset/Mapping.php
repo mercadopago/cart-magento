@@ -4,8 +4,6 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Mapping
         extends Mage_Adminhtml_Block_System_Config_Form_Field_Array_Abstract
 {
 
-    const XML_PATH_STANDARD_ACTIVE = 'payment/mercadopago_standard/active';
-
     public function __construct()
     {
         $this->addColumn('magento', array(

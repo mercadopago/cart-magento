@@ -156,8 +156,8 @@ class MercadoPago_Core_Model_Standard_Payment
         $arr['external_reference'] = $orderIncrementId;
         $arr['items'] = $this->getItems($order);
 
-        $this->calculateDiscountAmount($arr['items'], $order);
-        $this->calculateBaseTaxAmount($arr['items'], $order);
+        $this->_calculateDiscountAmount($arr['items'], $order);
+        $this->_calculateBaseTaxAmount($arr['items'], $order);
         $total_item = $this->getTotalItems($arr['items']);
         $total_item += (float)$order->getBaseShippingAmount();
 
@@ -271,7 +271,7 @@ class MercadoPago_Core_Model_Standard_Payment
 
     }
 
-    private function calculateDiscountAmount(&$arr, $order)
+    protected function _calculateDiscountAmount(&$arr, $order)
     {
         if ($order->getDiscountAmount() < 0) {
             $arr[] = array(
@@ -284,7 +284,7 @@ class MercadoPago_Core_Model_Standard_Payment
         }
     }
 
-    private function calculateBaseTaxAmount(&$arr, $order)
+    protected function _calculateBaseTaxAmount(&$arr, $order)
     {
         if ($order->getBaseTaxAmount() > 0) {
             $arr[] = array(

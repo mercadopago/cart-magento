@@ -6,12 +6,12 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Mapping
 
     public function __construct()
     {
-        $this->addColumn('magento', array(
+        $this->addColumn('mercadoenvios', array(
             'label' => Mage::helper('adminhtml')->__('MercadoEnvíos'),
             'style' => 'width:120px',
         ));
-        $this->addColumn('mailchimp', array(
-            'label' => Mage::helper('adminhtml')->__('Magento Customer'),
+        $this->addColumn('magentoproduct', array(
+            'label' => Mage::helper('adminhtml')->__('Magento Product Attribute'),
             'style' => 'width:120px',
         ));
         $this->setTemplate('mercadopago/array_dropdown.phtml');

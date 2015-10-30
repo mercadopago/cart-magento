@@ -414,6 +414,12 @@ class FeatureContext
     {
         $session = $this->getSession();
 
+        //if already logged in
+        $currentUrl = $session->getCurrentUrl();
+        if (strpos($currentUrl, 'dashboard')) {
+            return;
+        }
+
         $session->visit($this->locatePath('admin'));
 
         $login = $this->findElement('#username');
@@ -472,4 +478,17 @@ class FeatureContext
         throw new ExpectationException('I am not stay in '.$arg1, $this->getSession()->getDriver());
 
     }
+
+    /**
+     * @Given I open :arg1 configuration
+     */
+    public function iOpenConfiguration($arg1)
+    {
+        $element = $this->findElement('#' . $arg1. '-head');
+        if ($element->hasClass('open')) {
+            return;
+        }
+        $this->iPressInputElement('#' . $arg1. '-head');
+    }
+
 }

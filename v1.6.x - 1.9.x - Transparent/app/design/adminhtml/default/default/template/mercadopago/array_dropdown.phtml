@@ -24,14 +24,14 @@ foreach ($this->getArrayRows() as $_rowId => $_row) {
                         <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $ocaOption ?>][MagentoCode]">
                             <?php foreach($magentoCode as $option):?>
                                 <option value="<?php echo $option->getAttributeCode() ?>" <?php echo ($prevValues[$key]['MagentoCode'] == $option->getAttributeCode()) ? "selected='selected'" : "" ?>><?php echo $option->getFrontendLabel() ?></option>
-                            <? endforeach; ?>
+                            <?php endforeach; ?>
                         </select>
                     </td>
                     <td>
                         <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $ocaOption ?>][OcaCode]">
                             <?php foreach($ocaCode as $option):?>
                                 <option value="<?php echo $option ?>" <?php echo ($prevValues[$key]['OcaCode'] == $option) ? "selected='selected'" : '' ?>><?php echo $option ?></option>
-                            <? endforeach; ?>
+                            <?php endforeach; ?>
                         </select>
                     </td>
             </tr>

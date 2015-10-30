@@ -50,6 +50,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
      *
      * @param Mage_Shipping_Model_Rate_Request $request
      * @return Mage_Shipping_Model_Rate_Result|bool|null
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
 
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)

@@ -10,7 +10,7 @@ class MercadoPago_MercadoEnvios_Model_Adminhtml_Attribute_Validation_Mapping
         $magentoCodes = [];
         $ocaCodes = [];
 
-        foreach ($mappingValues as $key => $value) {
+        foreach ($mappingValues as $value) {
             if (in_array($value['MagentoCode'], $magentoCodes)) {
                 Mage::throwException(Mage::helper('mercadopago')->__("Cannot repeat Magento Product size attributes"));
             }

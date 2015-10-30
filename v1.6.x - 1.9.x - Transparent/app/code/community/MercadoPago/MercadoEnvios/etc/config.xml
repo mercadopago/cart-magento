@@ -15,7 +15,7 @@
             <shipping>
                 <carriers>
                     <mercadoenvios>
-                        <class>mercadopago_mercadoenvios/shipping_carrier_mercadoenvios</class>
+                        <class>mercadopago_mercadoenvios/shipping_carrier_mercadoEnvios</class>
                     </mercadoenvios>
                 </carriers>
             </shipping>
@@ -36,7 +36,7 @@
             <mercadoenvios>
                 <active>1</active>
                 <sallowspecific>0</sallowspecific>
-                <model>mercadopago_mercadoenvios/shipping_carrier_mercadoenvios</model>
+                <model>mercadopago_mercadoenvios/shipping_carrier_mercadoEnvios</model>
                 <name>MercadoEnvios</name>
                 <title>MercadoEnvios</title>
                 <specificerrmsg>This shipping method is currently unavailable.</specificerrmsg>

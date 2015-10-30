@@ -94,7 +94,6 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
             }
             $postcode = $shippingAddress->getPostcode();
 
-            //seta sdk php mercadopago
             $client_id = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
             $client_secret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
             $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
@@ -105,7 +104,6 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 "item_price"=>"100.58",
 //            "free_method" => "73328" // optional
             );
-
             $response = $mp->get("/shipping_options", $params);
             if ($response['status'] == 200) {
                 $this->_methods = $response['response']['options'];
@@ -133,13 +131,23 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
         $dataMethod = $this->getDataMethod($methodId);
         $rate->setCarrier($this->_code);
+
+        $estimatedDate = $this->_getEstimatedDate($dataMethod->getEstimatedDeliveryTime());
         $rate->setCarrierTitle($this->getConfigData('title'));
         $rate->setMethod($methodId);
-        $rate->setMethodTitle($dataMethod->getName());
+        $rate->setMethodTitle($dataMethod->getName().' '.Mage::helper('mercadopago')->__('(estimated date %s)',$estimatedDate));
         $rate->setPrice($dataMethod->getCost());
         $rate->setCost($dataMethod->getListCost());
 
         return $rate;
+    }
+
+    protected function _getEstimatedDate($dataTime) {
+        $current = new Zend_Date();
+        $current->setTime(0);
+        $nextNotificationDate = $current->add($dataTime['shipping'], Zend_Date::HOUR);
+
+        return Mage::helper('core')->formatDate($nextNotificationDate);
     }
 
 

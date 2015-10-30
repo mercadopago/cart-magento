@@ -18,16 +18,22 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
   @MercadoEnvios @ShippingCostEstimation @availability
   Scenario: Shipping methods are availables
     When I am on page "checkout/cart/"
+    And I select option field "region_id" with "1"
+    And I fill text field "city" with "test city"
+    And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
-    Then I should find element "#s_method_mercadoenvios_standard"
-    And I should find element "#s_method_mercadoenvios_priority"
+    Then I should find element "#s_method_mercadoenvios_73328"
+    And I should find element "#s_method_mercadoenvios_73330"
 
 
   @MercadoEnvios @ShippingCostEstimation @estimatedDays
   Scenario: Show estimated days
     When I am on page "checkout/cart/"
+    And I select option field "region_id" with "1"
+    And I fill text field "city" with "test city"
+    And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
-    Then I should find element "#mercadoenvios_standard_days"
-    And I should find element "#mercadoenvios_priority_days"
+    Then I should find element "#s_method_mercadoenvios_73328"
+    And I should find element "#s_method_mercadoenvios_73330"

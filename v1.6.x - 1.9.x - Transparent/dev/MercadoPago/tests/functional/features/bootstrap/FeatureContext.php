@@ -4,8 +4,8 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Exception\ExpectationException;
 use Behat\Behat\Tester\Exception\PendingException;
+use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use MageTest\MagentoExtension\Context\MagentoContext;
 
@@ -239,15 +239,16 @@ class FeatureContext
     public function iShouldSee($arg1)
     {
         $actual = $this->getSession()->getPage()->getText();
-        $actual = preg_replace('/\s+/u', ' ', $actual);
-        $regex = '/' . preg_quote($arg1, '/') . '/ui';
-        $message = sprintf('The text "%s" was not found anywhere in the text of the current page.', $arg1);
+        $this->stringMatch($actual, $arg1);
+    }
 
-        if ((bool)preg_match($regex, $actual)) {
-            return;
-        }
-
-        throw new ElementNotFoundException($this->getSession()->getDriver(), $message);
+    /**
+     * @Then I should see html :arg1
+     */
+    public function iShouldSeeHtml($arg1)
+    {
+        $actual = $this->getSession()->getPage()->getHtml();
+        $this->stringMatch($actual, $arg1);
     }
 
     /**
@@ -335,6 +336,7 @@ class FeatureContext
     public function iSwitchToIframe($arg1 = null)
     {
         $this->getSession()->wait(20000);
+        $this->findElement('iframe[id=' . $arg1 . ']');
         $this->getSession()->switchToIFrame($arg1);
     }
 
@@ -380,12 +382,12 @@ class FeatureContext
         $session->wait(20000);
         $currentUrl = $session->getCurrentUrl();
 
-        if (strpos($currentUrl, $arg1))
+        if (strpos($currentUrl, $arg1)) {
             return;
+        }
 
-        throw new Exception($this->getSession()->getDriver(), 'Wrong url');
+        throw new ExpectationException('Wrong url', $this->getSession()->getDriver());
     }
-
 
     /**
      * @AfterScenario @Availability
@@ -431,4 +433,31 @@ class FeatureContext
         throw new ExpectationException('I am not stay in '.$arg1, $this->getSession()->getDriver());
 
     }
+    /**
+     * @Given Product with sku :arg1 has a price of :arg2
+     */
+    public function productWithSkuHasAPriceOf($arg1, $arg2)
+    {
+        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+        $product = Mage::getModel('catalog/product')->loadByAttribute('sku', $arg1);;
+
+        $product->setPrice($arg2)->save();
+    }
+
+    /*
+     *  Search for particular string in text
+     * */
+    private function stringMatch($content, $string)
+    {
+        $actual = preg_replace('/\s+/u', ' ', $content);
+        $regex = '/' . preg_quote($string, '/') . '/ui';
+        $message = sprintf('The text "%s" was not found anywhere in the text of the current page.', $string);
+
+        if ((bool)preg_match($regex, $actual)) {
+            return;
+        }
+
+        throw new ExpectationException($message, $this->getSession()->getDriver());
+    }
+
 }

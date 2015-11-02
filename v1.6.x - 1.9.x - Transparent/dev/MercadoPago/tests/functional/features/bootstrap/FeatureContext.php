@@ -115,15 +115,18 @@ class FeatureContext
     }
 
     /**
-     * @When I select shipping method
+     * @When I select shipping method :arg1
      */
-    public function iSelectShippingMethod()
+    public function iSelectShippingMethod($method = null)
     {
         $page = $this->getSession()->getPage();
 
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $page->fillField('shipping_method', 'flatrate_flatrate');
-        $page->findById('s_method_flatrate_flatrate')->press();
+        if (empty($method)) {
+            $method = 's_method_flatrate_flatrate';
+        }
+        $page->findById($method)->press();
     }
 
     /**
@@ -435,4 +438,18 @@ class FeatureContext
         }
         throw new ExpectationException('Element with text ' . $arg2 . ' not found', $this->getSession()->getDriver());
     }
+
+    /**
+     * @Then Element :arg1 should has :arg2 children :arg3 elements
+     */
+    public function elementShouldHasChildrenElements($element,$children,$type) {
+        $element = $this->findElement($element);
+        $elements = $element->findAll('css',$type);
+        $childrenQty = count($elements);
+        if ($childrenQty != $children) {
+            throw new ExpectationException('Element has ' . $childrenQty, $this->getSession()->getDriver());
+        }
+
+    }
+
 }

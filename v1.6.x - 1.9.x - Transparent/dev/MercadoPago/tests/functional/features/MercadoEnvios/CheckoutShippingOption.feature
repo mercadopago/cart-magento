@@ -15,3 +15,11 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     Then I should find element "#s_method_mercadoenvios_73328"
     And I should find element "#s_method_mercadoenvios_73330"
 
+  @MercadoEnvios @CheckoutShippingMethods @RestrictPaymentMethod
+  Scenario: the only payment method available should be MercadoPago Classic
+    When I select shipping method "s_method_mercadoenvios_73328"
+    And I press "#shipping-method-buttons-container .button" element
+    And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
+    Then I should find element "#dt_method_mercadopago_standard"
+    And Element "#co-payment-form dl.sp-methods" should has "1" children "dt" elements
+

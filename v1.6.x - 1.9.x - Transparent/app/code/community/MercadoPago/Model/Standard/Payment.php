@@ -144,7 +144,8 @@ class MercadoPago_Model_Standard_Payment extends Mage_Payment_Model_Method_Abstr
 			);
 		
 			//faz uma soma dos itens para depois verificar com o valor total
-			$total_item += (float) number_format($produto->getFinalPrice(), 2, '.', '');
+			//$total_item += (float) number_format($produto->getFinalPrice(), 2, '.', '');
+			$total_item += (float) (number_format($produto->getFinalPrice(), 2, '.', '') * (int) number_format($item->getQtyOrdered(), 0, '.', ''));
 		}
 		
 		//pega valor total da compra

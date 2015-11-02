@@ -30,6 +30,17 @@
                 <class>MercadoPago_MercadoEnvios_Helper</class>
             </mercadopago_mercadoenvios>
         </helpers>
+        <events>
+            <payment_method_is_active>
+                <observers>
+                    <paymentfilter_payment_method_is_active>
+                        <type>singleton</type>
+                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <method>filterActivePaymentMethods</method>
+                    </paymentfilter_payment_method_is_active>
+                </observers>
+            </payment_method_is_active>
+        </events>
     </global>
     <default>
         <carriers>

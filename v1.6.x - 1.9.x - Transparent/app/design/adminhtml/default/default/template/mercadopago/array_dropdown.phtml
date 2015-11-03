@@ -2,7 +2,6 @@
 $_htmlId = $this->getHtmlId() ? $this->getHtmlId() : '_' . uniqid();
 
 $magentoCode = Mage::getResourceModel('catalog/product_attribute_collection')
-                ->addFieldToFilter('is_user_defined', 1)
                 ->load();
 
 $ocaCode = ['length','width','height', 'weight'];

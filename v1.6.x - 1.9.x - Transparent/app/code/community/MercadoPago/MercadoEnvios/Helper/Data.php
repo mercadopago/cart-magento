@@ -3,16 +3,18 @@
 class MercadoPago_MercadoEnvios_Helper_Data
     extends Mage_Core_Helper_Abstract
 {
+
+    protected $_mapping;
     /**
      * @param $quote Mage_Sales_Model_Quote
      */
-    public function getDimensions($quote)
+    public function getDimensions($items)
     {
         $width = 0;
         $height = 0;
         $length = 0;
         $weight = 0;
-        foreach ($quote->getAllVisibleItems() as $item) {
+        foreach ($items as $item) {
             $width += $this->_getShippingDimension($item, 'width');
             $height += $this->_getShippingDimension($item, 'height');
             $length += $this->_getShippingDimension($item, 'length');
@@ -28,27 +30,33 @@ class MercadoPago_MercadoEnvios_Helper_Data
      */
     protected function _getShippingDimension($item, $type)
     {
-//        $attributeMapped = $this->_getConfigAttributeMapped($type);
-//if (!empty($attributeMapped) {
-//        $result = $item->getProduct()->getData($attributeMapped);
-//        $result = $result * $item->getQty();
-//        return $result;
-//    }
-        return 30;
+        $attributeMapped = $this->_getConfigAttributeMapped($type);
+        if (!empty($attributeMapped)) {
+            $product = Mage::getModel('catalog/product')->load($item->getProductId());
+            $result = $product->getData($attributeMapped);
+            $result = $result * $item->getQty();
+
+            return $result;
+        }
+        return 0;
     }
 
     protected function _getConfigAttributeMapped($type)
     {
-        return (isset($this->getAttributes()[$type]))?$this->getAttributes()[$type]:null;
+        return (isset($this->getAttributeMapping()[$type]))?$this->getAttributeMapping()[$type]:null;
     }
 
     public function getAttributeMapping() {
-        $mapping = $this->getConfigData('attributesmapping');
-        $mappingResult = [];
-        foreach ($mapping as $map){
-            $mappingResult[$map['OcaCode']] = $map['MagentoCode'];
+        if (empty($this->_mapping)) {
+            $mapping = Mage::getStoreConfig('carriers/mercadoenvios/attributesmapping');
+            $mapping = unserialize($mapping);
+            $mappingResult = [];
+            foreach ($mapping as $map) {
+                $mappingResult[$map['OcaCode']] = $map['MagentoCode'];
+            }
+            $this->_mapping = $mappingResult;
         }
-        return $mappingResult;
+        return $this->_mapping;
     }
 
  /**

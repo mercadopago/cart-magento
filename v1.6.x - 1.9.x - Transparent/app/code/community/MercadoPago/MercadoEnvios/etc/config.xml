@@ -14,9 +14,9 @@
         <sales>
             <shipping>
                 <carriers>
-                    <mercadoenvios>
+                    <mercadopago_mercadoenvios>
                         <class>MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios</class>
-                    </mercadoenvios>
+                    </mercadopago_mercadoenvios>
                 </carriers>
             </shipping>
         </sales>

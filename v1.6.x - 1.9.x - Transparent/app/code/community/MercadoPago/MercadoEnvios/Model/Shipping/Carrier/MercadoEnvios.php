@@ -80,7 +80,9 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         $methods = $this->getDataAllowedMethods();
         $allowedMethods = [];
         foreach ($methods as $method) {
-            $allowedMethods[$method['shipping_method_id']] = $method['name'];
+//            if ($this->_isAvailableRate($method['shipping_method_id'])) {
+                $allowedMethods[$method['shipping_method_id']] = $method['name'];
+//            }
         }
 
         return $allowedMethods;
@@ -102,9 +104,8 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
             $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
 
             $params = array(
-                "dimensions" => "30x30x30,500",
+                "dimensions" => Mage::helper('mercadopago_mercadoenvios')->getDimensions($quote),
                 "zip_code"   => $postcode,
-//            "free_method" => "73328" // optional
             );
             $response = $mp->get("/shipping_options", $params);
             if ($response['status'] == 200) {
@@ -168,6 +169,11 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         }
 
         return $quote;
+    }
+
+    protected function _isAvailableRate($rateId) {
+        $available = $this->getConfigData('availablemethods');
+        return in_array($rateId,$available);
     }
 
 }

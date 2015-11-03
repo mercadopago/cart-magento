@@ -19,8 +19,7 @@ class MercadoPago_MercadoEnvios_Model_Observer {
         if (empty($this->_useMercadoEnvios)) {
             $quote = Mage::helper('mercadopago_mercadoenvios')->getQuote();
             $shippingMethod = $quote->getShippingAddress()->getShippingMethod();
-            $shippingMethod = substr($shippingMethod,0,strpos($shippingMethod,'_'));
-            $this->_useMercadoEnvios = ($shippingMethod == MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE);
+            $this->_useMercadoEnvios = Mage::helper('mercadopago_mercadoenvios')->isMercadoEnviosMethod($shippingMethod);
         }
         return $this->_useMercadoEnvios;
     }

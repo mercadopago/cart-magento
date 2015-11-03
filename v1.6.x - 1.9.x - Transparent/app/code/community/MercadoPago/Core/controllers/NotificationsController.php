@@ -101,7 +101,9 @@ class MercadoPago_Core_NotificationsController
                 }
 
                 if (count($merchant_order['shipments']) > 0) {
-                    $dataShipment = $this->_getDataShipments($merchant_order);
+                    if($merchant_order["response"]["shipments"][0]["status"] == "ready_to_ship"){
+                        //TODO THE MAGENTO SHIPMENT
+                    }
                 }
             }
         }

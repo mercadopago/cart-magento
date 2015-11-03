@@ -24,12 +24,25 @@ class MercadoPago_Core_NotificationsController
     protected $_sendemail = false;
     protected $_hash = null;
 
-    protected function getDataPayments($merchantOrder)
+    protected function _getDataPayments($merchantOrder)
     {
         $data = array();
         $core = Mage::getModel('mercadopago/core');
         foreach ($merchantOrder['payments'] as $payment) {
             $response = $core->getPayment($payment['id']);
+            $payment = $response['response']['collection'];
+            $data = $this->formatArrayPayment($data, $payment);
+        }
+
+        return $data;
+    }
+
+    protected function _getDataShipments($merchantOrder)
+    {
+        $data = array();
+        $core = Mage::getModel('mercadopago/core');
+        foreach ($merchantOrder['shipments'] as $shipment) {
+            $response = $core->getPayment($shipment['id']);
             $payment = $response['response']['collection'];
             $data = $this->formatArrayPayment($data, $payment);
         }
@@ -74,7 +87,7 @@ class MercadoPago_Core_NotificationsController
                 $merchant_order = $response['response'];
 
                 if (count($merchant_order['payments']) > 0) {
-                    $data = $this->getDataPayments($merchant_order);
+                    $data = $this->_getDataPayments($merchant_order);
                     $status_final = $this->getStatusFinal($data['status']);
 
                     $this->updateOrder($data);
@@ -85,6 +98,12 @@ class MercadoPago_Core_NotificationsController
                     }
 
                     return;
+                }
+
+                if (count($merchant_order['shipments']) > 0) {
+                    if($merchant_order["response"]["shipments"][0]["status"] == "ready_to_ship"){
+                        //TODO THE MAGENTO SHIPMENT
+                    }
                 }
             }
         }

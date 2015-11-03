@@ -50,5 +50,24 @@ class MercadoPago_MercadoEnvios_Helper_Data
         }
         return $mappingResult;
     }
-}
 
+ /**
+     * @return Mage_Sales_Model_Quote
+     */
+    public function getQuote()
+    {
+        if (Mage::app()->getStore()->isAdmin()) {
+            $quote = Mage::getSingleton('adminhtml/session_quote')->getQuote();
+        } else {
+            $quote = Mage::getModel('checkout/cart')->getQuote();
+        }
+
+        return $quote;
+    }
+
+    public function isMercadoEnviosMethod($method)
+    {
+        $shippingMethod = substr($method,0,strpos($method,'_'));
+        return ($shippingMethod == MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE);
+    }
+}

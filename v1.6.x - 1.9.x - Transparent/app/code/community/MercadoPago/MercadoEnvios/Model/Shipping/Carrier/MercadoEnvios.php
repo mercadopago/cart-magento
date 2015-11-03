@@ -37,12 +37,13 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
     implements Mage_Shipping_Model_Carrier_Interface
 {
 
+    const CODE = 'mercadoenvios';
     /**
      * Code of the carrier
      *
      * @var string
      */
-    protected $_code = 'mercadoenvios';
+    protected $_code = self::CODE;
     protected $_methods;
 
 
@@ -91,7 +92,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
     protected function getDataAllowedMethods()
     {
         if (empty($this->_methods)) {
-            $quote = $this->_getQuote();
+            $quote = Mage::helper('mercadopago_mercadoenvios')->getQuote();
 
             $shippingAddress = $quote->getShippingAddress();
             if (empty($shippingAddress)) {
@@ -155,22 +156,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
         return Mage::helper('core')->formatDate($nextNotificationDate);
     }
-
-
-    /**
-     * @return Mage_Sales_Model_Quote
-     */
-    protected function _getQuote()
-    {
-        if (Mage::app()->getStore()->isAdmin()) {
-            $quote = Mage::getSingleton('adminhtml/session_quote')->getQuote();
-        } else {
-            $quote = Mage::getModel('checkout/cart')->getQuote();
-        }
-
-        return $quote;
-    }
-
+   
     protected function _isAvailableRate($rateId) {
         $available = $this->getConfigData('availablemethods');
         return in_array($rateId,$available);

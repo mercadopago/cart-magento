@@ -115,15 +115,18 @@ class FeatureContext
     }
 
     /**
-     * @When I select shipping method
+     * @When I select shipping method :arg1
      */
-    public function iSelectShippingMethod()
+    public function iSelectShippingMethod($method = null)
     {
         $page = $this->getSession()->getPage();
 
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $page->fillField('shipping_method', 'flatrate_flatrate');
-        $page->findById('s_method_flatrate_flatrate')->press();
+        if (empty($method)) {
+            $method = 's_method_flatrate_flatrate';
+        }
+        $page->findById($method)->press();
     }
 
     /**
@@ -232,7 +235,14 @@ class FeatureContext
         }
     }
 
-
+ /**
+     * @When I wait for :secs seconds with :cond
+     */
+    public function iWaitForSecondsWithCondition($secs,$condition)
+    {
+        $milliseconds = $secs * 1000;
+        $this->getSession()->wait($milliseconds,$condition);
+    }
     /**
      * @Then I should see :arg1
      */
@@ -287,6 +297,27 @@ class FeatureContext
             $submit->click();
             $this->findElement('div.welcome-msg');
 
+        }
+    }
+
+    /**
+     * @Given I am admin logged in as :arg1 :arg2
+     */
+    public function iAmAdminLoggedInAs($arg1, $arg2)
+    {
+        $session = $this->getSession();
+
+        $session->visit($this->locatePath('admin'));
+
+        $login = $this->findElement('#username');
+        $pwd = $this->findElement('login');
+        if ($login && $pwd) {
+            $email = $arg1;
+            $password = $arg2;
+            $login->setValue($email);
+            $pwd->setValue($password);
+            $this->iPressInputElement('form-button');
+            $this->findElement('body. adminhtml-dashboard-index');
         }
     }
 
@@ -459,7 +490,6 @@ class FeatureContext
             $this->getSession()->wait(20000, false);
         } catch (Exception $e) {
             $msg = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
-            echo $msg;
             if ($msg == $arg1) {
                 return;
             }
@@ -491,5 +521,41 @@ class FeatureContext
         }
         $this->iPressInputElement('#' . $arg1. '-head');
     }
+
+/**
+     * @Then I should find element :arg1
+     */
+    public function iShouldFindElement($arg1)
+    {
+        $this->findElement($arg1);
+    }
+
+    /**
+     * @Then I should see element :arg1 with text :arg2
+     */
+    public function iShouldSeeElementWithText($arg1, $arg2)
+    {
+        $elements = $this->getSession()->getPage()->findAll('css', $arg1);
+        foreach ($elements as $element) {
+            if (strtolower($element->getText()) == strtolower($arg2)) {
+                return;
+            }
+        }
+        throw new ExpectationException('Element with text ' . $arg2 . ' not found', $this->getSession()->getDriver());
+    }
+
+    /**
+     * @Then Element :arg1 should has :arg2 children :arg3 elements
+     */
+    public function elementShouldHasChildrenElements($element,$children,$type) {
+        $element = $this->findElement($element);
+        $elements = $element->findAll('css',$type);
+        $childrenQty = count($elements);
+        if ($childrenQty != $children) {
+            throw new ExpectationException('Element has ' . $childrenQty, $this->getSession()->getDriver());
+        }
+
+    }
+
 
 }

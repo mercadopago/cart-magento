@@ -414,13 +414,14 @@ class FeatureContext
     {
         $session = $this->getSession();
 
+        $session->visit($this->locatePath('admin'));
+
         //if already logged in
         $currentUrl = $session->getCurrentUrl();
         if (strpos($currentUrl, 'dashboard')) {
             return;
         }
 
-        $session->visit($this->locatePath('admin'));
 
         $login = $this->findElement('#username');
         $pwd = $this->findElement('#login');

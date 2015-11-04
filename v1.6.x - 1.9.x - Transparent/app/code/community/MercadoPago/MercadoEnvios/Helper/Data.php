@@ -101,7 +101,11 @@ class MercadoPago_MercadoEnvios_Helper_Data
         return ($shippingMethod == MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE);
     }
 
-
+    /**
+     * @param $attributeType string
+     * @param $value string
+     * @return string
+     */
     public function getAttributesMappingUnitConversion($attributeType, $value)
     {
         $this->_getConfigAttributeMapped($attributeType);

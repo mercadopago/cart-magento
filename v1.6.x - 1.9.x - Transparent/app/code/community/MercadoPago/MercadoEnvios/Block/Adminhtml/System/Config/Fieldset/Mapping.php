@@ -27,8 +27,8 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Mapping
     protected function getMagentoAttributes()
     {
         $attributes = Mage::getResourceModel('catalog/product_attribute_collection')
-            ->addFieldToFilter('is_user_defined', 1)
-            ->addFieldToFilter('frontend_input', ['text'])
+            ->addFieldToFilter('is_visible', 1)
+            ->addFieldToFilter('frontend_input', 'text')
             ->load();
 
         return $attributes;
@@ -37,7 +37,7 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Mapping
     protected function getStoredMappingValues()
     {
         $prevValues = [];
-        foreach ($this->getArrayRows() as $_rowId => $_row) {
+        foreach ($this->getArrayRows() as $_row) {
             $prevValues[] = ['MagentoCode' => $_row->getData('MagentoCode'), 'OcaCode' => $_row->getData('OcaCode'), 'Unit' => $_row->getData('Unit')];
         }
 

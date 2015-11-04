@@ -9,6 +9,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
     const OCA_WEIGHT_UNIT = 'gr';
 
     protected $_mapping;
+    protected $_products = [];
 
     /**
      * @param $quote Mage_Sales_Model_Quote
@@ -47,7 +48,10 @@ class MercadoPago_MercadoEnvios_Helper_Data
     {
         $attributeMapped = $this->_getConfigAttributeMapped($type);
         if (!empty($attributeMapped)) {
-            $product = Mage::getModel('catalog/product')->load($item->getProductId());
+            if (!isset($this->_products[$item->getProductId()])){
+                $this->_products[$item->getProductId()] = Mage::getModel('catalog/product')->load($item->getProductId());
+            }
+            $product = $product = $this->_products[$item->getProductId()];
             $result = $product->getData($attributeMapped);
             $result = $this->getAttributesMappingUnitConversion($type,$result);
             $result = $result * $item->getQty();
@@ -118,11 +122,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
 
                 return $unit->getValue();
             }
-
-        }
-
-        //check if needs conversion
-        if ($this->_mapping[$attributeType]['unit'] != self::OCA_LENGTH_UNIT) {
+        } elseif ($this->_mapping[$attributeType]['unit'] != self::OCA_LENGTH_UNIT) {
             $unit = new Zend_Measure_Length($value);
             $unit->convertTo(Zend_Measure_Length::CENTIMETER);
 

@@ -9,11 +9,6 @@ $unit = $sizeUnit;
 
 $prevValues = $this->getStoredMappingValues();
 
-$ocaCode = ['length','width','height', 'weight'];
-$prevValues = [];
-foreach ($this->getArrayRows() as $_rowId => $_row) {
-    $prevValues[]= ['MagentoCode' => $_row->getData('MagentoCode'), 'OcaCode' => $_row->getData('OcaCode')];
-}
 ?>
 
 <div class="grid" id="grid<?php echo $_htmlId ?>">
@@ -25,31 +20,30 @@ foreach ($this->getArrayRows() as $_rowId => $_row) {
         </tr>
         <?php foreach($ocaCode as $key => $ocaOption):?>
             <tr id="<?php echo $ocaOption ?>">
-                    <td>
-                        <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $ocaOption ?>][MagentoCode]">
-                            <?php foreach($magentoCode as $option):?>
-                                <option value="<?php echo $option->getAttributeCode() ?>" <?php echo ($prevValues[$key]['MagentoCode'] == $option->getAttributeCode()) ? "selected='selected'" : "" ?>><?php echo $option->getFrontendLabel() ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $ocaOption ?>][OcaCode]">
-                            <?php foreach($ocaCode as $option):?>
-                                <option value="<?php echo $option ?>" <?php echo ($prevValues[$key]['OcaCode'] == $option) ? "selected='selected'" : '' ?>><?php echo $option ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                    <?php if ($ocaOption == 'weight') : $unit = $weightUnit; endif;?>
-                    <td>
-                        <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $ocaOption ?>][Unit]">
-                            <?php foreach($unit as $_u):?>
-                                <option value="<?php echo $_u ?>" <?php echo ($prevValues[$key]['Unit'] == $_u) ? "selected='selected'" : '' ?>><?php echo $_u ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
+                <td>
+                    <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $ocaOption ?>][MagentoCode]">
+                        <?php foreach($magentoCode as $option):?>
+                            <option value="<?php echo $option->getAttributeCode() ?>" <?php echo ($prevValues[$key]['MagentoCode'] == $option->getAttributeCode()) ? "selected='selected'" : "" ?>><?php echo $option->getFrontendLabel() ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <td>
+                    <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $ocaOption ?>][OcaCode]">
+                        <?php foreach($ocaCode as $option):?>
+                            <option value="<?php echo $option ?>" <?php echo ($prevValues[$key]['OcaCode'] == $option) ? "selected='selected'" : '' ?>><?php echo $option ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <?php if ($ocaOption == 'weight') : $unit = $weightUnit; endif;?>
+                <td>
+                    <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $ocaOption ?>][Unit]">
+                        <?php foreach($unit as $_u):?>
+                            <option value="<?php echo $_u ?>" <?php echo ($prevValues[$key]['Unit'] == $_u) ? "selected='selected'" : '' ?>><?php echo $_u ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
 
             </tr>
         <?php endforeach; ?>
     </table>
 </div>
-

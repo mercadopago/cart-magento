@@ -489,7 +489,15 @@ class FeatureContext
         if ($element->hasClass('open')) {
             return;
         }
-        $this->iPressInputElement('#' . $arg1. '-head');
+        $this->getSession()->getPage()->clickLink($arg1. '-head');
+    }
+
+    /**
+     * @Then The :arg1 select element has :arg2 selected
+     */
+    public function theSelectElementHasSelected($arg1, $arg2)
+    {
+        $this->getSession()->getPage()->selectFieldOption($arg1, $arg2);
     }
 
 }

@@ -31,10 +31,10 @@ Feature: MercadoEnvios configuration
     And I press ".meli-btn.button" element
     And I Select option field "carriers_mercadoenvios_active" with "1"
 
-    When I select option field "groups[mercadoenvios][fields][attributesmapping][value][length][MagentoCode]" with "accessories_size"
-    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][width][MagentoCode]" with "accessories_size"
-    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][length][OcaCode]" with "width"
-    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][height][OcaCode]" with "length"
+    When I select option field "groups[mercadoenvios][fields][attributesmapping][value][length][MagentoCode]" with "bedding_pattern"
+    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][width][MagentoCode]" with "bedding_pattern"
+    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][length][OcaCode]" with "mt"
+    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][height][OcaCode]" with "mt"
 
     And I press ".scalable.save" element
     Then I should see html "Cannot repeat Magento Product size attributes"
@@ -47,10 +47,10 @@ Feature: MercadoEnvios configuration
     And I press ".meli-btn.button" element
     And I Select option field "carriers_mercadoenvios_active" with "1"
 
-    When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][MagentoCode]" with "accessories_size"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][MagentoCode]" with "accessories_type"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][MagentoCode]" with "apparel_type"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][MagentoCode]" with "author_artist"
+    When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][MagentoCode]" with "bedding_pattern"
+    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][MagentoCode]" with "name"
+    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][MagentoCode]" with "sku"
+    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][MagentoCode]" with "meta_title"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][OcaCode]" with "width"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][OcaCode]" with "width"
 
@@ -65,10 +65,10 @@ Feature: MercadoEnvios configuration
     And I press ".meli-btn.button" element
     And I Select option field "carriers_mercadoenvios_active" with "1"
 
-    When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][MagentoCode]" with "accessories_size"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][MagentoCode]" with "accessories_type"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][MagentoCode]" with "apparel_type"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][MagentoCode]" with "author_artist"
+    When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][MagentoCode]" with "bedding_pattern"
+    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][MagentoCode]" with "name"
+    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][MagentoCode]" with "sku"
+    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][MagentoCode]" with "meta_title"
 
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][OcaCode]" with "width"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][OcaCode]" with "height"
@@ -124,10 +124,10 @@ Feature: MercadoEnvios configuration
      And I press ".meli-btn.button" element
      And I Select option field "carriers_mercadoenvios_active" with "1"
 
-     When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][MagentoCode]" with "accessories_size"
-     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][MagentoCode]" with "accessories_type"
-     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][MagentoCode]" with "apparel_type"
-     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][MagentoCode]" with "author_artist"
+     When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][MagentoCode]" with "bedding_pattern"
+     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][MagentoCode]" with "name"
+     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][MagentoCode]" with "sku"
+     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][MagentoCode]" with "meta_title"
 
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][OcaCode]" with "width"
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][OcaCode]" with "height"

@@ -33,8 +33,8 @@ Feature: MercadoEnvios configuration
 
     When I select option field "groups[mercadoenvios][fields][attributesmapping][value][length][MagentoCode]" with "bedding_pattern"
     And I select option field "groups[mercadoenvios][fields][attributesmapping][value][width][MagentoCode]" with "bedding_pattern"
-    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][length][OcaCode]" with "mt"
-    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][height][OcaCode]" with "mt"
+    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][length][OcaCode]" with "width"
+    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][height][OcaCode]" with "length"
 
     And I press ".scalable.save" element
     Then I should see html "Cannot repeat Magento Product size attributes"

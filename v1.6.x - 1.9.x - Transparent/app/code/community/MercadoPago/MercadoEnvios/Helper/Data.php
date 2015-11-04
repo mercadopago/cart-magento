@@ -5,6 +5,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
 {
 
     protected $_mapping;
+
     /**
      * @param $quote Mage_Sales_Model_Quote
      */
@@ -15,12 +16,22 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $length = 0;
         $weight = 0;
         foreach ($items as $item) {
-            $width += $this->_getShippingDimension($item, 'width');
-            $height += $this->_getShippingDimension($item, 'height');
-            $length += $this->_getShippingDimension($item, 'length');
-            $weight += $this->_getShippingDimension($item, 'weight');
+            $children = $item->getChildren();
+            if (empty($children)) {
+                $width += $this->_getShippingDimension($item, 'width');
+                $height += $this->_getShippingDimension($item, 'height');
+                $length += $this->_getShippingDimension($item, 'length');
+                $weight += $this->_getShippingDimension($item, 'weight');
+            }
         }
+        $height = ceil($height);
+        $width = ceil($width);
+        $length = ceil($length);
+        $weight = ceil($weight);
 
+        if (!($height>0 && $length>0 && $width>0 && $weight>0)) {
+            Mage::throwException('Invalid dimensions cart');
+        }
         return $height . 'x' . $width . 'x' . $length . ',' . $weight;
 
     }
@@ -35,18 +46,22 @@ class MercadoPago_MercadoEnvios_Helper_Data
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
             $result = $product->getData($attributeMapped);
             $result = $result * $item->getQty();
-
+            if (empty($result)){
+                Mage::throwException('Invalid dimensions product');
+            }
             return $result;
         }
+
         return 0;
     }
 
     protected function _getConfigAttributeMapped($type)
     {
-        return (isset($this->getAttributeMapping()[$type]))?$this->getAttributeMapping()[$type]:null;
+        return (isset($this->getAttributeMapping()[$type])) ? $this->getAttributeMapping()[$type] : null;
     }
 
-    public function getAttributeMapping() {
+    public function getAttributeMapping()
+    {
         if (empty($this->_mapping)) {
             $mapping = Mage::getStoreConfig('carriers/mercadoenvios/attributesmapping');
             $mapping = unserialize($mapping);
@@ -56,10 +71,11 @@ class MercadoPago_MercadoEnvios_Helper_Data
             }
             $this->_mapping = $mappingResult;
         }
+
         return $this->_mapping;
     }
 
- /**
+    /**
      * @return Mage_Sales_Model_Quote
      */
     public function getQuote()
@@ -75,7 +91,8 @@ class MercadoPago_MercadoEnvios_Helper_Data
 
     public function isMercadoEnviosMethod($method)
     {
-        $shippingMethod = substr($method,0,strpos($method,'_'));
+        $shippingMethod = substr($method, 0, strpos($method, '_'));
+
         return ($shippingMethod == MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE);
     }
 }

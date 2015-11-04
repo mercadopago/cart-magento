@@ -11,9 +11,11 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
      * @var string
      */
     const CODE = 'mercadoenvios';
+    const INVALID_METHOD = -1;
 
     protected $_code = self::CODE;
     protected $_available;
+    protected $_methods;
 
     /**
      * Collect and get rates
@@ -49,10 +51,16 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
     {
         $methods = $this->getDataAllowedMethods();
         $allowedMethods = [];
-        foreach ($methods as $method) {
-            if ($this->_isAvailableRate($method['shipping_method_id'])) {
-                $allowedMethods[$method['shipping_method_id']] = $method['name'];
+        if (is_array($methods)) {
+            foreach ($methods as $method) {
+                if (isset($method['shipping_method_id'])) {
+                    if ($this->_isAvailableRate($method['shipping_method_id'])) {
+                        $allowedMethods[$method['shipping_method_id']] = $method['name'];
+                    }
+                }
             }
+        } else {
+            $allowedMethods[self::INVALID_METHOD] = $methods;
         }
 
         return $allowedMethods;
@@ -73,13 +81,23 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
             $client_secret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
             $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
 
+            try {
+                $dimensions = Mage::helper('mercadopago_mercadoenvios')->getDimensions($quote->getAllItems());
+            } catch (Exception $e) {
+                $this->_methods = self::INVALID_METHOD;
+
+                return;
+            }
+
             $params = array(
-                "dimensions" => Mage::helper('mercadopago_mercadoenvios')->getDimensions($quote->getAllVisibleItems()),
+                "dimensions" => $dimensions,
                 "zip_code"   => $postcode,
             );
             $response = $mp->get("/shipping_options", $params);
             if ($response['status'] == 200) {
                 $this->_methods = $response['response']['options'];
+            } else {
+                $this->_methods = self::INVALID_METHOD;
             }
         }
 
@@ -101,6 +119,9 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
     protected function _getRate($methodId)
     {
+        if ($methodId == self::INVALID_METHOD) {
+            return $this->_getErrorRate();
+        }
         /** @var Mage_Shipping_Model_Rate_Result_Method $rate */
         $rate = Mage::getModel('shipping/rate_result_method');
 
@@ -117,6 +138,17 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         return $rate;
     }
 
+    protected function _getErrorRate()
+    {
+        $error = Mage::getModel('shipping/rate_result_error');
+        $error->setCarrier($this->_code);
+        $error->setCarrierTitle($this->getConfigData('title'));
+        $msg = $this->getConfigData('specificerrmsg');
+        $error->setErrorMessage($msg);
+
+        return $error;
+    }
+
     protected function _getEstimatedDate($dataTime)
     {
         $current = new Zend_Date();
@@ -125,12 +157,14 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
         return Mage::helper('core')->formatDate($nextNotificationDate);
     }
-   
-    protected function _isAvailableRate($rateId) {
+
+    protected function _isAvailableRate($rateId)
+    {
         if (empty($this->_available)) {
             $this->_available = explode(',', Mage::getStoreConfig('carriers/mercadoenvios/availablemethods'));
         }
-        return in_array($rateId,$this->_available);
+
+        return in_array($rateId, $this->_available);
     }
 
 }

@@ -49,6 +49,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         if (!empty($attributeMapped)) {
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
             $result = $product->getData($attributeMapped);
+            $result = $this->getAttributesMappingUnitConversion($type,$result);
             $result = $result * $item->getQty();
             if (empty($result)){
                 Mage::throwException('Invalid dimensions product');
@@ -61,7 +62,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
 
     protected function _getConfigAttributeMapped($type)
     {
-        return (isset($this->getAttributeMapping()[$type])) ? $this->getAttributeMapping()[$type] : null;
+        return (isset($this->getAttributeMapping()[$type]['code'])) ? $this->getAttributeMapping()[$type]['code'] : null;
     }
 
     public function getAttributeMapping()

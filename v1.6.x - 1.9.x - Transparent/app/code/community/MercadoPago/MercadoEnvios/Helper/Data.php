@@ -106,10 +106,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
                 return $unit->getValue();
             }
 
-        }
-
-        //check if needs conversion
-        if ($this->_mapping[$attributeType]['unit'] != self::OCA_LENGTH_UNIT) {
+        } elseif ($this->_mapping[$attributeType]['unit'] != self::OCA_LENGTH_UNIT) {
             $unit = new Zend_Measure_Length($value);
             $unit->convertTo(Zend_Measure_Length::CENTIMETER);
 

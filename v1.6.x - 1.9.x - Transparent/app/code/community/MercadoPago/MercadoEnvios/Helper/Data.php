@@ -4,6 +4,10 @@ class MercadoPago_MercadoEnvios_Helper_Data
     extends Mage_Core_Helper_Abstract
 {
 
+    const XML_PATH_ATTRIBUTES_MAPPING = 'carriers/mercadoenvios/attributesmapping';
+    const OCA_LENGTH_UNIT = 'cm';
+    const OCA_WEIGHT_UNIT = 'gr';
+
     protected $_mapping;
 
     /**
@@ -63,11 +67,11 @@ class MercadoPago_MercadoEnvios_Helper_Data
     public function getAttributeMapping()
     {
         if (empty($this->_mapping)) {
-            $mapping = Mage::getStoreConfig('carriers/mercadoenvios/attributesmapping');
+            $mapping = Mage::getStoreConfig(self::XML_PATH_ATTRIBUTES_MAPPING);
             $mapping = unserialize($mapping);
             $mappingResult = [];
             foreach ($mapping as $map) {
-                $mappingResult[$map['OcaCode']] = $map['MagentoCode'];
+                $mappingResult[$map['OcaCode']] = ['code' => $map['MagentoCode'], 'unit' => $map['Unit']];
             }
             $this->_mapping = $mappingResult;
         }
@@ -95,4 +99,32 @@ class MercadoPago_MercadoEnvios_Helper_Data
 
         return ($shippingMethod == MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE);
     }
+
+
+    public function getAttributesMappingUnitConversion($attributeType, $value)
+    {
+        $this->_getConfigAttributeMapped($attributeType);
+
+        if ($attributeType == 'weight') {
+            //check if needs conversion
+            if ($this->_mapping[$attributeType]['unit'] != self::OCA_WEIGHT_UNIT) {
+                $unit = new Zend_Measure_Weight($value);
+                $unit->convertTo(Zend_Measure_Weight::GRAM);
+
+                return $unit->getValue();
+            }
+
+        }
+
+        //check if needs conversion
+        if ($this->_mapping[$attributeType]['unit'] != self::OCA_LENGTH_UNIT) {
+            $unit = new Zend_Measure_Length($value);
+            $unit->convertTo(Zend_Measure_Length::CENTIMETER);
+
+            return $unit->getValue();
+        }
+
+        return $value;
+    }
+
 }

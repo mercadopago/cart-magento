@@ -22,7 +22,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $weight = 0;
         foreach ($items as $item) {
             $children = $item->getChildren();
-            if (empty($children)) {
+            if (empty($children) && !(get_class($item) == 'Mage_Sales_Model_Order_Item' && $item->getHasChildren())) {
                 $width += $this->_getShippingDimension($item, 'width');
                 $height += $this->_getShippingDimension($item, 'height');
                 $length += $this->_getShippingDimension($item, 'length');
@@ -54,7 +54,8 @@ class MercadoPago_MercadoEnvios_Helper_Data
             $product = $product = $this->_products[$item->getProductId()];
             $result = $product->getData($attributeMapped);
             $result = $this->getAttributesMappingUnitConversion($type,$result);
-            $result = $result * $item->getQty();
+            $qty = (get_class($item) == 'Mage_Sales_Model_Quote_Item')?$item->getQty():$item->getQtyOrdered();
+            $result = $result * $qty;
             if (empty($result)){
                 Mage::throwException('Invalid dimensions product');
             }

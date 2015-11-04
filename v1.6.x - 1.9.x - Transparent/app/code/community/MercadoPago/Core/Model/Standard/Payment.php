@@ -250,17 +250,18 @@ class MercadoPago_Core_Model_Standard_Payment
             "street_number" => "0"
         );
 
-        $method = $shippingAddress->getShippingMethod();
+        $method = $order->getShippingMethod();
         if (Mage::helper('mercadopago_mercadoenvios')->isMercadoEnviosMethod($method)) {
             $zipCode = $shippingAddress->getPostcode();
-            $defaultShippingId = substr($method, strpos($method, '_') - 1);
+            $defaultShippingId = substr($method, strpos($method, '_') + 1);
             $params = [
                 'mode' => 'me2',
                 'zip_code' => $zipCode,
-                'default_shipping_method'=>$method,
-                'dimensions' => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllVisibleItems())
+                'default_shipping_method'=>$defaultShippingId,
+                    'dimensions' => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
             ];
         }
+        return $params;
 
     }
 

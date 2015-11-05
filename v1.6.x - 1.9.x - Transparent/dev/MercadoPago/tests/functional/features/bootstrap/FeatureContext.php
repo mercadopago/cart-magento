@@ -229,20 +229,21 @@ class FeatureContext
     {
         $milliseconds = $secs * 1000;
         try {
-            $this->getSession()->wait($milliseconds,'(0 === Ajax.activeRequestCount)');
+            $this->getSession()->wait($milliseconds, '(0 === Ajax.activeRequestCount)');
         } catch (Exception $e) {
             $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
         }
     }
 
- /**
+    /**
      * @When I wait for :secs seconds with :cond
      */
-    public function iWaitForSecondsWithCondition($secs,$condition)
+    public function iWaitForSecondsWithCondition($secs, $condition)
     {
         $milliseconds = $secs * 1000;
-        $this->getSession()->wait($milliseconds,$condition);
+        $this->getSession()->wait($milliseconds, $condition);
     }
+
     /**
      * @Then I should see :arg1
      */
@@ -250,7 +251,7 @@ class FeatureContext
     {
         $actual = $this->getSession()->getPage()->getText();
         if (!$this->_stringMatch($actual, $arg1)) {
-            throw new ExpectationException('Element'. $arg1 .' not found', $this->getSession()->getDriver());
+            throw new ExpectationException('Element' . $arg1 . ' not found', $this->getSession()->getDriver());
         }
     }
 
@@ -260,8 +261,8 @@ class FeatureContext
     public function iShouldSeeHtml($arg1)
     {
         $actual = $this->getSession()->getPage()->getHtml();
-        if (!$this->_stringMatch($actual, $arg1)){
-            throw new ExpectationException('Element'. $arg1 .' not found', $this->getSession()->getDriver());
+        if (!$this->_stringMatch($actual, $arg1)) {
+            throw new ExpectationException('Element' . $arg1 . ' not found', $this->getSession()->getDriver());
         }
     }
 
@@ -271,8 +272,8 @@ class FeatureContext
     public function iShouldNotSee($arg1)
     {
         $actual = $this->getSession()->getPage()->getHtml();
-        if ($this->_stringMatch($actual, $arg1)){
-            throw new ExpectationException('Element'. $arg1 .' found', $this->getSession()->getDriver());
+        if ($this->_stringMatch($actual, $arg1)) {
+            throw new ExpectationException('Element' . $arg1 . ' found', $this->getSession()->getDriver());
         }
     }
 
@@ -297,27 +298,6 @@ class FeatureContext
             $submit->click();
             $this->findElement('div.welcome-msg');
 
-        }
-    }
-
-    /**
-     * @Given I am admin logged in as :arg1 :arg2
-     */
-    public function iAmAdminLoggedInAs($arg1, $arg2)
-    {
-        $session = $this->getSession();
-
-        $session->visit($this->locatePath('admin'));
-
-        $login = $this->findElement('#username');
-        $pwd = $this->findElement('login');
-        if ($login && $pwd) {
-            $email = $arg1;
-            $password = $arg2;
-            $login->setValue($email);
-            $pwd->setValue($password);
-            $this->iPressInputElement('form-button');
-            $this->findElement('body. adminhtml-dashboard-index');
         }
     }
 
@@ -506,7 +486,7 @@ class FeatureContext
         if ($this->findElement($arg1)->hasClass('active')) {
             return;
         }
-        throw new ExpectationException('I am not stay in '.$arg1, $this->getSession()->getDriver());
+        throw new ExpectationException('I am not stay in ' . $arg1, $this->getSession()->getDriver());
 
     }
 
@@ -515,11 +495,11 @@ class FeatureContext
      */
     public function iOpenConfiguration($arg1)
     {
-        $element = $this->findElement('#' . $arg1. '-head');
+        $element = $this->findElement('#' . $arg1 . '-head');
         if ($element->hasClass('open')) {
             return;
         }
-        $this->getSession()->getPage()->clickLink($arg1. '-head');
+        $this->getSession()->getPage()->clickLink($arg1 . '-head');
     }
 
     /**
@@ -530,7 +510,7 @@ class FeatureContext
         $this->getSession()->getPage()->selectFieldOption($arg1, $arg2);
     }
 
-/**
+    /**
      * @Then I should find element :arg1
      */
     public function iShouldFindElement($arg1)
@@ -555,9 +535,10 @@ class FeatureContext
     /**
      * @Then Element :arg1 should has :arg2 children :arg3 elements
      */
-    public function elementShouldHasChildrenElements($element,$children,$type) {
+    public function elementShouldHasChildrenElements($element, $children, $type)
+    {
         $element = $this->findElement($element);
-        $elements = $element->findAll('css',$type);
+        $elements = $element->findAll('css', $type);
         $childrenQty = count($elements);
         if ($childrenQty != $children) {
             throw new ExpectationException('Element has ' . $childrenQty, $this->getSession()->getDriver());
@@ -565,5 +546,73 @@ class FeatureContext
 
     }
 
+    /**
+     * @Given I create mp attributes in attribute set :arg1
+     */
+    public function iCreateMpAttributesInAttributeSet($attributeSet)
+    {
+        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+        $attributes = ['width', 'height', 'length', 'weight'];
+
+        $model = Mage::getModel('eav/entity_setup', 'core_setup');
+        $allAttributeSetIds = $model->getAllAttributeSetIds('catalog_product');
+        foreach ($attributes as $attr) {
+            $data = [
+                'input'                   => 'text',
+                'type'                    => 'decimal',
+                'backend_model'           => '',
+                'is_filterable'           => '1',
+                'is_filterable_in_search' => '1',
+                'visible'                 => '1',
+                'visible_on_front'        => '0',
+                'is_global'               => '1',
+                'required'                => '0',
+                'is_searchable'           => '0',
+                'is_comparable'           => '1',
+                'user_defined'            => '1',
+                'used_in_product_listing' => '1',
+                'is_user_defined'         => '1',
+                'global'                  => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL
+            ];
+            $code = 'mp_' . $attr;
+            $model->addAttribute('catalog_product', $code, $data);
+
+            foreach ($allAttributeSetIds as $attributeSetId) {
+                $model->addAttributeToSet('catalog_product', $attributeSetId, 'general', $code);
+            }
+
+        }
+    }
+
+    /**
+     * @Given I map attributes :arg1 :arg2 :arg3 :arg4
+     */
+    function iMapAttributes($width, $height, $length, $weight)
+    {
+        $mapping = [
+            [
+                'OcaCode'     => 'width',
+                'MagentoCode' => $width,
+                'unit'        => 'cm'
+            ],
+            [
+                'OcaCode'     => 'height',
+                'MagentoCode' => $height,
+                'unit'        => 'cm'
+            ],
+            [
+                'OcaCode'     => 'length',
+                'MagentoCode' => $length,
+                'unit'        => 'cm'
+            ],
+            [
+                'OcaCode'     => 'weight',
+                'MagentoCode' => $weight,
+                'unit'        => 'gr'
+            ]
+        ];
+        $serializedMapping = serialize($mapping);
+        $this->settingConfig('carriers/mercadoenvios/attributesmapping', $serializedMapping);
+    }
 
 }

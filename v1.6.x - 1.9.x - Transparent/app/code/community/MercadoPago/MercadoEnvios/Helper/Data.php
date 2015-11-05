@@ -20,9 +20,9 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $height = 0;
         $length = 0;
         $weight = 0;
+        $helperItem = Mage::helper('mercadopago_mercadoenvios/itemData');
         foreach ($items as $item) {
-            $children = $item->getChildren();
-            if (empty($children) && !(get_class($item) == 'Mage_Sales_Model_Order_Item' && $item->getHasChildren())) {
+            if (!$helperItem->itemHasChildren($item)) {
                 $width += $this->_getShippingDimension($item, 'width');
                 $height += $this->_getShippingDimension($item, 'height');
                 $length += $this->_getShippingDimension($item, 'length');
@@ -34,9 +34,10 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $length = ceil($length);
         $weight = ceil($weight);
 
-        if (!($height>0 && $length>0 && $width>0 && $weight>0)) {
+        if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
             Mage::throwException('Invalid dimensions cart');
         }
+
         return $height . 'x' . $width . 'x' . $length . ',' . $weight;
 
     }
@@ -48,17 +49,19 @@ class MercadoPago_MercadoEnvios_Helper_Data
     {
         $attributeMapped = $this->_getConfigAttributeMapped($type);
         if (!empty($attributeMapped)) {
-            if (!isset($this->_products[$item->getProductId()])){
+            if (!isset($this->_products[$item->getProductId()])) {
                 $this->_products[$item->getProductId()] = Mage::getModel('catalog/product')->load($item->getProductId());
             }
             $product = $product = $this->_products[$item->getProductId()];
+            $helperItem = Mage::helper('mercadopago_mercadoenvios/itemData');
             $result = $product->getData($attributeMapped);
-            $result = $this->getAttributesMappingUnitConversion($type,$result);
-            $qty = (get_class($item) == 'Mage_Sales_Model_Quote_Item')?$item->getQty():$item->getQtyOrdered();
+            $result = $this->getAttributesMappingUnitConversion($type, $result);
+            $qty = $helperItem->itemGetQty($item);
             $result = $result * $qty;
-            if (empty($result)){
+            if (empty($result)) {
                 Mage::throwException('Invalid dimensions product');
             }
+
             return $result;
         }
 
@@ -108,7 +111,8 @@ class MercadoPago_MercadoEnvios_Helper_Data
 
     /**
      * @param $attributeType string
-     * @param $value string
+     * @param $value         string
+     *
      * @return string
      */
     public function getAttributesMappingUnitConversion($attributeType, $value)

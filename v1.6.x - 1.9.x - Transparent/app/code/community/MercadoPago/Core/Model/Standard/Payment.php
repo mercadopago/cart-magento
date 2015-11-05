@@ -235,21 +235,9 @@ class MercadoPago_Core_Model_Standard_Payment
 
     protected function _getShipmentsParams($order)
     {
+        $params=[];
         $shippingCost = $order->getBaseShippingAmount();
         $shippingAddress = $order->getShippingAddress();
-        $params=[];
-        if (!empty($shippingCost)) {
-            $params['cost'] = (float)$order->getBaseShippingAmount();
-        }
-
-        $params['receiver_address'] = array(
-            "floor"         => "-",
-            "zip_code"      => $shippingAddress->getPostcode(),
-            "street_name"   => $shippingAddress->getStreet() . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
-            "apartment"     => "-",
-            "street_number" => "0"
-        );
-
         $method = $order->getShippingMethod();
         if (Mage::helper('mercadopago_mercadoenvios')->isMercadoEnviosMethod($method)) {
             $zipCode = $shippingAddress->getPostcode();
@@ -257,10 +245,21 @@ class MercadoPago_Core_Model_Standard_Payment
             $params = [
                 'mode' => 'me2',
                 'zip_code' => $zipCode,
-                'default_shipping_method'=>$defaultShippingId,
-                    'dimensions' => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
+                'default_shipping_method'=>intval($defaultShippingId),
+                'dimensions' => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
             ];
         }
+        if (!empty($shippingCost)) {
+            $params['cost'] = (float)$order->getBaseShippingAmount();
+        }
+
+        $params['receiver_address'] = array(
+            "floor"         => "-",
+            "zip_code"      => $shippingAddress->getPostcode(),
+            "street_name"   => $shippingAddress->getStreet()[0] . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
+            "apartment"     => "-",
+            "street_number" => "0"
+        );
         return $params;
 
     }

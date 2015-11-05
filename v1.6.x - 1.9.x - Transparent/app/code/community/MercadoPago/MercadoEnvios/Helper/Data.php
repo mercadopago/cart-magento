@@ -5,8 +5,8 @@ class MercadoPago_MercadoEnvios_Helper_Data
 {
 
     const XML_PATH_ATTRIBUTES_MAPPING = 'carriers/mercadoenvios/attributesmapping';
-    const OCA_LENGTH_UNIT = 'cm';
-    const OCA_WEIGHT_UNIT = 'gr';
+    const ME_LENGTH_UNIT = 'cm';
+    const ME_WEIGHT_UNIT = 'gr';
 
     protected $_mapping;
 
@@ -59,7 +59,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
             $mapping = unserialize($mapping);
             $mappingResult = [];
             foreach ($mapping as $map) {
-                $mappingResult[$map['OcaCode']] = ['code' => $map['MagentoCode'], 'unit' => $map['Unit']];
+                $mappingResult[$map['me_code']] = ['code' => $map['attribute_code'], 'unit' => $map['unit']];
             }
             $this->_mapping = $mappingResult;
         }
@@ -99,14 +99,14 @@ class MercadoPago_MercadoEnvios_Helper_Data
 
         if ($attributeType == 'weight') {
             //check if needs conversion
-            if ($this->_mapping[$attributeType]['unit'] != self::OCA_WEIGHT_UNIT) {
+            if ($this->_mapping[$attributeType]['unit'] != self::ME_WEIGHT_UNIT) {
                 $unit = new Zend_Measure_Weight($value);
                 $unit->convertTo(Zend_Measure_Weight::GRAM);
 
                 return $unit->getValue();
             }
 
-        } elseif ($this->_mapping[$attributeType]['unit'] != self::OCA_LENGTH_UNIT) {
+        } elseif ($this->_mapping[$attributeType]['unit'] != self::ME_LENGTH_UNIT) {
             $unit = new Zend_Measure_Length($value);
             $unit->convertTo(Zend_Measure_Length::CENTIMETER);
 

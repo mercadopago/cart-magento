@@ -3,9 +3,11 @@ Feature: Validation of custom checkout form
   Background:
     Given User "test_user_2135227@testuser.com" "magento" exists
     And Setting Config "general/locale/code" is "en_US"
-    And I am logged in as "test_user_2135227@testuser.com" "magento"
+    And I empty cart
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
+    And I am logged in as "test_user_2135227@testuser.com" "magento"
+    And I am on page "checkout/cart/"
     And I press ".btn-proceed-checkout" element
     And I fill the billing address
     And I press "#billing-buttons-container .button" element

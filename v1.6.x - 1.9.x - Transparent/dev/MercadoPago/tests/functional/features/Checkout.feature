@@ -12,7 +12,7 @@ Scenario: See MercadoPago option as a payment method
     And I select radio "billing:use_for_shipping_yes"
     And I press "#billing-buttons-container .button" element
 
-    And I select shipping method "flatrate_flatrate"
+    And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
 
   Then I should see MercadoPago Custom available
@@ -30,7 +30,7 @@ Scenario: See MercadoPago option as a payment method
     And I select radio "billing:use_for_shipping_yes"
     And I press "#billing-buttons-container .button" element
 
-    And I select shipping method "flatrate_flatrate"
+    And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
 
     Then I should not see MercadoPago Standard available
@@ -48,7 +48,7 @@ Scenario: See MercadoPago option as a payment method
     And I select radio "billing:use_for_shipping_yes"
     And I press "#billing-buttons-container .button" element
 
-    And I select shipping method "flatrate_flatrate"
+    And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
 
     Then I should not see MercadoPago Standard available
@@ -66,7 +66,7 @@ Scenario: See MercadoPago option as a payment method
     And I select radio "billing:use_for_shipping_yes"
     And I press "#billing-buttons-container .button" element
 
-    And I select shipping method "flatrate_flatrate"
+    And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
 
     Then I should not see MercadoPago Standard available
@@ -84,7 +84,7 @@ Scenario: See MercadoPago option as a payment method
     And I select radio "billing:use_for_shipping_yes"
     And I press "#billing-buttons-container .button" element
 
-    And I select shipping method "flatrate_flatrate"
+    And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
 
     Then I should not see MercadoPago Custom available
@@ -102,7 +102,7 @@ Scenario: See MercadoPago option as a payment method
     And I select radio "billing:use_for_shipping_yes"
     And I press "#billing-buttons-container .button" element
 
-    And I select shipping method "flatrate_flatrate"
+    And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
 
     Then I should not see MercadoPago Custom available
@@ -120,7 +120,7 @@ Scenario: See MercadoPago option as a payment method
     And I select radio "billing:use_for_shipping_yes"
     And I press "#billing-buttons-container .button" element
 
-    And I select shipping method "flatrate_flatrate"
+    And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
 
     Then I should not see MercadoPago Custom available

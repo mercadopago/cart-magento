@@ -505,9 +505,12 @@ class FeatureContext
      */
     public function iEmptyCart()
     {
-        $cart = Mage::getSingleton('checkout/cart');
-        $cart->truncate();
-        $cart->save();
+        $this->iAmOnPage('checkout/cart/');
+        $element = $this->getSession()->getPage()->findById('empty_cart_button');
+        if (null !== $element) {
+            $this->iPressElement('#empty_cart_button');
+        }
+
     }
 
 

@@ -500,4 +500,15 @@ class FeatureContext
         $this->getSession()->getPage()->selectFieldOption($arg1, $arg2);
     }
 
+    /**
+     * @Given I empty cart
+     */
+    public function iEmptyCart()
+    {
+        $cart = Mage::getSingleton('checkout/cart');
+        $cart->truncate();
+        $cart->save();
+    }
+
+
 }

@@ -34,7 +34,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
         /** @var Mage_Shipping_Model_Rate_Result $result */
         $result = Mage::getModel('shipping/rate_result');
-        foreach ($this->getAllowedMethods() as $methodId => $methodName) {
+        foreach (array_keys($this->getAllowedMethods()) as $methodId) {
             $rate = $this->_getRate($methodId);
             $result->append($rate);
         }

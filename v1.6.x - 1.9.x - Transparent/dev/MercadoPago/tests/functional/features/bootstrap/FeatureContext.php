@@ -117,7 +117,7 @@ class FeatureContext
     /**
      * @When I select shipping method :arg1
      */
-    public function iSelectShippingMethod($method = null)
+    public function iSelectShippingMethod($method)
     {
         $page = $this->getSession()->getPage();
 
@@ -547,9 +547,9 @@ class FeatureContext
     }
 
     /**
-     * @Given I create mp attributes in attribute set :arg1
+     * @Given I create mp attributes
      */
-    public function iCreateMpAttributesInAttributeSet($attributeSet)
+    public function iCreateMpAttributesInAttributeSet()
     {
         Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
         $attributes = ['width', 'height', 'length', 'weight'];
@@ -593,26 +593,87 @@ class FeatureContext
             [
                 'OcaCode'     => 'width',
                 'MagentoCode' => $width,
-                'unit'        => 'cm'
+                'Unit'        => 'cm'
             ],
             [
                 'OcaCode'     => 'height',
                 'MagentoCode' => $height,
-                'unit'        => 'cm'
+                'Unit'        => 'cm'
             ],
             [
                 'OcaCode'     => 'length',
                 'MagentoCode' => $length,
-                'unit'        => 'cm'
+                'Unit'        => 'cm'
             ],
             [
                 'OcaCode'     => 'weight',
                 'MagentoCode' => $weight,
-                'unit'        => 'gr'
+                'Unit'        => 'gr'
             ]
         ];
         $serializedMapping = serialize($mapping);
         $this->settingConfig('carriers/mercadoenvios/attributesmapping', $serializedMapping);
     }
 
+    public function setMappingAttributes($values)
+    {
+        $this->settingConfig('carriers/mercadoenvios/attributesmapping', serialize($values));
+    }
+
+    public function setAttributeProduct($sku, $attr, $value)
+    {
+        $product = Mage::getModel('catalog/product');
+        $product->load($product->getIdBySku($sku));
+        $product->addData([$attr => $value]);
+        $product->save();
+    }
+
+    /**
+     * @When I set product :arg1 attributes:
+     */
+    public function iSetProductAttributes($sku, TableNode $attributes)
+    {
+        foreach ($attributes as $row) {
+            foreach ($row as $attribute => $value) {
+                $this->setAttributeProduct($sku, $attribute, $value);
+            }
+        }
+    }
+
+    /**
+     * @Given showmethod not always
+     */
+    public function showmethodNotAlways()
+    {
+        $this->settingConfig('carriers/mercadoenvios/showmethod', 0);
+    }
+
+    /**
+     * @Given showmethod always
+     */
+    public function showmethodAlways()
+    {
+        $this->settingConfig('carriers/mercadoenvios/showmethod', 1);
+    }
+
+    /**
+     * @When I set weight map with :arg1 :arg2
+     */
+    public function iSetWeightMapWith($attrMapped, $unit)
+    {
+        $this->setMappingAttributes(['OcaCode' => 'weight', 'Unit' => $unit, 'MagentoCode' => $attrMapped]);
+    }
+
+    /**
+     * @Given I empty cart
+     */
+    public function iEmptyCart()
+    {
+        $this->iAmOnPage('checkout/cart/');
+        $element = $this->getSession()->getPage()->findById('empty_cart_button');
+        if (null !== $element) {
+            $this->iPressElement('#empty_cart_button');
+        }
+
+    }
 }

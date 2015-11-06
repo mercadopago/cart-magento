@@ -8,7 +8,7 @@ Feature: Validation of custom checkout with one click pay
   And I press ".btn-proceed-checkout" element
   And I fill the billing address
   And I press "#billing-buttons-container .button" element
-  And I select shipping method
+  And I select shipping method "flatrate_flatrate"
   And I press "#shipping-method-buttons-container .button" element
   And I select radio "p_method_mercadopago_custom"
 

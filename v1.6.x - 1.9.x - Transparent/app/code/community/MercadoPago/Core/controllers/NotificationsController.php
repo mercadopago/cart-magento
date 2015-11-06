@@ -99,12 +99,6 @@ class MercadoPago_Core_NotificationsController
 
                     return;
                 }
-
-                if (count($merchant_order['shipments']) > 0) {
-                    if($merchant_order["response"]["shipments"][0]["status"] == "ready_to_ship"){
-                        //TODO THE MAGENTO SHIPMENT
-                    }
-                }
             }
         }
 

@@ -19,7 +19,7 @@ Feature: Validation of custom checkout with one click pay
     And I fill text field "securityCodeOCP" with "123"
     And I press "#payment-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
-    And I press "#review-buttons-container button" input element
+    And I press "#review-buttons-container button" element
     And I wait for "20" seconds
 
     Then I should see "Payment Status: approved"
@@ -34,7 +34,6 @@ Feature: Validation of custom checkout with one click pay
     And I wait for "20" seconds avoiding alert
 
     Then I should stay step "#opc-payment"
-#    Then I should see alert "We could not process your payment in this moment. Please check the form data and retry later"
 
   @OCP @OPCrequiredFields
   Scenario: See payment approved in Mercado Pago with OCP

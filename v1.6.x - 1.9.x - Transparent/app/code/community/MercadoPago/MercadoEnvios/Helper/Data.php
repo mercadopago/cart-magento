@@ -52,7 +52,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
             if (!isset($this->_products[$item->getProductId()])) {
                 $this->_products[$item->getProductId()] = Mage::getModel('catalog/product')->load($item->getProductId());
             }
-            $product = $product = $this->_products[$item->getProductId()];
+            $product = $this->_products[$item->getProductId()];
             $helperItem = Mage::helper('mercadopago_mercadoenvios/itemData');
             $result = $product->getData($attributeMapped);
             $result = $this->getAttributesMappingUnitConversion($type, $result);

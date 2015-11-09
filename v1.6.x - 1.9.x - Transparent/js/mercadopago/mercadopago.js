@@ -371,7 +371,11 @@ function loadFilesMP() {
                         html_options += "<option value='"+installments[i].installments+"'>"+installments[i].installments +" de " + currency_text_mercadopago + " " + installments[i].share_amount+" ("+ currency_text_mercadopago + " "+ installments[i].total_amount+")</option>";
                     }
                 };
-                $("#installments").html(html_options);
+                
+                //only updates when really the values have changed
+                if ($("#installments").html().toString() != html_options.toString()) {
+                    $("#installments").html(html_options);
+                }
             }
             
             

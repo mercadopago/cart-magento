@@ -13,12 +13,12 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I fill the billing address
 
 
-  @MercadoEnvios @CheckoutShippingMethods @ShipingMethodsAvailability
+  @MercadoEnvios @CheckoutShippingMethods @ShipingMethodsCheckoutAvailability
   Scenario: Shipping methods are availables
     Given showmethod always
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
-      | 10       | 0        | 10        | 100       |
+      | 10       | 10        | 10        | 100       |
     When I press "#billing-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should find element "#s_method_mercadoenvios_73328"
@@ -34,7 +34,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should see "This shipping method is currently unavailable."
 
-  MercadoEnvios @CheckoutShippingMethods @ShipingMethodsBadDimensions
+  @MercadoEnvios @CheckoutShippingMethods @ShipingMethodsBadDimensions
   Scenario: Shipping methods are availables
     Given showmethod not always
     And I set product "hde006" attributes:
@@ -73,7 +73,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I press "#payment-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should see "(MercadoEnvíos - OCA Estándar"
-    And I should see element "#checkout-review-table .a-right .price" with text "$67.99"
+    And I should see element "#checkout-review-table .a-right .price" with text "$77.99"
 
   @MercadoEnvios @CheckoutShippingMethods @addShipmentToRequest
   Scenario: the only payment method available should be MercadoPago Classic
@@ -89,6 +89,10 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I press "#payment-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     And I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
-    Then I should see html "Elige la forma de entrega"
+    And I switch to the iframe "checkout_mercadopago"
+    And I fill text field "user_id" with "test_user_2135227@testuser.com"
+    And I fill text field "password" with "qatest5030"
+    And I press "#init" input element
+    And I switch to the iframe "checkout_mercadopago"
+    Then I should see "Elige la forma de entrega"
 

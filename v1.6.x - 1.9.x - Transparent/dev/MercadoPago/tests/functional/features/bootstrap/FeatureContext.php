@@ -302,6 +302,27 @@ class FeatureContext
     }
 
     /**
+     *  @When I am logged in MP as :arg1 :arg2
+     */
+    public function iAmLoggedInMPAs($arg1, $arg2)
+    {
+        $session = $this->getSession();
+
+        $login = $session->getPage()->find('css', '#user_id');
+        $pwd = $session->getPage()->find('css', '#password');
+        $submit = $session->getPage()->find('css', '#init');
+        if ($login && $pwd && $submit) {
+            $email = $arg1;
+            $password = $arg2;
+            $login->setValue($email);
+            $pwd->setValue($password);
+            $submit->click();
+            $this->findElement('#payerAccount');
+
+        }
+    }
+
+    /**
      * @Given User :arg1 :arg2 exists
      */
     public function userExists($arg1, $arg2)

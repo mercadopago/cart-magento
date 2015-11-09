@@ -93,6 +93,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I fill text field "user_id" with "test_user_2135227@testuser.com"
     And I fill text field "password" with "qatest5030"
     And I press "#init" input element
+    And I wait for 20 seconds
     And I switch to the iframe "checkout_mercadopago"
     Then I should see "Elige la forma de entrega"
 

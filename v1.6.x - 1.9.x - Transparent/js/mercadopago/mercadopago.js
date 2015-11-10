@@ -368,7 +368,7 @@ function loadFilesMP() {
                 var html_options = '<option value="">' + choice_text_mercadopago + '... </option>';
                 for(i=0; installments && i<installments.length; i++){
                     if (installments[i] != undefined) {
-                        html_options += "<option value='"+installments[i].installments+"'>"+installments[i].installments +" de " + currency_text_mercadopago + " " + installments[i].share_amount+" ("+ currency_text_mercadopago + " "+ installments[i].total_amount+")</option>";
+                        html_options += '<option value="'+installments[i].installments+'">'+installments[i].installments + ' de ' + currency_text_mercadopago + ' '+ installments[i].share_amount+ '('+ currency_text_mercadopago + ' '+ installments[i].total_amount+')</option>';
                     }
                 };
                 

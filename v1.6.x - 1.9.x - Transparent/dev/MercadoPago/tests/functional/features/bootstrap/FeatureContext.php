@@ -941,4 +941,17 @@ class FeatureContext
             $rule->save();
         }
     }
+
+    /**
+     * @Then I should see financing cost detail
+     */
+    public function iShouldSeeFinancingCostDetail()
+    {
+        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
+        $element = $this->findElement('#checkout-review-table');
+
+        $this->_stringMatch($element->getText(), 'Financing Cost');
+    }
+
+
 }

@@ -11,12 +11,12 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Mapping
             'style' => 'width:120px',
         ));
         $this->addColumn('magentoproduct', array(
-            'label' => Mage::helper('adminhtml')->__('Magento Product Attribute'),
+            'label' => Mage::helper('adminhtml')->__('Product Attribute'),
             'style' => 'width:120px',
         ));
 
         $this->addColumn('unit', array(
-            'label' => Mage::helper('adminhtml')->__('Magento Attribute Unit'),
+            'label' => Mage::helper('adminhtml')->__('Attribute Unit'),
             'style' => 'width:120px',
         ));
 
@@ -24,21 +24,21 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Mapping
         parent::__construct();
     }
 
-    protected function getMagentoAttributes()
+    protected function _getAttributes()
     {
         $attributes = Mage::getResourceModel('catalog/product_attribute_collection')
             ->addFieldToFilter('is_visible', 1)
-            ->addFieldToFilter('frontend_input', 'text')
+            ->addFieldToFilter( 'frontend_input' , ['nin' => ['boolean', 'date', 'datetime', 'gallery', 'image', 'media_image', 'select', 'multiselect', 'textarea']])
             ->load();
 
         return $attributes;
     }
 
-    protected function getStoredMappingValues()
+    protected function _getStoredMappingValues()
     {
         $prevValues = [];
         foreach ($this->getArrayRows() as $_row) {
-            $prevValues[] = ['MagentoCode' => $_row->getData('MagentoCode'), 'OcaCode' => $_row->getData('OcaCode'), 'Unit' => $_row->getData('Unit')];
+            $prevValues[] = ['attribute_code' => $_row->getData('attribute_code'), 'me_code' => $_row->getData('me_code'), 'unit' => $_row->getData('unit')];
         }
 
         return $prevValues;

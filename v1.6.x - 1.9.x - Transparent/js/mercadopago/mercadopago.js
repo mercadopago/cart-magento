@@ -109,8 +109,14 @@ function initMercadoPagoOCP() {
     addEvent(document.querySelector('#use_other_card_mp'), 'click', actionUseOneClickPayOrNo);
     addEvent(document.querySelector('#return_list_card_mp'), 'click', actionUseOneClickPayOrNo);
 
+    addEvent(document.querySelector("#installments"), 'change', setTotalAmount);
+
     //show botão de retornar para lista de cartões
     document.querySelector('#return_list_card_mp').style.display = 'block';
+}
+
+function setTotalAmount(){
+    jQuery('.total_amount').val(jQuery('option:selected', this).attr('cost'));
 }
 
 function defineInputs() {
@@ -513,14 +519,12 @@ function setInstallmentInfo(status, response) {
     showLogMercadoPago("Set Installment info");
     showLogMercadoPago(status);
     showLogMercadoPago(response);
-
     //hide loaging
     hideLoading();
 
-    var selectorInstallments = document.querySelector("#installments");
-    var fragment = document.createDocumentFragment();
+    var selectorInstallments = jQuery("#installments");
 
-    selectorInstallments.options.length = 0;
+    selectorInstallments.empty();
 
     if (response.length > 0) {
         var message_choose = document.querySelector(".mercadopago-text-choice").value;
@@ -528,13 +532,13 @@ function setInstallmentInfo(status, response) {
         var option = new Option(message_choose + "... ", ''),
             payerCosts = response[0].payer_costs;
 
-        fragment.appendChild(option);
+        selectorInstallments.append(option);
         for (var i = 0; i < payerCosts.length; i++) {
             option = new Option(payerCosts[i].recommended_message || payerCosts[i].installments, payerCosts[i].installments);
-            fragment.appendChild(option);
+            selectorInstallments.append(option);
+            jQuery(option).attr('cost', payerCosts[i].total_amount);
         }
-        selectorInstallments.appendChild(fragment);
-        selectorInstallments.removeAttribute('disabled');
+        selectorInstallments.prop('disabled', false);
 
 
         //função para tarjeta mercadopago

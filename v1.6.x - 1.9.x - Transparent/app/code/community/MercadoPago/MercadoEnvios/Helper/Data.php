@@ -121,7 +121,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
 
         if ($attributeType == 'weight') {
             //check if needs conversion
-            if ($this->_mapping[$attributeType]['unit'] != self::OCA_WEIGHT_UNIT) {
+            if ($this->_mapping[$attributeType]['unit'] != self::ME_WEIGHT_UNIT) {
                 $unit = new Zend_Measure_Weight($value);
                 $unit->convertTo(Zend_Measure_Weight::GRAM);
 

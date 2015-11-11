@@ -612,24 +612,24 @@ class FeatureContext
     {
         $mapping = [
             [
-                'OcaCode'     => 'width',
-                'MagentoCode' => $width,
-                'Unit'        => 'cm'
+                'me_code'     => 'width',
+                'attribute_code' => $width,
+                'unit'        => 'cm'
             ],
             [
-                'OcaCode'     => 'height',
-                'MagentoCode' => $height,
-                'Unit'        => 'cm'
+                'me_code'     => 'height',
+                'attribute_code' => $height,
+                'unit'        => 'cm'
             ],
             [
-                'OcaCode'     => 'length',
-                'MagentoCode' => $length,
-                'Unit'        => 'cm'
+                'me_code'     => 'length',
+                'attribute_code' => $length,
+                'unit'        => 'cm'
             ],
             [
-                'OcaCode'     => 'weight',
-                'MagentoCode' => $weight,
-                'Unit'        => 'gr'
+                'me_code'     => 'weight',
+                'attribute_code' => $weight,
+                'unit'        => 'gr'
             ]
         ];
         $serializedMapping = serialize($mapping);
@@ -682,7 +682,7 @@ class FeatureContext
      */
     public function iSetWeightMapWith($attrMapped, $unit)
     {
-        $this->setMappingAttributes(['OcaCode' => 'weight', 'Unit' => $unit, 'MagentoCode' => $attrMapped]);
+        $this->setMappingAttributes(['me_code' => 'weight', 'unit' => $unit, 'attribute_code' => $attrMapped]);
     }
 
     /**

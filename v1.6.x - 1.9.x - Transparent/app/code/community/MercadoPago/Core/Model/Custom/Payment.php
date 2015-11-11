@@ -161,6 +161,12 @@ class MercadoPago_Core_Model_Custom_Payment
         /* POST /v1/payments */
         $response = $core->postPaymentV1($preference);
 
+        /*Set order details*/
+        $balance = $response['response']['transaction_details']['total_paid_amount'] - $response['response']['transaction_amount'];
+        $order->setFinanceCostAmount($balance);
+        $order->setBaseFinanceCostAmount($balance);
+        $order->save();
+
         if ($response !== false && $response['response']['status'] == 'approved') {
             $this->customerAndCards($preference['token'], $response['response']);
         }

@@ -172,9 +172,9 @@ class MercadoPago_Core_Model_Core
 
     protected function getTotalCart($order)
     {
-        $total_cart = $order->getBaseGrandTotal();
+        $total_cart = $order->getBaseGrandTotal() - $order->getBaseFinanceCostAmount();
         if (!$total_cart) {
-            $total_cart = $order->getBasePrice() + $order->getBaseShippingAmount();
+            $total_cart = $order->getBasePrice() + $order->getBaseShippingAmount() - $order->getBaseFinanceCostAmount();
         }
 
         return number_format($total_cart, 2, '.', '');

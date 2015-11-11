@@ -337,6 +337,8 @@ class FeatureContext
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
+            $this->findElement('#payerAccount');
+
         }
     }
 
@@ -706,24 +708,24 @@ class FeatureContext
     {
         $mapping = [
             [
-                'me_code'        => 'width',
+                'me_code'     => 'width',
                 'attribute_code' => $width,
-                'unit'           => 'cm'
+                'unit'        => 'cm'
             ],
             [
-                'me_code'        => 'height',
+                'me_code'     => 'height',
                 'attribute_code' => $height,
-                'unit'           => 'cm'
+                'unit'        => 'cm'
             ],
             [
-                'me_code'        => 'length',
+                'me_code'     => 'length',
                 'attribute_code' => $length,
-                'unit'           => 'cm'
+                'unit'        => 'cm'
             ],
             [
-                'me_code'        => 'weight',
+                'me_code'     => 'weight',
                 'attribute_code' => $weight,
-                'unit'           => 'gr'
+                'unit'        => 'gr'
             ]
         ];
         $serializedMapping = serialize($mapping);
@@ -797,7 +799,7 @@ class FeatureContext
      */
     public function iEnableMethods($methods)
     {
-        $this->settingConfig('carriers/mercadoenvios/availablemethods', $methods);
+        $this->settingConfig('carriers/mercadoenvios/availablemethods', "73328,73330");
     }
 
     /**
@@ -942,16 +944,6 @@ class FeatureContext
         }
     }
 
-    /**
-     * @Then I should see financing cost detail
-     */
-    public function iShouldSeeFinancingCostDetail()
-    {
-        $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
-        $element = $this->findElement('#checkout-review-table');
-
-        $this->_stringMatch($element->getText(), 'Financing Cost');
-    }
 
 
 }

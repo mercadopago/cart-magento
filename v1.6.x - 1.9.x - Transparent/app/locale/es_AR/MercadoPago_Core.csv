@@ -163,6 +163,7 @@
 "Return to cards list","Volver a lista de tarjetas"
 "Mercado Pago - Classic Checkout: Invalid client id or client secret","Mercado Pago - Classic Checkout: El id de cliente o la clave secreta, son inválidas"
 "Mercado Pago - Custom Checkout: Invalid access token", "Mercado Pago - Custom Checkout: El token de acceso es inválido"
+"(estimated date %s)","(fecha estimada %s)"
 
 "Cannot repeat Magento Product size attributes","No puede repetir los atributos de tamaño de producto de magento"
 "Cannot repeat MercadoEnvios Product size attributes","No puede repetir los atributos de tamaño de producto de MercadoEnvios"

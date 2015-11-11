@@ -115,15 +115,18 @@ class FeatureContext
     }
 
     /**
-     * @When I select shipping method
+     * @When I select shipping method :arg1
      */
-    public function iSelectShippingMethod()
+    public function iSelectShippingMethod($method)
     {
         $page = $this->getSession()->getPage();
 
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $page->fillField('shipping_method', 'flatrate_flatrate');
-        $page->findById('s_method_flatrate_flatrate')->press();
+        if (empty($method)) {
+            $method = 's_method_flatrate_flatrate';
+        }
+        $page->findById($method)->press();
     }
 
     /**
@@ -226,12 +229,20 @@ class FeatureContext
     {
         $milliseconds = $secs * 1000;
         try {
-            $this->getSession()->wait($milliseconds,'(0 === Ajax.activeRequestCount)');
+            $this->getSession()->wait($milliseconds, '(0 === Ajax.activeRequestCount)');
         } catch (Exception $e) {
             $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
         }
     }
 
+    /**
+     * @When I wait for :secs seconds with :cond
+     */
+    public function iWaitForSecondsWithCondition($secs, $condition)
+    {
+        $milliseconds = $secs * 1000;
+        $this->getSession()->wait($milliseconds, $condition);
+    }
 
     /**
      * @Then I should see :arg1
@@ -240,7 +251,7 @@ class FeatureContext
     {
         $actual = $this->getSession()->getPage()->getText();
         if (!$this->_stringMatch($actual, $arg1)) {
-            throw new ExpectationException('Element'. $arg1 .' not found', $this->getSession()->getDriver());
+            throw new ExpectationException('Element' . $arg1 . ' not found', $this->getSession()->getDriver());
         }
     }
 
@@ -250,8 +261,8 @@ class FeatureContext
     public function iShouldSeeHtml($arg1)
     {
         $actual = $this->getSession()->getPage()->getHtml();
-        if (!$this->_stringMatch($actual, $arg1)){
-            throw new ExpectationException('Element'. $arg1 .' not found', $this->getSession()->getDriver());
+        if (!$this->_stringMatch($actual, $arg1)) {
+            throw new ExpectationException('Element' . $arg1 . ' not found', $this->getSession()->getDriver());
         }
     }
 
@@ -261,8 +272,8 @@ class FeatureContext
     public function iShouldNotSee($arg1)
     {
         $actual = $this->getSession()->getPage()->getHtml();
-        if ($this->_stringMatch($actual, $arg1)){
-            throw new ExpectationException('Element'. $arg1 .' found', $this->getSession()->getDriver());
+        if ($this->_stringMatch($actual, $arg1)) {
+            throw new ExpectationException('Element' . $arg1 . ' found', $this->getSession()->getDriver());
         }
     }
 
@@ -286,6 +297,27 @@ class FeatureContext
             $pwd->setValue($password);
             $submit->click();
             $this->findElement('div.welcome-msg');
+
+        }
+    }
+
+    /**
+     *  @When I am logged in MP as :arg1 :arg2
+     */
+    public function iAmLoggedInMPAs($arg1, $arg2)
+    {
+        $session = $this->getSession();
+
+        $login = $session->getPage()->find('css', '#user_id');
+        $pwd = $session->getPage()->find('css', '#password');
+        $submit = $session->getPage()->find('css', '#init');
+        if ($login && $pwd && $submit) {
+            $email = $arg1;
+            $password = $arg2;
+            $login->setValue($email);
+            $pwd->setValue($password);
+            $submit->click();
+            $this->findElement('#payerAccount');
 
         }
     }
@@ -459,7 +491,6 @@ class FeatureContext
             $this->getSession()->wait(20000, false);
         } catch (Exception $e) {
             $msg = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
-            echo $msg;
             if ($msg == $arg1) {
                 return;
             }
@@ -476,7 +507,7 @@ class FeatureContext
         if ($this->findElement($arg1)->hasClass('active')) {
             return;
         }
-        throw new ExpectationException('I am not stay in '.$arg1, $this->getSession()->getDriver());
+        throw new ExpectationException('I am not stay in ' . $arg1, $this->getSession()->getDriver());
 
     }
 
@@ -485,11 +516,193 @@ class FeatureContext
      */
     public function iOpenConfiguration($arg1)
     {
-        $element = $this->findElement('#' . $arg1. '-head');
+        $element = $this->findElement('#' . $arg1 . '-head');
         if ($element->hasClass('open')) {
             return;
         }
-        $this->iPressInputElement('#' . $arg1. '-head');
+        $this->getSession()->getPage()->clickLink($arg1 . '-head');
     }
 
+    /**
+     * @Then The :arg1 select element has :arg2 selected
+     */
+    public function theSelectElementHasSelected($arg1, $arg2)
+    {
+        $this->getSession()->getPage()->selectFieldOption($arg1, $arg2);
+    }
+
+    /**
+     * @Then I should find element :arg1
+     */
+    public function iShouldFindElement($arg1)
+    {
+        $this->findElement($arg1);
+    }
+
+    /**
+     * @Then I should see element :arg1 with text :arg2
+     */
+    public function iShouldSeeElementWithText($arg1, $arg2)
+    {
+        $elements = $this->getSession()->getPage()->findAll('css', $arg1);
+        foreach ($elements as $element) {
+            if (strtolower($element->getText()) == strtolower($arg2)) {
+                return;
+            }
+        }
+        throw new ExpectationException('Element with text ' . $arg2 . ' not found', $this->getSession()->getDriver());
+    }
+
+    /**
+     * @Then Element :arg1 should has :arg2 children :arg3 elements
+     */
+    public function elementShouldHasChildrenElements($element, $children, $type)
+    {
+        $element = $this->findElement($element);
+        $elements = $element->findAll('css', $type);
+        $childrenQty = count($elements);
+        if ($childrenQty != $children) {
+            throw new ExpectationException('Element has ' . $childrenQty, $this->getSession()->getDriver());
+        }
+
+    }
+
+    /**
+     * @Given I create mp attributes
+     */
+    public function iCreateMpAttributesInAttributeSet()
+    {
+        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+        $attributes = ['width', 'height', 'length', 'weight'];
+
+        $model = Mage::getModel('eav/entity_setup', 'core_setup');
+        $allAttributeSetIds = $model->getAllAttributeSetIds('catalog_product');
+        foreach ($attributes as $attr) {
+            $data = [
+                'input'                   => 'text',
+                'type'                    => 'decimal',
+                'backend_model'           => '',
+                'is_filterable'           => '1',
+                'is_filterable_in_search' => '1',
+                'visible'                 => '1',
+                'visible_on_front'        => '0',
+                'is_global'               => '1',
+                'required'                => '0',
+                'is_searchable'           => '0',
+                'is_comparable'           => '1',
+                'user_defined'            => '1',
+                'used_in_product_listing' => '1',
+                'is_user_defined'         => '1',
+                'global'                  => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL
+            ];
+            $code = 'mp_' . $attr;
+            $model->addAttribute('catalog_product', $code, $data);
+
+            foreach ($allAttributeSetIds as $attributeSetId) {
+                $model->addAttributeToSet('catalog_product', $attributeSetId, 'general', $code);
+            }
+
+        }
+    }
+
+    /**
+     * @Given I map attributes :arg1 :arg2 :arg3 :arg4
+     */
+    function iMapAttributes($width, $height, $length, $weight)
+    {
+        $mapping = [
+            [
+                'OcaCode'     => 'width',
+                'MagentoCode' => $width,
+                'Unit'        => 'cm'
+            ],
+            [
+                'OcaCode'     => 'height',
+                'MagentoCode' => $height,
+                'Unit'        => 'cm'
+            ],
+            [
+                'OcaCode'     => 'length',
+                'MagentoCode' => $length,
+                'Unit'        => 'cm'
+            ],
+            [
+                'OcaCode'     => 'weight',
+                'MagentoCode' => $weight,
+                'Unit'        => 'gr'
+            ]
+        ];
+        $serializedMapping = serialize($mapping);
+        $this->settingConfig('carriers/mercadoenvios/attributesmapping', $serializedMapping);
+    }
+
+    public function setMappingAttributes($values)
+    {
+        $this->settingConfig('carriers/mercadoenvios/attributesmapping', serialize($values));
+    }
+
+    public function setAttributeProduct($sku, $attr, $value)
+    {
+        $product = Mage::getModel('catalog/product');
+        $product->load($product->getIdBySku($sku));
+        $product->addData([$attr => $value]);
+        $product->save();
+    }
+
+    /**
+     * @When I set product :arg1 attributes:
+     */
+    public function iSetProductAttributes($sku, TableNode $attributes)
+    {
+        foreach ($attributes as $row) {
+            foreach ($row as $attribute => $value) {
+                $this->setAttributeProduct($sku, $attribute, $value);
+            }
+        }
+    }
+
+    /**
+     * @Given showmethod not always
+     */
+    public function showmethodNotAlways()
+    {
+        $this->settingConfig('carriers/mercadoenvios/showmethod', 0);
+    }
+
+    /**
+     * @Given showmethod always
+     */
+    public function showmethodAlways()
+    {
+        $this->settingConfig('carriers/mercadoenvios/showmethod', 1);
+    }
+
+    /**
+     * @When I set weight map with :arg1 :arg2
+     */
+    public function iSetWeightMapWith($attrMapped, $unit)
+    {
+        $this->setMappingAttributes(['OcaCode' => 'weight', 'Unit' => $unit, 'MagentoCode' => $attrMapped]);
+    }
+
+    /**
+     * @Given I empty cart
+     */
+    public function iEmptyCart()
+    {
+        $this->iAmOnPage('checkout/cart/');
+        $element = $this->getSession()->getPage()->findById('empty_cart_button');
+        if (null !== $element) {
+            $this->iPressElement('#empty_cart_button');
+        }
+
+    }
+
+    /**
+     * @Given I enable methods
+     */
+    public function iEnableMethods()
+    {
+        $this->settingConfig('carriers/mercadoenvios/availablemethods', "73328,73330");
+    }
 }

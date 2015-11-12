@@ -83,6 +83,16 @@ class FeatureContext
     }
 
     /**
+     * @Given I fill the billing address with field :arg1 value :arg2
+     */
+    public function iFillTheBillingAddressWithFieldValue($field,$value){
+        $this->iFillTheBillingAddress();
+        $page = $this->getSession()->getPage();
+        $page->fillField($field, $value);
+
+    }
+
+    /**
      * @param $cssClass
      *
      * @return \Behat\Mink\Element\NodeElement|mixed|null
@@ -302,7 +312,7 @@ class FeatureContext
     }
 
     /**
-     *  @When I am logged in MP as :arg1 :arg2
+     * @When I am logged in MP as :arg1 :arg2
      */
     public function iAmLoggedInMPAs($arg1, $arg2)
     {
@@ -469,10 +479,12 @@ class FeatureContext
 
     /**
      * @AfterScenario @Availability
+     * @AfterFeature @MethodsPerCountry
      */
     public static function resetConfigs()
     {
         $obj = new FeatureContext();
+        $obj->settingConfig('payment/mercadopago/country', 'mla');
         $obj->settingConfig('payment/mercadopago_standard/client_id', '446950613712741');
         $obj->settingConfig('payment/mercadopago_standard/client_secret', '0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv');
         $obj->settingConfig('payment/mercadopago_standard/active', '1');
@@ -699,10 +711,52 @@ class FeatureContext
     }
 
     /**
-     * @Given I enable methods
+     * @Given I enable methods :arg1
      */
-    public function iEnableMethods()
+    public function iEnableMethods($methods)
     {
-        $this->settingConfig('carriers/mercadoenvios/availablemethods', "73328,73330");
+        $this->settingConfig('carriers/mercadoenvios/availablemethods', $methods);
     }
+
+    /**
+     * @Given Setting merchant :arg1
+     */
+    public function settingMerchant($arg1)
+    {
+        $dataCountry = [
+            'mla' => [
+                'client_id'     => '446950613712741',
+                'client_secret' => '0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv'
+            ],
+            'mlb' => [
+                'client_id'     => '1872374615846510',
+                'client_secret' => 'WGfDqM8bNLzjvmrEz8coLCUwL8s4h9HZ'
+            ],
+            'mlm' => [
+                'client_id'     => '2272101328791208',
+                'client_secret' => 'cPi6Mlzc7bGkEaubEJjHRipqmojXLtKm'
+            ]
+        ];
+        $clientId = $dataCountry[$arg1]['client_id'];
+        $clientSecret = $dataCountry[$arg1]['client_secret'];
+        $this->settingConfig('payment/mercadopago/country', $arg1);
+        $this->settingConfig('payment/mercadopago_standard/client_id', $clientId);
+        $this->settingConfig('payment/mercadopago_standard/client_secret', $clientSecret);
+
+    }
+
+    /**
+     * @Given I enable methods of :arg1
+     */
+    public function iEnableMethodsOf($country)
+    {
+        $methodsCountry = [
+            'mla' => "73328,73330",
+            'mlb' => "100009,182",
+            'mlm' => "501245,501345"
+        ];
+
+        $this->iEnableMethods($methodsCountry[$country]);
+    }
+
 }

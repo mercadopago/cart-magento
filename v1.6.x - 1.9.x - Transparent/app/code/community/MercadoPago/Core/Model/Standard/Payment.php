@@ -248,6 +248,9 @@ class MercadoPago_Core_Model_Standard_Payment
                 'default_shipping_method'=>intval($defaultShippingId),
                 'dimensions' => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
             ];
+            if ($shippingCost == 0) {
+                $params['free_methods'] = [['id'=>intval($defaultShippingId)]];
+            }
         }
         if (!empty($shippingCost)) {
             $params['cost'] = (float)$order->getBaseShippingAmount();
@@ -258,8 +261,9 @@ class MercadoPago_Core_Model_Standard_Payment
             "zip_code"      => $shippingAddress->getPostcode(),
             "street_name"   => $shippingAddress->getStreet()[0] . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
             "apartment"     => "-",
-            "street_number" => "0"
+            "street_number" => ""
         );
+
         return $params;
 
     }

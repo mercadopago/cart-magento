@@ -138,4 +138,9 @@ class MercadoPago_MercadoEnvios_Helper_Data
         return $value;
     }
 
+    public function getFreeMethod()
+    {
+        return Mage::getStoreConfig('carriers/mercadoenvios/free_method');
+    }
+
 }

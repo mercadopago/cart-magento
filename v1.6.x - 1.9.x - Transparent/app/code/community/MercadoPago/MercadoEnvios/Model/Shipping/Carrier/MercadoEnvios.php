@@ -93,6 +93,10 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 "dimensions" => $dimensions,
                 "zip_code"   => $postcode,
             ];
+			$freeMethod = Mage::helper('mercadopago_mercadoenvios')->getFreeMethod();
+            if (!empty($freeMethod)) {
+                $params['free_method'] = $freeMethod;
+            }
             $response = $mp->get("/shipping_options", $params);
             if ($response['status'] == 200) {
                 $this->_methods = $response['response']['options'];

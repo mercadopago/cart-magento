@@ -28,11 +28,13 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
         if ($this->_getFinancingCondition($address)) {
-            $address->addTotal(array(
-                'code'  => $this->getCode(),
-                'title' => Mage::helper('mercadopago')->__('Financing Cost'),
-                'value' => $address->getFinanceCostAmount()
-            ));
+            if ($address->getFinanceCostAmount() > 0) {
+                $address->addTotal(array(
+                    'code'  => $this->getCode(),
+                    'title' => Mage::helper('mercadopago')->__('Financing Cost'),
+                    'value' => $address->getFinanceCostAmount()
+                ));
+            }
         }
 
         return $this;

@@ -85,7 +85,8 @@ class FeatureContext
     /**
      * @Given I fill the billing address with field :arg1 value :arg2
      */
-    public function iFillTheBillingAddressWithFieldValue($field,$value){
+    public function iFillTheBillingAddressWithFieldValue($field, $value)
+    {
         $this->iFillTheBillingAddress();
         $page = $this->getSession()->getPage();
         $page->fillField($field, $value);
@@ -372,7 +373,7 @@ class FeatureContext
      */
     public function iSwitchToIframe($arg1 = null)
     {
-        $this->getSession()->wait(20000);
+        $this->getSession()->wait(10000);
         $this->findElement('iframe[id=' . $arg1 . ']');
         $this->getSession()->switchToIFrame($arg1);
     }
@@ -409,6 +410,20 @@ class FeatureContext
         $page->selectFieldOption('installments', '1');
     }
 
+    /**
+     * @When I fill the iframe shipping address fields
+     */
+    public function iFillTheIframeShippingAddressFields() {
+        $page = $this->getSession()->getPage();
+        $page->fillField('streetName', 'Mitre');
+        $page->fillField('streetNumber', '123');
+        $page->fillField('zipCode', '7000');
+        $page->fillField('cityName', 'Tandil');
+        $page->selectFieldOption('stateId', 'AR-B');
+        $page->fillField('contact', 'test');
+        $page->fillField('phone', '43434343');
+
+    }
 
     /**
      * @Then I should be on :arg1
@@ -480,6 +495,7 @@ class FeatureContext
     /**
      * @AfterScenario @Availability
      * @AfterFeature @MethodsPerCountry
+     * @AfterFeature @FreeShipping
      */
     public static function resetConfigs()
     {
@@ -549,6 +565,19 @@ class FeatureContext
     public function iShouldFindElement($arg1)
     {
         $this->findElement($arg1);
+    }
+
+    /**
+     * @Then I should not find element :arg1
+     */
+    public function iShouldNotFindElement($arg1)
+    {
+        $page = $this->getSession()->getPage();
+        $element = $page->find('css', $arg1);
+        if (!empty($element)) {
+            throw new ExpectationException("Element $arg1 found ", $this->getSession()->getDriver());
+        }
+
     }
 
     /**
@@ -758,5 +787,31 @@ class FeatureContext
 
         $this->iEnableMethods($methodsCountry[$country]);
     }
+
+    /**
+     * @Given I enable ME free shipping :arg1
+     */
+    public function iEnableMEFreeShipping($method)
+    {
+        $this->settingConfig('carriers/mercadoenvios/free_method', $method);
+    }
+
+    /**
+     * @Then I should see element price method :arg1  with text :arg2
+     */
+    public function iShouldSeeElementPriceMethod($method, $text)
+    {
+        $this->iShouldSeeElementWithText("label[for='s_method_mercadoenvios_$method'] span.price",$text);
+    }
+
+    /**
+     * @Given I enable ME free shipping with Minimum Order Amount :arg1
+     */
+    public function iEnableMeFreeShippingWithMinimumOrderAmount($arg1)
+    {
+        $this->settingConfig('carriers/mercadoenvios/free_shipping_enable', 1);
+        $this->settingConfig('carriers/mercadoenvios/free_shipping_subtotal', $arg1);
+    }
+
 
 }

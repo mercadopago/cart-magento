@@ -67,7 +67,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
 
   @MercadoEnvios @FreeShippingCheckutStandard
   Scenario: FreeShipping complete checkout
-    When I enable methods of mla
+    When I enable methods of "mla"
     And showmethod always
     And Setting Config "payment/mercadopago/sandbox_mode" is "0"
     And I enable ME free shipping "73328"
@@ -90,3 +90,19 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I press "#next" input element
     And I wait for "10" seconds
     Then I should find element ".free-shipping"
+
+  @MercadoEnvios @FreeShippingCartRule
+  Scenario: FreeShipping configured
+    When I enable methods of "mla"
+    And showmethod always
+    And I enable ME free shipping ""
+    And I create promotion free shipping to product "hde006"
+    And I am on page "checkout/cart/"
+    And I select option field "country_id" with "US"
+    And I select option field "region_id" with "1"
+    And I fill text field "city" with "test city"
+    And I press "div.buttons-set button" element
+    And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
+    Then I should see element price method "73328"  with text "$0.00"
+    And I should see element price method "73330"  with text "$0.00"
+

@@ -824,5 +824,56 @@ class FeatureContext
         $this->settingConfig('carriers/mercadoenvios/free_shipping_subtotal', $arg1);
     }
 
+    /**
+     * @When I create promotion free shipping to product :arg1
+     */
+    public function iCreatePromotionFreeShippingToProduct($sku){
+        $name = 'Test rule - Freeshipping To '.$sku;
+        $rule = Mage::getModel('salesrule/rule')->load($name,'name');
+        if (!$rule->getId()) {
+            $customer_groups = [1];
+            $rule->setName($name)
+                ->setDescription($name)
+                ->setFromDate('')
+                ->setCouponType(1)
+                ->setCustomerGroupIds($customer_groups)
+                ->setIsActive(1)
+                ->setConditionsSerialized('')
+                ->setActionsSerialized('')
+                ->setStopRulesProcessing(0)
+                ->setIsAdvanced(1)
+                ->setProductIds('')
+                ->setSortOrder(0)
+                ->setSimpleAction('cart_fixed')
+                ->setDiscountAmount(10)
+                ->setDiscountQty(null)
+                ->setDiscountStep(0)
+                ->setSimpleFreeShipping('2')
+                ->setApplyToShipping('0')
+                ->setWebsiteIds(array(1));
 
+            $item_found = Mage::getModel('salesrule/rule_condition_product_found')
+                ->setType('salesrule/rule_condition_product_found')
+                ->setValue(1)// 1 == FOUND
+                ->setAggregator('all'); // match ALL conditions
+
+            $rule->getConditions()->addCondition($item_found);
+            $conditions = Mage::getModel('salesrule/rule_condition_product')
+                ->setType('salesrule/rule_condition_product')
+                ->setAttribute('sku')
+                ->setOperator('==')
+                ->setValue($sku);
+
+            $item_found->addCondition($conditions);
+
+            $actions = Mage::getModel('salesrule/rule_condition_product')
+                ->setType('salesrule/rule_condition_product')
+                ->setAttribute('sku')
+                ->setOperator('==')
+                ->setValue($sku);
+
+            $rule->getActions()->addCondition($actions);
+            $rule->save();
+        }
+    }
 }

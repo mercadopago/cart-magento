@@ -88,7 +88,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     And I press "#payment-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
-    And Setting Config "payment/mercadopago/sandbox_mode" is "1"
+    And Setting Config "payment/mercadopago/sandbox_mode" is "0"
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
     And I fill text field "user_id" with "test_user_2135227@testuser.com"

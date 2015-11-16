@@ -83,6 +83,17 @@ class FeatureContext
     }
 
     /**
+     * @Given I fill the billing address with field :arg1 value :arg2
+     */
+    public function iFillTheBillingAddressWithFieldValue($field, $value)
+    {
+        $this->iFillTheBillingAddress();
+        $page = $this->getSession()->getPage();
+        $page->fillField($field, $value);
+
+    }
+
+    /**
      * @param $cssClass
      *
      * @return \Behat\Mink\Element\NodeElement|mixed|null
@@ -302,7 +313,7 @@ class FeatureContext
     }
 
     /**
-     *  @When I am logged in MP as :arg1 :arg2
+     * @When I am logged in MP as :arg1 :arg2
      */
     public function iAmLoggedInMPAs($arg1, $arg2)
     {
@@ -362,7 +373,7 @@ class FeatureContext
      */
     public function iSwitchToIframe($arg1 = null)
     {
-        $this->getSession()->wait(20000);
+        $this->getSession()->wait(10000);
         $this->findElement('iframe[id=' . $arg1 . ']');
         $this->getSession()->switchToIFrame($arg1);
     }
@@ -399,6 +410,20 @@ class FeatureContext
         $page->selectFieldOption('installments', '1');
     }
 
+    /**
+     * @When I fill the iframe shipping address fields
+     */
+    public function iFillTheIframeShippingAddressFields() {
+        $page = $this->getSession()->getPage();
+        $page->fillField('streetName', 'Mitre');
+        $page->fillField('streetNumber', '123');
+        $page->fillField('zipCode', '7000');
+        $page->fillField('cityName', 'Tandil');
+        $page->selectFieldOption('stateId', 'AR-B');
+        $page->fillField('contact', 'test');
+        $page->fillField('phone', '43434343');
+
+    }
 
     /**
      * @Then I should be on :arg1
@@ -469,10 +494,13 @@ class FeatureContext
 
     /**
      * @AfterScenario @Availability
+     * @AfterFeature @MethodsPerCountry
+     * @AfterFeature @FreeShipping
      */
     public static function resetConfigs()
     {
         $obj = new FeatureContext();
+        $obj->settingConfig('payment/mercadopago/country', 'mla');
         $obj->settingConfig('payment/mercadopago_standard/client_id', '446950613712741');
         $obj->settingConfig('payment/mercadopago_standard/client_secret', '0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv');
         $obj->settingConfig('payment/mercadopago_standard/active', '1');
@@ -537,6 +565,19 @@ class FeatureContext
     public function iShouldFindElement($arg1)
     {
         $this->findElement($arg1);
+    }
+
+    /**
+     * @Then I should not find element :arg1
+     */
+    public function iShouldNotFindElement($arg1)
+    {
+        $page = $this->getSession()->getPage();
+        $element = $page->find('css', $arg1);
+        if (!empty($element)) {
+            throw new ExpectationException("Element $arg1 found ", $this->getSession()->getDriver());
+        }
+
     }
 
     /**
@@ -699,10 +740,129 @@ class FeatureContext
     }
 
     /**
-     * @Given I enable methods
+     * @Given I enable methods :arg1
      */
-    public function iEnableMethods()
+    public function iEnableMethods($methods)
     {
-        $this->settingConfig('carriers/mercadoenvios/availablemethods', "73328,73330");
+        $this->settingConfig('carriers/mercadoenvios/availablemethods', $methods);
+    }
+
+    /**
+     * @Given Setting merchant :arg1
+     */
+    public function settingMerchant($arg1)
+    {
+        $dataCountry = [
+            'mla' => [
+                'client_id'     => '446950613712741',
+                'client_secret' => '0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv'
+            ],
+            'mlb' => [
+                'client_id'     => '1872374615846510',
+                'client_secret' => 'WGfDqM8bNLzjvmrEz8coLCUwL8s4h9HZ'
+            ],
+            'mlm' => [
+                'client_id'     => '2272101328791208',
+                'client_secret' => 'cPi6Mlzc7bGkEaubEJjHRipqmojXLtKm'
+            ]
+        ];
+        $clientId = $dataCountry[$arg1]['client_id'];
+        $clientSecret = $dataCountry[$arg1]['client_secret'];
+        $this->settingConfig('payment/mercadopago/country', $arg1);
+        $this->settingConfig('payment/mercadopago_standard/client_id', $clientId);
+        $this->settingConfig('payment/mercadopago_standard/client_secret', $clientSecret);
+
+    }
+
+    /**
+     * @Given I enable methods of :arg1
+     */
+    public function iEnableMethodsOf($country)
+    {
+        $methodsCountry = [
+            'mla' => "73328,73330",
+            'mlb' => "100009,182",
+            'mlm' => "501245,501345"
+        ];
+
+        $this->iEnableMethods($methodsCountry[$country]);
+    }
+
+    /**
+     * @Given I enable ME free shipping :arg1
+     */
+    public function iEnableMEFreeShipping($method)
+    {
+        $this->settingConfig('carriers/mercadoenvios/free_method', $method);
+    }
+
+    /**
+     * @Then I should see element price method :arg1  with text :arg2
+     */
+    public function iShouldSeeElementPriceMethod($method, $text)
+    {
+        $this->iShouldSeeElementWithText("label[for='s_method_mercadoenvios_$method'] span.price",$text);
+    }
+
+    /**
+     * @Given I enable ME free shipping with Minimum Order Amount :arg1
+     */
+    public function iEnableMeFreeShippingWithMinimumOrderAmount($arg1)
+    {
+        $this->settingConfig('carriers/mercadoenvios/free_shipping_enable', 1);
+        $this->settingConfig('carriers/mercadoenvios/free_shipping_subtotal', $arg1);
+    }
+
+    /**
+     * @When I create promotion free shipping to product :arg1
+     */
+    public function iCreatePromotionFreeShippingToProduct($sku){
+        $name = 'Test rule - Freeshipping To '.$sku;
+        $rule = Mage::getModel('salesrule/rule')->load($name,'name');
+        if (!$rule->getId()) {
+            $customer_groups = [1];
+            $rule->setName($name)
+                ->setDescription($name)
+                ->setFromDate('')
+                ->setCouponType(1)
+                ->setCustomerGroupIds($customer_groups)
+                ->setIsActive(1)
+                ->setConditionsSerialized('')
+                ->setActionsSerialized('')
+                ->setStopRulesProcessing(0)
+                ->setIsAdvanced(1)
+                ->setProductIds('')
+                ->setSortOrder(0)
+                ->setSimpleAction('cart_fixed')
+                ->setDiscountAmount(10)
+                ->setDiscountQty(null)
+                ->setDiscountStep(0)
+                ->setSimpleFreeShipping('2')
+                ->setApplyToShipping('0')
+                ->setWebsiteIds(array(1));
+
+            $item_found = Mage::getModel('salesrule/rule_condition_product_found')
+                ->setType('salesrule/rule_condition_product_found')
+                ->setValue(1)// 1 == FOUND
+                ->setAggregator('all'); // match ALL conditions
+
+            $rule->getConditions()->addCondition($item_found);
+            $conditions = Mage::getModel('salesrule/rule_condition_product')
+                ->setType('salesrule/rule_condition_product')
+                ->setAttribute('sku')
+                ->setOperator('==')
+                ->setValue($sku);
+
+            $item_found->addCondition($conditions);
+
+            $actions = Mage::getModel('salesrule/rule_condition_product')
+                ->setType('salesrule/rule_condition_product')
+                ->setAttribute('sku')
+                ->setOperator('==')
+                ->setValue($sku);
+
+            $rule->getActions()->addCondition($actions);
+            $rule->save();
+        }
     }
 }

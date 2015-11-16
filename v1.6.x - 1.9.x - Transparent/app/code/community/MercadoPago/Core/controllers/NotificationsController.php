@@ -37,19 +37,6 @@ class MercadoPago_Core_NotificationsController
         return $data;
     }
 
-    protected function _getDataShipments($merchantOrder)
-    {
-        $data = array();
-        $core = Mage::getModel('mercadopago/core');
-        foreach ($merchantOrder['shipments'] as $shipment) {
-            $response = $core->getPayment($shipment['id']);
-            $payment = $response['response']['collection'];
-            $data = $this->formatArrayPayment($data, $payment);
-        }
-
-        return $data;
-    }
-
     protected function getStatusFinal($dataStatus)
     {
         $status_final = "";

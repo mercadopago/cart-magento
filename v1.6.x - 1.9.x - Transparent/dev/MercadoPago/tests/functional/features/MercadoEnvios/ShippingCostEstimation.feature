@@ -8,7 +8,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I press ".add-to-cart-buttons .btn-cart" element
     And I create mp attributes
     And I map attributes "mp_width" "mp_height" "mp_length" "mp_weight"
-    And I enable methods
+    And I enable methods "73328,73330"
 
 
   @MercadoEnvios @ShippingCostEstimation @visibleSection

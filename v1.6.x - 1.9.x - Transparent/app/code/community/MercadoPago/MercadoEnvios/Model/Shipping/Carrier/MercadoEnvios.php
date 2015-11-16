@@ -89,10 +89,10 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 return;
             }
 
-            $params = array(
+            $params = [
                 "dimensions" => $dimensions,
                 "zip_code"   => $postcode,
-            );
+            ];
             $response = $mp->get("/shipping_options", $params);
             if ($response['status'] == 200) {
                 $this->_methods = $response['response']['options'];
@@ -114,7 +114,8 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 }
             }
         }
-        new Varien_Object();
+
+        return new Varien_Object();
     }
 
     protected function _getRate($methodId)

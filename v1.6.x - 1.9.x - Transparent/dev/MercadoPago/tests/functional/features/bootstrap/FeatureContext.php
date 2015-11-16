@@ -373,7 +373,7 @@ class FeatureContext
      */
     public function iSwitchToIframe($arg1 = null)
     {
-        $this->getSession()->wait(10000);
+        $this->getSession()->wait(20000);
         $this->findElement('iframe[id=' . $arg1 . ']');
         $this->getSession()->switchToIFrame($arg1);
     }
@@ -496,6 +496,7 @@ class FeatureContext
      * @AfterScenario @Availability
      * @AfterFeature @MethodsPerCountry
      * @AfterFeature @FreeShipping
+     * @AfterFeature @reset_configs
      */
     public static function resetConfigs()
     {
@@ -790,7 +791,12 @@ class FeatureContext
         $this->settingConfig('payment/mercadopago/country', $arg1);
         $this->settingConfig('payment/mercadopago_standard/client_id', $clientId);
         $this->settingConfig('payment/mercadopago_standard/client_secret', $clientSecret);
-
+        if (isset($dataCountry[$arg1]['public_key'])) {
+            $publicKey = $dataCountry[$arg1]['public_key'];
+            $accessToken = $dataCountry[$arg1]['access_token'];
+            $this->settingConfig('payment/mercadopago_custom_checkout/public_key', $publicKey);
+            $this->settingConfig('payment/mercadopago_custom_checkout/access_token', $accessToken);
+        }
     }
 
     /**

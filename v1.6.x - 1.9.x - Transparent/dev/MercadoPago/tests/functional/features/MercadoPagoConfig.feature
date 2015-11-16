@@ -1,4 +1,4 @@
-@MercadoPagoConfig
+@MercadoPagoConfig @reset_configs
 Feature: configuration admin section
 
   Background:
@@ -6,6 +6,6 @@ Feature: configuration admin section
     When I am on page "index.php/admin/system_config/edit/section/payment"
     And I open "payment_mercadopago" configuration
 
-    @MercadoPagoConfig @CheckVenezuelaOption
+  @MercadoPagoConfig @CheckVenezuelaOption
   Scenario: check Venezuela exists
-      Then I select option field "payment_mercadopago_country" with "mlv"
+    Then I select option field "payment_mercadopago_country" with "mlv"

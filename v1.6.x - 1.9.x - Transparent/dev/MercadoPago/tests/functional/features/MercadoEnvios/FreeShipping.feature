@@ -65,7 +65,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | mlm     | 501345      | 22615    | label[for='s_method_mercadoenvios_501245'] span.price | 100    | $0.00          |
       | mlm     | 501345      | 22615    | label[for='s_method_mercadoenvios_501245'] span.price | 150    | $121.00        |
 
-  @MercadoEnvios @FreeShippingCheckutStandard
+  @MercadoEnvios @FreeShippingCheckoutStandard
   Scenario: FreeShipping complete checkout
     Given Setting merchant "mla"
     When I enable methods of "mla"
@@ -84,9 +84,9 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
-    And I fill text field "user_id" with "test_user_2135227@testuser.com"
-    And I fill text field "password" with "qatest5030"
-    And I press "#init" input element
+#    And I fill text field "user_id" with "test_user_2135227@testuser.com"
+#    And I fill text field "password" with "qatest5030"
+#    And I press "#init" input element
     And I fill the iframe shipping address fields
     And I press "#next" input element
     And I wait for "10" seconds

@@ -481,6 +481,7 @@ class FeatureContext
     /**
      * @AfterScenario @Availability
      * @AfterFeature @MethodsPerCountry
+     * @AfterFeature @reset_configs
      */
     public static function resetConfigs()
     {
@@ -746,12 +747,15 @@ class FeatureContext
         ];
         $clientId = $dataCountry[$arg1]['client_id'];
         $clientSecret = $dataCountry[$arg1]['client_secret'];
-        $publicKey = $dataCountry[$arg1]['public_key'];
-        $accessToken = $dataCountry[$arg1]['access_token'];
         $this->settingConfig('payment/mercadopago/country', $arg1);
         $this->settingConfig('payment/mercadopago_standard/client_id', $clientId);
         $this->settingConfig('payment/mercadopago_standard/client_secret', $clientSecret);
-
+        if (isset($dataCountry[$arg1]['public_key'])) {
+            $publicKey = $dataCountry[$arg1]['public_key'];
+            $accessToken = $dataCountry[$arg1]['access_token'];
+            $this->settingConfig('payment/mercadopago_custom_checkout/public_key', $publicKey);
+            $this->settingConfig('payment/mercadopago_custom_checkout/access_token', $accessToken);
+        }
     }
 
     /**

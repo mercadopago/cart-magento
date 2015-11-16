@@ -1,3 +1,4 @@
+@reset_configs
 Feature: Payment results in MercadoPago Standard Checkout
 
   Background:
@@ -8,7 +9,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_standard"
 
-  @STANDARD
+  @STANDARDPerCountry
   Scenario Outline: Generate order with sandbox mode
     When Setting merchant <country>
     And I enable methods of <country>

@@ -653,24 +653,24 @@ class FeatureContext
     {
         $mapping = [
             [
-                'me_code'     => 'width',
+                'me_code'        => 'width',
                 'attribute_code' => $width,
-                'unit'        => 'cm'
+                'unit'           => 'cm'
             ],
             [
-                'me_code'     => 'height',
+                'me_code'        => 'height',
                 'attribute_code' => $height,
-                'unit'        => 'cm'
+                'unit'           => 'cm'
             ],
             [
-                'me_code'     => 'length',
+                'me_code'        => 'length',
                 'attribute_code' => $length,
-                'unit'        => 'cm'
+                'unit'           => 'cm'
             ],
             [
-                'me_code'     => 'weight',
+                'me_code'        => 'weight',
                 'attribute_code' => $weight,
-                'unit'        => 'gr'
+                'unit'           => 'gr'
             ]
         ];
         $serializedMapping = serialize($mapping);
@@ -775,10 +775,18 @@ class FeatureContext
             'mlm' => [
                 'client_id'     => '2272101328791208',
                 'client_secret' => 'cPi6Mlzc7bGkEaubEJjHRipqmojXLtKm'
+            ],
+            'mlv' => [
+                'client_id'     => '201313175671817',
+                'client_secret' => 'bASLUlb5s12QYPAUJwCQUMa21wFzFrzz',
+                'public_key'    => 'TEST-a4f588fd-5bb8-406c-9811-1536154d5d73',
+                'access_token'  => 'TEST-201313175671817-111108-b30483a389dbc6a04e401c23e62da2c1__LB_LC__-193994249'
             ]
         ];
         $clientId = $dataCountry[$arg1]['client_id'];
         $clientSecret = $dataCountry[$arg1]['client_secret'];
+        $publicKey = $dataCountry[$arg1]['public_key'];
+        $accessToken = $dataCountry[$arg1]['access_token'];
         $this->settingConfig('payment/mercadopago/country', $arg1);
         $this->settingConfig('payment/mercadopago_standard/client_id', $clientId);
         $this->settingConfig('payment/mercadopago_standard/client_secret', $clientSecret);

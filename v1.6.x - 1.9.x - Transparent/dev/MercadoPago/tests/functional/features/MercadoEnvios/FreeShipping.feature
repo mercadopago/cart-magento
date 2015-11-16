@@ -87,6 +87,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I fill text field "user_id" with "test_user_2135227@testuser.com"
     And I fill text field "password" with "qatest5030"
     And I press "#init" input element
+    And I switch to the iframe "checkout_mercadopago"
     And I fill the iframe shipping address fields
     And I press "#next" input element
     And I wait for "10" seconds
@@ -103,6 +104,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I select option field "country_id" with "US"
     And I select option field "region_id" with "1"
     And I fill text field "city" with "test city"
+    And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should see element price method "73328"  with text "$0.00"

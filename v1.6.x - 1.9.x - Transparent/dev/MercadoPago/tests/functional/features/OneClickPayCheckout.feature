@@ -13,6 +13,15 @@ Feature: Validation of custom checkout with one click pay
   And I press "#shipping-method-buttons-container .button" element
   And I select radio "p_method_mercadopago_custom"
 
+  @OCP @InvalidSC
+  Scenario: See payment pending and credit card saved in Mercado Pago
+    Given I select option field "cardId" with "144422268"
+    And I fill text field "securityCodeOCP" with "aas"
+    And I select option field "installments" with "1"
+    And I press "#payment-buttons-container .button" element
+    And I wait for "20" seconds avoiding alert
+    Then I should stay step "#opc-payment"
+
   @OCP @OCPAPRO
   Scenario: See payment approved in Mercado Pago with OCP
     Given I select option field "cardId" with "144422268"
@@ -21,19 +30,9 @@ Feature: Validation of custom checkout with one click pay
     And I press "#payment-buttons-container .button" element
     And I press "#review-buttons-container .button" element
     And I wait for "20" seconds
-
     Then I should see "Payment Status: approved"
     And I should see "Payment Detail: accredited"
 
-  @OCP @InvalidSC
-  Scenario: See payment pending and credit card saved in Mercado Pago
-    Given I select option field "cardId" with "144422268"
-    And I fill text field "securityCodeOCP" with "aas"
-    And I select option field "installments" with "1"
-    And I press "#payment-buttons-container .button" element
-    And I wait for "20" seconds avoiding alert
-
-    Then I should stay step "#opc-payment"
 
   @OCP @OPCrequiredFields
   Scenario: See payment approved in Mercado Pago with OCP

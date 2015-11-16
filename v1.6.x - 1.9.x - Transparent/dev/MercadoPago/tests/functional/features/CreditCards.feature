@@ -13,11 +13,11 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I select radio "p_method_mercadopago_custom"
     And I press "#use_other_card_mp" element
 
-  @CheckoutCustom @APRO
-  Scenario: See payment approved
+  @CheckoutCustom @OUT
+  Scenario Outline: See payment status
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "01"
-    And I fill text field "cardholderName" with "APRO"
+    And I fill text field "cardholderName" with <cardholder>
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "123"
     And I select option field "cardExpirationYear" with "2017"
@@ -27,137 +27,16 @@ Feature: Payment results in MercadoPago Custom Checkout
     When I press "#review-buttons-container .button" element
     And I wait for "20" seconds
 
-    Then I should see "Payment Status: approved"
-    And I should see "Payment Detail: accredited"
+    Then I should see "<status>"
+    And I should see "<status_detail>"
 
-
-  @CheckoutCustom @CONT
-  Scenario: See payment in process, pending contingency
-    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
-    And I select option field "cardExpirationMonth" with "01"
-    And I fill text field "cardholderName" with "CONT"
-    And I select option field "docType" with "DNI"
-    And I fill text field "docNumber" with "12345678"
-    And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
-    And I select option field "installments" with "1"
-    And I press "#payment-buttons-container .button" element
-
-    When I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
-
-    Then I should see "Payment Status: in_process"
-    And I should see "Payment Detail: pending_contingency"
-
-
-  @CheckoutCustom @CALL
-  Scenario: See payment rejected, call for authorize
-    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
-    And I select option field "cardExpirationMonth" with "01"
-    And I fill text field "cardholderName" with "CALL"
-    And I select option field "docType" with "DNI"
-    And I fill text field "docNumber" with "12345678"
-    And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
-    And I select option field "installments" with "1"
-    And I press "#payment-buttons-container .button" element
-
-    When I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
-
-    Then I should see "Payment Status: rejected"
-    And I should see "Payment Detail: cc_rejected_call_for_authorize"
-
-
-  @CheckoutCustom @FUND
-  Scenario: See payment rejected, insufficient amount
-    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
-    And I select option field "cardExpirationMonth" with "01"
-    And I fill text field "cardholderName" with "FUND"
-    And I select option field "docType" with "DNI"
-    And I fill text field "docNumber" with "12345678"
-    And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
-    And I select option field "installments" with "1"
-    And I press "#payment-buttons-container .button" element
-
-    When I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
-
-    Then I should see "Payment Status: rejected"
-    And I should see "Payment Detail: cc_rejected_insufficient_amount"
-
-
-  @CheckoutCustom @SECU
-  Scenario: See payment rejected, bad filled security code
-    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
-    And I select option field "cardExpirationMonth" with "01"
-    And I fill text field "cardholderName" with "SECU"
-    And I select option field "docType" with "DNI"
-    And I fill text field "docNumber" with "12345678"
-    And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
-    And I select option field "installments" with "1"
-    And I press "#payment-buttons-container .button" element
-
-    When I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
-
-    Then I should see "Payment Status: rejected"
-    And I should see "Payment Detail: cc_rejected_bad_filled_security_code"
-
-
-  @CheckoutCustom @FORM
-  Scenario: See payment rejected, bad filled other
-    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
-    And I select option field "cardExpirationMonth" with "01"
-    And I fill text field "cardholderName" with "FORM"
-    And I select option field "docType" with "DNI"
-    And I fill text field "docNumber" with "12345678"
-    And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
-    And I select option field "installments" with "1"
-    And I press "#payment-buttons-container .button" element
-
-    When I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
-
-    Then I should see "Payment Status: rejected"
-    And I should see "Payment Detail: cc_rejected_bad_filled_other"
-
-
-  @CheckoutCustom @OTHE
-  Scenario: See payment rejected, other reason
-    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
-    And I select option field "cardExpirationMonth" with "01"
-    And I fill text field "cardholderName" with "OTHE"
-    And I select option field "docType" with "DNI"
-    And I fill text field "docNumber" with "12345678"
-    And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
-    And I select option field "installments" with "1"
-    And I press "#payment-buttons-container .button" element
-
-    When I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
-
-    Then I should see "Payment Status: rejected"
-    And I should see "Payment Detail: cc_rejected_other_reason"
-
-  @CheckoutCustom @EXPI
-  Scenario: See payment rejected, invalid card expiration date
-    Given I fill text field "cardNumber" with "4509 9535 6623 3704"
-    And I select option field "cardExpirationMonth" with "01"
-    And I fill text field "cardholderName" with "EXPI"
-    And I select option field "docType" with "DNI"
-    And I fill text field "docNumber" with "12345678"
-    And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
-    And I select option field "installments" with "1"
-    And I press "#payment-buttons-container .button" element
-
-    When I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
-
-    Then I should see "Payment Status: rejected"
-    And I should see "Payment Detail: cc_rejected_bad_filled_date"
+    Examples:
+      | cardholder | status                     | status_detail                                        |
+      | APRO       | Payment Status: approved   | Payment Detail: accredited                           |
+      | CONT       | Payment Status: in_process | Payment Detail: pending_contingency                  |
+      | CALL       | Payment Status: rejected   | Payment Detail: cc_rejected_call_for_authorize       |
+      | FUND       | Payment Status: rejected   | Payment Detail: cc_rejected_insufficient_amount      |
+      | SECU       | Payment Status: rejected   | Payment Detail: cc_rejected_bad_filled_security_code |
+      | FORM       | Payment Status: rejected   | Payment Detail: cc_rejected_bad_filled_other         |
+      | OTHE       | Payment Status: rejected   | Payment Detail: cc_rejected_other_reason             |
+      | EXPI       | Payment Status: rejected   | Payment Detail: cc_rejected_bad_filled_date          |

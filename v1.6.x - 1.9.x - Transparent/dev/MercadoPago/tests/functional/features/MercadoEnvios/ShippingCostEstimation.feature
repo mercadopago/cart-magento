@@ -8,7 +8,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I press ".add-to-cart-buttons .btn-cart" element
     And I create mp attributes
     And I map attributes "mp_width" "mp_height" "mp_length" "mp_weight"
-    And I enable methods
+    And I enable methods "73328,73330"
 
 
   @MercadoEnvios @ShippingCostEstimation @visibleSection
@@ -26,7 +26,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     When I am on page "checkout/cart/"
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
-      | 10       | 0        | 10        | 100       |
+      | 10       | 0         | 10        | 100       |
     And I select option field "country_id" with "US"
     And I select option field "region_id" with "1"
     And I fill text field "city" with "test city"
@@ -46,7 +46,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I press "div.buttons-set button" element
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
-      | 10       | 0        | 10        | 100       |
+      | 10       | 0         | 10        | 100       |
     Then I should not see "MercadoEnvíos"
 
   @MercadoEnvios @ShippingCostEstimation @bothMethodsAvailables
@@ -85,7 +85,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     When I am on page "checkout/cart/"
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
-      | 100       | 10        | 10        | 100      |
+      | 100      | 10        | 10        | 100       |
     And I select option field "country_id" with "US"
     And I select option field "region_id" with "1"
     And I fill text field "city" with "test city"
@@ -113,7 +113,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I should see "This shipping method is currently unavailable."
 
   @MercadoEnvios @ShippingCostEstimation @badUnitsNotShow
-  Scenario: Shipping methods are availables
+  Scenario: Shipping methods are available
     Given showmethod not always
     When I am on page "checkout/cart/"
     And I set product "hde006" attributes:

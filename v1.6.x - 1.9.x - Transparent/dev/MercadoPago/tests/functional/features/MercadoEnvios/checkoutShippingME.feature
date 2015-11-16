@@ -6,7 +6,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I empty cart
     And I create mp attributes
     And I map attributes "mp_width" "mp_height" "mp_length" "mp_weight"
-    And I enable methods
+    And I enable methods "73328,73330"
     And I am on page "large-camera-bag.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element
@@ -88,11 +88,10 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     And I press "#payment-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
+    And Setting Config "payment/mercadopago/sandbox_mode" is "0"
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
     And I fill text field "user_id" with "test_user_2135227@testuser.com"
     And I fill text field "password" with "qatest5030"
     And I press "#init" input element
-    And I wait for 20 seconds
-    Then I should see "Elige la forma de entrega"
-
+    Then I should see "Modifica tu dirección de envío"

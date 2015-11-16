@@ -67,6 +67,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
 
   @MercadoEnvios @FreeShippingCheckutStandard
   Scenario: FreeShipping complete checkout
+    Given Setting merchant "mla"
     When I enable methods of "mla"
     And showmethod always
     And Setting Config "payment/mercadopago/sandbox_mode" is "0"
@@ -93,6 +94,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
 
   @MercadoEnvios @FreeShippingCartRule
   Scenario: FreeShipping configured
+    Given Setting merchant "mla"
     When I enable methods of "mla"
     And showmethod always
     And I enable ME free shipping ""

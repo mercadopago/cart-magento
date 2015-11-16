@@ -25,6 +25,7 @@ class MercadoPago_Core_Model_Source_Country
         $country[] = array('value' => "mco", 'label' => Mage::helper('mercadopago')->__("Colombia"));
         $country[] = array('value' => "mlm", 'label' => Mage::helper('mercadopago')->__("Mexico"));
         $country[] = array('value' => "mlc", 'label' => Mage::helper('mercadopago')->__("Chile"));
+        $country[] = array('value' => "mlv", 'label' => Mage::helper('mercadopago')->__("Venezuela"));
 
         //force order by key
         ksort($country);

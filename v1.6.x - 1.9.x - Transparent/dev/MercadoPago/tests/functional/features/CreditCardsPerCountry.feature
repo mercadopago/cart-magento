@@ -1,8 +1,9 @@
+@reset_configs
 Feature: Payment results in MercadoPago Custom Checkout
 
+  @CustomCheckoutPerCountry
   Scenario Outline:
     Given Setting merchant <country>
-    And I enable methods of <country>
     And User "<user>" "<pass>" exists
     And I am logged in as "<user>" "<pass>"
     And I am on page "blue-horizons-bracelets.html"
@@ -31,5 +32,5 @@ Feature: Payment results in MercadoPago Custom Checkout
 
     Examples:
       | country | user                            | pass    | credit_card         | doc_number |
-      | mlv     | test_user_43285973@testuser.com | magento | 4966 3823 3110 9310 | 14978546   |
+      | mlv     | test_user_58787749@testuser.com | magento | 4966 3823 3110 9310 | 14978546   |
 

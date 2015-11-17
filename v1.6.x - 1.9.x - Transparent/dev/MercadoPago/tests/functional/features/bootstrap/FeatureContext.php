@@ -410,6 +410,27 @@ class FeatureContext
         $page->selectFieldOption('installments', '1');
     }
 
+	/**
+     * @When I fill the iframe fields country :arg1
+     */
+    public function iFillTheIframeFieldsCountry($country)
+    {
+        switch ($country) {
+            case 'mlv': {
+                $data['pmtOption'] = 'visa';
+                $data['cardNumber'] = '4966 3823 3110 9310';
+                $data['cardExpirationMonth'] = '01';
+                $data['cardExpirationYear'] = '2017';
+                $data['securityCode'] = '123';
+                $data['cardholderName'] = 'Name';
+                $data['docNumber'] = '14978546';
+                break;
+            }
+        }
+
+        $this->fillIframeFieldsWithData($data);
+    }
+
     /**
      * @When I fill the iframe shipping address fields
      */
@@ -425,6 +446,27 @@ class FeatureContext
 
     }
 
+public function fillIframeFieldsWithData($data)
+    {
+        $page = $this->getSession()->getPage();
+
+        $page->selectFieldOption('pmtOption', $data['pmtOption']);
+
+        $page->fillField('cardNumber', $data['cardNumber']);
+        $this->getSession()->wait(3000);
+        if (isset($data['creditCardIssuerOption'])) {
+            $page->selectFieldOption('creditCardIssuerOption', $data['creditCardIssuerOption']);
+        }
+        $page->selectFieldOption('cardExpirationMonth', $data['cardExpirationMonth']);
+        $page->selectFieldOption('cardExpirationYear', $data['cardExpirationYear']);
+        $page->fillField('securityCode', $data['securityCode']);
+        $page->fillField('cardholderName', $data['cardholderName']);
+
+        $page->fillField('docNumber', $data['docNumber']);
+        if (isset($data['installments'])) {
+            $page->selectFieldOption('installments', $data['installments']);
+        }
+    }
     /**
      * @Then I should be on :arg1
      */
@@ -495,7 +537,8 @@ class FeatureContext
     /**
      * @AfterScenario @Availability
      * @AfterFeature @MethodsPerCountry
-     * @AfterFeature @FreeShipping
+     * @AfterFeature @reset_configs
+	 * @AfterFeature @FreeShipping
      */
     public static function resetConfigs()
     {
@@ -653,24 +696,24 @@ class FeatureContext
     {
         $mapping = [
             [
-                'me_code'     => 'width',
+                'me_code'        => 'width',
                 'attribute_code' => $width,
-                'unit'        => 'cm'
+                'unit'           => 'cm'
             ],
             [
-                'me_code'     => 'height',
+                'me_code'        => 'height',
                 'attribute_code' => $height,
-                'unit'        => 'cm'
+                'unit'           => 'cm'
             ],
             [
-                'me_code'     => 'length',
+                'me_code'        => 'length',
                 'attribute_code' => $length,
-                'unit'        => 'cm'
+                'unit'           => 'cm'
             ],
             [
-                'me_code'     => 'weight',
+                'me_code'        => 'weight',
                 'attribute_code' => $weight,
-                'unit'        => 'gr'
+                'unit'           => 'gr'
             ]
         ];
         $serializedMapping = serialize($mapping);
@@ -764,6 +807,12 @@ class FeatureContext
             'mlm' => [
                 'client_id'     => '2272101328791208',
                 'client_secret' => 'cPi6Mlzc7bGkEaubEJjHRipqmojXLtKm'
+            ],
+            'mlv' => [
+                'client_id'     => '201313175671817',
+                'client_secret' => 'bASLUlb5s12QYPAUJwCQUMa21wFzFrzz',
+                'public_key'    => 'TEST-a4f588fd-5bb8-406c-9811-1536154d5d73',
+                'access_token'  => 'TEST-201313175671817-111108-b30483a389dbc6a04e401c23e62da2c1__LB_LC__-193994249'
             ]
         ];
         $clientId = $dataCountry[$arg1]['client_id'];
@@ -771,7 +820,12 @@ class FeatureContext
         $this->settingConfig('payment/mercadopago/country', $arg1);
         $this->settingConfig('payment/mercadopago_standard/client_id', $clientId);
         $this->settingConfig('payment/mercadopago_standard/client_secret', $clientSecret);
-
+        if (isset($dataCountry[$arg1]['public_key'])) {
+            $publicKey = $dataCountry[$arg1]['public_key'];
+            $accessToken = $dataCountry[$arg1]['access_token'];
+            $this->settingConfig('payment/mercadopago_custom_checkout/public_key', $publicKey);
+            $this->settingConfig('payment/mercadopago_custom_checkout/access_token', $accessToken);
+        }
     }
 
     /**

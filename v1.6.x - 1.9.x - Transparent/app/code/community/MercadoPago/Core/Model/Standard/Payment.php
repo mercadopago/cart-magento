@@ -235,7 +235,7 @@ class MercadoPago_Core_Model_Standard_Payment
 
     protected function _getShipmentsParams($order)
     {
-        $params=[];
+        $params = [];
         $shippingCost = $order->getBaseShippingAmount();
         $shippingAddress = $order->getShippingAddress();
         $method = $order->getShippingMethod();
@@ -243,11 +243,14 @@ class MercadoPago_Core_Model_Standard_Payment
             $zipCode = $shippingAddress->getPostcode();
             $defaultShippingId = substr($method, strpos($method, '_') + 1);
             $params = [
-                'mode' => 'me2',
-                'zip_code' => $zipCode,
-                'default_shipping_method'=>intval($defaultShippingId),
-                'dimensions' => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
+                'mode'                    => 'me2',
+                'zip_code'                => $zipCode,
+                'default_shipping_method' => intval($defaultShippingId),
+                'dimensions'              => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
             ];
+            if ($shippingCost == 0) {
+                $params['free_methods'] = [['id' => intval($defaultShippingId)]];
+            }
         }
         if (!empty($shippingCost)) {
             $params['cost'] = (float)$order->getBaseShippingAmount();

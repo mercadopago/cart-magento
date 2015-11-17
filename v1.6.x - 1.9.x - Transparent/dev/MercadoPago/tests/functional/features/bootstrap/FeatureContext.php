@@ -411,6 +411,49 @@ class FeatureContext
     }
 
     /**
+     * @When I fill the iframe fields country :arg1
+     */
+    public function iFillTheIframeFieldsCountry($country)
+    {
+        switch ($country) {
+            case 'mlv': {
+                $data['pmtOption'] = 'visa';
+                $data['cardNumber'] = '4966 3823 3110 9310';
+                $data['cardExpirationMonth'] = '01';
+                $data['cardExpirationYear'] = '2017';
+                $data['securityCode'] = '123';
+                $data['cardholderName'] = 'Name';
+                $data['docNumber'] = '14978546';
+                break;
+            }
+        }
+
+        $this->fillIframeFieldsWithData($data);
+    }
+
+    public function fillIframeFieldsWithData($data)
+    {
+        $page = $this->getSession()->getPage();
+
+        $page->selectFieldOption('pmtOption', $data['pmtOption']);
+
+        $page->fillField('cardNumber', $data['cardNumber']);
+        $this->getSession()->wait(3000);
+        if (isset($data['creditCardIssuerOption'])) {
+            $page->selectFieldOption('creditCardIssuerOption', $data['creditCardIssuerOption']);
+        }
+        $page->selectFieldOption('cardExpirationMonth', $data['cardExpirationMonth']);
+        $page->selectFieldOption('cardExpirationYear', $data['cardExpirationYear']);
+        $page->fillField('securityCode', $data['securityCode']);
+        $page->fillField('cardholderName', $data['cardholderName']);
+
+        $page->fillField('docNumber', $data['docNumber']);
+        if (isset($data['installments'])) {
+            $page->selectFieldOption('installments', $data['installments']);
+        }
+    }
+
+/**
      * @When I fill the iframe shipping address fields
      */
     public function iFillTheIframeShippingAddressFields() {
@@ -424,7 +467,6 @@ class FeatureContext
         $page->fillField('phone', '43434343');
 
     }
-
     /**
      * @Then I should be on :arg1
      */

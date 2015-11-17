@@ -17,7 +17,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     And I press "#payment-buttons-container .button" element
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
-    And I fill the iframe fields
+    And I fill the iframe fields country <country>
     And I press "#next" input element
     And I switch to the site
     Then I should be on "/mercadopago/success"

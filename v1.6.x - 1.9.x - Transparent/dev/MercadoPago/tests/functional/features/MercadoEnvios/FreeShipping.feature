@@ -90,7 +90,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I fill the iframe shipping address fields
     And I press "#next" input element
     And I wait for "10" seconds
-    Then I should see element "span.ch-price" with text "Gratis."
+    Then I should see html "Gratis."
 
   @MercadoEnvios @FreeShippingCartRule
   Scenario: FreeShipping configured

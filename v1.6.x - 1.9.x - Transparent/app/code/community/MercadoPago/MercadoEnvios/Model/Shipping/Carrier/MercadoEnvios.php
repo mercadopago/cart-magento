@@ -29,7 +29,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
-        if (!$this->getConfigFlag('active')) {
+        if (!$this->isActive()) {
             return false;
         }
         $this->_request = $request;
@@ -177,6 +177,16 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         }
 
         return in_array($rateId, $this->_available);
+    }
+
+    public function isActive() {
+        if (!Mage::getStoreConfigFlag('payment/mercadopago_standard/active')) {
+            return false;
+        }
+        if (!Mage::helper('mercadopago_mercadoenvios')->isCountryEnabled()) {
+            return false;
+        }
+        return parent::isActive();
     }
 
 }

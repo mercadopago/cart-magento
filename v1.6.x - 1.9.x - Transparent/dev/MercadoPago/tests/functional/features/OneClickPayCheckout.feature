@@ -19,8 +19,7 @@ Feature: Validation of custom checkout with one click pay
     And I select option field "installments" with "1"
     And I fill text field "securityCodeOCP" with "123"
     And I press "#payment-buttons-container .button" element
-    And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
-    And I press "#review-buttons-container button" element
+    And I press "#review-buttons-container .button" element
     And I wait for "20" seconds
 
     Then I should see "Payment Status: approved"

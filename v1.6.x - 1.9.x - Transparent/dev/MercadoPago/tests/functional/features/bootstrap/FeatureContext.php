@@ -214,6 +214,15 @@ class FeatureContext
     }
 
     /**
+     * @Given I blur field :arg1
+     */
+    public function iBlurField($arg1)
+    {
+        $field = $this->findElement($arg1);
+        $this->getSession()->getDriver()->blur($field->getXpath());
+    }
+
+    /**
      * @Given I select option field :arg1 with :arg2
      */
     public function iSelectOptionFieldWith($arg1, $arg2)
@@ -371,7 +380,7 @@ class FeatureContext
      */
     public function iSwitchToIframe($arg1 = null)
     {
-        $this->getSession()->wait(20000);
+        $this->getSession()->wait(10000);
         $this->findElement('iframe[id=' . $arg1 . ']');
         $this->getSession()->switchToIFrame($arg1);
     }
@@ -430,7 +439,22 @@ class FeatureContext
         $this->fillIframeFieldsWithData($data);
     }
 
-    public function fillIframeFieldsWithData($data)
+    /**
+     * @When I fill the iframe shipping address fields
+     */
+    public function iFillTheIframeShippingAddressFields() {
+        $page = $this->getSession()->getPage();
+        $page->fillField('streetName', 'Mitre');
+        $page->fillField('streetNumber', '123');
+        $page->fillField('zipCode', '7000');
+        $page->fillField('cityName', 'Tandil');
+        $page->selectFieldOption('stateId', 'AR-B');
+        $page->fillField('contact', 'test');
+        $page->fillField('phone', '43434343');
+
+    }
+
+public function fillIframeFieldsWithData($data)
     {
         $page = $this->getSession()->getPage();
 
@@ -536,8 +560,8 @@ class FeatureContext
     /**
      * @AfterScenario @Availability
      * @AfterFeature @MethodsPerCountry
-     * @AfterFeature @FreeShipping
      * @AfterFeature @reset_configs
+	 * @AfterFeature @FreeShipping
      */
     public static function resetConfigs()
     {
@@ -867,7 +891,7 @@ class FeatureContext
      */
     public function iShouldSeeElementPriceMethod($method, $text)
     {
-        $this->iShouldSeeElementWithText("label[for='s_method_mercadoenvios_$method'] span.price",$text);
+        $this->iShouldSeeElementWithText("label[for='s_method_mercadoenvios_$method'] span.price", $text);
     }
 
     /**
@@ -882,9 +906,10 @@ class FeatureContext
     /**
      * @When I create promotion free shipping to product :arg1
      */
-    public function iCreatePromotionFreeShippingToProduct($sku){
-        $name = 'Test rule - Freeshipping To '.$sku;
-        $rule = Mage::getModel('salesrule/rule')->load($name,'name');
+    public function iCreatePromotionFreeShippingToProduct($sku)
+    {
+        $name = 'Test rule - Freeshipping To ' . $sku;
+        $rule = Mage::getModel('salesrule/rule')->load($name, 'name');
         if (!$rule->getId()) {
             $customer_groups = [1];
             $rule->setName($name)

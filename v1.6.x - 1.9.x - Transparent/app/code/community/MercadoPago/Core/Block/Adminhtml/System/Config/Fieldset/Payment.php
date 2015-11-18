@@ -16,7 +16,7 @@ class MercadoPago_Core_Block_Adminhtml_System_Config_Fieldset_Payment
         $html .= '</strong></div>';
 
         $html .= '<div class="button-container meli-cards"><button type="button"'
-            . ' class="button'
+            . ' class="meli-payment-btn button'
             . '" id="' . $element->getHtmlId()
             . '-head" onclick="Fieldset.toggleCollapse(\'' . $element->getHtmlId() . '\', \''
             . $this->getUrl('*/*/state') . '\'); return false;"><span class="state-closed">'

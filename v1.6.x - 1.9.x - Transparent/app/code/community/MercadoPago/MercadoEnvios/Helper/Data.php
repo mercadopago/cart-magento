@@ -79,8 +79,8 @@ class MercadoPago_MercadoEnvios_Helper_Data
             $mapping = Mage::getStoreConfig(self::XML_PATH_ATTRIBUTES_MAPPING);
             $mapping = unserialize($mapping);
             $mappingResult = [];
-            foreach ($mapping as $map) {
-                $mappingResult[$map['me_code']] = ['code' => $map['attribute_code'], 'unit' => $map['unit']];
+            foreach ($mapping as $key => $map) {
+                $mappingResult[$key] = ['code' => $map['attribute_code'], 'unit' => $map['unit']];
             }
             $this->_mapping = $mappingResult;
         }
@@ -122,14 +122,14 @@ class MercadoPago_MercadoEnvios_Helper_Data
         if ($attributeType == 'weight') {
             //check if needs conversion
             if ($this->_mapping[$attributeType]['unit'] != self::ME_WEIGHT_UNIT) {
-                $unit = new Zend_Measure_Weight($value);
+                $unit = new Zend_Measure_Weight((float)$value);
                 $unit->convertTo(Zend_Measure_Weight::GRAM);
 
                 return $unit->getValue();
             }
 
         } elseif ($this->_mapping[$attributeType]['unit'] != self::ME_LENGTH_UNIT) {
-            $unit = new Zend_Measure_Length($value);
+            $unit = new Zend_Measure_Length((float)$value);
             $unit->convertTo(Zend_Measure_Length::CENTIMETER);
 
             return $unit->getValue();

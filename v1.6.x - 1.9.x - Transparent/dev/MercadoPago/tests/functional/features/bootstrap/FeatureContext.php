@@ -706,27 +706,26 @@ class FeatureContext
      */
     function iMapAttributes($width, $height, $length, $weight)
     {
-        $mapping = [
-            [
-                'me_code'     => 'width',
-                'attribute_code' => $width,
-                'unit'        => 'cm'
-            ],
-            [
-                'me_code'     => 'height',
-                'attribute_code' => $height,
-                'unit'        => 'cm'
-            ],
-            [
-                'me_code'     => 'length',
-                'attribute_code' => $length,
-                'unit'        => 'cm'
-            ],
-            [
-                'me_code'     => 'weight',
-                'attribute_code' => $weight,
-                'unit'        => 'gr'
-            ]
+        $mapping = ['width'  =>
+                        [
+                            'attribute_code' => $width,
+                            'unit'           => 'cm'
+                        ],
+                    'height' =>
+                        [
+                            'attribute_code' => $height,
+                            'unit'           => 'cm'
+                        ],
+                    'length' =>
+                        [
+                            'attribute_code' => $length,
+                            'unit'           => 'cm'
+                        ],
+                    'weight' =>
+                        [
+                            'attribute_code' => $weight,
+                            'unit'           => 'gr'
+                        ]
         ];
         $serializedMapping = serialize($mapping);
         $this->settingConfig('carriers/mercadoenvios/attributesmapping', $serializedMapping);
@@ -778,7 +777,7 @@ class FeatureContext
      */
     public function iSetWeightMapWith($attrMapped, $unit)
     {
-        $this->setMappingAttributes(['me_code' => 'weight', 'unit' => $unit, 'attribute_code' => $attrMapped]);
+        $this->setMappingAttributes(['unit' => $unit, 'attribute_code' => $attrMapped]);
     }
 
     /**

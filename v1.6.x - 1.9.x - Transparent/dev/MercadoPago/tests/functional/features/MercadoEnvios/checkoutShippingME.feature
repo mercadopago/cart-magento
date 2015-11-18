@@ -91,7 +91,6 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And Setting Config "payment/mercadopago/sandbox_mode" is "0"
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
-    And I fill text field "user_id" with "test_user_2135227@testuser.com"
-    And I fill text field "password" with "qatest5030"
+    And I am logged in MP as "test_user_2135227@testuser.com" "qatest5030"
     And I press "#init" input element
     Then I should see "Modifica tu dirección de envío"

@@ -328,8 +328,6 @@ class FeatureContext
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
-            $this->findElement('#payerAccount');
-
         }
     }
 

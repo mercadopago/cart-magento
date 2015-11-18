@@ -24,12 +24,12 @@ Feature: I want to see the Shipping Methods available depending on my country.
     Then I should see "<method>"
 
     Examples:
-      | country | method          | zip_code |
-      | mla     | Oca Estándar    | 7000     |
-      | mla     | Oca Prioritario | 7000     |
-      | mlb     | Normal          | 01046925 |
-      | mlb     | Expresso        | 01046925 |
-      | mlm     | DHL Express     | 22615    |
+      | country | method      | zip_code |
+      | mla     | Normal      | 7000     |
+      | mla     | Express     | 7000     |
+      | mlb     | Normal      | 01046925 |
+      | mlb     | Expresso    | 01046925 |
+      | mlm     | DHL Express | 22615    |
 
 
   @MercadoEnvios @MethodsPerCountry @CartMethods
@@ -49,12 +49,12 @@ Feature: I want to see the Shipping Methods available depending on my country.
     Then I should see html "<method>"
 
     Examples:
-      | country | method          | zip_code |
-      | mla     | Oca Estándar    | 7000     |
-      | mla     | Oca Prioritario | 7000     |
-      | mlb     | Normal          | 01046925 |
-      | mlb     | Expresso        | 01046925 |
-      | mlm     | DHL Express     | 22615    |
+      | country | method      | zip_code |
+      | mla     | Normal      | 7000     |
+      | mla     | Express     | 7000     |
+      | mlb     | Normal      | 01046925 |
+      | mlb     | Expresso    | 01046925 |
+      | mlm     | DHL Express | 22615    |
 
   @MercadoEnvios @MethodsPerCountry @SettingMethods
   Scenario Outline: As a customer I want to configure shipping methods for mercado envios in settings depending on Country
@@ -66,9 +66,9 @@ Feature: I want to see the Shipping Methods available depending on my country.
     Then I should see "<method>"
 
     Examples:
-      | country | method          |
-      | mla     | Oca Estándar    |
-      | mla     | Oca Prioritario |
-      | mlb     | Normal          |
-      | mlb     | Expresso        |
-      | mlm     | DHL Express     |
+      | country | method      |
+      | mla     | Normal      |
+      | mla     | Express     |
+      | mlb     | Normal      |
+      | mlb     | Expresso    |
+      | mlm     | DHL Express |

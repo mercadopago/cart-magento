@@ -53,8 +53,6 @@ class Mpexpress_Model_Mp extends Mage_Payment_Model_Method_Abstract
                     $options = array(
                                CURLOPT_RETURNTRANSFER => '1',
                                CURLOPT_HTTPHEADER => $heads,
-                               CURLOPT_SSL_VERIFYPEER => 'false',
-                               CURLOPT_SSLVERSION => 3,
                                CURLOPT_URL => $url,
                                CURLOPT_POSTFIELDS => $posts ,
                                CURLOPT_CUSTOMREQUEST => "GET"
@@ -64,8 +62,6 @@ class Mpexpress_Model_Mp extends Mage_Payment_Model_Method_Abstract
                       $options = array(
                                 CURLOPT_RETURNTRANSFER => 1,
                                 CURLOPT_HTTPHEADER => $heads,
-                                CURLOPT_SSL_VERIFYPEER => 'false',
-                                CURLOPT_SSLVERSION => 3,
                                 CURLOPT_URL => $url,
                                 CURLOPT_POSTFIELDS => $posts,    
                                 CURLOPT_CUSTOMREQUEST => "PUT",
@@ -76,8 +72,6 @@ class Mpexpress_Model_Mp extends Mage_Payment_Model_Method_Abstract
                          $options = array(
                                 CURLOPT_RETURNTRANSFER => '1',
                                 CURLOPT_HTTPHEADER => $heads,
-                                CURLOPT_SSL_VERIFYPEER => 'false',
-                                CURLOPT_SSLVERSION => 3,
                                 CURLOPT_URL => $url,
                                 CURLOPT_POSTFIELDS => $posts,    
                                 CURLOPT_CUSTOMREQUEST => "POST",
@@ -87,8 +81,6 @@ class Mpexpress_Model_Mp extends Mage_Payment_Model_Method_Abstract
                         $options = array(
                                 CURLOPT_RETURNTRANSFER => '1',
                                 CURLOPT_HTTPHEADER => $heads,
-                                CURLOPT_SSL_VERIFYPEER => 'false',
-                                CURLOPT_SSLVERSION => 3,
                                 CURLOPT_URL => $url,
                                 CURLOPT_POSTFIELDS => $posts,    
                                 CURLOPT_CUSTOMREQUEST => "DELETE",
@@ -99,8 +91,6 @@ class Mpexpress_Model_Mp extends Mage_Payment_Model_Method_Abstract
                             $options = array(
                                CURLOPT_RETURNTRANSFER => '1',
                                CURLOPT_HTTPHEADER => $heads,
-                               CURLOPT_SSL_VERIFYPEER => 'false',
-                               CURLOPT_SSLVERSION => 3,
                                CURLOPT_URL => $url,
                                CURLOPT_POSTFIELDS => $posts ,
                                CURLOPT_CUSTOMREQUEST => "GET"
@@ -110,6 +100,9 @@ class Mpexpress_Model_Mp extends Mage_Payment_Model_Method_Abstract
   
                 // do a curl call
                 $call = curl_init();
+
+                curl_setopt($call, CURLOPT_USERAGENT, "MercadoPago Magento-v1.4.x-1.5.x Cart v1.0.1");
+
                 curl_setopt_array($call,$options);
                 // execute the curl call
                 $dados = curl_exec($call);

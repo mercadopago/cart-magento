@@ -1,0 +1,403 @@
+<?xml version="1.0" ?>
+<!--
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL).
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+*
+* @category   	Payment Gateway
+* @package    	MercadoPago
+* @author      	Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
+* @copyright  	Copyright (c) MercadoPago [http://www.mercadopago.com]
+* @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+
+<config>
+    <sections>
+        <payment translate="label">
+            <groups>
+				<mercadopago>
+				    <label>MercadoPago - Configuration</label>
+                    <sort_order>99</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <client_id translate="label">
+                            <label>Client Id</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </client_id>
+			
+                        <client_secret translate="label">
+                            <label>Client Secret</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </client_secret>
+			
+						<country translate="label">
+							<label>Country</label>
+							<frontend_type>select</frontend_type>
+							<source_model>MercadoPago_Model_Source_Country</source_model>
+							<sort_order>6</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</country>
+
+						<category_id translate="label">
+                            <label>Category of your store</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>MercadoPago_Model_Source_CategoryId</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </category_id>
+						
+						<order_status_approved translate="label">
+							<label>Choose the status of approved orders</label>
+							<comment>To manage the status available go to System > Order Statuses</comment>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status</source_model>
+							<sort_order>8</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_status_approved>
+							
+						<order_status_refunded translate="label">
+							<label>Choose the status of refunded orders</label>
+							<comment>To manage the status available go to System > Order Statuses</comment>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status</source_model>
+							<sort_order>9</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_status_refunded>
+						
+						<order_status_in_process translate="label">
+							<label>Choose the status when payment is pending</label>
+							<comment>To manage the status available go to System > Order Statuses</comment>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status</source_model>
+							<sort_order>9</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_status_in_process>
+			
+						<order_status_in_mediation translate="label">
+							<label>Choose the status when client open a mediation</label>
+							<comment>To manage the status available go to System > Order Statuses</comment>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status</source_model>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_status_in_mediation>
+						
+						<order_status_rejected translate="label">
+							<label>Choose the status when payment was reject</label>
+							<comment>To manage the status available go to System > Order Statuses</comment>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status</source_model>
+							<sort_order>11</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_status_rejected>
+						
+						<order_status_cancelled translate="label">
+							<label>Choose the status when payment was canceled</label>
+							<comment>To manage the status available go to System > Order Statuses</comment>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status</source_model>
+							<sort_order>12</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_status_cancelled>
+						
+						<order_status_chargeback translate="label">
+							<label>Choose the status when payment was chargeback</label>
+							<comment>To manage the status available go to System > Order Statuses</comment>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status</source_model>
+							<sort_order>13</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_status_chargeback>
+						
+						<logs translate="label">
+                            <label>Logs</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>14</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+							<comment></comment>
+                        </logs>
+					</fields>
+				</mercadopago>
+				
+				
+				<mercadopago_custom translate="label" module="mercadopago_custom">
+                    <label>MercadoPago Custom - Credit Card</label>
+                    <sort_order>100</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <title translate="label">
+                            <label>Payment Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </title>
+			
+						<public_key translate="label">
+                            <label>Public Key</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+							<comment>Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials</comment>
+                        </public_key>
+		    
+		    
+						<banner_checkout translate="label">
+                            <label>Banner Checkout</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>13</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </banner_checkout>
+			
+						<sort_order translate="label">
+                            <label>Checkout Position</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>14</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <frontend_class>validate-number</frontend_class>
+                        </sort_order>
+						
+						<coupon_mercadopago translate="label">
+                            <label>Marketing - Coupon MercadoPago</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+							<comment></comment>
+                        </coupon_mercadopago>
+                    </fields>
+                </mercadopago_custom>
+				
+				<mercadopago_customticket translate="label" module="mercadopago_customticket">
+					<label>MercadoPago Custom - Ticket</label>
+					<sort_order>101</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>0</show_in_store>
+					<fields>
+						<active translate="label">
+							<label>Enabled</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>1</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<comment>For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'</comment>
+						</active>
+						
+						<title translate="label">
+							<label>Payment Title</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>2</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</title>
+						
+						
+						<banner_checkout translate="label">
+							<label>Banner Checkout</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>3</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</banner_checkout>
+						
+						<sort_order translate="label">
+							<label>Checkout Position</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>4</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<frontend_class>validate-number</frontend_class>
+						</sort_order>
+					
+						<coupon_mercadopago translate="label">
+                            <label>Marketing - Coupon MercadoPago</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+							<comment></comment>
+                        </coupon_mercadopago>
+					</fields>
+				</mercadopago_customticket>
+				
+				<mercadopago_standard module="mercadopago_standard">
+					<label>MercadoPago Standard - Credit Card, Ticket and Account Money</label>
+					<sort_order>102</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>0</show_in_store>
+					<fields>
+						<active translate="label">
+							<label>Enabled</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>1</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<comment>For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'</comment>
+						</active>
+			
+						<title translate="label">
+							<label>Payment Title</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>2</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</title>
+					
+					
+						<banner_checkout translate="label">
+							<label>Banner Checkout</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>3</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</banner_checkout>
+					
+						<sort_order translate="label">
+							<label>Checkout Position</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>4</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<frontend_class>validate-number</frontend_class>
+						</sort_order>
+					
+						<type_checkout>
+							<label>Type Checkout</label>
+							<frontend_type>select</frontend_type>
+							<source_model>MercadoPago_Model_Source_TypeCheckout</source_model>
+							<sort_order>5</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</type_checkout>
+					
+						<auto_return translate="label">
+							<label>Auto Redirect</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>6</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<comment>Auto-redirect the buyer when finishing the payment.</comment>
+						</auto_return>
+					
+						<excluded_payment_methods translate="label">
+							<label>Exclude Payment Methods</label>
+							<comment>Select payment methods not accepted</comment>
+							<frontend_type>multiselect</frontend_type>
+							<source_model>MercadoPago_Model_Source_PaymentMethods</source_model>
+							<sort_order>8</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<can_be_empty>1</can_be_empty>
+						</excluded_payment_methods>
+						
+						<installments>
+							<label>Maximum number of accepted installments</label>
+							<frontend_type>select</frontend_type>
+							<source_model>MercadoPago_Model_Source_Installments</source_model>
+							<sort_order>9</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</installments>
+			
+			
+						<iframe_width translate="label">
+                            <label>Width Checkout Iframe</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <frontend_class>validate-number</frontend_class>
+                        </iframe_width>
+			
+						<iframe_height translate="label">
+                            <label>Height Checkout Iframe</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <frontend_class>validate-number</frontend_class>
+                        </iframe_height>
+			
+                    </fields>
+                </mercadopago_standard>
+            </groups>
+        </payment>
+    </sections>
+</config>

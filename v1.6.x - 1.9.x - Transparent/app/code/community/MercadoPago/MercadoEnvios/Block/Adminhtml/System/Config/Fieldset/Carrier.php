@@ -23,7 +23,6 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Carrier
         }
 
         $html = '<div class="config-heading" ><div class="heading"><strong id="meen-logo"><div class="meli-legend">' . $element->getLegend();
-        $html .= ' ' . $disabledLegend;
         $html .= '</div></strong></div>';
 
         $html .= '<div class="button-container"><button '. $isPaymentEnabled .' type="button"'
@@ -32,8 +31,9 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Carrier
             . '-head" onclick="Fieldset.toggleCollapse(\'' . $element->getHtmlId() . '\', \''
             . $this->getUrl('*/*/state') . '\'); return false;"><span class="state-closed">'
             . $this->__('Configure') . '</span><span class="state-opened">'
-            . $this->__('Close') . '</span></button></div></div>';
+            . $this->__('Close') . '</span></button></div>';
 
+        $html .= ' <div class="disabled-legend">' . $disabledLegend . '</div> </div>';
         return $html;
     }
 

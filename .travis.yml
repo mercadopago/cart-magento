@@ -11,8 +11,8 @@ env:
   global:
     - MAGENTO_DB_NAME=magento
     - MAGENTO_URL=mercadopago.local
+    - DB=mysql
   matrix:
-   - DB=mysql
    - BEHAT_TAG=@MercadoEnvios
    - BEHAT_TAG=@MercadoPago
 

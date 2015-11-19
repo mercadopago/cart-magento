@@ -17,6 +17,28 @@ Scenario: See MercadoPago option as a payment method
 
   Then I should see MercadoPago Custom available
 
+  @frontend @Availability @FinancingCost
+  Scenario: Validate financing cost detail
+    Given User "test_user_2135227@testuser.com" "magento" exists
+    And I am logged in as "test_user_2135227@testuser.com" "magento"
+    And I empty cart
+    And I am on page "blue-horizons-bracelets.html"
+    And I press ".add-to-cart-buttons .btn-cart" element
+    And I press ".btn-proceed-checkout" element
+    And I fill the billing address
+    And I press "#billing-buttons-container .button" element
+    And I select shipping method "s_method_flatrate_flatrate"
+    And I press "#shipping-method-buttons-container .button" element
+    And I select radio "p_method_mercadopago_custom"
+    And I select option field "cardId" with "144422268"
+    And I select option field "installments" with "12"
+    And I fill text field "securityCodeOCP" with "123"
+
+    When I press "#payment-buttons-container .button" element
+    And I wait for "10" seconds
+
+    Then I should see financing cost detail
+
   @frontend @Availability @StandardActive
   Scenario: Not See MercadoPago option as a payment method when is not available
     Given Setting Config "payment/mercadopago_standard/active" is "0"
@@ -124,3 +146,4 @@ Scenario: See MercadoPago option as a payment method
     And I press "#shipping-method-buttons-container .button" element
 
     Then I should not see MercadoPago Custom available
+

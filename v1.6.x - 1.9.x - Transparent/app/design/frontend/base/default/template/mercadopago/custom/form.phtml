@@ -167,6 +167,7 @@ $customer = $this->getCustomerAndCards();
                     <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>" class="banner_checkout_mp"/>
                 <?php endif; ?>
 
+                <input type="hidden" class="total_amount" name="total_amount" value="<?php echo $grant_total; ?>"/>
                 <input type="hidden" class="amount" name="amount" value="<?php echo $grant_total; ?>"/>
                 <input type="hidden" class="mercadopago-discount-amount" name="mercadopago-discount-amount" value="0"/>
                 <input type="hidden" class="site_id" name="site_id" value="<?php echo strtoupper($country); ?>"/>

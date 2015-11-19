@@ -8,8 +8,8 @@ cache:
     - $HOME/.cache/bin
 
 env:
-  - BEHAT_TAG=@MercadoEnvios
-  - BEHAT_TAG=@MercadoPago
+    - BEHAT_TAG=@MercadoEnvios
+    - BEHAT_TAG=@MercadoPago
   global:
     - MAGENTO_DB_NAME=magento
     - MAGENTO_URL=mercadopago.local
@@ -87,4 +87,4 @@ script:
   - vendor/bin/phpmd ../../../app/code/community/MercadoPago text static/phpmd/ruleset.xml
   - vendor/bin/phpcs --standard=static/phpcs/Ecg --colors ../../../app/
   - vendor/bin/phpcpd ../../../ --exclude=dev
-  - vendor/bin/behat --config behat.yml
+  - vendor/bin/behat --config behat.yml --tags ${BEHAT_TAG}

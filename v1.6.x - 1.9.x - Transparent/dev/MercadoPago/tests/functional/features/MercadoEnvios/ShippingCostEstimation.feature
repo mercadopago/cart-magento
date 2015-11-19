@@ -50,7 +50,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | 10       | 0         | 10        | 100       |
     Then I should not see "MercadoEnvíos"
 
-  @ShippingCostEstimation @bothMethodsAvailables
+  @ShippingCostEstimation @bothMethodsAvailables @skip
   Scenario: Shipping methods are availables
     Given showmethod always
     When I am on page "checkout/cart/"

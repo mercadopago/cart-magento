@@ -838,8 +838,6 @@ class FeatureContext
         ];
         $clientId = $dataCountry[$arg1]['client_id'];
         $clientSecret = $dataCountry[$arg1]['client_secret'];
-        $publicKey = $dataCountry[$arg1]['public_key'];
-        $accessToken = $dataCountry[$arg1]['access_token'];
         $this->settingConfig('payment/mercadopago/country', $arg1);
         $this->settingConfig('payment/mercadopago_standard/client_id', $clientId);
         $this->settingConfig('payment/mercadopago_standard/client_secret', $clientSecret);

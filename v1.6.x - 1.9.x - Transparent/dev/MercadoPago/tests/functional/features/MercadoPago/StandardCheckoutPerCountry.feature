@@ -1,4 +1,4 @@
-@reset_configs
+@MercadoPago @reset_configs
 Feature: Payment results in MercadoPago Standard Checkout
 
   @STANDARDPerCountry

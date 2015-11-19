@@ -1,3 +1,4 @@
+@MercadoPago
 Feature: A customer should be able to do a checkout with MercadoPago
 
 @frontend @WIP

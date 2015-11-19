@@ -8,6 +8,8 @@ cache:
     - $HOME/.cache/bin
 
 env:
+  - BEHAT_TAG=@MercadoEnvios
+  - BEHAT_TAG=@MercadoPago
   global:
     - MAGENTO_DB_NAME=magento
     - MAGENTO_URL=mercadopago.local

@@ -1,4 +1,4 @@
-@MercadoPagoConfig @reset_configs
+@MercadoPago @MercadoPagoConfig @reset_configs
 Feature: configuration admin section
 
   Background:

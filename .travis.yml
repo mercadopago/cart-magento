@@ -13,8 +13,8 @@ env:
   - BEHAT_TAG=@MercadoEnvios
   - BEHAT_TAG=@MercadoPago
 
-  matrix:
-    - DB=mysql
+matrix:
+  - DB=mysql
 
 addons:
   hosts:

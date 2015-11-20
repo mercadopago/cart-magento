@@ -1,4 +1,4 @@
-@MercadoEnvios @MethodsPerCountry
+@MercadoEnvios @  MethodsPerCountry
 Feature: I want to see the Shipping Methods available depending on my country.
 
   Background:
@@ -8,7 +8,7 @@ Feature: I want to see the Shipping Methods available depending on my country.
       | mp_width | mp_height | mp_length | mp_weight |
       | 30       | 30        | 30        | 500       |
 
-  @MethodsPerCountry @CheckoutMethods
+  @MethodsPerCountry @CheckoutMethods @skip
   Scenario Outline: As a customer I want to see available shipping methods for mercado envios in checkout depending on Country
     Given Setting merchant <country>
     And I enable methods of <country>
@@ -32,7 +32,7 @@ Feature: I want to see the Shipping Methods available depending on my country.
       | mlm     | DHL Express | 22615    |
 
 
-  @MethodsPerCountry @CartMethods
+  @MethodsPerCountry @CartMethods @skip
   Scenario Outline: As a customer I want to see available shipping methods for mercado envios in cart depending on Country
     Given Setting merchant <country>
     And I enable methods of <country>
@@ -56,7 +56,7 @@ Feature: I want to see the Shipping Methods available depending on my country.
       | mlb     | Expresso    | 01046925 |
       | mlm     | DHL Express | 22615    |
 
-  @MethodsPerCountry @SettingMethods
+  @MethodsPerCountry @SettingMethods @skip
   Scenario Outline: As a customer I want to configure shipping methods for mercado envios in settings depending on Country
     Given Setting merchant <country>
     And I am admin logged in as "admin" "MercadoPago2015"

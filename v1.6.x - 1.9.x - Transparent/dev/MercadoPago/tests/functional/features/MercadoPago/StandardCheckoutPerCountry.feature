@@ -15,14 +15,13 @@ Feature: Payment results in MercadoPago Standard Checkout
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_standard"
     And I press "#payment-buttons-container .button" element
+    And Setting Config "payment/mercadopago/sandbox_mode" is "0"
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
     And I fill the iframe fields country <country>
     And I press "#next" input element
     And I wait for 10 seconds
-    And I switch to the site
-    Then I should be on "/mercadopago/pay"
-    And I should be on "/mercadopago/success"
+    Then I should see html "Listo, se aprobó tu pago"
 
     Examples:
       | country | user                            | pass    |

@@ -13,7 +13,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I am on page "large-camera-bag.html"
     And I press ".add-to-cart-buttons .btn-cart" element
 
-  @FreeShipping
+  @FreeShipping @skip
   Scenario Outline: FreeShipping configured
     Given Setting merchant <country>
     And I enable methods of <country>
@@ -36,7 +36,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | mlb     | 182         | 01046925 | label[for='s_method_mercadoenvios_182'] span.price    |
       | mlm     | 501345      | 22615    | label[for='s_method_mercadoenvios_501245'] span.price |
 
-  @FreeShippingMinimumTotal
+  @FreeShippingMinimumTotal @skip
   Scenario Outline: FreeShipping configured
     Given Setting merchant <country>
     And I enable methods of <country>
@@ -49,7 +49,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "<zip_code>"
     And I press "div.buttons-set button" element
-    And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
+    And I wait for "10" seconds
     Then I should see element price method "<free_method>"  with text "<price_expected>"
 
     Examples:

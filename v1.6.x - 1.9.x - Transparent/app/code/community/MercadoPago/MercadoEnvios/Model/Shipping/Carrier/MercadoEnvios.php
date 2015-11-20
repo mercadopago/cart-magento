@@ -95,7 +95,8 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 "dimensions" => $dimensions,
                 "zip_code"   => $postcode,
             ];
-            $freeMethod = Mage::helper('mercadopago_mercadoenvios')->getFreeMethod();
+
+            $freeMethod = Mage::helper('mercadopago_mercadoenvios')->getFreeMethod($this->_request);
             if (!empty($freeMethod)) {
                 $params['free_method'] = $freeMethod;
             }

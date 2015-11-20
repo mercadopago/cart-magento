@@ -1,4 +1,4 @@
-@reset_configs
+@MercadoPago @reset_configs
 Feature: Payment results in MercadoPago Standard Checkout
 
   @STANDARDPerCountry
@@ -15,13 +15,13 @@ Feature: Payment results in MercadoPago Standard Checkout
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_standard"
     And I press "#payment-buttons-container .button" element
+    And Setting Config "payment/mercadopago/sandbox_mode" is "0"
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
     And I fill the iframe fields country <country>
     And I press "#next" input element
-    And I wait for "10" seconds with "(0 === Ajax.activeRequestCount)"
-    And I switch to the site
-    Then I should be on "/mercadopago/success"
+    And I wait for "7" seconds
+    Then I should see html "Listo"
 
     Examples:
       | country | user                            | pass    |

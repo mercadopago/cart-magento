@@ -1,3 +1,4 @@
+@MercadoEnvios
 Feature: As a customer I want to choose shipping method MercadoEnvios
 
   Background:
@@ -13,7 +14,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I fill the billing address
 
 
-  @MercadoEnvios @CheckoutShippingMethods @ShipingMethodsCheckoutAvailability
+  @CheckoutShippingMethods @ShipingMethodsCheckoutAvailability @skip
   Scenario: Shipping methods are availables
     Given showmethod always
     And I set product "hde006" attributes:
@@ -24,27 +25,27 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     Then I should find element "#s_method_mercadoenvios_73328"
     And I should find element "#s_method_mercadoenvios_73330"
 
-  @MercadoEnvios @CheckoutShippingMethods @ShipingMethodsBadDimensions
+  @CheckoutShippingMethods @ShipingMethodsBadDimensions
   Scenario: Shipping methods are availables
     Given showmethod always
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
-      | 10       | 0        | 10        | 100       |
+      | 10       | 0         | 10        | 100       |
     When I press "#billing-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should see "This shipping method is currently unavailable."
 
-  @MercadoEnvios @CheckoutShippingMethods @ShipingMethodsBadDimensions
+  @CheckoutShippingMethods @ShipingMethodsBadDimensions
   Scenario: Shipping methods are availables
     Given showmethod not always
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
-      | 10       | 0        | 10        | 100       |
+      | 10       | 0         | 10        | 100       |
     When I press "#billing-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should not see "This shipping method is currently unavailable."
 
-  @MercadoEnvios @CheckoutShippingMethods @RestrictPaymentMethod
+  @CheckoutShippingMethods @RestrictPaymentMethod
   Scenario: the only payment method available should be MercadoPago Classic
     Given showmethod always
     And I set product "hde006" attributes:
@@ -59,7 +60,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And Element "#co-payment-form dl.sp-methods" should has "1" children "dt" elements
 
 
-  @MercadoEnvios @CheckoutShippingMethods @addShippingCost
+  @CheckoutShippingMethods @addShippingCost
   Scenario: the only payment method available should be MercadoPago Classic
     Given showmethod always
     And I set product "hde006" attributes:
@@ -75,7 +76,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     Then I should see "(MercadoEnvíos - Normal"
     And I should see element "#checkout-review-table .a-right .price" with text "$77.99"
 
-  @MercadoEnvios @CheckoutShippingMethods @addShipmentToRequest
+  @CheckoutShippingMethods @addShipmentToRequest
   Scenario: the only payment method available should be MercadoPago Classic
     Given showmethod always
     And I set product "hde006" attributes:

@@ -1,3 +1,4 @@
+@MercadoPago
 Feature: Payment results in MercadoPago Custom Checkout
 
   Background:

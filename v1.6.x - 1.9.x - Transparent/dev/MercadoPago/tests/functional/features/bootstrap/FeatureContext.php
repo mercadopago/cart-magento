@@ -442,7 +442,8 @@ class FeatureContext
     /**
      * @When I fill the iframe shipping address fields
      */
-    public function iFillTheIframeShippingAddressFields() {
+    public function iFillTheIframeShippingAddressFields()
+    {
         $page = $this->getSession()->getPage();
         $page->fillField('streetName', 'Mitre');
         $page->fillField('streetNumber', '123');
@@ -454,7 +455,7 @@ class FeatureContext
 
     }
 
-public function fillIframeFieldsWithData($data)
+    public function fillIframeFieldsWithData($data)
     {
         $page = $this->getSession()->getPage();
 
@@ -476,20 +477,6 @@ public function fillIframeFieldsWithData($data)
         }
     }
 
-/**
-     * @When I fill the iframe shipping address fields
-     */
-    public function iFillTheIframeShippingAddressFields() {
-        $page = $this->getSession()->getPage();
-        $page->fillField('streetName', 'Mitre');
-        $page->fillField('streetNumber', '123');
-        $page->fillField('zipCode', '7000');
-        $page->fillField('cityName', 'Tandil');
-        $page->selectFieldOption('stateId', 'AR-B');
-        $page->fillField('contact', 'test');
-        $page->fillField('phone', '43434343');
-
-    }
     /**
      * @Then I should be on :arg1
      */
@@ -503,7 +490,7 @@ public function fillIframeFieldsWithData($data)
             return;
         }
 
-        throw new ExpectationException('Wrong url: you are in '.$currentUrl, $this->getSession()->getDriver());
+        throw new ExpectationException('Wrong url: you are in ' . $currentUrl, $this->getSession()->getDriver());
     }
 
     /**
@@ -561,7 +548,7 @@ public function fillIframeFieldsWithData($data)
      * @AfterScenario @Availability
      * @AfterFeature @MethodsPerCountry
      * @AfterFeature @reset_configs
-	 * @AfterFeature @FreeShipping
+     * @AfterFeature @FreeShipping
      */
     public static function resetConfigs()
     {
@@ -824,7 +811,7 @@ public function fillIframeFieldsWithData($data)
         $this->_stringMatch($element->getText(), 'Financing Cost');
     }
 
-     /**
+    /**
      * @Given Setting merchant :arg1
      */
     public function settingMerchant($arg1)
@@ -851,8 +838,6 @@ public function fillIframeFieldsWithData($data)
         ];
         $clientId = $dataCountry[$arg1]['client_id'];
         $clientSecret = $dataCountry[$arg1]['client_secret'];
-        $publicKey = $dataCountry[$arg1]['public_key'];
-        $accessToken = $dataCountry[$arg1]['access_token'];
         $this->settingConfig('payment/mercadopago/country', $arg1);
         $this->settingConfig('payment/mercadopago_standard/client_id', $clientId);
         $this->settingConfig('payment/mercadopago_standard/client_secret', $clientSecret);

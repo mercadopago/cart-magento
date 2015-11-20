@@ -90,7 +90,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I wait for "10" seconds
     Then I should see html "Gratis."
 
-  @FreeShippingCartRule
+  @FreeShippingCartRule @skip
   Scenario: FreeShipping configured
     Given Setting merchant "mla"
     When I enable methods of "mla"

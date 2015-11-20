@@ -1,3 +1,4 @@
+@MercadoPago
 Feature: Validation of custom checkout form
 
   Background:

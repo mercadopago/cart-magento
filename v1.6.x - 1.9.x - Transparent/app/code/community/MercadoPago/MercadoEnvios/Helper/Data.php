@@ -138,4 +138,19 @@ class MercadoPago_MercadoEnvios_Helper_Data
         return $value;
     }
 
+    public function getFreeMethod($request)
+    {
+        $freeMethod = Mage::getStoreConfig('carriers/mercadoenvios/free_method');
+        if (!empty($freeMethod)) {
+            if (!Mage::getStoreConfigFlag('carriers/mercadoenvios/free_shipping_enable')){
+                return $freeMethod;
+            } else {
+                if (Mage::getStoreConfig('carriers/mercadoenvios/free_shipping_subtotal') <= $request->getPackageValue()) {
+                    return $freeMethod;
+                }
+            }
+        }
+        return null;
+    }
+
 }

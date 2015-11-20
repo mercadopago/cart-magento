@@ -1,3 +1,4 @@
+@MercadoEnvios
 Feature: MercadoEnvios configuration
 
   Background:

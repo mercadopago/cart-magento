@@ -83,6 +83,17 @@ class FeatureContext
     }
 
     /**
+     * @Given I fill the billing address with field :arg1 value :arg2
+     */
+    public function iFillTheBillingAddressWithFieldValue($field, $value)
+    {
+        $this->iFillTheBillingAddress();
+        $page = $this->getSession()->getPage();
+        $page->fillField($field, $value);
+
+    }
+
+    /**
      * @param $cssClass
      *
      * @return \Behat\Mink\Element\NodeElement|mixed|null
@@ -203,6 +214,15 @@ class FeatureContext
     }
 
     /**
+     * @Given I blur field :arg1
+     */
+    public function iBlurField($arg1)
+    {
+        $field = $this->findElement($arg1);
+        $this->getSession()->getDriver()->blur($field->getXpath());
+    }
+
+    /**
      * @Given I select option field :arg1 with :arg2
      */
     public function iSelectOptionFieldWith($arg1, $arg2)
@@ -302,7 +322,7 @@ class FeatureContext
     }
 
     /**
-     *  @When I am logged in MP as :arg1 :arg2
+     * @When I am logged in MP as :arg1 :arg2
      */
     public function iAmLoggedInMPAs($arg1, $arg2)
     {
@@ -317,8 +337,6 @@ class FeatureContext
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
-            $this->findElement('#payerAccount');
-
         }
     }
 
@@ -362,7 +380,7 @@ class FeatureContext
      */
     public function iSwitchToIframe($arg1 = null)
     {
-        $this->getSession()->wait(20000);
+        $this->getSession()->wait(10000);
         $this->findElement('iframe[id=' . $arg1 . ']');
         $this->getSession()->switchToIFrame($arg1);
     }
@@ -374,6 +392,7 @@ class FeatureContext
     {
         $this->getSession()->wait(20000);
         $this->getSession()->switchToIFrame(null);
+        $this->getSession()->wait(10000);
     }
 
     /**
@@ -399,6 +418,64 @@ class FeatureContext
         $page->selectFieldOption('installments', '1');
     }
 
+    /**
+     * @When I fill the iframe fields country :arg1
+     */
+    public function iFillTheIframeFieldsCountry($country)
+    {
+        switch ($country) {
+            case 'mlv': {
+                $data['pmtOption'] = 'visa';
+                $data['cardNumber'] = '4966 3823 3110 9310';
+                $data['cardExpirationMonth'] = '01';
+                $data['cardExpirationYear'] = '2017';
+                $data['securityCode'] = '123';
+                $data['cardholderName'] = 'Name';
+                $data['docNumber'] = '14978546';
+                break;
+            }
+        }
+
+        $this->fillIframeFieldsWithData($data);
+    }
+
+    /**
+     * @When I fill the iframe shipping address fields
+     */
+    public function iFillTheIframeShippingAddressFields()
+    {
+        $page = $this->getSession()->getPage();
+        $page->fillField('streetName', 'Mitre');
+        $page->fillField('streetNumber', '123');
+        $page->fillField('zipCode', '7000');
+        $page->fillField('cityName', 'Tandil');
+        $page->selectFieldOption('stateId', 'AR-B');
+        $page->fillField('contact', 'test');
+        $page->fillField('phone', '43434343');
+
+    }
+
+    public function fillIframeFieldsWithData($data)
+    {
+        $page = $this->getSession()->getPage();
+
+        $page->selectFieldOption('pmtOption', $data['pmtOption']);
+
+        $page->fillField('cardNumber', $data['cardNumber']);
+        $this->getSession()->wait(3000);
+        if (isset($data['creditCardIssuerOption'])) {
+            $page->selectFieldOption('creditCardIssuerOption', $data['creditCardIssuerOption']);
+        }
+        $page->selectFieldOption('cardExpirationMonth', $data['cardExpirationMonth']);
+        $page->selectFieldOption('cardExpirationYear', $data['cardExpirationYear']);
+        $page->fillField('securityCode', $data['securityCode']);
+        $page->fillField('cardholderName', $data['cardholderName']);
+
+        $page->fillField('docNumber', $data['docNumber']);
+        if (isset($data['installments'])) {
+            $page->selectFieldOption('installments', $data['installments']);
+        }
+    }
 
     /**
      * @Then I should be on :arg1
@@ -413,7 +490,7 @@ class FeatureContext
             return;
         }
 
-        throw new ExpectationException('Wrong url', $this->getSession()->getDriver());
+        throw new ExpectationException('Wrong url: you are in ' . $currentUrl, $this->getSession()->getDriver());
     }
 
     /**
@@ -469,10 +546,14 @@ class FeatureContext
 
     /**
      * @AfterScenario @Availability
+     * @AfterFeature @MethodsPerCountry
+     * @AfterFeature @reset_configs
+     * @AfterFeature @FreeShipping
      */
     public static function resetConfigs()
     {
         $obj = new FeatureContext();
+        $obj->settingConfig('payment/mercadopago/country', 'mla');
         $obj->settingConfig('payment/mercadopago_standard/client_id', '446950613712741');
         $obj->settingConfig('payment/mercadopago_standard/client_secret', '0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv');
         $obj->settingConfig('payment/mercadopago_standard/active', '1');
@@ -537,6 +618,19 @@ class FeatureContext
     public function iShouldFindElement($arg1)
     {
         $this->findElement($arg1);
+    }
+
+    /**
+     * @Then I should not find element :arg1
+     */
+    public function iShouldNotFindElement($arg1)
+    {
+        $page = $this->getSession()->getPage();
+        $element = $page->find('css', $arg1);
+        if (!empty($element)) {
+            throw new ExpectationException("Element $arg1 found ", $this->getSession()->getDriver());
+        }
+
     }
 
     /**
@@ -612,24 +706,24 @@ class FeatureContext
     {
         $mapping = [
             [
-                'me_code'     => 'width',
+                'me_code'        => 'width',
                 'attribute_code' => $width,
-                'unit'        => 'cm'
+                'unit'           => 'cm'
             ],
             [
-                'me_code'     => 'height',
+                'me_code'        => 'height',
                 'attribute_code' => $height,
-                'unit'        => 'cm'
+                'unit'           => 'cm'
             ],
             [
-                'me_code'     => 'length',
+                'me_code'        => 'length',
                 'attribute_code' => $length,
-                'unit'        => 'cm'
+                'unit'           => 'cm'
             ],
             [
-                'me_code'     => 'weight',
+                'me_code'        => 'weight',
                 'attribute_code' => $weight,
-                'unit'        => 'gr'
+                'unit'           => 'gr'
             ]
         ];
         $serializedMapping = serialize($mapping);
@@ -699,11 +793,11 @@ class FeatureContext
     }
 
     /**
-     * @Given I enable methods
+     * @Given I enable methods :arg1
      */
-    public function iEnableMethods()
+    public function iEnableMethods($methods)
     {
-        $this->settingConfig('carriers/mercadoenvios/availablemethods', "73328,73330");
+        $this->settingConfig('carriers/mercadoenvios/availablemethods', $methods);
     }
 
     /**
@@ -717,5 +811,134 @@ class FeatureContext
         $this->_stringMatch($element->getText(), 'Financing Cost');
     }
 
+    /**
+     * @Given Setting merchant :arg1
+     */
+    public function settingMerchant($arg1)
+    {
+        $dataCountry = [
+            'mla' => [
+                'client_id'     => '446950613712741',
+                'client_secret' => '0WX05P8jtYqCtiQs6TH1d9SyOJ04nhEv'
+            ],
+            'mlb' => [
+                'client_id'     => '1872374615846510',
+                'client_secret' => 'WGfDqM8bNLzjvmrEz8coLCUwL8s4h9HZ'
+            ],
+            'mlm' => [
+                'client_id'     => '2272101328791208',
+                'client_secret' => 'cPi6Mlzc7bGkEaubEJjHRipqmojXLtKm'
+            ],
+            'mlv' => [
+                'client_id'     => '201313175671817',
+                'client_secret' => 'bASLUlb5s12QYPAUJwCQUMa21wFzFrzz',
+                'public_key'    => 'TEST-a4f588fd-5bb8-406c-9811-1536154d5d73',
+                'access_token'  => 'TEST-201313175671817-111108-b30483a389dbc6a04e401c23e62da2c1__LB_LC__-193994249'
+            ]
+        ];
+        $clientId = $dataCountry[$arg1]['client_id'];
+        $clientSecret = $dataCountry[$arg1]['client_secret'];
+        $this->settingConfig('payment/mercadopago/country', $arg1);
+        $this->settingConfig('payment/mercadopago_standard/client_id', $clientId);
+        $this->settingConfig('payment/mercadopago_standard/client_secret', $clientSecret);
+        if (isset($dataCountry[$arg1]['public_key'])) {
+            $publicKey = $dataCountry[$arg1]['public_key'];
+            $accessToken = $dataCountry[$arg1]['access_token'];
+            $this->settingConfig('payment/mercadopago_custom_checkout/public_key', $publicKey);
+            $this->settingConfig('payment/mercadopago_custom_checkout/access_token', $accessToken);
+        }
+    }
 
+    /**
+     * @Given I enable methods of :arg1
+     */
+    public function iEnableMethodsOf($country)
+    {
+        $methodsCountry = [
+            'mla' => "73328,73330",
+            'mlb' => "100009,182",
+            'mlm' => "501245,501345"
+        ];
+
+        $this->iEnableMethods($methodsCountry[$country]);
+    }
+
+    /**
+     * @Given I enable ME free shipping :arg1
+     */
+    public function iEnableMEFreeShipping($method)
+    {
+        $this->settingConfig('carriers/mercadoenvios/free_method', $method);
+    }
+
+    /**
+     * @Then I should see element price method :arg1  with text :arg2
+     */
+    public function iShouldSeeElementPriceMethod($method, $text)
+    {
+        $this->iShouldSeeElementWithText("label[for='s_method_mercadoenvios_$method'] span.price", $text);
+    }
+
+    /**
+     * @Given I enable ME free shipping with Minimum Order Amount :arg1
+     */
+    public function iEnableMeFreeShippingWithMinimumOrderAmount($arg1)
+    {
+        $this->settingConfig('carriers/mercadoenvios/free_shipping_enable', 1);
+        $this->settingConfig('carriers/mercadoenvios/free_shipping_subtotal', $arg1);
+    }
+
+    /**
+     * @When I create promotion free shipping to product :arg1
+     */
+    public function iCreatePromotionFreeShippingToProduct($sku)
+    {
+        $name = 'Test rule - Freeshipping To ' . $sku;
+        $rule = Mage::getModel('salesrule/rule')->load($name, 'name');
+        if (!$rule->getId()) {
+            $customer_groups = [1];
+            $rule->setName($name)
+                ->setDescription($name)
+                ->setFromDate('')
+                ->setCouponType(1)
+                ->setCustomerGroupIds($customer_groups)
+                ->setIsActive(1)
+                ->setConditionsSerialized('')
+                ->setActionsSerialized('')
+                ->setStopRulesProcessing(0)
+                ->setIsAdvanced(1)
+                ->setProductIds('')
+                ->setSortOrder(0)
+                ->setSimpleAction('cart_fixed')
+                ->setDiscountAmount(10)
+                ->setDiscountQty(null)
+                ->setDiscountStep(0)
+                ->setSimpleFreeShipping('2')
+                ->setApplyToShipping('0')
+                ->setWebsiteIds(array(1));
+
+            $item_found = Mage::getModel('salesrule/rule_condition_product_found')
+                ->setType('salesrule/rule_condition_product_found')
+                ->setValue(1)// 1 == FOUND
+                ->setAggregator('all'); // match ALL conditions
+
+            $rule->getConditions()->addCondition($item_found);
+            $conditions = Mage::getModel('salesrule/rule_condition_product')
+                ->setType('salesrule/rule_condition_product')
+                ->setAttribute('sku')
+                ->setOperator('==')
+                ->setValue($sku);
+
+            $item_found->addCondition($conditions);
+
+            $actions = Mage::getModel('salesrule/rule_condition_product')
+                ->setType('salesrule/rule_condition_product')
+                ->setAttribute('sku')
+                ->setOperator('==')
+                ->setValue($sku);
+
+            $rule->getActions()->addCondition($actions);
+            $rule->save();
+        }
+    }
 }

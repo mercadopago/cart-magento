@@ -43,7 +43,7 @@ $customer = $this->getCustomerAndCards();
                                 <?php foreach ($customer['cards'] as $card) { ?>
                                     <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>">
 
-                                        <?php echo $card["payment_method"]["name"]; ?><?php echo $this->__('ended in'); ?><?php echo $card["last_four_digits"]; ?>
+                                        <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
                                     </option>
                                 <?php } ?>
                             </select>

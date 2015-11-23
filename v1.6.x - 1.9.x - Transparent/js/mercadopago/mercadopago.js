@@ -224,6 +224,10 @@ function actionUseOneClickPayOrNo() {
     //forca a validação para criacao do card token
     checkCreateCardToken();
 
+    //update payment_id
+    guessingPaymentMethod(event.type = "keyup");
+
+
 }
 
 // caso não tenha bin, ele reseta as installment e os issuer

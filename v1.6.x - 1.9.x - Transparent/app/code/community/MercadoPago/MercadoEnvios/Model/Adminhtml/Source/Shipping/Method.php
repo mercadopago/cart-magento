@@ -5,8 +5,8 @@ class MercadoPago_MercadoEnvios_Model_Adminhtml_Source_Shipping_Method
 
     protected $_countryOptions = [
         'mla' => [
-            ['value' => 73328, 'label' => 'OCA Estándar'],
-            ['value' => 73330, 'label' => 'OCA Prioritario']
+            ['value' => 73328, 'label' => 'Normal'],
+            ['value' => 73330, 'label' => 'Express']
         ],
         'mlb' => [
             ['value' => 100009, 'label' => 'Normal'],

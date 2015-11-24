@@ -385,6 +385,7 @@ class FeatureContext
         $this->getSession()->wait(10000);
         $this->findElement('iframe[id=' . $arg1 . ']');
         $this->getSession()->switchToIFrame($arg1);
+        $this->getSession()->wait(10000);
     }
 
     /**

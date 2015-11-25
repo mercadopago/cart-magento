@@ -6,6 +6,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     When Setting merchant <country>
     And User "<user>" "<pass>" exists
     And I am logged in as "<user>" "<pass>"
+    And I empty cart
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element

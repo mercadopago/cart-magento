@@ -14,7 +14,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I fill the billing address
 
 
-  @CheckoutShippingMethods @ShipingMethodsCheckoutAvailability @skip
+  @CheckoutShippingMethods @ShipingMethodsCheckoutAvailability
   Scenario: Shipping methods are availables
     Given showmethod always
     And I set product "hde006" attributes:

@@ -798,7 +798,7 @@ class FeatureContext
      */
     public function iEnableMethods($methods)
     {
-        $this->settingConfig('carriers/mercadoenvios/availablemethods', "73328,73330");
+        $this->settingConfig('carriers/mercadoenvios/availablemethods', $methods);
     }
 
     /**

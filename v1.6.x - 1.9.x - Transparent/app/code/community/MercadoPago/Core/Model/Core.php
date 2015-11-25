@@ -354,9 +354,9 @@ class MercadoPago_Core_Model_Core
 
     public function getPayment($payment_id)
     {
-        $client_id = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID;
-        $client_secret = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET;
-        $mp = Mage::helper('mercadopago')->getApiInstance($client_id,$client_secret);
+        $clienId = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID;
+        $clientSecret = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET;
+        $mp = Mage::helper('mercadopago')->getApiInstance($clienId,$clientSecret);
 
         return $mp->get_payment($payment_id);
     }
@@ -371,9 +371,9 @@ class MercadoPago_Core_Model_Core
 
     public function getMerchantOrder($merchant_order_id)
     {
-        $client_id = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID;
-        $client_secret = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET;
-        $mp = Mage::helper('mercadopago')->getApiInstance($client_id,$client_secret);
+        $clientId = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID;
+        $clientSecret = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET;
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId,$clientSecret);
 
         return $mp->get("/merchant_orders/" . $merchant_order_id);
     }

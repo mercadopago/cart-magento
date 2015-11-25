@@ -162,3 +162,4 @@
 "Mercado Pago - Classic Checkout: Invalid client id or client secret","Mercado Pago - Classic Checkout: Invalid client id or client secret"
 "Mercado Pago - Custom Checkout: Invalid access token","Mercado Pago - Custom Checkout: Invalid access token"
 "(estimated date %s)","(estimated date %s)"
+"MercadoEnvios is not enabled in the country where MercadoPago is configured", "MercadoEnvios is not enabled in the country where MercadoPago is configured"

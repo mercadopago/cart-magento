@@ -13,11 +13,12 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I am on page "large-camera-bag.html"
     And I press ".add-to-cart-buttons .btn-cart" element
 
-  @FreeShipping
+  @FreeShippingPerCountry
   Scenario Outline: FreeShipping configured
     Given Setting merchant <country>
     And I enable methods of <country>
     And showmethod always
+    And I disable promotions to "hde006"
     And I enable ME free shipping "<free_method>"
     When I am on page "checkout/cart/"
     And I select option field "country_id" with "US"

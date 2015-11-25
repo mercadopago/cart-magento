@@ -870,6 +870,7 @@ class FeatureContext
     public function iEnableMEFreeShipping($method)
     {
         $this->settingConfig('carriers/mercadoenvios/free_method', $method);
+        $this->settingConfig('carriers/mercadoenvios/free_shipping_enable', 0);
     }
 
     /**
@@ -939,10 +940,23 @@ class FeatureContext
                 ->setValue($sku);
 
             $rule->getActions()->addCondition($actions);
+        } else {
+            $rule->setIsActive(1);
+        }
+        $rule->save();
+    }
+
+    /**
+     * @Given I disable promotions to :arg1
+     */
+    public function iDisablePromotions($sku) {
+        $name = 'Test rule - Freeshipping To ' . $sku;
+        $rule = Mage::getModel('salesrule/rule')->load($name, 'name');
+        if ($rule->getId()) {
+            $rule->setIsActive(0);
             $rule->save();
         }
     }
-
 
 
 }

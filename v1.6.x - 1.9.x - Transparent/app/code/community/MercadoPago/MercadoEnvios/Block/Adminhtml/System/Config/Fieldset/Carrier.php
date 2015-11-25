@@ -24,7 +24,7 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Carrier
         } else {
             if (!Mage::helper('mercadopago_mercadoenvios')->isCountryEnabled()) {
                 $isPaymentEnabled = 'disabled';
-                $disabledLegend = $this->__("MercadoEnvios is not enabled in the country where is configured MercadoPago");
+                $disabledLegend = $this->__("MercadoEnvios is not enabled in the country where MercadoPago is configured");
             }
         }
 

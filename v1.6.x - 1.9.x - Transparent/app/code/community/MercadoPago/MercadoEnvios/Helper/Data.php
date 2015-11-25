@@ -11,6 +11,8 @@ class MercadoPago_MercadoEnvios_Helper_Data
     protected $_mapping;
     protected $_products = [];
 
+    public static $enabled_methods = ['mla', 'mlb', 'mlm'];
+
     /**
      * @param $quote Mage_Sales_Model_Quote
      */
@@ -154,14 +156,9 @@ class MercadoPago_MercadoEnvios_Helper_Data
         return null;
     }
 
-    public function getEnabledCountries()
-    {
-        return ['mla', 'mlb', 'mlm'];
-    }
-
     public function isCountryEnabled()
     {
-        return (in_array(Mage::getStoreConfig('payment/mercadopago/country'), $this->getEnabledCountries()));
+        return (in_array(Mage::getStoreConfig('payment/mercadopago/country'), self::$enabled_methods));
     }
 
 }

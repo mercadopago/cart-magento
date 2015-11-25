@@ -322,7 +322,7 @@ class FeatureContext
     }
 
     /**
-     * @When I am logged in MP as :arg1 :arg2
+     *  @When I am logged in MP as :arg1 :arg2
      */
     public function iAmLoggedInMPAs($arg1, $arg2)
     {
@@ -798,7 +798,7 @@ class FeatureContext
      */
     public function iEnableMethods($methods)
     {
-        $this->settingConfig('carriers/mercadoenvios/availablemethods', "73328,73330");
+        $this->settingConfig('carriers/mercadoenvios/availablemethods', $methods);
     }
 
     /**
@@ -942,7 +942,4 @@ class FeatureContext
             $rule->save();
         }
     }
-
-
-
 }

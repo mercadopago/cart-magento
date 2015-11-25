@@ -394,7 +394,6 @@ class FeatureContext
     {
         $this->getSession()->wait(20000);
         $this->getSession()->switchToIFrame(null);
-        $this->getSession()->wait(10000);
     }
 
     /**

@@ -34,29 +34,9 @@ Feature: MercadoEnvios configuration
 
     When I select option field "groups[mercadoenvios][fields][attributesmapping][value][length][attribute_code]" with "bedding_pattern"
     And I select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "bedding_pattern"
-    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][length][me_code]" with "width"
-    And I select option field "groups[mercadoenvios][fields][attributesmapping][value][height][me_code]" with "length"
 
     And I press ".scalable.save" element
     Then I should see html "Cannot repeat Magento Product size attributes"
-
-  @ATTRIBUTES
-  Scenario: See MercadoEnvios product attributes repeat error
-    Given Setting config "payment/mercadopago_standard/active" is "1"
-    And I am on page "index.php/admin/system_config/edit/section/carriers"
-    And I open "carriers_mercadoenvios_carrier" configuration
-    And I press ".meli-btn.button" element
-    And I Select option field "carriers_mercadoenvios_active" with "1"
-
-    When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][attribute_code]" with "bedding_pattern"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "name"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][attribute_code]" with "sku"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][attribute_code]" with "meta_title"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][me_code]" with "width"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][me_code]" with "width"
-
-    And I press ".scalable.save" element
-    Then I should see html "Cannot repeat MercadoEnvios Product size attributes"
 
   @ATTRIBUTES
   Scenario: See MercadoEnvios product attributes saved ok
@@ -70,11 +50,6 @@ Feature: MercadoEnvios configuration
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "name"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][attribute_code]" with "sku"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][attribute_code]" with "meta_title"
-
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][me_code]" with "width"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][me_code]" with "height"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][me_code]" with "length"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][me_code]" with "weight"
 
     And I press ".scalable.save" element
     Then I should see html "The configuration has been saved."
@@ -129,11 +104,6 @@ Feature: MercadoEnvios configuration
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "name"
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][attribute_code]" with "sku"
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][attribute_code]" with "meta_title"
-
-     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][me_code]" with "width"
-     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][me_code]" with "height"
-     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][me_code]" with "length"
-     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][me_code]" with "weight"
 
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][unit]" with "mt"
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][unit]" with "cm"

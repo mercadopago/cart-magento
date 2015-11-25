@@ -8,19 +8,13 @@ class MercadoPago_MercadoEnvios_Model_Adminhtml_Attribute_Validation_Mapping
     {
         $mappingValues = $this->getValue(); //get the value from our config
         $attributeCodes = [];
-        $meCodes = [];
 
         foreach ($mappingValues as $value) {
             if (in_array($value['attribute_code'], $attributeCodes)) {
                 Mage::throwException(Mage::helper('mercadopago')->__("Cannot repeat Magento Product size attributes"));
             }
 
-            if (in_array($value['me_code'], $meCodes)) {
-                Mage::throwException(Mage::helper('mercadopago')->__("Cannot repeat MercadoEnvios Product size attributes"));
-            }
-
             $attributeCodes[] = $value['attribute_code'];
-            $meCodes[] = $value['me_code'];
         }
 
         return parent::save();

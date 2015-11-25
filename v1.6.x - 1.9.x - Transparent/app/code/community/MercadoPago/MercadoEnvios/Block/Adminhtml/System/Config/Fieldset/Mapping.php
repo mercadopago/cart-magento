@@ -28,7 +28,7 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Mapping
     {
         $attributes = Mage::getResourceModel('catalog/product_attribute_collection')
             ->addFieldToFilter('is_visible', 1)
-            ->addFieldToFilter( 'frontend_input' , ['nin' => ['boolean', 'date', 'datetime', 'gallery', 'image', 'media_image', 'select', 'multiselect', 'textarea']])
+            ->addFieldToFilter('frontend_input', ['nin' => ['boolean', 'date', 'datetime', 'gallery', 'image', 'media_image', 'select', 'multiselect', 'textarea']])
             ->load();
 
         return $attributes;
@@ -37,10 +37,15 @@ class MercadoPago_MercadoEnvios_Block_Adminhtml_System_Config_Fieldset_Mapping
     protected function _getStoredMappingValues()
     {
         $prevValues = [];
-        foreach ($this->getArrayRows() as $_row) {
-            $prevValues[] = ['attribute_code' => $_row->getData('attribute_code'), 'me_code' => $_row->getData('me_code'), 'unit' => $_row->getData('unit')];
+        foreach ($this->getArrayRows() as $key => $_row) {
+            $prevValues[$key] = ['attribute_code' => $_row->getData('attribute_code'), 'unit' => $_row->getData('unit')];
         }
 
         return $prevValues;
+    }
+
+    protected function _getMeLabel()
+    {
+        return [$this->__('Length'), $this->__('Width'), $this->__('Height'), $this->__('Weight')];
     }
 }

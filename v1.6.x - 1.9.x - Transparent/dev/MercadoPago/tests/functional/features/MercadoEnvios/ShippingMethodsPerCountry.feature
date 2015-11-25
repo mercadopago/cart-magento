@@ -67,8 +67,8 @@ Feature: I want to see the Shipping Methods available depending on my country.
 
     Examples:
       | country | method      |
-      | mla     | Normal      |
-      | mla     | Express     |
       | mlb     | Normal      |
       | mlb     | Expresso    |
+      | mla     | Normal      |
+      | mla     | Express     |
       | mlm     | DHL Express |

@@ -1,4 +1,4 @@
-@MercadoEnvios @  MethodsPerCountry
+@MercadoEnvios @MethodsPerCountry
 Feature: I want to see the Shipping Methods available depending on my country.
 
   Background:
@@ -41,20 +41,20 @@ Feature: I want to see the Shipping Methods available depending on my country.
     And I empty cart
     And I am on page "large-camera-bag.html"
     And I press ".add-to-cart-buttons .btn-cart" element
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I press "div.buttons-set button" element
+    And I select option field "country_id" with "<country_code>"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with <zip_code>
     And I press "div.buttons-set button" element
     Then I should see html "<method>"
 
     Examples:
-      | country | method      | zip_code |
-      | mla     | Normal      | 7000     |
-      | mla     | Express     | 7000     |
-      | mlb     | Normal      | 01046925 |
-      | mlb     | Expresso    | 01046925 |
-      | mlm     | DHL Express | 22615    |
+      | country | method      | zip_code | country_code |
+      | mla     | Normal      | 7000     | AR           |
+      | mla     | Express     | 7000     | AR           |
+      | mlb     | Normal      | 01046925 | BR           |
+      | mlb     | Expresso    | 01046925 | BR           |
+      | mlm     | DHL Express | 22615    | MX           |
 
   @MethodsPerCountry @SettingMethods
   Scenario Outline: As a customer I want to configure shipping methods for mercado envios in settings depending on Country

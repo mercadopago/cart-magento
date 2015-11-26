@@ -277,7 +277,7 @@ class MercadoPago_Core_Model_Core
         $preference['additional_info']['payer']['address'] = array(
             "zip_code"      => $billing_address['postcode'],
             "street_name"   => $billing_address['street'] . " - " . $billing_address['city'] . " - " . $billing_address['country_id'],
-            "street_number" => 0
+            "street_number" => ''
         );
 
         $preference['additional_info']['payer']['registration_date'] = date('Y-m-d', $customer->getCreatedAtTimestamp()) . "T" . date('H:i:s', $customer->getCreatedAtTimestamp());
@@ -287,7 +287,7 @@ class MercadoPago_Core_Model_Core
         $preference['additional_info']['shipments']['receiver_address'] = array(
             "zip_code"      => $shipping['postcode'],
             "street_name"   => $shipping['street'] . " - " . $shipping['city'] . " - " . $shipping['country_id'],
-            "street_number" => 0,
+            "street_number" => '',
             "floor"         => "-",
             "apartment"     => "-",
 

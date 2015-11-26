@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * NOTICE OF LICENSE
@@ -13,23 +14,33 @@
  * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
  * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
 class MercadoPago_Core_Model_Source_Country
     extends Mage_Payment_Model_Method_Abstract
 {
     public function toOptionArray()
     {
         $country = array();
-        $country[] = array('value' => "mla", 'label' => Mage::helper('mercadopago')->__("Argentina"));
-        $country[] = array('value' => "mlb", 'label' => Mage::helper('mercadopago')->__("Brasil"));
-        $country[] = array('value' => "mco", 'label' => Mage::helper('mercadopago')->__("Colombia"));
-        $country[] = array('value' => "mlm", 'label' => Mage::helper('mercadopago')->__("Mexico"));
-        $country[] = array('value' => "mlc", 'label' => Mage::helper('mercadopago')->__("Chile"));
-        $country[] = array('value' => "mlv", 'label' => Mage::helper('mercadopago')->__("Venezuela"));
+        $country[] = array('value' => "mla", 'label' => Mage::helper('mercadopago')->__("Argentina"), 'code' => 'AR');
+        $country[] = array('value' => "mlb", 'label' => Mage::helper('mercadopago')->__("Brasil"), 'code' => 'BR');
+        $country[] = array('value' => "mco", 'label' => Mage::helper('mercadopago')->__("Colombia"), 'code' => 'CO');
+        $country[] = array('value' => "mlm", 'label' => Mage::helper('mercadopago')->__("Mexico"), 'code' => 'MX');
+        $country[] = array('value' => "mlc", 'label' => Mage::helper('mercadopago')->__("Chile"), 'code' => 'CL');
+        $country[] = array('value' => "mlv", 'label' => Mage::helper('mercadopago')->__("Venezuela"), 'code' => 'VE');
 
         //force order by key
         ksort($country);
 
         return $country;
+    }
+
+    public function getCodeByValue($value)
+    {
+        $countries = $this->toOptionArray();
+        foreach ($countries as $country) {
+            if ($value == $country['value']) {
+                return $country['code'];
+            }
+        }
+        return '';
     }
 }

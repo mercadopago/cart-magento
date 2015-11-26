@@ -206,7 +206,7 @@ class MercadoPago_Core_Model_Standard_Payment
         $arr['payer']['address'] = [
             "zip_code"      => $billing_address['postcode'],
             "street_name"   => $billing_address['street'] . " - " . $billing_address['city'] . " - " . $billing_address['country_id'],
-            "street_number" => "0"
+            "street_number" => ""
         ];
 
         $arr['back_urls'] = [
@@ -261,7 +261,7 @@ class MercadoPago_Core_Model_Standard_Payment
             "zip_code"      => $shippingAddress->getPostcode(),
             "street_name"   => $shippingAddress->getStreet()[0] . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
             "apartment"     => "-",
-            "street_number" => "0"
+            "street_number" => ""
         ];
         return $params;
 

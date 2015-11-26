@@ -322,7 +322,7 @@ class FeatureContext
     }
 
     /**
-     * @When I am logged in MP as :arg1 :arg2
+     *  @When I am logged in MP as :arg1 :arg2
      */
     public function iAmLoggedInMPAs($arg1, $arg2)
     {
@@ -385,6 +385,7 @@ class FeatureContext
         $this->getSession()->wait(10000);
         $this->findElement('iframe[id=' . $arg1 . ']');
         $this->getSession()->switchToIFrame($arg1);
+        $this->getSession()->wait(10000);
     }
 
     /**
@@ -394,7 +395,6 @@ class FeatureContext
     {
         $this->getSession()->wait(20000);
         $this->getSession()->switchToIFrame(null);
-        $this->getSession()->wait(10000);
     }
 
     /**
@@ -798,7 +798,7 @@ class FeatureContext
      */
     public function iEnableMethods($methods)
     {
-        $this->settingConfig('carriers/mercadoenvios/availablemethods', "73328,73330");
+        $this->settingConfig('carriers/mercadoenvios/availablemethods', $methods);
     }
 
     /**
@@ -870,6 +870,7 @@ class FeatureContext
     public function iEnableMEFreeShipping($method)
     {
         $this->settingConfig('carriers/mercadoenvios/free_method', $method);
+        $this->settingConfig('carriers/mercadoenvios/free_shipping_enable', 0);
     }
 
     /**
@@ -939,10 +940,23 @@ class FeatureContext
                 ->setValue($sku);
 
             $rule->getActions()->addCondition($actions);
+        } else {
+            $rule->setIsActive(1);
+        }
+        $rule->save();
+    }
+
+    /**
+     * @Given I disable promotions to :arg1
+     */
+    public function iDisablePromotions($sku) {
+        $name = 'Test rule - Freeshipping To ' . $sku;
+        $rule = Mage::getModel('salesrule/rule')->load($name, 'name');
+        if ($rule->getId()) {
+            $rule->setIsActive(0);
             $rule->save();
         }
     }
-
 
 
 }

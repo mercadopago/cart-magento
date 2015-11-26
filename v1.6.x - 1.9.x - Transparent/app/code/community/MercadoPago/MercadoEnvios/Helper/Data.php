@@ -11,6 +11,8 @@ class MercadoPago_MercadoEnvios_Helper_Data
     protected $_mapping;
     protected $_products = [];
 
+    public static $enabled_methods = ['mla', 'mlb', 'mlm'];
+
     /**
      * @param $quote Mage_Sales_Model_Quote
      */
@@ -142,7 +144,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
     {
         $freeMethod = Mage::getStoreConfig('carriers/mercadoenvios/free_method');
         if (!empty($freeMethod)) {
-            if (!Mage::getStoreConfigFlag('carriers/mercadoenvios/free_shipping_enable')){
+            if (!Mage::getStoreConfigFlag('carriers/mercadoenvios/free_shipping_enable')) {
                 return $freeMethod;
             } else {
                 if (Mage::getStoreConfig('carriers/mercadoenvios/free_shipping_subtotal') <= $request->getPackageValue()) {
@@ -150,7 +152,13 @@ class MercadoPago_MercadoEnvios_Helper_Data
                 }
             }
         }
+
         return null;
+    }
+
+    public function isCountryEnabled()
+    {
+        return (in_array(Mage::getStoreConfig('payment/mercadopago/country'), self::$enabled_methods));
     }
 
 }

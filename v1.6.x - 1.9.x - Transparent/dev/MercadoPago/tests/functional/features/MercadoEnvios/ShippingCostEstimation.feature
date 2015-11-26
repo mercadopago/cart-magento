@@ -36,7 +36,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     Then I should see "MercadoEnvíos"
     And I should see "This shipping method is currently unavailable."
 
-  @ShippingCostEstimation @notAvailable
+  @MercadoEnvios @ShippingCostEstimation @notAvailable
   Scenario: Shipping methods are availables but product has not dimension setted and method should to show error message
     Given showmethod not always
     When I am on page "checkout/cart/"
@@ -50,7 +50,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | 10       | 0         | 10        | 100       |
     Then I should not see "MercadoEnvíos"
 
-  @ShippingCostEstimation @bothMethodsAvailables @skip
+  @ShippingCostEstimation @bothMethodsAvailables
   Scenario: Shipping methods are availables
     Given showmethod always
     When I am on page "checkout/cart/"

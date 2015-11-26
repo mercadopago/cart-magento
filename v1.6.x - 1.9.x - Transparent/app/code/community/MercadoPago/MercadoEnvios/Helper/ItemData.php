@@ -11,6 +11,9 @@ class MercadoPago_MercadoEnvios_Helper_ItemData
     }
 
     public function itemGetQty($item) {
+        if ($item->getParentItem()) {
+            $item = $item->getParentItem();
+        }
         $qty = (get_class($item) == 'Mage_Sales_Model_Quote_Item') ? $item->getQty() : $item->getQtyOrdered();
         return $qty;
     }

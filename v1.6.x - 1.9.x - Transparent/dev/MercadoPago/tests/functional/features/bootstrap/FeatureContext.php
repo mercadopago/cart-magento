@@ -548,7 +548,7 @@ class FeatureContext
 
     /**
      * @AfterScenario @Availability
-     * @AfterScenario @MethodsPerCountry
+     * @AfterFeature @MethodsPerCountry
      * @AfterFeature @reset_configs
      * @AfterFeature @FreeShipping
      */

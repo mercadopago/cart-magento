@@ -227,8 +227,12 @@ class MercadoPago_Core_Model_Standard_Payment
         }
 
         $sponsor_id = Mage::getStoreConfig('payment/mercadopago/sponsor_id');
-        Mage::helper('mercadopago')->log("Sponsor_id identificado", 'mercadopago-standard.log', $sponsor_id);
-        $arr['sponsor_id'] = (int)$sponsor_id;
+        Mage::helper('mercadopago')->log("Sponsor_id", 'mercadopago-standard.log', $sponsor_id);
+        if (!empty($sponsor_id)) {
+            Mage::helper('mercadopago')->log("Sponsor_id identificado", 'mercadopago-standard.log', $sponsor_id);
+            $arr['sponsor_id'] = (int)$sponsor_id;
+        }
+
 
         return $arr;
     }
@@ -263,6 +267,7 @@ class MercadoPago_Core_Model_Standard_Payment
             "apartment"     => "-",
             "street_number" => ""
         ];
+
         return $params;
 
     }

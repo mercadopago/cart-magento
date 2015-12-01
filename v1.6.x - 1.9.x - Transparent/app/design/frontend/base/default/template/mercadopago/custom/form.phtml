@@ -9,7 +9,7 @@ $customer = $this->getCustomerAndCards();
 ?>
 
 <script>
-    jQuery(document).ready(function(){
+    document.observe("dom:loaded", function() {
         initMercadoPagoJs();
     });
 </script>
@@ -64,7 +64,7 @@ $customer = $this->getCustomerAndCards();
                 </li>
 
                 <script>
-                    jQuery(document).ready(function(){
+                    document.observe("dom:loaded", function() {
                         initMercadoPagoOCP();
                     });
                 </script>

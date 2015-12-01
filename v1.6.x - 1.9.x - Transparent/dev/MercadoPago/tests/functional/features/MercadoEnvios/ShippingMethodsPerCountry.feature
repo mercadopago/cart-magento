@@ -19,17 +19,18 @@ Feature: I want to see the Shipping Methods available depending on my country.
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element
     And I fill the billing address with field "billing:postcode" value "<zip_code>"
+    And I select option field "billing:country_id" with "<country_code>"
     When I press "#billing-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should see "<method>"
 
     Examples:
-      | country | method      | zip_code |
-      | mla     | Normal      | 7000     |
-      | mla     | Express     | 7000     |
-      | mlb     | Normal      | 01046925 |
-      | mlb     | Expresso    | 01046925 |
-      | mlm     | DHL Express | 22615    |
+      | country | method      | zip_code | country_code |
+      | mla     | Normal      | 7000     | AR           |
+      | mla     | Express     | 7000     | AR           |
+      | mlb     | Normal      | 01046925 | BR           |
+      | mlb     | Expresso    | 01046925 | BR           |
+      | mlm     | DHL Express | 22615    | MX           |
 
 
   @MethodsPerCountry @CartMethods

@@ -4,6 +4,16 @@ class MercadoPago_OneStepCheckout_Block_Custom_Form
     extends MercadoPago_Core_Block_Custom_Form
 {
 
+    protected function _construct()
+    {
+        if (Mage::helper('mercadopago_onestepcheckout')->isOneStepCheckoutActive()) {
+            Mage_Payment_Block_Form_Cc::_construct();
+            $this->setTemplate('mercadopago/onestepcheckout/custom/form.phtml');
+        } else {
+            parent::_construct();
+        }
+    }
+
     protected function _prepareLayout()
     {
 
@@ -11,7 +21,7 @@ class MercadoPago_OneStepCheckout_Block_Custom_Form
 
         //init js no header
         $block = Mage::app()->getLayout()->createBlock('core/text', 'js_mercadopago');
-        if (Mage::getStoreConfigFlag(MercadoPago_OneStepCheckout_Helper_Data::XML_PATH_ONS_ACTIVE)) {
+        if (Mage::helper('mercadopago_onestepcheckout')->isOneStepCheckoutActive()) {
             $block->setText(
                 sprintf(
                     '

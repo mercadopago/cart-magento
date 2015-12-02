@@ -23,15 +23,6 @@
             </mercadopago>
         </blocks>
     </global>
-    <frontend>
-        <layout>
-            <updates>
-                <mercadopago_core>
-                    <file>mercadopago_osc.xml</file>
-                </mercadopago_core>
-            </updates>
-        </layout>
-    </frontend>
     <default>
         <payment>
             <mercadopago>

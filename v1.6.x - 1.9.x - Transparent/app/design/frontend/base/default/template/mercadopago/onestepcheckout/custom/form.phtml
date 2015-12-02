@@ -8,7 +8,32 @@ $route = $this->getRequest()->getRequestedRouteName();
 $customer = $this->getCustomerAndCards();
 ?>
 
-<script>initMercadoPagoJs();</script>
+
+<script>
+    Object.extend(document, {
+        isDocReady: false,
+        isDocLoaded: false,
+        ready: function(fn) { Event.observe(document, "doc:ready", fn); },
+        load: function(fn) { Event.observe(document, "doc:loaded", fn); }
+    });
+    Event.observe(document, "dom:loaded", function() {
+        Event.fire(document, "doc:ready");
+        document.isDocReady = true;
+        if (document.isDocLoaded)
+            Event.fire(document, "doc:loaded");
+    });
+    Event.observe(window, "load", function() {
+        document.isDocLoaded = true;
+        if (!document.isDocReady) return;
+        Event.fire(document, "doc:loaded");
+    });
+</script>
+
+<script>
+    document.observe("doc:ready", function(){
+        initMercadoPagoJs();
+    });
+</script>
 
 <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
 
@@ -59,7 +84,11 @@ $customer = $this->getCustomerAndCards();
                     </ul>
                 </li>
 
-                <script>initMercadoPagoOCP();</script>
+                <script>
+                    document.observe("doc:ready", function(){
+                        initMercadoPagoOCP();
+                    });
+                </script>
             <?php endif; ?>
 
             <li>

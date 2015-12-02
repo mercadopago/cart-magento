@@ -117,6 +117,7 @@ function initMercadoPagoOCP() {
 
 function setTotalAmount(){
     jQuery('.total_amount').val(jQuery('option:selected', this).attr('cost'));
+    //ACA VA EL SAVE PAYMENT
 }
 
 function defineInputs() {

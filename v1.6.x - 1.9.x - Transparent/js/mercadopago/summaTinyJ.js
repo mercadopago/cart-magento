@@ -14,9 +14,16 @@ function ElemContainer(elem){
         keyup: 'keyup'
     };
 
-    this.getElem = function(){
-        return elem;
+    this.getElem = function(query){
+        if(!isEmptyValue(query)){
+            return TinyJ(query, this.elem);
+        }
+        return this.elem;
     };
+
+    this.is = function(selector){
+        return this.getElem().matches(selector);
+    }
 
     this.id = function(id){
         if(isEmptyValue(id)){
@@ -145,12 +152,20 @@ function ElemContainer(elem){
 
 }
 
-var TinyJ = function(elemDescriptor, elem){
-    if(elem){
-        return new ElemContainer(elem.querySelector(elemDescriptor));
+var TinyJ = function(elemDescriptor, parentElem){
+    if(parentElem){
+        return getElems(elemDescriptor, parentElem);
     }
     if(elemDescriptor){
-        var elements = document.querySelectorAll(elemDescriptor)
+        if(typeof elemDescriptor === 'object'){
+            return new ElemContainer(elemDescriptor);
+        }
+        return getElems(elemDescriptor);
+    }
+
+    function getElems(elemDescriptor, parentElem){
+        var parent = parentElem ? parentElem : document;
+        var elements = parent.querySelectorAll(elemDescriptor);
         if(elements.length === 0){
             throw "Invalid element";
         }

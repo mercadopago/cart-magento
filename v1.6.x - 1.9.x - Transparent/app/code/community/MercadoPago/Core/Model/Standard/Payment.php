@@ -215,7 +215,7 @@ class MercadoPago_Core_Model_Standard_Payment
             "failure" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/success"
         ];
 
-        $arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/notifications?checkout=standard";
+        $arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/notifications/standard";
 
         $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods();
         $installments = $this->getConfigData('installments');

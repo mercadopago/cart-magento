@@ -26,7 +26,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I press "#payment-buttons-container .button" element
 
     When I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
+    And I wait for "60" seconds
 
     Then I should see "<status>"
     And I should see "<status_detail>"

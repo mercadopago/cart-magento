@@ -35,10 +35,11 @@ class MercadoPago_Core_Block_Custom_Form
                 '
                 <script type="text/javascript">var PublicKeyMercadoPagoCustom = "' . $public_key . '";</script>
                 <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+                <script src="http://ui.mlstatic.com/chico/tiny/0.1.1/tiny.min.js"></script>
                 <script type="text/javascript" src="%s"></script>
                 <script type="text/javascript" src="%s"></script>',
                 Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/mercadopago.js',
-                Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/summaTinyJ.js'
+                Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/tinyJ.js'
             )
         );
 

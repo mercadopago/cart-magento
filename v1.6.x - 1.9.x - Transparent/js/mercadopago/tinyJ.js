@@ -1,4 +1,7 @@
 function ElemContainer(elem){
+    if(!elem){
+        throw "Invalid element";
+    }
     this.elem = elem;
     this.displayConfig = {
         hide : 'none',
@@ -21,9 +24,14 @@ function ElemContainer(elem){
         return this.elem;
     };
 
-    this.is = function(selector){
-        return this.getElem().matches(selector);
-    }
+    this.isChecked = function(selector){
+        return this.getElem().checked;
+    };
+
+
+    this.getSelectedOption = function(){
+        return TinyJ(this.getElem()[this.getElem().options.selectedIndex]);
+    };
 
     this.id = function(id){
         if(isEmptyValue(id)){
@@ -31,7 +39,7 @@ function ElemContainer(elem){
         }
         this.getElem().id = String(id);
         return this;
-    }
+    };
 
     this.attribute = function(name, value){
         if(isEmptyValue(value)){
@@ -39,7 +47,7 @@ function ElemContainer(elem){
         }
         this.getElem().setAttribute(name, String(value));
         return this;
-    }
+    };
 
     this.html = function(value){
         if(isEmptyValue(value)){
@@ -47,11 +55,11 @@ function ElemContainer(elem){
         }
         this.getElem().innerHTML = String(value);
         return this;
-    }
+    };
 
     this.empty = function(){
         return this.html("");
-    }
+    };
 
     this.val = function (val){
         if(isEmptyValue(val)){
@@ -64,7 +72,7 @@ function ElemContainer(elem){
     this.removeAttribute = function(name, value){
         this.getElem().removeAttribute(name, value);
         return this;
-    }
+    };
 
     this.hide = function (){
         this.getElem().style.display = this.displayConfig.hide;
@@ -134,7 +142,7 @@ function ElemContainer(elem){
     this.appendChild = function(child){
         this.getElem().appendChild(child);
         return this;
-    }
+    };
 
     function isEmptyValue(value){
         return (value === undefined || value === null);

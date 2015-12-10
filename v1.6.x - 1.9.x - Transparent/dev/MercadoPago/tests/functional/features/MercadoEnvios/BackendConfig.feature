@@ -61,13 +61,9 @@ Feature: MercadoEnvios configuration
     And I open "carriers_mercadoenvios_carrier" configuration
     And I press ".meli-btn.button" element
     And I Select option field "carriers_mercadoenvios_active" with "1"
-    And I select option field "carriers_mercadoenvios_sallowspecific" with "1"
-
-    Then I Select option field "carriers_mercadoenvios_active" with "1"
     And  I should see html "Title"
     And I should see html "Product attributes mapping"
     And I should see html "Available shipping methods"
-    And I should see html "Allow Specific Country"
     And I should see html "Show method if not applicable"
     And I should see html "Specific Country"
     And I should see html "Displayed Error Message"

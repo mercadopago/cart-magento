@@ -21,8 +21,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I disable promotions to "hde006"
     And I enable ME free shipping "<free_method>"
     When I am on page "checkout/cart/"
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "<country_code>"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "<zip_code>"
     And I press "div.buttons-set button" element
@@ -30,12 +29,12 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     Then I should see element price method "<free_method>"  with text "$0.00"
 
     Examples:
-      | country | free_method | zip_code | element_price                                         |
-      | mla     | 73328       | 7000     | label[for='s_method_mercadoenvios_73328'] span.price  |
-      | mla     | 73330       | 7000     | label[for='s_method_mercadoenvios_73330'] span.price  |
-      | mlb     | 100009      | 01046925 | label[for='s_method_mercadoenvios_100009'] span.price |
-      | mlb     | 182         | 01046925 | label[for='s_method_mercadoenvios_182'] span.price    |
-      | mlm     | 501345      | 22615    | label[for='s_method_mercadoenvios_501245'] span.price |
+      | country | free_method | zip_code | country_code |
+      | mla     | 73328       | 7000     | AR           |
+      | mla     | 73330       | 7000     | AR           |
+      | mlb     | 100009      | 01046925 | BR           |
+      | mlb     | 182         | 01046925 | BR           |
+      | mlm     | 501345      | 22615    | MX           |
 
   @FreeShippingMinimumTotal
   Scenario Outline: FreeShipping configured
@@ -45,8 +44,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I enable ME free shipping "<free_method>"
     And I enable ME free shipping with Minimum Order Amount "<amount>"
     When I am on page "checkout/cart/"
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "<country_code>"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "<zip_code>"
     And I press "div.buttons-set button" element
@@ -54,17 +52,17 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     Then I should see element price method "<free_method>"  with text "<price_expected>"
 
     Examples:
-      | country | free_method | zip_code | element_price                                         | amount | price_expected |
-      | mla     | 73328       | 7000     | label[for='s_method_mercadoenvios_73328'] span.price  | 100    | $0.00          |
-      | mla     | 73328       | 7000     | label[for='s_method_mercadoenvios_73328'] span.price  | 150    | $67.99         |
-      | mla     | 73330       | 7000     | label[for='s_method_mercadoenvios_73330'] span.price  | 100    | $0.00          |
-      | mla     | 73330       | 7000     | label[for='s_method_mercadoenvios_73330'] span.price  | 150    | $79.99         |
-      | mlb     | 100009      | 01046925 | label[for='s_method_mercadoenvios_100009'] span.price | 100    | $0.00          |
-      | mlb     | 100009      | 01046925 | label[for='s_method_mercadoenvios_100009'] span.price | 150    | $7.99          |
-      | mlb     | 182         | 01046925 | label[for='s_method_mercadoenvios_182'] span.price    | 100    | $0.00          |
-      | mlb     | 182         | 01046925 | label[for='s_method_mercadoenvios_182'] span.price    | 150    | $6.81          |
-      | mlm     | 501345      | 22615    | label[for='s_method_mercadoenvios_501245'] span.price | 100    | $0.00          |
-      | mlm     | 501345      | 22615    | label[for='s_method_mercadoenvios_501245'] span.price | 150    | $121.00        |
+      | country | free_method | zip_code | country_code  | amount | price_expected |
+      | mla     | 73328       | 7000     | AR            | 100    | $0.00          |
+      | mla     | 73328       | 7000     | AR            | 150    | $67.99         |
+      | mla     | 73330       | 7000     | AR            | 100    | $0.00          |
+      | mla     | 73330       | 7000     | AR            | 150    | $79.99         |
+      | mlb     | 100009      | 01046925 | BR            | 100    | $0.00          |
+      | mlb     | 100009      | 01046925 | BR            | 150    | $7.99          |
+      | mlb     | 182         | 01046925 | BR            | 100    | $0.00          |
+      | mlb     | 182         | 01046925 | BR            | 150    | $6.81          |
+      | mlm     | 501345      | 22615    | MX            | 100    | $0.00          |
+      | mlm     | 501345      | 22615    | MX            | 150    | $121.00        |
 
   @FreeShippingCheckoutStandard
   Scenario: FreeShipping complete checkout
@@ -99,8 +97,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I enable ME free shipping ""
     And I create promotion free shipping to product "hde006"
     And I am on page "checkout/cart/"
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "AR"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element

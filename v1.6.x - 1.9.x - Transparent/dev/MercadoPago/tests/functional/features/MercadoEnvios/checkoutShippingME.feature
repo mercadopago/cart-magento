@@ -7,6 +7,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I empty cart
     And I create mp attributes
     And I map attributes "mp_width" "mp_height" "mp_length" "mp_weight"
+    And Setting merchant "mla"
     And I enable methods "73328,73330"
     And I am on page "large-camera-bag.html"
     And I press ".add-to-cart-buttons .btn-cart" element

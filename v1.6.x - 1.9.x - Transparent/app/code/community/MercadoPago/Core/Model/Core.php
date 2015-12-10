@@ -277,7 +277,7 @@ class MercadoPago_Core_Model_Core
         $preference['additional_info']['payer']['address'] = array(
             "zip_code"      => $billing_address['postcode'],
             "street_name"   => $billing_address['street'] . " - " . $billing_address['city'] . " - " . $billing_address['country_id'],
-            "street_number" => 0
+            "street_number" => ''
         );
 
         $preference['additional_info']['payer']['registration_date'] = date('Y-m-d', $customer->getCreatedAtTimestamp()) . "T" . date('H:i:s', $customer->getCreatedAtTimestamp());
@@ -287,7 +287,7 @@ class MercadoPago_Core_Model_Core
         $preference['additional_info']['shipments']['receiver_address'] = array(
             "zip_code"      => $shipping['postcode'],
             "street_name"   => $shipping['street'] . " - " . $shipping['city'] . " - " . $shipping['country_id'],
-            "street_number" => 0,
+            "street_number" => '',
             "floor"         => "-",
             "apartment"     => "-",
 
@@ -354,8 +354,8 @@ class MercadoPago_Core_Model_Core
 
     public function getPayment($payment_id)
     {
-        $clienId = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID;
-        $clientSecret = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET;
+        $clienId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
         $mp = Mage::helper('mercadopago')->getApiInstance($clienId,$clientSecret);
 
         return $mp->get_payment($payment_id);
@@ -371,8 +371,8 @@ class MercadoPago_Core_Model_Core
 
     public function getMerchantOrder($merchant_order_id)
     {
-        $clientId = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID;
-        $clientSecret = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET;
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
         $mp = Mage::helper('mercadopago')->getApiInstance($clientId,$clientSecret);
 
         return $mp->get("/merchant_orders/" . $merchant_order_id);

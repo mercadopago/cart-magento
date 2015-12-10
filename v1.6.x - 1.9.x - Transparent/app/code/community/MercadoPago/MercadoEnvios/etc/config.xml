@@ -40,6 +40,14 @@
                     </paymentfilter_payment_method_is_active>
                 </observers>
             </payment_method_is_active>
+            <admin_system_config_changed_section_payment>
+                <observers>
+                    <payment_section_observer>
+                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <method>checkAndValidateData</method>
+                    </payment_section_observer>
+                </observers>
+            </admin_system_config_changed_section_payment>
         </events>
     </global>
     <default>
@@ -49,7 +57,7 @@
                 <title>MercadoEnvíos</title>
                 <model>MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios</model>
                 <sort_order>10</sort_order>
-                <sallowspecific>0</sallowspecific>
+                <sallowspecific>1</sallowspecific>
                 <name>MercadoEnvios</name>
                 <specificerrmsg>This shipping method is currently unavailable.</specificerrmsg>
             </mercadoenvios>

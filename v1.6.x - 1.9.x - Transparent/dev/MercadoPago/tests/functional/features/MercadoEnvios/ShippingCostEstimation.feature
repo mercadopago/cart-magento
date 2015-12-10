@@ -28,8 +28,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
       | 10       | 0         | 10        | 100       |
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "AR"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element
@@ -40,8 +39,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
   Scenario: Shipping methods are availables but product has not dimension setted and method should to show error message
     Given showmethod not always
     When I am on page "checkout/cart/"
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "AR"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element
@@ -57,8 +55,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
       | 10       | 10        | 10        | 100       |
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "AR"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element
@@ -72,8 +69,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
       | 10       | 10        | 10        | 100       |
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "AR"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element
@@ -87,8 +83,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
       | 100      | 10        | 10        | 100       |
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "AR"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element
@@ -104,8 +99,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | mp_width | mp_height | mp_length | mp_weight |
       | 10       | 10        | 10        | 100       |
     And I set weight map with "mp_weight" "kg"
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "AR"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element
@@ -121,8 +115,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | mp_width | mp_height | mp_length | mp_weight |
       | 10       | 10        | 10        | 100       |
     And I set weight map with "mp_weight" "kg"
-    And I select option field "country_id" with "US"
-    And I select option field "region_id" with "1"
+    And I select option field "country_id" with "AR"
     And I fill text field "city" with "test city"
     And I fill text field "postcode" with "7000"
     And I press "div.buttons-set button" element

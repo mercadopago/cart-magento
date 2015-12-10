@@ -11,9 +11,10 @@ env:
   global:
     - MAGENTO_DB_NAME=magento
     - MAGENTO_URL=mercadopago.local
-
-  matrix:
     - DB=mysql
+  matrix:
+   - BEHAT_TAG=@MercadoEnvios
+   - BEHAT_TAG=@MercadoPago
 
 addons:
   hosts:
@@ -66,7 +67,7 @@ before_script:
   - mysql magento < ./tmp/magento-sample-data-1.9.1.0/magento_sample_data_for_1.9.1.0.sql
   - cp -R ./tmp/magento-sample-data-1.9.1.0/media/ ./htdocs/media/
   - cp -R ./tmp/magento-sample-data-1.9.1.0/skin/ ./htdocs/skin/
-  - php ./htdocs/install.php --license_agreement_accepted 'yes' --locale 'en_US' --db_host '127.0.0.1' --db_name ${MAGENTO_DB_NAME} --db_user 'travis' --timezone 'America/Los_Angeles' --default_currency 'USD' --skip_url_validation 'yes' --url "http://${MAGENTO_URL}/" --secure_base_url "http://${MAGENTO_URL}/" --use_rewrites 'yes' --use_secure 'no' --use_secure_admin 'no' --session_save 'db' --admin_firstname 'Facundo' --admin_lastname 'Capua' --admin_email 'fcapua@summasolutions.net' --admin_username 'admin' --admin_password 'MercadoPago123'
+  - php ./htdocs/install.php --license_agreement_accepted 'yes' --locale 'en_US' --db_host '127.0.0.1' --db_name ${MAGENTO_DB_NAME} --db_user 'travis' --timezone 'America/Los_Angeles' --default_currency 'USD' --skip_url_validation 'yes' --url "http://${MAGENTO_URL}/" --secure_base_url "http://${MAGENTO_URL}/" --use_rewrites 'yes' --use_secure 'no' --use_secure_admin 'no' --session_save 'db' --admin_firstname 'Facundo' --admin_lastname 'Capua' --admin_email 'fcapua@summasolutions.net' --admin_username 'admin' --admin_password 'MercadoPago2015'
   - cp -R v1.6.x\ -\ 1.9.x\ -\ Transparent/* htdocs/
   - ls -al htdocs/app/code/community/
   - ls -al bin/
@@ -85,4 +86,4 @@ script:
   - vendor/bin/phpmd ../../../app/code/community/MercadoPago text static/phpmd/ruleset.xml
   - vendor/bin/phpcs --standard=static/phpcs/Ecg --colors ../../../app/
   - vendor/bin/phpcpd ../../../ --exclude=dev
-  - vendor/bin/behat --config behat.yml
+  - vendor/bin/behat --config behat.yml --tags ${BEHAT_TAG} --tags="~@skip"

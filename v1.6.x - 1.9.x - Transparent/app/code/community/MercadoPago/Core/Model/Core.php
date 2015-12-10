@@ -172,9 +172,9 @@ class MercadoPago_Core_Model_Core
 
     protected function getTotalCart($order)
     {
-        $total_cart = $order->getBaseGrandTotal();
+        $total_cart = $order->getBaseGrandTotal() - $order->getBaseFinanceCostAmount();
         if (!$total_cart) {
-            $total_cart = $order->getBasePrice() + $order->getBaseShippingAmount();
+            $total_cart = $order->getBasePrice() + $order->getBaseShippingAmount() - $order->getBaseFinanceCostAmount();
         }
 
         return number_format($total_cart, 2, '.', '');
@@ -354,8 +354,9 @@ class MercadoPago_Core_Model_Core
 
     public function getPayment($payment_id)
     {
-        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
-        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
+        $clienId = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID;
+        $clientSecret = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET;
+        $mp = Mage::helper('mercadopago')->getApiInstance($clienId,$clientSecret);
 
         return $mp->get_payment($payment_id);
     }
@@ -370,8 +371,9 @@ class MercadoPago_Core_Model_Core
 
     public function getMerchantOrder($merchant_order_id)
     {
-        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
-        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
+        $clientId = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID;
+        $clientSecret = MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET;
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId,$clientSecret);
 
         return $mp->get("/merchant_orders/" . $merchant_order_id);
     }

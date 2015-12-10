@@ -24,7 +24,7 @@ class MercadoPago_Core_NotificationsController
     protected $_sendemail = false;
     protected $_hash = null;
 
-    protected function getDataPayments($merchantOrder)
+    protected function _getDataPayments($merchantOrder)
     {
         $data = array();
         $core = Mage::getModel('mercadopago/core');
@@ -74,7 +74,7 @@ class MercadoPago_Core_NotificationsController
                 $merchant_order = $response['response'];
 
                 if (count($merchant_order['payments']) > 0) {
-                    $data = $this->getDataPayments($merchant_order);
+                    $data = $this->_getDataPayments($merchant_order);
                     $status_final = $this->getStatusFinal($data['status']);
 
                     $this->updateOrder($data);

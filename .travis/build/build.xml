@@ -26,20 +26,8 @@
 
         <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago/country ${plugin.country}" logoutput="true" />
 
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_standard/client_id ${setting.payment.mercadopago_standard.client_id}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_standard/client_secret ${setting.payment.mercadopago_standard.client_secret}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_standard/active ${setting.payment.mercadopago_standard.active}" logoutput="true" />
-
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_custom_checkout/public_key ${setting.payment.mercadopago_custom.public_key}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_custom_checkout/access_token ${setting.payment.mercadopago_custom.access_token}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set payment/mercadopago_custom/active ${setting.payment.mercadopago_custom.active}" logoutput="true" />
-
-
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set carriers/ups/active ${setting.carriers.ups.active}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set carriers/usps/active ${setting.carriers.usps.active}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set carriers/freeshipping/active ${setting.carriers.freeshipping.active}" logoutput="true" />
-        <exec command="php dev/tools/n98-magerun.phar --root-dir=${magento.root.folder} config:set carriers/freeshipping/free_shipping_subtotal ${setting.carriers.freeshipping.subtotal}" logoutput="true" />
-
+        <exec command="php .travis/build/bin/apply-magento-config.php -f=.travis/build/build.properties -n=dev/tools/n98-magerun.phar -r=${magento.root.folder}" logoutput="true" />
+        <exec command="php .travis/build/bin/apply-magento-config.php -f=.travis/build/properties/build.properties.${plugin.country} -n=dev/tools/n98-magerun.phar -r=${magento.root.folder}" logoutput="true" />
     </target>
 
     <!-- ============================================  -->

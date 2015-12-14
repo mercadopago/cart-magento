@@ -100,17 +100,17 @@ function ElemContainer(elem){
     };
 
     this.blur = function(handler){
-        this.on(this.eventNames.blur, handler);   
+        this.on(this.eventNames.blur, handler);
         return this;
     };
 
     this.change = function(handler){
-        this.on(this.eventNames.change, handler);  
-        return this; 
+        this.on(this.eventNames.change, handler);
+        return this;
     };
 
     this.focus = function(handler){
-        this.on(this.eventNames.focus, handler);   
+        this.on(this.eventNames.focus, handler);
         return this;
     };
 
@@ -157,7 +157,6 @@ function ElemContainer(elem){
             });
         }
     }
-
 }
 
 var TinyJ = function(elemDescriptor, parentElem){
@@ -185,3 +184,15 @@ var TinyJ = function(elemDescriptor, parentElem){
         return result;
     }
 };
+
+if (!String.format) {
+    String.format = function(format) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return format.replace(/{(\d+)}/g, function(match, number) {
+            return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+                ;
+        });
+    };
+}

@@ -4,13 +4,15 @@ $coupon_mercadopago = Mage::getStoreConfig('payment/mercadopago_custom/coupon_me
 $_code = $this->getMethodCode();
 $grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
 $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
+$logEnabled= Mage::getStoreConfigFlag('payment/mercadopago/logs');
 $route = $this->getRequest()->getRequestedRouteName();
 $customer = $this->getCustomerAndCards();
 ?>
 
 <script>
     document.observe("dom:loaded", function() {
-        initMercadoPagoJs();
+        MercadoPagoCustom.enableLog(<?php echo $logEnabled?>);
+        MercadoPagoCustom.getInstance().init();
     });
 </script>
 
@@ -27,7 +29,7 @@ $customer = $this->getCustomerAndCards();
                 echo $block->toHtml();
                 ?>
                 <script type="text/javascript">
-                    initDiscountMercadoPagoCustom();
+                    MercadoPagoCustom.getInstance().initDiscount();
                 </script>
                 <?php
             endif;
@@ -65,7 +67,7 @@ $customer = $this->getCustomerAndCards();
 
                 <script>
                     document.observe("dom:loaded", function() {
-                        initMercadoPagoOCP();
+                        MercadoPagoCustom.getInstance().initOCP();
                     });
                 </script>
             <?php endif; ?>

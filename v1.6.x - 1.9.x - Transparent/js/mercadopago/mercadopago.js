@@ -1,830 +1,1047 @@
-// MERCADO LOG
-var mercadopago_log = true;
-var issuerMandatory = false;
-function showLogMercadoPago(message) {
-    if (mercadopago_log) {
-        console.debug(message);
-    }
-}
+var MercadoPagoCustom = (function () {
 
-if (typeof PublicKeyMercadoPagoCustom != "undefined") {
-    Mercadopago.setPublishableKey(PublicKeyMercadoPagoCustom);
-}
+    var instance = null;
+    var http = {
+        status: {
+            OK: 200,
+            CREATED: 201
+        },
+        method: {
+            GET: 'GET'
+        }
+    };
+    var self = {
+        messages: {
+            init: 'Init MercadoPago JS',
+            initOCP: 'Init MercadoPago OCP',
+            initDiscount: 'Init MercadoPago Custom Discount',
+            initTicket: 'Init MercadoPago Custom Ticket',
+            mpIncorrectlyConfigured: 'MercadoPago was not configured correctly. Public Key not found.',
+            publicKey: 'Public Key: {0}',
+            siteId: 'SITE_ID: {0}',
+            invalidDocument: 'Document Number is invalid.',
+            incorrectExpDate: 'Incorrect credit card expiration date.',
+            defineInputs: 'Define Inputs',
+            ocpUser: 'Action One Click Pay User',
+            clearOpts: 'Clear Option',
+            getBin: 'Get bin',
+            guessingPayment: 'Guessing Payment',
+            setPaymentInfo: 'Set payment method info: ',
+            issuerMandatory: 'Issuer is mandatory? {0}',
+            setIssuer: 'Set Issuer...',
+            setInstallment: 'Set install by issuer id',
+            getInstallment: 'Get Installments',
+            usingMagentoCustomCheckout: 'Using checkout customized Magento...',
+            usingMagentoStdCheckout: 'Using checkout standard Magento...',
+            getAmountSuccess: 'Success in get amount: ',
+            installmentAmount: 'Valor para calculo da parcela: {0}',
+            customDiscountAmount: 'Valor do desconto: {0}',
+            finalAmount: 'Valor final: {0}',
+            getAmountError: 'Error getting amount: ',
+            setInstallmentInfo: 'Set Installment info',
+            issuerSet: 'Issuer set: {0}',
+            releasecardTokenEvent: 'Release event create card token',
+            checkCreateCardToken: 'Check create card token',
+            responseCardToken: 'Response create/update card_token: ',
+            hideErrors: 'Hiding all errors...',
+            showingError: 'Show Message Error Form',
+            showLoading: 'Show loading...',
+            hideLoading: 'Hide loading...',
+            validateDiscount: 'Valid Discount',
+            validateCouponResponse: 'Validating coupon response : ',
+            removeDiscount: 'Remove Discount',
+            removeCoupon: 'Remove coupon!',
+            hideCouponMessages: 'Hide all coupon messages...',
+            ocpActivatedFormat: 'OCP? {0}',
+            cardHandler: 'card Handler'
+        },
+        constants: {
+            option: 'option',
+            undefined: 'undefined',
+            default: 'default',
+            checkout: 'checkout',
+            mexico: 'MLM',
+            brazil: 'MLB',
+            mercadopagoCustom: 'mercadopago_custom',
+            validateDiscount: 'validate-discount',
+            validateDocNumber: 'mp-validate-docnumber',
+            validateCC: 'mp-validate-cc-exp',
+            invalidCoupon: 'invalid_coupon',
+            cost: 'cost',
+            dataElementId: 'data-element-id',
+            style: 'style',
+            requireEntry: 'required-entry',
+            validateSelect: 'validate-select',
+            keyup: 'keyup',
+            firstSixDigits: 'first_six_digits',
+            backgroundUrlFormat: 'url({0}) no-repeat'
+        },
+        selectors: {
+            checkoutCustom: '#mercadopago_checkout_custom',
+            checkoutTicket: '#mercadopago_checkout_custom_ticket',
+            siteId: '.site_id',
+            cardNumberInput: 'input[data-checkout="cardNumber"]',
+            installmentsDontWork: '.error-installment-not-work',
+            mercadopagoCustomOpt: '#p_method_mercadopago_custom',
+            cardExpYear: '#cardExpirationYear',
+            docType: '#docType',
+            cardId: 'select[data-checkout="cardId"]',
+            returnToCardList: '#return_list_card_mp',
+            useOtherCard: '#use_other_card_mp',
+            installments: '#installments',
+            totalAmount: '.total_amount',
+            amount: '.amount',
+            cardNumber: '#cardNumber',
+            issuer: '#issuer',
+            issuerMp: '#issuer__mp',
+            issuerId: 'issuer_id',
+            cardExpirationMonth: '#cardExpirationMonth',
+            cardHolder: '#cardholderName',
+            docNumber: '#docNumber',
+            securityCode: '#securityCode',
+            securityCodeOCP: '#securityCodeOCP',
+            dataCheckout: '[data-checkout]',
+            oneClickPayment: '#mercadopago_checkout_custom #one_click_pay_mp',
+            installmentText: '.mercadopago-text-installment',
+            paymentMethodId: '#mercadopago_checkout_custom .payment_method_id',
+            paymenMethodNotFound: '.error-payment-method-not-found',
+            mercadoPagoTextChoice: '.mercadopago-text-choice',
+            errorMethodMinAmount: '.error-payment-method-min-amount',
+            textDefaultIssuer: '.mercadopago-text-default-issuer',
+            customCard: '#mercadopago_checkout_custom_card',
+            ocp: '#mercadopago_checkout_custom_ocp',
+            mercadoRoute: '.mercado_route',
+            baseUrl: '.mercado_base_url',
+            loading: '#mercadopago-loading',
+            messageError: '.message-error',
+            customDiscountAmount: '#mercadopago_checkout_custom .mercadopago-discount-amount',
+            discountAmount: '.mercadopago-discount-amount',
+            token: '#mercadopago_checkout_custom .token',
+            errorFormat: '.error-{0}',
+            couponActionApply: '#mercadopago_checkout_custom .mercadopago-coupon-action-apply',
+            couponActionRemove: '#mercadopago_checkout_custom .mercadopago-coupon-action-remove',
+            ticketActionApply: '#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-apply',
+            ticketActionRemove: '#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-remove',
+            coupon: '.mercadopago_coupon',
+            couponLoading: '.mercadopago-message-coupon .loading',
+            couponList: 'mercadopago-message-coupon li',
+            textCurrency: '.mercadopago-text-currency',
+            discountOk: '.mercadopago-message-coupon .discount-ok',
+            messageCoupon: '.mercadopago-message-coupon',
+            discountOkAmountDiscount: '.mercadopago-message-coupon .discount-ok .amount-discount',
+            discountOkTotalAmount: '.mercadopago-message-coupon .discount-ok .total-amount',
+            discountOkTotalAmountDiscount: '.mercadopago-message-coupon .discount-ok .total-amount-discount',
+            discountOkTerms: '.mercadopago-message-coupon .discount-ok .mercadopago-coupon-terms',
+            inputCouponDiscount: '#input-coupon-discount'
+
+        },
+        url: {
+            amount: 'mercadopago/api/amount',
+            couponUrlFormat: 'mercadopago/api/coupon?id={0}',
+            termsUrlFormat: "https://api.mercadolibre.com/campaigns/{0}/terms_and_conditions?format_type=html"
+        },
+        enableLog: true
+    };
+
+    function getMessages() {
+        return self.messages;
+    }
+
+    function getConstants() {
+        return self.constants;
+    }
+
+    function getSelectors() {
+        return self.selectors;
+    }
+
+    function getUrls() {
+        return self.url;
+    }
+
+    function setMessages(messages) {
+        self.messages = messages;
+    }
+
+    function setConstants(constants) {
+        self.constants = constants;
+    }
+
+    function setSelectors(selectors) {
+        self.selectors = selectors;
+    }
+
+    function setUrls(urls) {
+        self.url = urls;
+    }
+
+    function isLogEnabled(){
+        return self.enableLog;
+    }
+
+// MERCADO LOG
+    function enableLog(val) {
+        self.enableLog = val;
+    }
+
+    function InitializeNewModule() {
+
+        var issuerMandatory = false;
+
+
+        function showLogMercadoPago(message) {
+            if (self.enableLog) {
+                console.debug(message);
+            }
+        }
+
+        if (typeof PublicKeyMercadoPagoCustom != self.constants.undefined) {
+            Mercadopago.setPublishableKey(PublicKeyMercadoPagoCustom);
+        }
 
 
 // Inicializa o formulario de pagamento com cartão de credito
-function initMercadoPagoJs() {
-    showLogMercadoPago("Init MercadoPago JS");
+        function initMercadoPagoJs() {
+            showLogMercadoPago(self.messages.init);
 
-    var site_id = TinyJ('.site_id').val();
+            var siteId = TinyJ(self.selectors.siteId).val();
 
-    if (typeof PublicKeyMercadoPagoCustom == "undefined") {
-        alert("MercadoPago was not configured correctly. Public Key not found.");
-    }
+            if (typeof PublicKeyMercadoPagoCustom == self.constants.undefined) {
+                alert(self.messages.mpIncorrectlyConfigured);
+            }
 
-    //Show public key
-    showLogMercadoPago("Public Key: " + PublicKeyMercadoPagoCustom);
-    //Show site
-    showLogMercadoPago("SITE_ID: " + site_id);
+            //Show public key
+            showLogMercadoPago(String.format(self.messages.publicKey, PublicKeyMercadoPagoCustom));
+            //Show site
+            showLogMercadoPago(String.format(self.messages.siteId, siteId));
 
-    if (site_id != 'MLM') {
-        //caso não seja o mexico puxa os documentos aceitos
-        Mercadopago.getIdentificationTypes();
-    }
+            if (siteId != self.constants.mexico) {
+                //caso não seja o mexico puxa os documentos aceitos
+                Mercadopago.getIdentificationTypes();
+            }
 
-    //add inputs para cada país
-    defineInputs();
+            //add inputs para cada país
+            defineInputs();
 
-    //Adiciona evento nos elementos
-    TinyJ('input[data-checkout="cardNumber"]').keyup(guessingPaymentMethod);
-    TinyJ('input[data-checkout="cardNumber"]').keyup(clearOptions);
-    TinyJ('input[data-checkout="cardNumber"]').change(guessingPaymentMethod);
-    TinyJ('.error-installment-not-work').click(guessingPaymentMethod);
+            //Adiciona evento nos elementos
+            TinyJ(self.selectors.cardNumberInput).keyup(guessingPaymentMethod);
+            TinyJ(self.selectors.cardNumberInput).keyup(clearOptions);
+            TinyJ(self.selectors.cardNumberInput).change(guessingPaymentMethod);
+            TinyJ(self.selectors.installmentsDontWork).click(guessingPaymentMethod);
 
-    //adiciona evento para a criação do card_token
-    releaseEventCreateCardToken();
+            //adiciona evento para a criação do card_token
+            releaseEventCreateCardToken();
 
-    //inicia o formulario verificando se ja tem cartão selecionado para obter o bin
-    cardsHandler();
+            //inicia o formulario verificando se ja tem cartão selecionado para obter o bin
+            cardsHandler();
 
-    if (TinyJ('#p_method_mercadopago_custom').isChecked()) {
-        payment.switchMethod('mercadopago_custom');
-    }
+            if (TinyJ(self.selectors.mercadopagoCustomOpt).isChecked()) {
+                payment.switchMethod(self.constants.mercadopagoCustom);
+            }
 
-    Validation.add('validate-discount', ' ', function (v, element) {
-        return (!element.hasClassName('invalid_coupon'));
-    });
+            Validation.add(self.constants.validateDiscount, ' ', function (v, element) {
+                return (!element.hasClassName(self.constants.invalidCoupon));
+            });
 
-    Validation.add('mp-validate-docnumber', 'Document Number is invalid.', function (v, element) {
-        return checkDocNumber(v);
-    });
+            Validation.add(self.constants.validateDocNumber, self.messages.invalidDocument, function (v, element) {
+                return checkDocNumber(v);
+            });
 
-    Validation.add('mp-validate-cc-exp', 'Incorrect credit card expiration date.', function (v, element) {
-        var ccExpMonth   = v;
-        var ccExpYear    = TinyJ('#cardExpirationYear').val();
-        var currentTime  = new Date();
-        var currentMonth = currentTime.getMonth() + 1;
-        var currentYear  = currentTime.getFullYear();
-        if (ccExpMonth < currentMonth && ccExpYear == currentYear) {
-            return false;
-        }
-        return true;
-    });
-}
-
-function checkDocNumber(v) {
-    var flagReturn = true;
-    Mercadopago.getIdentificationTypes(function (status, identificationsTypes) {
-        if (status == 200) {
-            var type = TinyJ('#docType').val();
-            identificationsTypes.each(function (dataType) {
-                if (dataType.id == type) {
-                    if (v.length > dataType.max_length || v.length < dataType.min_length) {
-                        flagReturn = false;
-                    }
+            Validation.add(self.constants.validateCC, self.messages.incorrectExpDate, function (v, element) {
+                var ccExpMonth = v;
+                var ccExpYear = TinyJ(self.selectors.cardExpYear).val();
+                var currentTime = new Date();
+                var currentMonth = currentTime.getMonth() + 1;
+                var currentYear = currentTime.getFullYear();
+                if (ccExpMonth < currentMonth && ccExpYear == currentYear) {
+                    return false;
                 }
+                return true;
             });
         }
-    });
-    return flagReturn;
-}
+
+        function checkDocNumber(v) {
+            var flagReturn = true;
+            Mercadopago.getIdentificationTypes(function (status, identificationsTypes) {
+                if (status == http.status.OK) {
+                    var type = TinyJ(self.selectors.docType).val();
+                    identificationsTypes.each(function (dataType) {
+                        if (dataType.id == type) {
+                            if (v.length > dataType.max_length || v.length < dataType.min_length) {
+                                flagReturn = false;
+                            }
+                        }
+                    });
+                }
+            });
+            return flagReturn;
+        }
 
 //init one click pay
-function initMercadoPagoOCP() {
-    showLogMercadoPago("Init MercadoPago OCP");
-    TinyJ('select[data-checkout="cardId"]').change(cardsHandler);
+        function initMercadoPagoOCP() {
+            showLogMercadoPago(self.messages.initOCP);
+            TinyJ(self.selectors.cardId).change(cardsHandler);
 
-    //açoes para one click pay
-    var returnListCar = TinyJ('#return_list_card_mp');
-    TinyJ('#use_other_card_mp').click(actionUseOneClickPayOrNo);
-    returnListCar.click(actionUseOneClickPayOrNo);
+            //açoes para one click pay
+            var returnListCard = TinyJ(self.selectors.returnToCardList);
+            TinyJ(self.selectors.useOtherCard).click(actionUseOneClickPayOrNo);
+            returnListCard.click(actionUseOneClickPayOrNo);
 
-    TinyJ('#installments').change(setTotalAmount);
+            TinyJ(self.selectors.installments).change(setTotalAmount);
 
-    //show botão de retornar para lista de cartões
-    returnListCar.show();
-}
-
-function setTotalAmount(){
-    jQuery('.total_amount').val(TinyJ(this).getSelectedOption().attr('cost'));
-}
-
-function defineInputs() {
-    showLogMercadoPago("Define Inputs");
-
-    var site_id = TinyJ('#mercadopago_checkout_custom .site_id').val();
-    var one_click_pay = TinyJ('#mercadopago_checkout_custom #one_click_pay_mp').val();
-    var data_checkout = TinyJ("[data-checkout]");
-    var exclude_inputs = ["#cardId", "#securityCodeOCP"];
-    var data_inputs = [];
-
-    if (one_click_pay == true) {
-
-        exclude_inputs = [
-        "#cardNumber", "#issuer", "#cardExpirationMonth", "#cardExpirationYear",
-        "#cardholderName", "#docType", "#docNumber", "#securityCode"
-        ]
-
-    } else if (site_id == 'MLB') {
-
-        exclude_inputs.push("#issuer")
-        exclude_inputs.push("#docType")
-
-    } else if (site_id == 'MLM') {
-
-        exclude_inputs.push("#docType");
-        exclude_inputs.push("#docNumber");
-        exclude_inputs.push("#issuer");
-
-    }
-    if (!this.issuerMandatory) {
-        exclude_inputs.push("#issuer");
-    }
-
-    for (var x = 0; x < data_checkout.length; x++) {
-        var $id = "#" + data_checkout[x].id();
-
-        var el_pai = data_checkout[x].attribute('data-element-id');
-
-
-        if (exclude_inputs.indexOf($id) == -1) {
-            TinyJ(el_pai).removeAttribute('style');
-            data_inputs.push($id);
-        } else {
-            TinyJ(el_pai).hide();
+            //show botão de retornar para lista de cartões
+            returnListCard.show();
         }
-    }
+
+        function setTotalAmount() {
+            TinyJ(self.selectors.totalAmount).val(TinyJ(this).getSelectedOption().attribute(self.constants.cost));
+        }
+
+        function defineInputs() {
+            showLogMercadoPago(self.messages.defineInputs);
+
+            var siteId = TinyJ(self.selectors.siteId).val();
+            var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
+            var dataCheckout = TinyJ(self.selectors.dataCheckout);
+            var excludeInputs = [self.selectors.cardId, self.selectors.securityCodeOCP];
+            var dataInputs = [];
+
+            if (oneClickPay == true) {
+
+                excludeInputs = [
+                    self.selectors.cardNumber, self.selectors.issuer, self.selectors.cardExpirationMonth, self.selectors.cardExpYear,
+                    self.selectors.cardHolder, self.selectors.docType, self.selectors.docNumber, self.selectors.securityCode
+                ]
+
+            } else if (siteId == self.constants.brazil) {
+
+                excludeInputs.push(self.selectors.issuer);
+                excludeInputs.push(self.selectors.docType)
+
+            } else if (siteId == self.constants.mexico) {
+
+                excludeInputs.push(self.selectors.docType)
+                excludeInputs.push(self.selectors.docNumber);
+
+            }
+            if (!this.issuerMandatory) {
+                excludeInputs.push(self.selectors.issuer);
+            }
+
+            for (var x = 0; x < dataCheckout.length; x++) {
+                var $id = "#" + dataCheckout[x].id();
+
+                var elPai = dataCheckout[x].attribute(self.constants.dataElementId);
 
 
-    //Show inputs
-    showLogMercadoPago(data_inputs);
-
-    //retorna a lista de inputs aceita para esse pais/metodo de pagamento (cartão ou one click pay)
-    return data_inputs;
-
-}
-
-
-function setRequiredFields(required) {
-    if (required) {
-        TinyJ('#cardNumber').addClass('required-entry');
-        TinyJ('#cardholderName').addClass('required-entry');
-        TinyJ('#docNumber').addClass('required-entry');
-        TinyJ('#cardExpirationMonth').addClass('validate-select');
-        TinyJ('#cardExpirationYear').addClass('validate-select');
-        TinyJ('#docType').addClass('validate-select');
-        TinyJ('#securityCodeOCP').removeClass('required-entry');
-        TinyJ('#securityCode').addClass('required-entry');
-    } else {
-        TinyJ('#cardNumber').removeClass('required-entry');
-        TinyJ('#cardholderName').removeClass('required-entry');
-        TinyJ('#docNumber').removeClass('required-entry');
-        TinyJ('#securityCode').removeClass('required-entry');
-        TinyJ('#securityCodeOCP').addClass('required-entry');
-        TinyJ('#cardExpirationMonth').removeClass('validate-select');
-        TinyJ('#cardExpirationYear').removeClass('validate-select');
-        TinyJ('#docType').removeClass('validate-select');
-    }
-}
-
-function actionUseOneClickPayOrNo() {
-    showLogMercadoPago("Action One Click Pay User");
-
-    var ocp = TinyJ('#mercadopago_checkout_custom #one_click_pay_mp').val();
-
-    showLogMercadoPago("OCP? " + ocp);
-
-    if (ocp == true) {
-        TinyJ('#mercadopago_checkout_custom #one_click_pay_mp').val(0);
-        TinyJ('#cardId').disable();
-        setRequiredFields(true);
-    } else {
-        TinyJ('#mercadopago_checkout_custom #one_click_pay_mp').val(1);
-        TinyJ('#cardId').enable();
-        setRequiredFields(false);
-    }
-
-    //verifica os inputs para esse opção de pagamento
-    defineInputs();
-    clearOptions();
-    //cria um novo card_token, por que se estiver vinculado ao card_id não da para dar put nas informações
-    Mercadopago.clearSession();
-
-    //esconde todos os erros
-    hideMessageError();
-
-    //forca a validação para criacao do card token
-    checkCreateCardToken();
-
-    //update payment_id
-    guessingPaymentMethod(event.type = "keyup");
+                if (excludeInputs.indexOf($id) == -1) {
+                    TinyJ(elPai).removeAttribute(self.constants.style);
+                    dataInputs.push($id);
+                } else {
+                    TinyJ(elPai).hide();
+                }
+            }
 
 
-}
+            //Show inputs
+            showLogMercadoPago(dataInputs);
+
+            //retorna a lista de inputs aceita para esse pais/metodo de pagamento (cartão ou one click pay)
+            return dataInputs;
+
+        }
+
+
+        function setRequiredFields(required) {
+            if (required) {
+                TinyJ(self.selectors.cardNumber).addClass(self.constants.requireEntry);
+                TinyJ(self.selectors.cardHolder).addClass(self.constants.requireEntry);
+                TinyJ(self.selectors.docNumber).addClass(self.constants.requireEntry);
+                TinyJ(self.selectors.cardExpirationMonth).addClass(self.constants.validateSelect);
+                TinyJ(self.selectors.cardExpYear).addClass(self.constants.validateSelect);
+                TinyJ(self.selectors.docType).addClass(self.constants.validateSelect);
+                TinyJ(self.selectors.securityCodeOCP).removeClass(self.constants.requireEntry);
+                TinyJ(self.selectors.securityCode).addClass(self.constants.requireEntry);
+            } else {
+                TinyJ(self.selectors.cardNumber).removeClass(self.constants.requireEntry);
+                TinyJ(self.selectors.cardHolder).removeClass(self.constants.requireEntry);
+                TinyJ(self.selectors.docNumber).removeClass(self.constants.requireEntry);
+                TinyJ(self.selectors.securityCode).removeClass(self.constants.requireEntry);
+                TinyJ(self.selectors.securityCodeOCP).addClass(self.constants.requireEntry);
+                TinyJ(self.selectors.cardExpirationMonth).removeClass(self.constants.validateSelect);
+                TinyJ(self.selectors.cardExpYear).removeClass(self.constants.validateSelect);
+                TinyJ(self.selectors.docType).removeClass(self.constants.validateSelect);
+            }
+        }
+
+        function actionUseOneClickPayOrNo() {
+            showLogMercadoPago(self.messages.ocpUser);
+
+            var ocp = TinyJ(self.selectors.oneClickPayment).val();
+
+            showLogMercadoPago(String.format(self.messages.ocpActivatedFormat, ocp));
+
+            if (ocp == true) {
+                TinyJ(self.selectors.oneClickPayment).val(0);
+                TinyJ(self.selectors.cardId).disable();
+                setRequiredFields(true);
+            } else {
+                TinyJ(self.selectors.oneClickPayment).val(1);
+                TinyJ(self.selectors.cardId).enable();
+                setRequiredFields(false);
+            }
+
+            //verifica os inputs para esse opção de pagamento
+            defineInputs();
+            clearOptions();
+            //cria um novo card_token, por que se estiver vinculado ao card_id não da para dar put nas informações
+            Mercadopago.clearSession();
+
+            //esconde todos os erros
+            hideMessageError();
+
+            //forca a validação para criacao do card token
+            checkCreateCardToken();
+
+            //update payment_id
+            guessingPaymentMethod(event.type = self.constants.keyup);
+
+
+        }
 
 // caso não tenha bin, ele reseta as installment e os issuer
-function clearOptions() {
-    showLogMercadoPago("Clear Option");
+        function clearOptions() {
+            showLogMercadoPago(self.messages.clearOpts);
 
-    var bin = getBin();
-    if (bin.length == 0 || TinyJ('input[data-checkout="cardNumber"]').val() == '') {
-        var message_installment = TinyJ(".mercadopago-text-installment").val();
+            var bin = getBin();
+            if (bin.length == 0 || TinyJ(self.selectors.cardNumberInput).val() == '') {
+                var messageInstallment = TinyJ(self.selectors.installmentText).val();
 
-        var issuer = TinyJ("#issuer");
-        issuer.hide();
-        issuer.empty();
+                var issuer = TinyJ(self.selectors.issuer);
+                issuer.hide();
+                issuer.empty();
 
-        TinyJ("#issuer__mp").hide();
+                TinyJ(self.selectors.issuerMp).hide();
 
-        var selectorInstallments = TinyJ("#installments");
-        var fragment = document.createDocumentFragment();
-        option = new Option(message_installment, '');
+                var selectorInstallments = TinyJ(self.selectors.installments);
+                var fragment = document.createDocumentFragment();
+                option = new Option(messageInstallment, '');
 
-        selectorInstallments.empty();
-        fragment.appendChild(option);
-        selectorInstallments.appendChild(fragment);
-        selectorInstallments.disable();
-    }
-}
+                selectorInstallments.empty();
+                fragment.appendChild(option);
+                selectorInstallments.appendChild(fragment);
+                selectorInstallments.disable();
+            }
+        }
 
 //verifica se tem cartão selecionado
-function cardsHandler() {
-    showLogMercadoPago("card Handler");
-    clearOptions();
-    var cardSelector;
-    try {
-        cardSelector = TinyJ("#cardId");
-    }
-    catch(err) {
-        return;
-    }
-    var one_click_pay = TinyJ('#mercadopago_checkout_custom #one_click_pay_mp').val();
+        function cardsHandler() {
+            showLogMercadoPago(self.messages.cardHandler);
+            clearOptions();
+            var cardSelector;
+            try {
+                cardSelector = TinyJ(self.selectors.cardId);
+            }
+            catch (err) {
+                return;
+            }
+            var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
 
-    // verifica se a seleção do cartão existe
-    // se ele foi selecionado
-    // e se o formulário esta ativo, pois o cliente pode estar digitando o cartão
-    if (one_click_pay == true) {
-        var selectedCard = cardSelector.getSelectedOption();
-        if(selectedCard.val() != "-1"){
-            var _bin = selectedCard.attribute("first_six_digits");
-            Mercadopago.getPaymentMethod({"bin": _bin}, setPaymentMethodInfo);
-            TinyJ('#issuer').val('');
+            // verifica se a seleção do cartão existe
+            // se ele foi selecionado
+            // e se o formulário esta ativo, pois o cliente pode estar digitando o cartão
+            if (oneClickPay == true) {
+                var selectedCard = cardSelector.getSelectedOption();
+                if (selectedCard.val() != "-1") {
+                    var _bin = selectedCard.attribute(self.constants.firstSixDigits);
+                    Mercadopago.getPaymentMethod({"bin": _bin}, setPaymentMethodInfo);
+                    TinyJ(self.selectors.issuer).val('');
+                }
+            }
         }
-    }
-}
 
 //obtem o bin do cartão
-function getBin() {
-    showLogMercadoPago("Get bin");
+        function getBin() {
+            showLogMercadoPago(self.messages.getBin);
 
-    try{
-        var cardSelector = TinyJ("#cardId").getSelectedOption(); 
-    }
-    catch(err){
-        return;
-    }
-    var one_click_pay = TinyJ('#mercadopago_checkout_custom #one_click_pay_mp').val();
+            try {
+                var cardSelector = TinyJ(self.selectors.cardId).getSelectedOption();
+            }
+            catch (err) {
+                return;
+            }
+            var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
 
-    // verifica se a seleção do cartão existe
-    // se ele foi selecionado
-    // e se o formulário esta ativo, pois o cliente pode estar digitando o cartão
+            // verifica se a seleção do cartão existe
+            // se ele foi selecionado
+            // e se o formulário esta ativo, pois o cliente pode estar digitando o cartão
 
-    if (one_click_pay == true && cardSelector.val() != "-1") {
-        return cardSelector.attribute('first_six_digits');
-    }
-    var ccNumber = TinyJ('input[data-checkout="cardNumber"]').val();
-    return ccNumber.replace(/[ .-]/g, '').slice(0, 6);
-}
+            if (oneClickPay == true && cardSelector.val() != "-1") {
+                return cardSelector.attribute(self.constants.firstSixDigits);
+            }
+            var ccNumber = TinyJ(self.selectors.cardNumberInput).val();
+            return ccNumber.replace(/[ .-]/g, '').slice(0, 6);
+        }
 
 
 // action para identificar qual a bandeira do cartão digitado
-function guessingPaymentMethod(event) {
-    showLogMercadoPago("Guessing Payment");
+        function guessingPaymentMethod(event) {
+            showLogMercadoPago(self.messages.guessingPayment);
 
-    //hide all errors
-    hideMessageError();
+            //hide all errors
+            hideMessageError();
 
-    var bin = getBin();
-    var amount = TinyJ('.amount').val();
+            var bin = getBin();
+            var amount = TinyJ(self.selectors.amount).val();
 
-    if (event.type == "keyup") {
-        if (bin.length == 6) {
-            Mercadopago.getPaymentMethod({
-                "bin": bin,
-                "amount": amount
-            }, setPaymentMethodInfo);
-        }
-    } else {
-        setTimeout(function () {
-            if (bin.length >= 6) {
-                Mercadopago.getPaymentMethod({
-                    "bin": bin,
-                    "amount": amount
-                }, setPaymentMethodInfo);
+            if (event.type == self.constants.keyup) {
+                if (bin.length == 6) {
+                    Mercadopago.getPaymentMethod({
+                        "bin": bin,
+                        "amount": amount
+                    }, setPaymentMethodInfo);
+                }
+            } else {
+                setTimeout(function () {
+                    if (bin.length >= 6) {
+                        Mercadopago.getPaymentMethod({
+                            "bin": bin,
+                            "amount": amount
+                        }, setPaymentMethodInfo);
+                    }
+                }, 100);
             }
-        }, 100);
-    }
-};
+        };
 
 // obtem o retorno da indentificação e setta alguns informações
 // actions para installment e issuer
-function setPaymentMethodInfo(status, response) {
-    showLogMercadoPago("Set payment method info: ");
-    showLogMercadoPago(status);
-    showLogMercadoPago(response);
+        function setPaymentMethodInfo(status, response) {
+            showLogMercadoPago(self.messages.setPaymentInfo);
+            showLogMercadoPago(status);
+            showLogMercadoPago(response);
 
-    //hide loading
-    hideLoading();
+            //hide loading
+            hideLoading();
 
-    if (status == 200) {
-        // do somethings ex: show logo of the payment method
-        //adiciona o payment_method no form
-        var form = TinyJ('#mercadopago_checkout_custom .payment_method_id').val(response[0].id);
+            if (status == http.status.OK) {
+                // do somethings ex: show logo of the payment method
+                //adiciona o payment_method no form
+                var form = TinyJ(self.selectors.paymentMethodId).val(response[0].id);
 
-        //ADICIONA A BANDEIRA DO CARTÃO DENTRO DO INPUT
-        var one_click_pay = TinyJ('#mercadopago_checkout_custom #one_click_pay_mp').val();
-        var selector = one_click_pay == true ? 'select[data-checkout="cardId"]' : 'input[data-checkout="cardNumber"]';
-        TinyJ(selector).getElem().style.background = "url(" + response[0].secure_thumbnail + ") no-repeat";
+                //ADICIONA A BANDEIRA DO CARTÃO DENTRO DO INPUT
+                var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
+                var selector = oneClickPay == true ? self.selectors.cardId : self.selectors.cardNumberInput;
+                TinyJ(selector).getElem().style.background = String.format(self.constants.backgroundUrlFormat, response[0].secure_thumbnail);
 
-        var bin = getBin();
-        var amount = TinyJ('.amount').val();
+                var bin = getBin();
+                var amount = TinyJ(self.selectors.amount).val();
 
-        /*
-         * check if the security code (ex: Tarshop) is required
-         var cardConfiguration = response[0].settings;
-         for (var index = 0; index < cardConfiguration.length; index++) {
-         if (bin.match(cardConfiguration[index].bin.pattern) != null && cardConfiguration[index].security_code.length == 0) {
-         * In this case you do not need the Security code. You can hide the input.
-         } else {
-         * In this case you NEED the Security code. You MUST show the input.
-         }
-         }
-         *  
-         */
+                /*
+                 * check if the security code (ex: Tarshop) is required
+                 var cardConfiguration = response[0].settings;
+                 for (var index = 0; index < cardConfiguration.length; index++) {
+                 if (bin.match(cardConfiguration[index].bin.pattern) != null && cardConfiguration[index].security_code.length == 0) {
+                 * In this case you do not need the Security code. You can hide the input.
+                 } else {
+                 * In this case you NEED the Security code. You MUST show the input.
+                 }
+                 }
+                 *
+                 */
 
-        //get installments
-        getInstallments({
-            "bin": bin,
-            "amount": amount
-        });
+                //get installments
+                getInstallments({
+                    "bin": bin,
+                    "amount": amount
+                });
 
-        // check if the issuer is necessary to pay
-        this.issuerMandatory;
-        this.issuerMandatory = false;
-        var additionalInfo = response[0].additional_info_needed;
+                // check if the issuer is necessary to pay
+                this.issuerMandatory;
+                this.issuerMandatory = false;
+                var additionalInfo = response[0].additional_info_needed;
 
-        for (var i = 0; i < additionalInfo.length; i++) {
-            if (additionalInfo[i] == "issuer_id") {
-                this.issuerMandatory = true;
-            }
-        }
-        ;
-
-        showLogMercadoPago("Issuer is mandatory? " + this.issuerMandatory);
-
-        var issuer = TinyJ('#issuer');
-
-        if (this.issuerMandatory) {
-            Mercadopago.getIssuers(response[0].id, showCardIssuers);
-            issuer.change(setInstallmentsByIssuerId);
-        } else {
-            TinyJ('#issuer__mp').hide();
-            issuer.hide();
-            issuer.getElem().options.length = 0;
-        }
-
-    } else {
-
-        showMessageErrorForm(".error-payment-method-not-found");
-
-    }
-
-    defineInputs();
-};
-
-function showCardIssuers(status, issuers) {
-    showLogMercadoPago("Set Issuer...");
-    showLogMercadoPago(status);
-    showLogMercadoPago(issuers);
-
-    var message_choose = TinyJ(".mercadopago-text-choice").val();
-    var message_default_issuer = TinyJ(".mercadopago-text-default-issuer").val();
-
-    fragment = document.createDocumentFragment();
-
-    var option = new Option(message_choose + "...", '');
-    fragment.appendChild(option);
-
-    for (var i = 0; i < issuers.length; i++) {
-        if (issuers[i].name != "default") {
-            option = new Option(issuers[i].name, issuers[i].id);
-        } else {
-            option = new Option(message_default_issuer, issuers[i].id);
-        }
-        fragment.appendChild(option);
-    }
-
-    TinyJ("#issuer").empty().appendChild(fragment).enable().removeAttribute('style');
-    TinyJ("#issuer__mp").removeAttribute('style');
-    defineInputs();
-};
-
-function setInstallmentsByIssuerId(status, response) {
-    showLogMercadoPago("Set install by issuer id");
-
-    var issuerId = TinyJ('#issuer').val();
-    var amount = TinyJ('.amount').val();
-
-    if (issuerId === '-1') {
-        return;
-    }
-
-    getInstallments({
-        "bin": getBin(),
-        "amount": amount,
-        "issuer_id": issuerId
-    });
-
-}
-
-function getInstallments(options) {
-    showLogMercadoPago("Get Installments");
-
-    hideMessageError();
-    showLoading();
-
-    var route = TinyJ('.mercado_route').val();
-    var base_url = TinyJ('.mercado_base_url').val();
-    var discount_amount = parseFloat(TinyJ("#mercadopago_checkout_custom .mercadopago-discount-amount").val());
-
-    if (route != "checkout") {
-        showLogMercadoPago("Using checkout customized Magento...");
-
-        tiny.ajax(base_url + "mercadopago/api/amount", {
-            method: 'GET',
-            timeout: 5000,
-            success: function (response, status, xhr) {
-                showLogMercadoPago("Success in get amount: ");
-                showLogMercadoPago(status);
-                showLogMercadoPago(response);
-
-                //atualiza valor no input 
-                TinyJ("#mercadopago_checkout_custom .amount").val(response.amount);
-
-                //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
-                options.amount = parseFloat(response.amount) - discount_amount;
-
-                //mostra nos logs os valores
-                showLogMercadoPago("Valor para calculo da parcela: " + response.amount);
-                showLogMercadoPago("Valor do desconto: " + discount_amount);
-                showLogMercadoPago("Valor final: " + options.amount);
-
-                Mercadopago.getInstallments(options, setInstallmentInfo);
-            },
-            error: function (status, response) {
-                showLogMercadoPago("Erro in get amount: ");
-                showLogMercadoPago(status);
-                showLogMercadoPago(response);
-
-                //hide loaging
-                hideLoading();
-
-                //mostra message de erro e adiciona evento na action
-                showMessageErrorForm(".error-installment-not-work");
-            }
-        });
-}
-else {
-
-    showLogMercadoPago("Using checkout standard Magento...");
-
-        //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
-        options.amount = parseFloat(options.amount) - discount_amount;
-
-        //mostra nos logs os valores
-        showLogMercadoPago("Valor para calculo da parcela: " + options.amount);
-        showLogMercadoPago("Valor do desconto: " + discount_amount);
-        showLogMercadoPago("Valor final: " + options.amount);
-
-        //caso seja o checkout padrao, nao faz consulta do amount
-        Mercadopago.getInstallments(options, setInstallmentInfo);
-    }
-
-}
-
-function setInstallmentInfo(status, response) {
-    showLogMercadoPago("Set Installment info");
-    showLogMercadoPago(status);
-    showLogMercadoPago(response);
-    //hide loaging
-    hideLoading();
-
-    var selectorInstallments = TinyJ("#installments");
-
-    selectorInstallments.empty();
-
-    if (response.length > 0) {
-        var message_choose = TinyJ(".mercadopago-text-choice").val();
-
-        var option = new Option(message_choose + "... ", ''),
-        payerCosts = response[0].payer_costs;
-
-        selectorInstallments.appendChild(option);
-        for (var i = 0; i < payerCosts.length; i++) {
-            option = new Option(payerCosts[i].recommended_message || payerCosts[i].installments, payerCosts[i].installments);
-            selectorInstallments.appendChild(option);
-            TinyJ(option).attribute('cost', payerCosts[i].total_amount);
-        }
-        selectorInstallments.enable();
-
-
-        //função para tarjeta mercadopago
-        setTimeout(function () {
-            var site_id = TinyJ('.site_id').val();
-            if (site_id == 'MLM') {
-
-                var issuers = TinyJ("#issuer");
-                var issuer_exist = false;
-                try{
-                    issuersOptions = issuers.getElem("option");
-                    for (i = 0; i < issuersOptions.length; ++i) {
-                        if (issuersOptions[i].val() == response[0].issuer.id) {
-                            issuers.val(response[0].issuer.id);
-                            issuer_exist = true;
-                        }
+                for (var i = 0; i < additionalInfo.length; i++) {
+                    if (additionalInfo[i] == self.selectors.issuerId) {
+                        this.issuerMandatory = true;
                     }
                 }
-                catch(err){
-                    //nothing is needed here right now
+                ;
+
+                showLogMercadoPago(String.format(self.messages.issuerMandatory, this.issuerMandatory));
+
+                var issuer = TinyJ(self.selectors.issuer);
+
+                if (this.issuerMandatory) {
+                    Mercadopago.getIssuers(response[0].id, showCardIssuers);
+                    issuer.change(setInstallmentsByIssuerId);
+                } else {
+                    TinyJ(self.selectors.issuerMp).hide();
+                    issuer.hide();
+                    issuer.getElem().options.length = 0;
                 }
 
-                if (issuer_exist === false) {
-                    var option = new Option(response[0].issuer.name, response[0].issuer.id);
-                    issuers.appendChild(option);
-                }
+            } else {
 
-                showLogMercadoPago("Issuer setted: " + response[0].issuer);
+                showMessageErrorForm(self.selectors.paymenMethodNotFound);
+
             }
-        }, 100);
-    } else {
-        //mostra erro caso não tenha parcelas
-        showMessageErrorForm(".error-payment-method-min-amount");
-    }
-}
 
-/*
- *
- * Função de validações / POST final
- * 
- */
+            defineInputs();
+        };
+
+        function showCardIssuers(status, issuers) {
+            showLogMercadoPago(self.messages.setIssuer);
+            showLogMercadoPago(status);
+            showLogMercadoPago(issuers);
+
+            var messageChoose = TinyJ(self.selectors.mercadoPagoTextChoice).val();
+            var messageDefaultIssuer = TinyJ(self.selectors.textDefaultIssuer).val();
+
+            fragment = document.createDocumentFragment();
+
+            var option = new Option(messageChoose + "...", '');
+            fragment.appendChild(option);
+
+            for (var i = 0; i < issuers.length; i++) {
+                if (issuers[i].name != self.constants.default) {
+                    option = new Option(issuers[i].name, issuers[i].id);
+                } else {
+                    option = new Option(messageDefaultIssuer, issuers[i].id);
+                }
+                fragment.appendChild(option);
+            }
+
+            TinyJ(self.selectors.issuer).empty().appendChild(fragment).enable().removeAttribute(self.constants.style);
+            TinyJ(self.selectors.issuerMp).removeAttribute(self.constants.style);
+            defineInputs();
+        };
+
+        function setInstallmentsByIssuerId(status, response) {
+            showLogMercadoPago(self.messages.setInstallment);
+
+            var issuerId = TinyJ(self.selectors.issuer).val();
+            var amount = TinyJ(self.selectors.amount).val();
+
+            if (issuerId === '-1') {
+                return;
+            }
+
+            getInstallments({
+                "bin": getBin(),
+                "amount": amount,
+                "issuer_id": issuerId
+            });
+
+        }
+
+        function getInstallments(options) {
+
+
+            showLogMercadoPago(self.messages.getInstallment);
+
+            hideMessageError();
+            showLoading();
+
+            var route = TinyJ(self.selectors.mercadoRoute).val();
+            var baseUrl = TinyJ(self.selectors.baseUrl).val();
+            var discountAmount = parseFloat(TinyJ(self.selectors.customDiscountAmount).val());
+
+            if (route != self.constants.checkout) {
+                showLogMercadoPago(self.messages.usingMagentoCustomCheckout);
+
+                tiny.ajax(baseUrl + self.url.amount, {
+                    method: http.method.GET,
+                    timeout: 5000,
+                    success: function (response, status, xhr) {
+                        showLogMercadoPago(self.messages.getAmountSuccess);
+                        showLogMercadoPago(status);
+                        showLogMercadoPago(response);
+
+                        //atualiza valor no input
+                        TinyJ(self.selectors.amount).val(response.amount);
+
+                        //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
+                        options.amount = parseFloat(response.amount) - discountAmount;
+
+                        //mostra nos logs os valores
+                        showLogMercadoPago(String.format(self.messages.installmentAmount, response.amount));
+                        showLogMercadoPago(String.format(self.messages.customDiscountAmount, discountAmount));
+                        showLogMercadoPago(String.format(self.messages.finalAmount, options.amount));
+
+                        Mercadopago.getInstallments(options, setInstallmentInfo);
+                    },
+                    error: function (status, response) {
+                        showLogMercadoPago(self.messages.getAmountError);
+                        showLogMercadoPago(status);
+                        showLogMercadoPago(response);
+
+                        //hide loaging
+                        hideLoading();
+
+                        //mostra message de erro e adiciona evento na action
+                        showMessageErrorForm(self.selectors.installmentsDontWork);
+                    }
+                });
+            }
+            else {
+
+                showLogMercadoPago(self.messages.usingMagentoStdCheckout);
+
+                //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
+                options.amount = parseFloat(options.amount) - discountAmount;
+
+                //mostra nos logs os valores
+                showLogMercadoPago(String.format(self.messages.installmentAmount, options.amount));
+                showLogMercadoPago(String.format(self.messages.customDiscountAmount, discountAmount));
+                showLogMercadoPago(String.format(self.messages.finalAmount, options.amount));
+
+                //caso seja o checkout padrao, nao faz consulta do amount
+                Mercadopago.getInstallments(options, setInstallmentInfo);
+            }
+
+        }
+
+        function setInstallmentInfo(status, response) {
+            showLogMercadoPago(self.messages.setInstallmentInfo);
+            showLogMercadoPago(status);
+            showLogMercadoPago(response);
+            //hide loaging
+            hideLoading();
+
+            var selectorInstallments = TinyJ(self.selectors.installments);
+
+            selectorInstallments.empty();
+
+            if (response.length > 0) {
+                var messageChoose = TinyJ(self.selectors.mercadoPagoTextChoice).val();
+
+                var option = new Option(messageChoose + "... ", ''),
+                    payerCosts = response[0].payer_costs;
+
+                selectorInstallments.appendChild(option);
+                for (var i = 0; i < payerCosts.length; i++) {
+                    option = new Option(payerCosts[i].recommended_message || payerCosts[i].installments, payerCosts[i].installments);
+                    selectorInstallments.appendChild(option);
+                    TinyJ(option).attribute(self.constants.cost, payerCosts[i].total_amount);
+                }
+                selectorInstallments.enable();
+
+
+                //função para tarjeta mercadopago
+                setTimeout(function () {
+                    var siteId = TinyJ(self.selectors.siteId).val();
+                    if (siteId == self.constants.mexico) {
+
+                        var issuers = TinyJ(self.selectors.issuer);
+                        var issuerExist = false;
+                        try {
+                            issuersOptions = issuers.getElem(self.constants.option);
+                            for (i = 0; i < issuersOptions.length; ++i) {
+                                if (issuersOptions[i].val() == response[0].issuer.id) {
+                                    issuers.val(response[0].issuer.id);
+                                    issuerExist = true;
+                                }
+                            }
+                        }
+                        catch (err) {
+                            //nothing is needed here right now
+                        }
+
+                        if (issuerExist === false) {
+                            var option = new Option(response[0].issuer.name, response[0].issuer.id);
+                            issuers.appendChild(option);
+                        }
+
+                        showLogMercadoPago(String.format(self.messages.issuerSet, response[0].issuer));
+                    }
+                }, 100);
+            } else {
+                //mostra erro caso não tenha parcelas
+                showMessageErrorForm(self.selectors.errorMethodMinAmount);
+            }
+        }
+
+        /*
+         *
+         * Função de validações / POST final
+         *
+         */
 
 
 //função responsável por adicionar os eventos nos elementos
-function releaseEventCreateCardToken() {
-    showLogMercadoPago("Release event create card token");
+        function releaseEventCreateCardToken() {
+            showLogMercadoPago(self.messages.releaseCardTokenEvent);
 
-    var data_checkout = TinyJ("[data-checkout]");
+            var dataCheckout = TinyJ(self.selectors.dataCheckout);
 
-    if (Array.isArray(data_checkout)){
-        for (var x = 0; x < data_checkout.length; x++) {
-            data_checkout[x].focusout(checkCreateCardToken);
-            data_checkout[x].change(checkCreateCardToken);
-        }
-    }else{
-        data_checkout.focusout(checkCreateCardToken);
-        data_checkout.change(checkCreateCardToken);
-    }
-    
-}
-
-//verifica se os inputs estão preenchidos
-function checkCreateCardToken() {
-    showLogMercadoPago("Check create card token");
-
-    var submit = true;
-    var data_inputs = defineInputs();
-
-    for (var x = 0; x < data_inputs.length; x++) {
-        if (TinyJ(data_inputs[x]).val() == "" || TinyJ(data_inputs[x]).val() == -1) {
-            submit = false;
-        }
-    }
-
-    if (TinyJ('#docNumber').val() != '' && !checkDocNumber(TinyJ('#docNumber').val())) {
-        submit = false;
-    }
-
-    if (submit) {
-        var one_click_pay = TinyJ('#mercadopago_checkout_custom #one_click_pay_mp').val();
-        var selector = TinyJ('#mercadopago_checkout_custom #one_click_pay_mp').val() == true ? '#mercadopago_checkout_custom_ocp' : '#mercadopago_checkout_custom_card';
-        showLoading();
-        Mercadopago.createToken(TinyJ(selector).getElem(), sdkResponseHandler);
-    }
-}
-
-//recebe o retorno da criação do token
-function sdkResponseHandler(status, response) {
-    showLogMercadoPago("Response create/update card_token: ");
-    showLogMercadoPago(status);
-    showLogMercadoPago(response);
-
-    //hide all errors
-    hideMessageError();
-    hideLoading();
-
-    if (status == 200 || status == 201) {
-        //preenche o token no form
-        var form = TinyJ('#mercadopago_checkout_custom .token').val(response.id);
-        showLogMercadoPago(response);
-
-    } else {
-
-        for (var x = 0; x < Object.keys(response.cause).length; x++) {
-            var error = response.cause[x];
-            showMessageErrorForm(".error-" + error.code);
-        }
-
-    }
-};
-
-
-/*
- * Functions de error & loading
- */
-
-
- function hideMessageError() {
-    showLogMercadoPago("Hide all errors ...");
-    // hide todas as mensagens de errors
-    var all_message_errors = TinyJ('.message-error');
-    if(Array.isArray(all_message_errors)){
-        for (var x = 0; x < all_message_errors.length; x++) {
-            all_message_errors[x].hide();
-        }
-    }else{
-        all_message_errors.hide();
-    }
-}
-
-function showMessageErrorForm(el_error) {
-    showLogMercadoPago("Show Message Error Form");
-    showLogMercadoPago(el_error);
-
-    var el_message = TinyJ(el_error);
-    if(Array.isArray(el_message)){
-        for (var x = 0; x < el_message.length; x++) {
-            el_message[x].show();
-        }
-    }else{
-        el_message.show();
-    }
-
-}
-
-function showLoading() {
-    showLogMercadoPago("Show loading...");
-    TinyJ("#mercadopago-loading").show();
-}
-
-function hideLoading() {
-    showLogMercadoPago("Hide loading...");
-    TinyJ("#mercadopago-loading").hide();
-}
-
-/*
- *
- * Discount
- *
- */
-
-//funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
-function initDiscountMercadoPagoCustom() {
-    showLogMercadoPago("Init MercadoPago Custom Discount");
-    //inicia o objeto
-    TinyJ('#mercadopago_checkout_custom .mercadopago-coupon-action-apply').click(applyDiscountCustom);
-    TinyJ('#mercadopago_checkout_custom .mercadopago-coupon-action-remove').click(removeDiscountCustom);
-}
-
-//funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
-function initDiscountMercadoPagoCustomTicket() {
-    showLogMercadoPago("Init MercadoPago Custom Ticket");
-    //inicia o objeto
-    TinyJ('#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-apply').click(applyDiscountCustomTicket);
-    TinyJ('#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-remove').click(removeDiscountCustomTicket);
-}
-
-function applyDiscountCustom() {
-    validDiscount("#mercadopago_checkout_custom");
-}
-
-function applyDiscountCustomTicket() {
-    validDiscount("#mercadopago_checkout_custom_ticket");
-}
-
-function validDiscount(form_payment_method) {
-    showLogMercadoPago("Valid Discount");
-
-    var $form_payment = TinyJ(form_payment_method);
-    var coupon_code = $form_payment.getElem('.mercadopago_coupon').val();
-    var base_url = TinyJ('.mercado_base_url').val();
-
-
-    //Esconde todas as mensagens
-    hideMessageCoupon($form_payment);
-
-    //show loading
-    $form_payment.getElem(".mercadopago-message-coupon .loading").show();
-
-    tiny.ajax({
-        method: 'GET',
-        url: base_url + "mercadopago/api/coupon?id=" + coupon_code,
-        timeout: 5000,
-        success: function (r, status, xhr) {
-            console.log(r);
-            showLogMercadoPago("Response validating coupon: ");
-            showLogMercadoPago({status: status, response: r});
-
-            $form_payment.getElem(".mercadopago-message-coupon .loading").hide();
-
-            if (r.status == 200) {
-                //caso o coupon seja valido, mostra uma mensagem + termos e condições
-                //obtem informações sobre o coupon
-                var coupon_amount = (r.response.coupon_amount).toFixed(2)
-                var transaction_amount = (r.response.transaction_amount).toFixed(2)
-                var id_coupon = r.response.id;
-                var currency = $form_payment.getElem(".mercadopago-text-currency").val();
-                var url_term = "https://api.mercadolibre.com/campaigns/" + id_coupon + "/terms_and_conditions?format_type=html"
-
-                $form_payment.getElem(".mercadopago-message-coupon .discount-ok .amount-discount").html(currency + coupon_amount);
-                $form_payment.getElem(".mercadopago-message-coupon .discount-ok .total-amount").html(currency + transaction_amount);
-                $form_payment.getElem(".mercadopago-message-coupon .discount-ok .total-amount-discount").html(currency + (transaction_amount - coupon_amount));
-
-
-                $form_payment.getElem(".mercadopago-message-coupon .discount-ok .mercadopago-coupon-terms").attribute("href", url_term);
-                $form_payment.getElem(".mercadopago-discount-amount").val(coupon_amount);
-
-                //show mensagem ok
-                $form_payment.getElem(".mercadopago-message-coupon .discount-ok").show();
-                $form_payment.getElem(".mercadopago-coupon-action-remove").show();
-                $form_payment.getElem(".mercadopago-coupon-action-apply").hide();
-
-                TinyJ('#input-coupon-discount').removeClass('invalid_coupon');
-                if (form_payment_method == "#mercadopago_checkout_custom") {
-                    //forca atualização do bin/installment para atualizar os valores de installment
-                    guessingPaymentMethod(event.type = "keyup");
+            if (Array.isArray(dataCheckout)) {
+                for (var x = 0; x < dataCheckout.length; x++) {
+                    dataCheckout[x].focusout(checkCreateCardToken);
+                    dataCheckout[x].change(checkCreateCardToken);
                 }
             } else {
-
-                //reset input amount
-                $form_payment.getElem(".mercadopago-discount-amount").val(0);
-                $form_payment.getElem(".mercadopago-coupon-action-remove").show();
-
-                //caso não seja mostra a mensagem de validação
-                console.log(r.response.error);
-                $form_payment.getElem(".mercadopago-message-coupon ." + r.response.error).show();
-                TinyJ('#input-coupon-discount').addClass('invalid_coupon');
+                dataCheckout.focusout(checkCreateCardToken);
+                dataCheckout.change(checkCreateCardToken);
             }
-        },
-        error: function (status, response) {
-            console.log(status, response);
+
         }
-    });
-}
 
-function removeDiscountCustom() {
-    removeDiscount("#mercadopago_checkout_custom");
-}
+//verifica se os inputs estão preenchidos
+        function checkCreateCardToken() {
+            showLogMercadoPago(self.messages.checkCreateCardToken);
 
-function removeDiscountCustomTicket() {
-    removeDiscount("#mercadopago_checkout_custom_ticket");
-}
+            var submit = true;
+            var dataInputs = defineInputs();
 
-function removeDiscount(form_payment_method) {
-    showLogMercadoPago("Remove Discount");
-    var $form_payment = TinyJ(form_payment_method);
+            for (var x = 0; x < dataInputs.length; x++) {
+                if (TinyJ(dataInputs[x]).val() == "" || TinyJ(dataInputs[x]).val() == -1) {
+                    submit = false;
+                }
+            }
 
-    //hide all info
-    hideMessageCoupon($form_payment)
-    $form_payment.getElem(".mercadopago-coupon-action-apply").show();
-    $form_payment.getElem(".mercadopago-coupon-action-remove").hide();
-    $form_payment.getElem(".mercadopago_coupon").val("");
-    $form_payment.getElem(".mercadopago-discount-amount").val(0);
+            var docNumber = TinyJ(self.selectors.docNumber).val();
+            if (docNumber != '' && !checkDocNumber(docNumber)) {
+                submit = false;
+            }
 
-    if (form_payment_method == "#mercadopago_checkout_custom") {
-        //forca atualização do bin/installment para atualizar os valores de installment
-        guessingPaymentMethod(event.type = "keyup");
+            if (submit) {
+                var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
+                var selector = TinyJ(self.selectors.oneClickPayment).val() == true ? self.selectors.ocp : self.selectors.customCard;
+                showLoading();
+                Mercadopago.createToken(TinyJ(selector).getElem(), sdkResponseHandler);
+            }
+        }
+
+//recebe o retorno da criação do token
+        function sdkResponseHandler(status, response) {
+            showLogMercadoPago(self.messages.responseCardToken);
+            showLogMercadoPago(status);
+            showLogMercadoPago(response);
+
+            //hide all errors
+            hideMessageError();
+            hideLoading();
+
+            if (status == http.status.OK || status == http.status.CREATED) {
+                //preenche o token no form
+                var form = TinyJ(self.selectors.token).val(response.id);
+                showLogMercadoPago(response);
+
+            } else {
+
+                for (var x = 0; x < Object.keys(response.cause).length; x++) {
+                    var error = response.cause[x];
+                    showMessageErrorForm(String.format(self.selectors.errorFormat, error.code));
+                }
+
+            }
+        };
+
+
+        /*
+         * Functions de error & loading
+         */
+
+
+        function hideMessageError() {
+            showLogMercadoPago(self.messages.hideErrors);
+            // hide todas as mensagens de errors
+            var allMessageErrors = TinyJ(self.selectors.messageError);
+            if (Array.isArray(allMessageErrors)) {
+                for (var x = 0; x < allMessageErrors.length; x++) {
+                    allMessageErrors[x].hide();
+                }
+            } else {
+                allMessageErrors.hide();
+            }
+        }
+
+        function showMessageErrorForm(elError) {
+            showLogMercadoPago(self.messages.showingError);
+            showLogMercadoPago(elError);
+
+            var elMessage = TinyJ(elError);
+            if (Array.isArray(elMessage)) {
+                for (var x = 0; x < elMessage.length; x++) {
+                    elMessage[x].show();
+                }
+            } else {
+                elMessage.show();
+            }
+
+        }
+
+        function showLoading() {
+            showLogMercadoPago(self.messages.showLoading);
+            TinyJ(self.selectors.loading).show();
+        }
+
+        function hideLoading() {
+            showLogMercadoPago(self.messages.hideLoading);
+            TinyJ(self.selectors.loading).hide();
+        }
+
+        /*
+         *
+         * Discount
+         *
+         */
+
+//funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
+        function initDiscountMercadoPagoCustom() {
+            showLogMercadoPago(self.messages.initDiscount);
+            //inicia o objeto
+            TinyJ(self.selectors.couponActionApply).click(applyDiscountCustom);
+            TinyJ(self.selectors.couponActionRemove).click(removeDiscountCustom);
+        }
+
+//funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
+        function initDiscountMercadoPagoCustomTicket() {
+            showLogMercadoPago(self.messages.initTicket);
+            //inicia o objeto
+            TinyJ(self.selectors.ticketActionApply).click(applyDiscountCustomTicket);
+            TinyJ(self.selectors.ticketActionRemove).click(removeDiscountCustomTicket);
+        }
+
+        function applyDiscountCustom() {
+            validDiscount(self.selectors.checkoutCustom);
+        }
+
+        function applyDiscountCustomTicket() {
+            validDiscount(self.selectors.checkoutTicket);
+        }
+
+        function validDiscount(formPaymentMethod) {
+            showLogMercadoPago(self.messages.validateDiscount);
+
+            var $formPayment = TinyJ(formPaymentMethod);
+            var couponCode = $formPayment.getElem(self.selectors.coupon).val();
+            var baseUrl = TinyJ(self.selectors.baseUrl).val();
+
+
+            //Esconde todas as mensagens
+            hideMessageCoupon($formPayment);
+
+            //show loading
+            $formPayment.getElem(self.selectors.couponLoading).show();
+
+            tiny.ajax({
+                method: http.method.GET,
+                url: baseUrl + String.format(self.url.couponUrlFormat, couponCode),
+                timeout: 5000,
+                success: function (r, status, xhr) {
+                    console.log(r);
+                    showLogMercadoPago(self.messages.validateCouponResponse);
+                    showLogMercadoPago({status: status, response: r});
+
+                    $formPayment.getElem(self.selectors.couponLoading).hide();
+
+                    if (r.status == http.status.OK) {
+                        //caso o coupon seja valido, mostra uma mensagem + termos e condições
+                        //obtem informações sobre o coupon
+                        var couponAmount = (r.response.coupon_amount).toFixed(2)
+                        var transactionAmount = (r.response.transaction_amount).toFixed(2)
+                        var idCoupon = r.response.id;
+                        var currency = $formPayment.getElem(self.selectors.textCurrency).val();
+                        var urlTerm = String.format(self.url.termsUrlFormat, idCoupon);
+
+                        $formPayment.getElem(self.selectors.discountOkAmountDiscount).html(currency + couponAmount);
+                        $formPayment.getElem(self.selectors.discountOkTotalAmount).html(currency + transactionAmount);
+                        $formPayment.getElem(self.selectors.discountOkTotalAmountDiscount).html(currency + (transactionAmount - couponAmount));
+
+
+                        $formPayment.getElem(self.selectors.discountOkTerms).attribute("href", urlTerm);
+                        $formPayment.getElem(self.selectors.discountAmount).val(couponAmount);
+
+                        //show mensagem ok
+                        $formPayment.getElem(self.selectors.discountOk).show();
+                        $formPayment.getElem(self.selectors.couponActionRemove).show();
+                        $formPayment.getElem(self.selectors.couponActionApply).hide();
+
+                        TinyJ(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
+                        if (formPaymentMethod == self.selectors.checkoutCustom) {
+                            //forca atualização do bin/installment para atualizar os valores de installment
+                            guessingPaymentMethod(event.type = self.constants.keyup);
+                        }
+                    } else {
+
+                        //reset input amount
+                        $formPayment.getElem(self.selectors.discountAmount).val(0);
+                        $formPayment.getElem(self.selectors.couponActionRemove).show();
+
+                        //caso não seja mostra a mensagem de validação
+                        console.log(r.response.error);
+                        $formPayment.getElem(self.selectors.messageCoupon + " ." + r.response.error).show();
+                        TinyJ(self.selectors.inputCouponDiscount).addClass(self.constants.invalidCoupon);
+                    }
+                },
+                error: function (status, response) {
+                    console.log(status, response);
+                }
+            });
+        }
+
+        function removeDiscountCustom() {
+            removeDiscount(self.selectors.checkoutCustom);
+        }
+
+        function removeDiscountCustomTicket() {
+            removeDiscount(self.selectors.checkoutTicket);
+        }
+
+        function removeDiscount(formPaymentMethod) {
+            showLogMercadoPago(self.messages.removeDiscount);
+            var $formPayment = TinyJ(formPaymentMethod);
+
+            //hide all info
+            hideMessageCoupon($formPayment);
+            $formPayment.getElem(self.selectors.couponActionApply).show();
+            $formPayment.getElem(self.selectors.couponActionRemove).hide();
+            $formPayment.getElem(self.selectors.coupon).val("");
+            $formPayment.getElem(self.selectors.discountAmount).val(0);
+
+            if (formPaymentMethod == self.selectors.checkoutCustom) {
+                //forca atualização do bin/installment para atualizar os valores de installment
+                guessingPaymentMethod(event.type = self.constants.keyup);
+            }
+            TinyJ(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
+            showLogMercadoPago(self.messages.removeCoupon);
+        }
+
+        function hideMessageCoupon($formPayment) {
+            showLogMercadoPago(self.messages.hideCouponMessages);
+
+            // hide todas as mensagens de errors
+            var messageCoupon = $formPayment.getElem(self.selectors.couponList);
+
+            for (var x = 0; x < messageCoupon.length; x++) {
+                messageCoupon[x].hide();
+            }
+        }
+
+        return {
+            init: initMercadoPagoJs,
+            initDiscount: initDiscountMercadoPagoCustom,
+            initOCP: initMercadoPagoOCP,
+        };
     }
-    TinyJ('#input-coupon-discount').removeClass('invalid_coupon');
-    showLogMercadoPago("Remove coupon!");
-}
 
-function hideMessageCoupon($form_payment) {
-    showLogMercadoPago("Hide all message coupon ...");
-
-    // hide todas as mensagens de errors
-    var message_coupon = $form_payment.getElem('.mercadopago-message-coupon li');
-
-    for (var x = 0; x < message_coupon.length; x++) {
-        message_coupon[x].hide();
+    function getInstance() {
+        if (!instance) {
+            instance = new InitializeNewModule();
+        }
+        return instance;
     }
-}
+
+    return {
+        getInstance: getInstance,
+        getSelectors: getSelectors,
+        getUrls: getUrls,
+        getMessages: getMessages,
+        setMessages: setMessages,
+        setSelectors: setSelectors,
+        setUrls: setUrls,
+        enableLog: enableLog,
+        isLogEnabled: isLogEnabled
+    };
+})();

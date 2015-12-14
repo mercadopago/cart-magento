@@ -142,8 +142,9 @@ function defineInputs() {
 
     } else if (site_id == 'MLM') {
 
-        exclude_inputs.push("#docType")
-        exclude_inputs.push("#docNumber")
+        exclude_inputs.push("#docType");
+        exclude_inputs.push("#docNumber");
+        exclude_inputs.push("#issuer");
 
     }
     if (!this.issuerMandatory) {

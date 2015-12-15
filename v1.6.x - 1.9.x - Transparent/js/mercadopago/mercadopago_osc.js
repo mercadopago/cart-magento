@@ -186,8 +186,7 @@ var MercadoPagoCustom = (function () {
 
     function InitializeNewModule() {
 
-        var issuerMandatory = false;
-
+        var installmentOption = '';
 
         function showLogMercadoPago(message) {
             if (self.enableLog) {
@@ -235,6 +234,8 @@ var MercadoPagoCustom = (function () {
             //inicia o formulario verificando se ja tem cartão selecionado para obter o bin
             cardsHandler();
 
+            TinyJ(self.selectors.installments).getElem().stopObserving();
+
             if (TinyJ(self.selectors.mercadopagoCustomOpt).isChecked()) {
                 payment.switchMethod(self.constants.mercadopagoCustom);
             }
@@ -281,11 +282,13 @@ var MercadoPagoCustom = (function () {
         function initMercadoPagoOCP() {
             showLogMercadoPago(self.messages.initOCP);
             TinyJ(self.selectors.cardId).change(cardsHandler);
+            TinyJ(self.selectors.installments).getElem().stopObserving();
 
             //açoes para one click pay
             var returnListCard = TinyJ(self.selectors.returnToCardList);
             TinyJ(self.selectors.useOtherCard).click(actionUseOneClickPayOrNo);
             returnListCard.click(actionUseOneClickPayOrNo);
+
 
             TinyJ(self.selectors.installments).change(setTotalAmount);
 
@@ -294,7 +297,10 @@ var MercadoPagoCustom = (function () {
         }
 
         function setTotalAmount() {
-            TinyJ(self.selectors.totalAmount).val(TinyJ(this).getSelectedOption().attribute(self.constants.cost));
+            var _installments = TinyJ(self.selectors.installments);
+            TinyJ(self.selectors.totalAmount).val(_installments.getSelectedOption().attribute(self.constants.cost));
+            installmentOption = _installments.getSelectedOption().val();
+            OSCPayment.savePayment();
         }
 
         function defineInputs() {
@@ -726,6 +732,8 @@ var MercadoPagoCustom = (function () {
                 }
                 selectorInstallments.enable();
 
+                selectorInstallments.val(installmentOption);
+                checkCreateCardToken();
 
                 //função para tarjeta mercadopago
                 setTimeout(function () {
@@ -825,6 +833,7 @@ var MercadoPagoCustom = (function () {
             if (status == http.status.OK || status == http.status.CREATED) {
                 //preenche o token no form
                 var form = TinyJ(self.selectors.token).val(response.id);
+                setTotalAmount();
                 showLogMercadoPago(response);
 
             } else {

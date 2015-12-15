@@ -13,7 +13,8 @@ env:
     - MAGENTO_URL=mercadopago.local
     - DB=mysql
   matrix:
-   - BEHAT_TAG=@CardED
+   - BEHAT_TAG=@MercadoEnvios
+   - BEHAT_TAG=@MercadoPago
 
 addons:
   hosts:

@@ -33,8 +33,13 @@ $customer = $this->getCustomerAndCards();
                 echo $block->toHtml();
                 ?>
                 <script type="text/javascript">
-                    if (TinyJ('#use_other_card_mp')) {
+                    try {
+                        TinyJ('#use_other_card_mp');
                         MercadoPagoCustom.getInstance().initDiscount();
+                    } catch (exception) {
+                        document.observe("dom:loaded", function() {
+                            MercadoPagoCustom.getInstance().initDiscount();
+                        });
                     }
                 </script>
                 <?php

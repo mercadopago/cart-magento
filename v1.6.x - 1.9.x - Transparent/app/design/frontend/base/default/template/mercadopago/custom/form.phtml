@@ -10,10 +10,8 @@ $customer = $this->getCustomerAndCards();
 ?>
 
 <script>
-    document.observe("dom:loaded", function() {
         MercadoPagoCustom.enableLog(<?php echo $logEnabled?>);
         MercadoPagoCustom.getInstance().init();
-    });
 </script>
 
 <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
@@ -29,7 +27,7 @@ $customer = $this->getCustomerAndCards();
                 echo $block->toHtml();
                 ?>
                 <script type="text/javascript">
-                    MercadoPagoCustom.getInstance().initDiscount();
+                        MercadoPagoCustom.getInstance().initDiscount();
                 </script>
                 <?php
             endif;
@@ -66,9 +64,7 @@ $customer = $this->getCustomerAndCards();
                 </li>
 
                 <script>
-                    document.observe("dom:loaded", function() {
                         MercadoPagoCustom.getInstance().initOCP();
-                    });
                 </script>
             <?php endif; ?>
 

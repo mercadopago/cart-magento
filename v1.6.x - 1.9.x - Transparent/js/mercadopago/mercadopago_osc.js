@@ -85,7 +85,7 @@ var MercadoPagoCustom = (function () {
             mercadopagoCustomOpt: '#p_method_mercadopago_custom',
             cardExpYear: '#cardExpirationYear',
             docType: '#docType',
-            cardId: 'select[data-checkout="cardId"]',
+            cardId: '#cardId',
             returnToCardList: '#return_list_card_mp',
             useOtherCard: '#use_other_card_mp',
             installments: '#installments',

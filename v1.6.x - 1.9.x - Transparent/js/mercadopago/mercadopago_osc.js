@@ -186,8 +186,7 @@ var MercadoPagoCustom = (function () {
 
     function InitializeNewModule() {
 
-        var issuerMandatory = false;
-
+        var installmentOption = '';
 
         function showLogMercadoPago(message) {
             if (self.enableLog) {
@@ -235,6 +234,10 @@ var MercadoPagoCustom = (function () {
             //inicia o formulario verificando se ja tem cartão selecionado para obter o bin
             cardsHandler();
 
+            TinyJ(self.selectors.installments).getElem().stopObserving();
+            TinyJ(self.selectors.installments).change(setTotalAmount);
+            registerAjaxObervers();
+
             if (TinyJ(self.selectors.mercadopagoCustomOpt).isChecked()) {
                 payment.switchMethod(self.constants.mercadopagoCustom);
             }
@@ -281,6 +284,7 @@ var MercadoPagoCustom = (function () {
         function initMercadoPagoOCP() {
             showLogMercadoPago(self.messages.initOCP);
             TinyJ(self.selectors.cardId).change(cardsHandler);
+            TinyJ(self.selectors.installments).getElem().stopObserving();
 
             //açoes para one click pay
             var returnListCard = TinyJ(self.selectors.returnToCardList);
@@ -288,13 +292,42 @@ var MercadoPagoCustom = (function () {
             returnListCard.click(actionUseOneClickPayOrNo);
 
             TinyJ(self.selectors.installments).change(setTotalAmount);
+            var _cardNumber = TinyJ(self.selectors.cardNumber);
+            if (_cardNumber.val() != '') {
+                var _event = new Event('change');
+                _cardNumber.getElem().dispatchEvent(_event);
+            }
+            registerAjaxObervers();
 
             //show botão de retornar para lista de cartões
             returnListCard.show();
         }
 
         function setTotalAmount() {
-            TinyJ(self.selectors.totalAmount).val(TinyJ(this).getSelectedOption().attribute(self.constants.cost));
+            var _installments = TinyJ(self.selectors.installments);
+            var _cost = '';
+            try {
+                _cost = _installments.getSelectedOption().attribute(self.constants.cost)
+                installmentOption = _installments.getSelectedOption().val();
+            } catch (Exception) {
+                _cost = '';
+            }
+            TinyJ(self.selectors.totalAmount).val(_cost);
+            OSCPayment.savePayment();
+
+            //OnestepcheckoutCoreUpdater.runRequest("http://mercadopago.local/onestepcheckout/ajax/savePaymentMethod/", {method:'post',parameters:Form.serialize("onestepcheckout-payment-method",true)});
+
+        }
+
+        function registerAjaxObervers() {
+            Ajax.Responders.register({
+                onCreate: function() {
+                    TinyJ(self.selectors.installments).disable();
+                },
+                onComplete: function() {
+                    TinyJ(self.selectors.installments).enable();
+                }
+            });
         }
 
         function defineInputs() {
@@ -726,6 +759,8 @@ var MercadoPagoCustom = (function () {
                 }
                 selectorInstallments.enable();
 
+                selectorInstallments.val(installmentOption);
+                checkCreateCardToken();
 
                 //função para tarjeta mercadopago
                 setTimeout(function () {
@@ -825,6 +860,7 @@ var MercadoPagoCustom = (function () {
             if (status == http.status.OK || status == http.status.CREATED) {
                 //preenche o token no form
                 var form = TinyJ(self.selectors.token).val(response.id);
+                setTotalAmount();
                 showLogMercadoPago(response);
 
             } else {
@@ -893,6 +929,9 @@ var MercadoPagoCustom = (function () {
             //inicia o objeto
             TinyJ(self.selectors.couponActionApply).click(applyDiscountCustom);
             TinyJ(self.selectors.couponActionRemove).click(removeDiscountCustom);
+            if (TinyJ(self.selectors.inputCouponDiscount).val() != ''){
+                applyDiscountCustom();
+            }
         }
 
 //funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
@@ -901,6 +940,7 @@ var MercadoPagoCustom = (function () {
             //inicia o objeto
             TinyJ(self.selectors.ticketActionApply).click(applyDiscountCustomTicket);
             TinyJ(self.selectors.ticketActionRemove).click(removeDiscountCustomTicket);
+
         }
 
         function applyDiscountCustom() {

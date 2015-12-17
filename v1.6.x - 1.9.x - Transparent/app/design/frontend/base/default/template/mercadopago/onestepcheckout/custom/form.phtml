@@ -10,10 +10,16 @@ $customer = $this->getCustomerAndCards();
 ?>
 
 <script>
-        MercadoPagoCustom.enableLog(<?php echo $logEnabled?>);
+    MercadoPagoCustom.enableLog(<?php echo $logEnabled?>);
+    try {
+        TinyJ('#use_other_card_mp');
         MercadoPagoCustom.getInstance().init();
+    } catch (exception) {
+        document.observe("dom:loaded", function() {
+            MercadoPagoCustom.getInstance().init();
+        });
+    }
 </script>
-
 <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
 
 <fieldset>
@@ -27,7 +33,14 @@ $customer = $this->getCustomerAndCards();
                 echo $block->toHtml();
                 ?>
                 <script type="text/javascript">
+                    try {
+                        TinyJ('#use_other_card_mp');
                         MercadoPagoCustom.getInstance().initDiscount();
+                    } catch (exception) {
+                        document.observe("dom:loaded", function() {
+                            MercadoPagoCustom.getInstance().initDiscount();
+                        });
+                    }
                 </script>
                 <?php
             endif;
@@ -64,7 +77,14 @@ $customer = $this->getCustomerAndCards();
                 </li>
 
                 <script>
+                    try {
+                        TinyJ('#use_other_card_mp');
                         MercadoPagoCustom.getInstance().initOCP();
+                    } catch (exception) {
+                        document.observe("dom:loaded", function() {
+                            MercadoPagoCustom.getInstance().initOCP();
+                        });
+                    }
                 </script>
             <?php endif; ?>
 

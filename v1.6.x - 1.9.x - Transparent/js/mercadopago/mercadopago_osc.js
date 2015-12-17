@@ -235,6 +235,8 @@ var MercadoPagoCustom = (function () {
             cardsHandler();
 
             TinyJ(self.selectors.installments).getElem().stopObserving();
+            TinyJ(self.selectors.installments).change(setTotalAmount);
+            registerAjaxObervers();
 
             if (TinyJ(self.selectors.mercadopagoCustomOpt).isChecked()) {
                 payment.switchMethod(self.constants.mercadopagoCustom);
@@ -289,8 +291,13 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.useOtherCard).click(actionUseOneClickPayOrNo);
             returnListCard.click(actionUseOneClickPayOrNo);
 
-
             TinyJ(self.selectors.installments).change(setTotalAmount);
+            var _cardNumber = TinyJ(self.selectors.cardNumber);
+            if (_cardNumber.val() != '') {
+                var _event = new Event('change');
+                _cardNumber.getElem().dispatchEvent(_event);
+            }
+            registerAjaxObervers();
 
             //show botão de retornar para lista de cartões
             returnListCard.show();
@@ -298,9 +305,29 @@ var MercadoPagoCustom = (function () {
 
         function setTotalAmount() {
             var _installments = TinyJ(self.selectors.installments);
-            TinyJ(self.selectors.totalAmount).val(_installments.getSelectedOption().attribute(self.constants.cost));
-            installmentOption = _installments.getSelectedOption().val();
+            var _cost = '';
+            try {
+                _cost = _installments.getSelectedOption().attribute(self.constants.cost)
+                installmentOption = _installments.getSelectedOption().val();
+            } catch (Exception) {
+                _cost = '';
+            }
+            TinyJ(self.selectors.totalAmount).val(_cost);
             OSCPayment.savePayment();
+
+            //OnestepcheckoutCoreUpdater.runRequest("http://mercadopago.local/onestepcheckout/ajax/savePaymentMethod/", {method:'post',parameters:Form.serialize("onestepcheckout-payment-method",true)});
+
+        }
+
+        function registerAjaxObervers() {
+            Ajax.Responders.register({
+                onCreate: function() {
+                    TinyJ(self.selectors.installments).disable();
+                },
+                onComplete: function() {
+                    TinyJ(self.selectors.installments).enable();
+                }
+            });
         }
 
         function defineInputs() {

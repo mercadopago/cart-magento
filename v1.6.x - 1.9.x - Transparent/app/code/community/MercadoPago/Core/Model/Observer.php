@@ -83,6 +83,9 @@ class MercadoPago_Core_Model_Observer
     {
         //get country
         $country = Mage::getStoreConfig('payment/mercadopago/country');
+        if (!isset($this->banners[$type_checkout][$country])){
+            return;
+        }
         $default_banner = $this->banners[$type_checkout][$country];
         
         $current_banner = Mage::getStoreConfig('payment/' . $type_checkout . '/banner_checkout');

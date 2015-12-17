@@ -206,7 +206,7 @@ class MercadoPago_Core_Model_Standard_Payment
         $arr['payer']['address'] = [
             "zip_code"      => $billing_address['postcode'],
             "street_name"   => $billing_address['street'] . " - " . $billing_address['city'] . " - " . $billing_address['country_id'],
-            "street_number" => "0"
+            "street_number" => ""
         ];
 
         $arr['back_urls'] = [
@@ -215,7 +215,7 @@ class MercadoPago_Core_Model_Standard_Payment
             "failure" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/success"
         ];
 
-        $arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/notifications?checkout=standard";
+        $arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/notifications/standard";
 
         $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods();
         $installments = $this->getConfigData('installments');
@@ -227,8 +227,12 @@ class MercadoPago_Core_Model_Standard_Payment
         }
 
         $sponsor_id = Mage::getStoreConfig('payment/mercadopago/sponsor_id');
-        Mage::helper('mercadopago')->log("Sponsor_id identificado", 'mercadopago-standard.log', $sponsor_id);
-        $arr['sponsor_id'] = (int)$sponsor_id;
+        Mage::helper('mercadopago')->log("Sponsor_id", 'mercadopago-standard.log', $sponsor_id);
+        if (!empty($sponsor_id)) {
+            Mage::helper('mercadopago')->log("Sponsor_id identificado", 'mercadopago-standard.log', $sponsor_id);
+            $arr['sponsor_id'] = (int)$sponsor_id;
+        }
+
 
         return $arr;
     }
@@ -261,8 +265,9 @@ class MercadoPago_Core_Model_Standard_Payment
             "zip_code"      => $shippingAddress->getPostcode(),
             "street_name"   => $shippingAddress->getStreet()[0] . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
             "apartment"     => "-",
-            "street_number" => "0"
+            "street_number" => ""
         ];
+
         return $params;
 
     }

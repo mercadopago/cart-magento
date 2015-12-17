@@ -84,6 +84,19 @@ class MercadoPago_Core_NotificationsController
                         $this->setStatusOrder($data);
                     }
 
+                    if (count($merchant_order['shipments']) > 0) {
+
+                        if($merchant_order['shipments'][0]['status'] == 'ready_to_ship'){
+                            $order = Mage::getModel('sales/order')->loadByIncrementId($data["external_reference"]);
+                            $shipment = Mage::getModel('sales/service_order', $order)->prepareShipment();
+
+                            $tracking['number'] = $merchant_order['shipments'][0]['service_id'];
+                            $track = Mage::getModel('sales/order_shipment_track')->addData($tracking);
+                            $shipment->addTrack($track);
+                            $shipment->save();
+                        }
+                    }
+
                     return;
                 }
             }

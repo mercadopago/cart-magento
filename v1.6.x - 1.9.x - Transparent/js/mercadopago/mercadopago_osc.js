@@ -59,7 +59,7 @@ var MercadoPagoCustom = (function () {
             option: 'option',
             undefined: 'undefined',
             default: 'default',
-            checkout: 'checkout',
+            checkout: 'onestepcheckout',
             mexico: 'MLM',
             brazil: 'MLB',
             mercadopagoCustom: 'mercadopago_custom',

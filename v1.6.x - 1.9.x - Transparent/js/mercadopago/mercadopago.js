@@ -958,7 +958,7 @@ var MercadoPagoCustom = (function () {
                         $formPayment.getElem(self.selectors.couponActionRemove).show();
                         $formPayment.getElem(self.selectors.couponActionApply).hide();
 
-                        TinyJ(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
+                        $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
                         if (formPaymentMethod == self.selectors.checkoutCustom) {
                             //forca atualização do bin/installment para atualizar os valores de installment
                             guessingPaymentMethod(event.type = self.constants.keyup);

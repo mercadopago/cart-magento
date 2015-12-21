@@ -927,8 +927,8 @@ var MercadoPagoCustom = (function () {
         function initDiscountMercadoPagoCustom() {
             showLogMercadoPago(self.messages.initDiscount);
             //inicia o objeto
-            TinyJ(self.selectors.couponActionApply).click(applyDiscountCustom);
-            TinyJ(self.selectors.couponActionRemove).click(removeDiscountCustom);
+            TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.couponActionApply).click(applyDiscountCustom);
+            TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.couponActionRemove).click(removeDiscountCustom);
             if (TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.inputCouponDiscount).val() != ''){
                 applyDiscountCustom();
             }

@@ -118,8 +118,8 @@ var MercadoPagoCustom = (function () {
             discountAmount: '.mercadopago-discount-amount',
             token: '#mercadopago_checkout_custom .token',
             errorFormat: '.error-{0}',
-            couponActionApply: '#mercadopago_checkout_custom .mercadopago-coupon-action-apply',
-            couponActionRemove: '#mercadopago_checkout_custom .mercadopago-coupon-action-remove',
+            couponActionApply: '.mercadopago-coupon-action-apply',
+            couponActionRemove: '.mercadopago-coupon-action-remove',
             ticketActionApply: '#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-apply',
             ticketActionRemove: '#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-remove',
             coupon: '.mercadopago_coupon',
@@ -891,8 +891,8 @@ var MercadoPagoCustom = (function () {
         function initDiscountMercadoPagoCustom() {
             showLogMercadoPago(self.messages.initDiscount);
             //inicia o objeto
-            TinyJ(self.selectors.couponActionApply).click(applyDiscountCustom);
-            TinyJ(self.selectors.couponActionRemove).click(removeDiscountCustom);
+            TinyJ('#mercadopago_checkout_custom').getElem(self.selectors.couponActionApply).click(applyDiscountCustom);
+            TinyJ('#mercadopago_checkout_custom').getElem(self.selectors.couponActionRemove).click(removeDiscountCustom);
         }
 
 //funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
@@ -972,7 +972,7 @@ var MercadoPagoCustom = (function () {
                         //caso não seja mostra a mensagem de validação
                         console.log(r.response.error);
                         $formPayment.getElem(self.selectors.messageCoupon + " ." + r.response.error).show();
-                        TinyJ(self.selectors.inputCouponDiscount).addClass(self.constants.invalidCoupon);
+                        $formPayment.getElem(self.selectors.inputCouponDiscount).addClass(self.constants.invalidCoupon);
                     }
                 },
                 error: function (status, response) {
@@ -1004,7 +1004,7 @@ var MercadoPagoCustom = (function () {
                 //forca atualização do bin/installment para atualizar os valores de installment
                 guessingPaymentMethod(event.type = self.constants.keyup);
             }
-            TinyJ(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
+            $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
             showLogMercadoPago(self.messages.removeCoupon);
         }
 
@@ -1023,6 +1023,7 @@ var MercadoPagoCustom = (function () {
             init: initMercadoPagoJs,
             initDiscount: initDiscountMercadoPagoCustom,
             initOCP: initMercadoPagoOCP,
+            initDiscountTicket: initDiscountMercadoPagoCustomTicket
         };
     }
 

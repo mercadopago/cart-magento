@@ -891,8 +891,8 @@ var MercadoPagoCustom = (function () {
         function initDiscountMercadoPagoCustom() {
             showLogMercadoPago(self.messages.initDiscount);
             //inicia o objeto
-            TinyJ('#mercadopago_checkout_custom').getElem(self.selectors.couponActionApply).click(applyDiscountCustom);
-            TinyJ('#mercadopago_checkout_custom').getElem(self.selectors.couponActionRemove).click(removeDiscountCustom);
+            TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.couponActionApply).click(applyDiscountCustom);
+            TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.couponActionRemove).click(removeDiscountCustom);
         }
 
 //funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo

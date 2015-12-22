@@ -26,7 +26,7 @@
     <default>
         <payment>
             <mercadopago>
-                <osc_active>1</osc_active>
+                <osc_active>0</osc_active>
             </mercadopago>
         </payment>
     </default>

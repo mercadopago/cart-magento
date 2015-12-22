@@ -79,7 +79,7 @@ var MercadoPagoCustom = (function () {
         selectors: {
             checkoutCustom: '#mercadopago_checkout_custom',
             checkoutTicket: '#mercadopago_checkout_custom_ticket',
-            siteId: '.site_id',
+            siteId: '#mercadopago_checkout_custom .site_id',
             cardNumberInput: 'input[data-checkout="cardNumber"]',
             installmentsDontWork: '.error-installment-not-work',
             mercadopagoCustomOpt: '#p_method_mercadopago_custom',
@@ -90,7 +90,7 @@ var MercadoPagoCustom = (function () {
             useOtherCard: '#use_other_card_mp',
             installments: '#installments',
             totalAmount: '.total_amount',
-            amount: '.amount',
+            amount: '#mercadopago_checkout_custom .amount',
             cardNumber: '#cardNumber',
             issuer: '#issuer',
             issuerMp: '#issuer__mp',
@@ -102,15 +102,15 @@ var MercadoPagoCustom = (function () {
             securityCodeOCP: '#securityCodeOCP',
             dataCheckout: '[data-checkout]',
             oneClickPayment: '#mercadopago_checkout_custom #one_click_pay_mp',
-            installmentText: '.mercadopago-text-installment',
+            installmentText: '#mercadopago_checkout_custom .mercadopago-text-installment',
             paymentMethodId: '#mercadopago_checkout_custom .payment_method_id',
             paymenMethodNotFound: '.error-payment-method-not-found',
-            mercadoPagoTextChoice: '.mercadopago-text-choice',
+            mercadoPagoTextChoice: '#mercadopago_checkout_custom .mercadopago-text-choice',
             errorMethodMinAmount: '.error-payment-method-min-amount',
-            textDefaultIssuer: '.mercadopago-text-default-issuer',
+            textDefaultIssuer: '#mercadopago_checkout_custom .mercadopago-text-default-issuer',
             customCard: '#mercadopago_checkout_custom_card',
             ocp: '#mercadopago_checkout_custom_ocp',
-            mercadoRoute: '.mercado_route',
+            mercadoRoute: '#mercadopago_checkout_custom .mercado_route',
             baseUrl: '.mercado_base_url',
             loading: '#mercadopago-loading',
             messageError: '.message-error',
@@ -118,8 +118,8 @@ var MercadoPagoCustom = (function () {
             discountAmount: '.mercadopago-discount-amount',
             token: '#mercadopago_checkout_custom .token',
             errorFormat: '.error-{0}',
-            couponActionApply: '#mercadopago_checkout_custom .mercadopago-coupon-action-apply',
-            couponActionRemove: '#mercadopago_checkout_custom .mercadopago-coupon-action-remove',
+            couponActionApply: '.mercadopago-coupon-action-apply',
+            couponActionRemove: '.mercadopago-coupon-action-remove',
             ticketActionApply: '#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-apply',
             ticketActionRemove: '#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-remove',
             coupon: '.mercadopago_coupon',
@@ -643,7 +643,7 @@ var MercadoPagoCustom = (function () {
             showLoading();
 
             var route = TinyJ(self.selectors.mercadoRoute).val();
-            var baseUrl = TinyJ(self.selectors.baseUrl).val();
+            var baseUrl = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.baseUrl).val();
             var discountAmount = parseFloat(TinyJ(self.selectors.customDiscountAmount).val());
 
             if (route != self.constants.checkout) {
@@ -891,8 +891,8 @@ var MercadoPagoCustom = (function () {
         function initDiscountMercadoPagoCustom() {
             showLogMercadoPago(self.messages.initDiscount);
             //inicia o objeto
-            TinyJ(self.selectors.couponActionApply).click(applyDiscountCustom);
-            TinyJ(self.selectors.couponActionRemove).click(removeDiscountCustom);
+            TinyJ('#mercadopago_checkout_custom').getElem(self.selectors.couponActionApply).click(applyDiscountCustom);
+            TinyJ('#mercadopago_checkout_custom').getElem(self.selectors.couponActionRemove).click(removeDiscountCustom);
         }
 
 //funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
@@ -916,7 +916,7 @@ var MercadoPagoCustom = (function () {
 
             var $formPayment = TinyJ(formPaymentMethod);
             var couponCode = $formPayment.getElem(self.selectors.coupon).val();
-            var baseUrl = TinyJ(self.selectors.baseUrl).val();
+            var baseUrl = $formPayment.getElem(self.selectors.baseUrl).val();
 
 
             //Esconde todas as mensagens
@@ -958,7 +958,7 @@ var MercadoPagoCustom = (function () {
                         $formPayment.getElem(self.selectors.couponActionRemove).show();
                         $formPayment.getElem(self.selectors.couponActionApply).hide();
 
-                        TinyJ(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
+                        $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
                         if (formPaymentMethod == self.selectors.checkoutCustom) {
                             //forca atualização do bin/installment para atualizar os valores de installment
                             guessingPaymentMethod(event.type = self.constants.keyup);
@@ -972,7 +972,7 @@ var MercadoPagoCustom = (function () {
                         //caso não seja mostra a mensagem de validação
                         console.log(r.response.error);
                         $formPayment.getElem(self.selectors.messageCoupon + " ." + r.response.error).show();
-                        TinyJ(self.selectors.inputCouponDiscount).addClass(self.constants.invalidCoupon);
+                        $formPayment.getElem(self.selectors.inputCouponDiscount).addClass(self.constants.invalidCoupon);
                     }
                 },
                 error: function (status, response) {
@@ -1004,7 +1004,7 @@ var MercadoPagoCustom = (function () {
                 //forca atualização do bin/installment para atualizar os valores de installment
                 guessingPaymentMethod(event.type = self.constants.keyup);
             }
-            TinyJ(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
+            $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
             showLogMercadoPago(self.messages.removeCoupon);
         }
 
@@ -1023,6 +1023,7 @@ var MercadoPagoCustom = (function () {
             init: initMercadoPagoJs,
             initDiscount: initDiscountMercadoPagoCustom,
             initOCP: initMercadoPagoOCP,
+            initDiscountTicket: initDiscountMercadoPagoCustomTicket
         };
     }
 

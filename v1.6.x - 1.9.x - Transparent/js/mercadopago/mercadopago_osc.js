@@ -94,6 +94,7 @@ var MercadoPagoCustom = (function () {
             cardNumber: '#cardNumber',
             issuer: '#issuer',
             issuerMp: '#issuer__mp',
+            issuerMpLabel: '#issuer__mp label',
             issuerId: 'issuer_id',
             cardExpirationMonth: '#cardExpirationMonth',
             cardHolder: '#cardholderName',
@@ -338,6 +339,7 @@ var MercadoPagoCustom = (function () {
             var dataCheckout = TinyJ(self.selectors.dataCheckout);
             var excludeInputs = [self.selectors.cardId, self.selectors.securityCodeOCP];
             var dataInputs = [];
+            var disabledInputs = [];
 
             if (oneClickPay == true) {
 
@@ -355,6 +357,7 @@ var MercadoPagoCustom = (function () {
 
                 excludeInputs.push(self.selectors.docType)
                 excludeInputs.push(self.selectors.docNumber);
+                disabledInputs.push(self.selectors.issuer);
 
             }
             if (!this.issuerMandatory) {
@@ -370,6 +373,9 @@ var MercadoPagoCustom = (function () {
                 if (excludeInputs.indexOf($id) == -1) {
                     TinyJ(elPai).removeAttribute(self.constants.style);
                     dataInputs.push($id);
+                    if (disabledInputs.indexOf($id) != -1) {
+                        TinyJ(self.selectors.checkoutCustom).getElem($id).disabled = "disabled";
+                    }
                 } else {
                     TinyJ(elPai).hide();
                 }
@@ -455,6 +461,7 @@ var MercadoPagoCustom = (function () {
                 issuer.empty();
 
                 TinyJ(self.selectors.issuerMp).hide();
+                TinyJ(self.selectors.issuerMpLabel).hide();
 
                 var selectorInstallments = TinyJ(self.selectors.installments);
                 var fragment = document.createDocumentFragment();
@@ -646,6 +653,7 @@ var MercadoPagoCustom = (function () {
 
             TinyJ(self.selectors.issuer).empty().appendChild(fragment).enable().removeAttribute(self.constants.style);
             TinyJ(self.selectors.issuerMp).removeAttribute(self.constants.style);
+            TinyJ(self.selectors.issuerMpLabel).removeAttribute(self.constants.style);
             defineInputs();
         };
 

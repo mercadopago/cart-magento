@@ -92,6 +92,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     And Setting Config "payment/mercadopago/sandbox_mode" is "0"
     And I press "#review-buttons-container .button" element
+    And I wait for "10" seconds
     And I switch to the iframe "checkout_mercadopago"
     And I am logged in MP as "test_user_2135227@testuser.com" "qatest5030"
     Then I should see "Modifica tu dirección de envío"

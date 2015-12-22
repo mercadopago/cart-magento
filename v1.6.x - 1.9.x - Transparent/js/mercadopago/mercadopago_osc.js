@@ -388,9 +388,9 @@ var MercadoPagoCustom = (function () {
                 excludeInputs.push(self.selectors.docType)
                 excludeInputs.push(self.selectors.docNumber);
                 disabledInputs.push(self.selectors.issuer);
-                var index = exclude_inputs.indexOf(self.selectors.paymentMethod);
+                var index = excludeInputs.indexOf(self.selectors.paymentMethod);
                 if (index > -1) {
-                    exclude_inputs.splice(index, 1);
+                    excludeInputs.splice(index, 1);
                 }
 
             }

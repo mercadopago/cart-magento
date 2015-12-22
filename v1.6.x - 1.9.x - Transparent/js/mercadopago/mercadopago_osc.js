@@ -94,6 +94,7 @@ var MercadoPagoCustom = (function () {
             cardNumber: '#cardNumber',
             issuer: '#issuer',
             issuerMp: '#issuer__mp',
+            issuerMpLabel: '#issuer__mp label',
             issuerId: 'issuer_id',
             cardExpirationMonth: '#cardExpirationMonth',
             cardHolder: '#cardholderName',
@@ -105,6 +106,8 @@ var MercadoPagoCustom = (function () {
             installmentText: '#mercadopago_checkout_custom .mercadopago-text-installment',
             paymentMethodId: '#mercadopago_checkout_custom .payment_method_id',
             paymenMethodNotFound: '.error-payment-method-not-found',
+            paymentMethod: '#paymentMethod',
+            paymentMethodSelect: 'select[data-checkout="paymentMethod"]',
             mercadoPagoTextChoice: '#mercadopago_checkout_custom .mercadopago-text-choice',
             errorMethodMinAmount: '.error-payment-method-min-amount',
             textDefaultIssuer: '#mercadopago_checkout_custom .mercadopago-text-default-issuer',
@@ -217,6 +220,10 @@ var MercadoPagoCustom = (function () {
             if (siteId != self.constants.mexico) {
                 //caso não seja o mexico puxa os documentos aceitos
                 Mercadopago.getIdentificationTypes();
+            } else {
+                var methods = getPaymentMethods();
+                setPaymentMethodsInfo(methods);
+                TinyJ(self.selectors.paymentMethodSelect).change(setPaymentMethodId);
             }
 
             //add inputs para cada país
@@ -261,6 +268,30 @@ var MercadoPagoCustom = (function () {
                 }
                 return true;
             });
+        }
+
+        function setPaymentMethodId(event) {
+            var paymentMethodSelector = TinyJ(self.selectors.paymentMethodSelect);
+            var paymentMethodId = paymentMethodSelector.val();
+            if (paymentMethodId != '') {
+                var payment_method_id = TinyJ(self.selectors.paymentMethodId);
+                payment_method_id.val(paymentMethodId);
+            }
+        }
+
+        function getPaymentMethods() {
+            var allMethods = Mercadopago.getPaymentMethods();
+            var allowedMethods = [];
+            for (var key in allMethods) {
+                var method = allMethods[key];
+                var typeId = method.payment_type_id;
+                if (typeId == 'debit_card' || typeId == 'credit_card' || typeId == 'prepaid_card') {
+                    allowedMethods.push(method);
+                }
+            }
+
+            return allowedMethods;
+
         }
 
         function checkDocNumber(v) {
@@ -336,15 +367,16 @@ var MercadoPagoCustom = (function () {
             var siteId = TinyJ(self.selectors.siteId).val();
             var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
             var dataCheckout = TinyJ(self.selectors.dataCheckout);
-            var excludeInputs = [self.selectors.cardId, self.selectors.securityCodeOCP];
+            var excludeInputs = [self.selectors.cardId, self.selectors.securityCodeOCP, self.selectors.paymentMethod];
             var dataInputs = [];
+            var disabledInputs = [];
 
             if (oneClickPay == true) {
 
                 excludeInputs = [
                     self.selectors.cardNumber, self.selectors.issuer, self.selectors.cardExpirationMonth, self.selectors.cardExpYear,
-                    self.selectors.cardHolder, self.selectors.docType, self.selectors.docNumber, self.selectors.securityCode
-                ]
+                    self.selectors.cardHolder, self.selectors.docType, self.selectors.docNumber, self.selectors.securityCode, self.selectors.paymentMethod
+                ];
 
             } else if (siteId == self.constants.brazil) {
 
@@ -355,6 +387,11 @@ var MercadoPagoCustom = (function () {
 
                 excludeInputs.push(self.selectors.docType)
                 excludeInputs.push(self.selectors.docNumber);
+                disabledInputs.push(self.selectors.issuer);
+                var index = excludeInputs.indexOf(self.selectors.paymentMethod);
+                if (index > -1) {
+                    excludeInputs.splice(index, 1);
+                }
 
             }
             if (!this.issuerMandatory) {
@@ -370,6 +407,9 @@ var MercadoPagoCustom = (function () {
                 if (excludeInputs.indexOf($id) == -1) {
                     TinyJ(elPai).removeAttribute(self.constants.style);
                     dataInputs.push($id);
+                    if (disabledInputs.indexOf($id) != -1) {
+                        TinyJ(self.selectors.checkoutCustom).getElem($id).disabled = "disabled";
+                    }
                 } else {
                     TinyJ(elPai).hide();
                 }
@@ -384,6 +424,26 @@ var MercadoPagoCustom = (function () {
 
         }
 
+        function setPaymentMethodsInfo(methods) {
+            //hide loaging
+            hideLoading();
+
+            var selectorPaymentMethods = jQuery("#paymentMethod");
+
+            selectorPaymentMethods.empty();
+
+            if (methods.length > 0) {
+                var message_choose = document.querySelector(".mercadopago-text-choice").value;
+
+                var option = new Option(message_choose + "... ", '');
+
+                selectorPaymentMethods.append(option);
+                for (var i = 0; i < methods.length; i++) {
+                    option = new Option(methods[i].name, methods[i].id);
+                    selectorPaymentMethods.append(option);
+                }
+            }
+        }
 
         function setRequiredFields(required) {
             if (required) {
@@ -455,6 +515,7 @@ var MercadoPagoCustom = (function () {
                 issuer.empty();
 
                 TinyJ(self.selectors.issuerMp).hide();
+                TinyJ(self.selectors.issuerMpLabel).hide();
 
                 var selectorInstallments = TinyJ(self.selectors.installments);
                 var fragment = document.createDocumentFragment();
@@ -559,7 +620,14 @@ var MercadoPagoCustom = (function () {
             if (status == http.status.OK) {
                 // do somethings ex: show logo of the payment method
                 //adiciona o payment_method no form
-                var form = TinyJ(self.selectors.paymentMethodId).val(response[0].id);
+                var paymentMethodId = response[0].id;
+                TinyJ(self.selectors.paymentMethodId).val(paymentMethodId);
+                if (response[0].id != undefined) {
+                    var siteId = TinyJ(self.selectors.siteId).val();
+                    if (paymentMethodId != '' && siteId == self.constants.mexico)  {
+                        TinyJ(self.selectors.paymentMethod).val(paymentMethodId);
+                    }
+                }
 
                 //ADICIONA A BANDEIRA DO CARTÃO DENTRO DO INPUT
                 var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
@@ -568,19 +636,6 @@ var MercadoPagoCustom = (function () {
 
                 var bin = getBin();
                 var amount = TinyJ(self.selectors.amount).val();
-
-                /*
-                 * check if the security code (ex: Tarshop) is required
-                 var cardConfiguration = response[0].settings;
-                 for (var index = 0; index < cardConfiguration.length; index++) {
-                 if (bin.match(cardConfiguration[index].bin.pattern) != null && cardConfiguration[index].security_code.length == 0) {
-                 * In this case you do not need the Security code. You can hide the input.
-                 } else {
-                 * In this case you NEED the Security code. You MUST show the input.
-                 }
-                 }
-                 *
-                 */
 
                 //get installments
                 getInstallments({
@@ -646,6 +701,7 @@ var MercadoPagoCustom = (function () {
 
             TinyJ(self.selectors.issuer).empty().appendChild(fragment).enable().removeAttribute(self.constants.style);
             TinyJ(self.selectors.issuerMp).removeAttribute(self.constants.style);
+            TinyJ(self.selectors.issuerMpLabel).removeAttribute(self.constants.style);
             defineInputs();
         };
 

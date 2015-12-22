@@ -27,7 +27,7 @@ Feature: I want to see the Shipping Methods available depending on my country.
     Examples:
       | country | method      | zip_code | country_code |
       | mla     | Normal      | 7000     | AR           |
-      | mla     | Express     | 7000     | AR           |
+      | mla     | Prioritario | 7000     | AR           |
       | mlb     | Normal      | 01046925 | BR           |
       | mlb     | Expresso    | 01046925 | BR           |
       | mlm     | DHL Express | 22615    | MX           |
@@ -52,7 +52,7 @@ Feature: I want to see the Shipping Methods available depending on my country.
     Examples:
       | country | method      | zip_code | country_code |
       | mla     | Normal      | 7000     | AR           |
-      | mla     | Express     | 7000     | AR           |
+      | mla     | Prioritario | 7000     | AR           |
       | mlb     | Normal      | 01046925 | BR           |
       | mlb     | Expresso    | 01046925 | BR           |
       | mlm     | DHL Express | 22615    | MX           |
@@ -71,5 +71,5 @@ Feature: I want to see the Shipping Methods available depending on my country.
       | mlb     | Normal      |
       | mlb     | Expresso    |
       | mla     | Normal      |
-      | mla     | Express     |
+      | mla     | Prioritario |
       | mlm     | DHL Express |

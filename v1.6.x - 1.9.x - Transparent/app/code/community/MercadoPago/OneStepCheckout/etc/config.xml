@@ -15,7 +15,7 @@
             <mercadopago>
                 <rewrite>
                     <custom_form>MercadoPago_OneStepCheckout_Block_Custom_Form</custom_form>
-                    <customticket_form>MercadoPago_Core_Block_Customticket_Form</customticket_form>
+                    <customticket_form>MercadoPago_OneStepCheckout_Block_Customticket_Form</customticket_form>
                 </rewrite>
                 <mercadopago_onestepcheckout>
                     <class>MercadoPago_OneStepCheckout_Block</class>

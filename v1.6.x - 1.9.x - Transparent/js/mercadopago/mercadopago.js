@@ -53,8 +53,7 @@ var MercadoPagoCustom = (function () {
             removeCoupon: 'Remove coupon!',
             hideCouponMessages: 'Hide all coupon messages...',
             ocpActivatedFormat: 'OCP? {0}',
-            cardHandler: 'card Handler',
-            paymentMethod: '#paymentMethod'
+            cardHandler: 'card Handler'
         },
         constants: {
             option: 'option',
@@ -105,6 +104,8 @@ var MercadoPagoCustom = (function () {
             dataCheckout: '[data-checkout]',
             oneClickPayment: '#mercadopago_checkout_custom #one_click_pay_mp',
             installmentText: '#mercadopago_checkout_custom .mercadopago-text-installment',
+            paymentMethod: '#paymentMethod',
+            paymentMethodSelect: 'select[data-checkout="paymentMethod"]',
             paymentMethodId: '#mercadopago_checkout_custom .payment_method_id',
             paymenMethodNotFound: '.error-payment-method-not-found',
             mercadoPagoTextChoice: '#mercadopago_checkout_custom .mercadopago-text-choice',
@@ -223,6 +224,7 @@ var MercadoPagoCustom = (function () {
             } else {
                 var methods = getPaymentMethods();
                 setPaymentMethodsInfo(methods);
+                TinyJ(self.selectors.paymentMethodSelect).change(setPaymentMethodId);
             }
 
             //add inputs para cada país
@@ -263,6 +265,15 @@ var MercadoPagoCustom = (function () {
                 }
                 return true;
             });
+        }
+
+        function setPaymentMethodId(event) {
+            var paymentMethodSelector = TinyJ(self.selectors.paymentMethodSelect);
+            var paymentMethodId = paymentMethodSelector.val();
+            if (paymentMethodId != '') {
+                var payment_method_id = TinyJ(self.selectors.paymentMethodId);
+                payment_method_id.val(paymentMethodId);
+            }
         }
 
         function getPaymentMethods() {
@@ -577,7 +588,14 @@ var MercadoPagoCustom = (function () {
             if (status == http.status.OK) {
                 // do somethings ex: show logo of the payment method
                 //adiciona o payment_method no form
-                var form = TinyJ(self.selectors.paymentMethodId).val(response[0].id);
+                var paymentMethodId = response[0].id;
+                TinyJ(self.selectors.paymentMethodId).val(paymentMethodId);
+                if (response[0].id != undefined) {
+                    var siteId = TinyJ(self.selectors.siteId).val();
+                    if (paymentMethodId != '' && siteId == self.constants.mexico)  {
+                        TinyJ(self.selectors.paymentMethod).val(paymentMethodId);
+                    }
+                }
 
                 //ADICIONA A BANDEIRA DO CARTÃO DENTRO DO INPUT
                 var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
@@ -586,19 +604,6 @@ var MercadoPagoCustom = (function () {
 
                 var bin = getBin();
                 var amount = TinyJ(self.selectors.amount).val();
-
-                /*
-                 * check if the security code (ex: Tarshop) is required
-                 var cardConfiguration = response[0].settings;
-                 for (var index = 0; index < cardConfiguration.length; index++) {
-                 if (bin.match(cardConfiguration[index].bin.pattern) != null && cardConfiguration[index].security_code.length == 0) {
-                 * In this case you do not need the Security code. You can hide the input.
-                 } else {
-                 * In this case you NEED the Security code. You MUST show the input.
-                 }
-                 }
-                 *
-                 */
 
                 //get installments
                 getInstallments({

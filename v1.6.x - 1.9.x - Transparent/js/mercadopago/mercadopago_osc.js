@@ -53,7 +53,8 @@ var MercadoPagoCustom = (function () {
             removeCoupon: 'Remove coupon!',
             hideCouponMessages: 'Hide all coupon messages...',
             ocpActivatedFormat: 'OCP? {0}',
-            cardHandler: 'card Handler'
+            cardHandler: 'card Handler',
+            paymentMethod: '#paymentMethod'
         },
         constants: {
             option: 'option',
@@ -218,6 +219,9 @@ var MercadoPagoCustom = (function () {
             if (siteId != self.constants.mexico) {
                 //caso não seja o mexico puxa os documentos aceitos
                 Mercadopago.getIdentificationTypes();
+            } else {
+                var methods = getPaymentMethods();
+                setPaymentMethodsInfo(methods);
             }
 
             //add inputs para cada país
@@ -262,6 +266,21 @@ var MercadoPagoCustom = (function () {
                 }
                 return true;
             });
+        }
+
+        function getPaymentMethods() {
+            var allMethods = Mercadopago.getPaymentMethods();
+            var allowedMethods = [];
+            for (var key in allMethods) {
+                var method = allMethods[key];
+                var typeId = method.payment_type_id;
+                if (typeId == 'debit_card' || typeId == 'credit_card' || typeId == 'prepaid_card') {
+                    allowedMethods.push(method);
+                }
+            }
+
+            return allowedMethods;
+
         }
 
         function checkDocNumber(v) {
@@ -337,7 +356,7 @@ var MercadoPagoCustom = (function () {
             var siteId = TinyJ(self.selectors.siteId).val();
             var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
             var dataCheckout = TinyJ(self.selectors.dataCheckout);
-            var excludeInputs = [self.selectors.cardId, self.selectors.securityCodeOCP];
+            var excludeInputs = [self.selectors.cardId, self.selectors.securityCodeOCP, self.selectors.paymentMethod];
             var dataInputs = [];
             var disabledInputs = [];
 
@@ -345,8 +364,8 @@ var MercadoPagoCustom = (function () {
 
                 excludeInputs = [
                     self.selectors.cardNumber, self.selectors.issuer, self.selectors.cardExpirationMonth, self.selectors.cardExpYear,
-                    self.selectors.cardHolder, self.selectors.docType, self.selectors.docNumber, self.selectors.securityCode
-                ]
+                    self.selectors.cardHolder, self.selectors.docType, self.selectors.docNumber, self.selectors.securityCode, self.selectors.paymentMethod
+                ];
 
             } else if (siteId == self.constants.brazil) {
 
@@ -358,6 +377,10 @@ var MercadoPagoCustom = (function () {
                 excludeInputs.push(self.selectors.docType)
                 excludeInputs.push(self.selectors.docNumber);
                 disabledInputs.push(self.selectors.issuer);
+                var index = exclude_inputs.indexOf(self.selectors.paymentMethod);
+                if (index > -1) {
+                    exclude_inputs.splice(index, 1);
+                }
 
             }
             if (!this.issuerMandatory) {
@@ -390,6 +413,26 @@ var MercadoPagoCustom = (function () {
 
         }
 
+        function setPaymentMethodsInfo(methods) {
+            //hide loaging
+            hideLoading();
+
+            var selectorPaymentMethods = jQuery("#paymentMethod");
+
+            selectorPaymentMethods.empty();
+
+            if (methods.length > 0) {
+                var message_choose = document.querySelector(".mercadopago-text-choice").value;
+
+                var option = new Option(message_choose + "... ", '');
+
+                selectorPaymentMethods.append(option);
+                for (var i = 0; i < methods.length; i++) {
+                    option = new Option(methods[i].name, methods[i].id);
+                    selectorPaymentMethods.append(option);
+                }
+            }
+        }
 
         function setRequiredFields(required) {
             if (required) {

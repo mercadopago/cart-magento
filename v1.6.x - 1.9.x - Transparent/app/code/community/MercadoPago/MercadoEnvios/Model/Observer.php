@@ -34,4 +34,29 @@ class MercadoPago_MercadoEnvios_Model_Observer
         $code = Mage::getModel('mercadopago/source_country')->getCodeByValue($country);
         Mage::getConfig()->saveConfig('carriers/mercadoenvios/specificcountry', $code);
     }
+
+    public function addPrintButton($observer)
+    {
+        $block = $observer->getBlock();
+
+        if ($block instanceof Mage_Adminhtml_Block_Sales_Order_Shipment_View) {
+            $shipmentId = Mage::app()->getRequest()->getParam('shipment_id');
+            $block->addButton('print_shipment_label', array(
+                'label'   => 'Print shipping label',
+                'onclick' => 'window.open(\' ' . Mage::helper('mercadopago_mercadoenvios')->getTrackingPrintUrl($shipmentId) . '\')',
+                'class'   => 'go'
+            ));
+        }
+    }
+
+    public function trackingPopup($observer)
+    {
+        $shippingInfoModel = Mage::getModel('shipping/info')->loadByHash(Mage::app()->getRequest()->getParam('hash'));
+
+        if ($url = Mage::helper('mercadopago_mercadoenvios')->getTrackingUrlByShippingInfo($shippingInfoModel)) {
+            Mage::app()->getRequest()->setDispatched(true);
+            Mage::app()->getResponse()->setRedirect($url);
+        }
+    }
+
 }

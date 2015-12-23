@@ -85,16 +85,7 @@ class MercadoPago_Core_NotificationsController
                     }
 
                     if (count($merchant_order['shipments']) > 0) {
-
-                        if($merchant_order['shipments'][0]['status'] == 'ready_to_ship'){
-                            $order = Mage::getModel('sales/order')->loadByIncrementId($data["external_reference"]);
-                            $shipment = Mage::getModel('sales/service_order', $order)->prepareShipment();
-
-                            $tracking['number'] = $merchant_order['shipments'][0]['service_id'];
-                            $track = Mage::getModel('sales/order_shipment_track')->addData($tracking);
-                            $shipment->addTrack($track);
-                            $shipment->save();
-                        }
+                        $this->_createShipment($data, $merchant_order);
                     }
 
                     return;
@@ -131,6 +122,7 @@ class MercadoPago_Core_NotificationsController
 
                 $this->updateOrder($payment);
                 $this->setStatusOrder($payment);
+
                 return;
             }
         }
@@ -235,7 +227,7 @@ class MercadoPago_Core_NotificationsController
 
     protected function getMessage($status, $payment)
     {
-        $rawMessage =  Mage::helper('mercadopago')->__(Mage::helper('mercadopago/statusOrderMessage')->getMessage($status));
+        $rawMessage = Mage::helper('mercadopago')->__(Mage::helper('mercadopago/statusOrderMessage')->getMessage($status));
         $rawMessage .= Mage::helper('mercadopago')->__('<br/> Payment id: %s', $payment['id']);
         $rawMessage .= Mage::helper('mercadopago')->__('<br/> Status: %s', $payment['status']);
         $rawMessage .= Mage::helper('mercadopago')->__('<br/> Status Detail: %s', $payment['status_detail']);
@@ -335,5 +327,36 @@ class MercadoPago_Core_NotificationsController
         $data['payer_email'] = $payment['payer']['email'];
 
         return $data;
+    }
+
+    protected function _createShipment($data, $merchant_order)
+    {
+        //if order has shipments, status is updated. If it doesn't the shipment is created.
+        $order = Mage::getModel('sales/order')->loadByIncrementId($data["external_reference"]);
+        if ($merchant_order['shipments'][0]['status'] == 'ready_to_ship') {
+            if ($order->hasShipments()){
+                $shipment = $order->getShipmentsCollection()->getFirstItem();
+            } else {
+                $shipment = Mage::getModel('sales/service_order', $order)->prepareShipment();
+                $shipment->register();
+                $order->setIsInProcess(true);
+            }
+            $shipment->setShippingLabel($merchant_order['shipments'][0]['id']);
+
+            $helper = Mage::helper('mercadopago_mercadoenvios');
+            $shipmentInfo = $helper->getShipmentInfo($merchant_order['shipments'][0]['id']);
+            $serviceInfo = $helper->getServiceInfo($merchant_order['shipments'][0]['service_id'], $merchant_order['site_id']);
+            if ($shipmentInfo->status == 200 && isset($shipmentInfo->tracking_number)) {
+                    $tracking['number'] = str_replace('#{trackingNumber}', $shipmentInfo->tracking_number, $serviceInfo->tracking_url);
+                    $tracking['title'] = MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE;
+                    $track = Mage::getModel('sales/order_shipment_track')->addData($tracking);
+                    $shipment->addTrack($track);
+            }
+
+            Mage::getModel('core/resource_transaction')
+                ->addObject($shipment)
+                ->addObject($order)
+                ->save();
+        }
     }
 }

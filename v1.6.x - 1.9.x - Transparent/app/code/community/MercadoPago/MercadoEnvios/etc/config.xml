@@ -5,6 +5,19 @@
             <version>0.1.0</version>
         </MercadoPago_MercadoEnvios>
     </modules>
+    <frontend>
+        <events>
+            <controller_action_predispatch_shipping_tracking_popup>
+                <observers>
+                    <mercadopago_mercadoenvios>
+                        <type>model</type>
+                        <class>mercadopago_mercadoenvios/observer</class>
+                        <method>trackingPopup</method>
+                    </mercadopago_mercadoenvios>
+                </observers>
+            </controller_action_predispatch_shipping_tracking_popup>
+        </events>
+    </frontend>
     <global>
         <models>
             <mercadopago_mercadoenvios>
@@ -49,7 +62,24 @@
                 </observers>
             </admin_system_config_changed_section_payment>
         </events>
+
     </global>
+
+    <adminhtml>
+        <events>
+            <adminhtml_widget_container_html_before>
+                <observers>
+                    <mercadopago_mercadoenvios>
+                        <type>singleton</type>
+                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <method>addPrintButton</method>
+                    </mercadopago_mercadoenvios>
+                </observers>
+            </adminhtml_widget_container_html_before>
+
+        </events>
+    </adminhtml>
+
     <default>
         <carriers>
             <mercadoenvios>

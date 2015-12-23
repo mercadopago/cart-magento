@@ -7,6 +7,9 @@ class MercadoPago_MercadoEnvios_Helper_Data
     const XML_PATH_ATTRIBUTES_MAPPING = 'carriers/mercadoenvios/attributesmapping';
     const ME_LENGTH_UNIT = 'cm';
     const ME_WEIGHT_UNIT = 'gr';
+    const ME_SHIPMENT_URL = 'https://api.mercadolibre.com/shipments/';
+    const ME_SHIPMENT_LABEL_URL = 'https://api.mercadolibre.com/shipment_labels';
+    const ME_SHIPMENT_TRACKING_URL = 'https://api.mercadolibre.com/sites/';
 
     protected $_mapping;
     protected $_products = [];
@@ -159,6 +162,84 @@ class MercadoPago_MercadoEnvios_Helper_Data
     public function isCountryEnabled()
     {
         return (in_array(Mage::getStoreConfig('payment/mercadopago/country'), self::$enabled_methods));
+    }
+
+    public function getTrackingUrlByOrder($_order)
+    {
+        if ($_order->getTracksCollection()->count()) {
+            foreach ($_order->getTracksCollection() as $_track) {
+                if ($_track->getCarrierCode() == MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE) {
+                    return $this->_getFullTrackingUrl($_track->getTrackNumber());
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function getTrackingUrlByShippingInfo($_shippingInfo)
+    {
+        foreach ($_shippingInfo->getTrackingInfo() as $track) {
+            $lastTrack = $track[count($track) - 1];
+            if (isset($lastTrack['title']) && $lastTrack['title'] == MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE) {
+                return $lastTrack['number'];
+            }
+        }
+
+        return '';
+    }
+
+    public function getTrackingPrintUrl($shipmentId)
+    {
+        if ($shipmentId) {
+            if ($shipment = Mage::getModel('sales/order_shipment')->load($shipmentId)) {
+                if ($shipment->getShippingLabel()) {
+                    $params = [
+                        'shipment_ids'  => $shipment->getShippingLabel(),
+                        'response_type' => 'zpl2',
+                        'access_token'  => Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN)
+                    ];
+
+                    return self::ME_SHIPMENT_LABEL_URL . '?' . http_build_query($params);
+                }
+            }
+        }
+
+        return '';
+    }
+
+    public function getShipmentInfo($shipmentId)
+    {
+        $client = new Varien_Http_Client(self::ME_SHIPMENT_URL . $shipmentId);
+        $client->setMethod(Varien_Http_Client::GET);
+        $client->setParameterGet('access_token', Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN));
+        try {
+            $response = $client->request();
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+
+        return json_decode($response->getBody());
+    }
+
+    public function getServiceInfo($serviceId, $country)
+    {
+        $client = new Varien_Http_Client(self::ME_SHIPMENT_TRACKING_URL . $country . '/shipping_services');
+        $client->setMethod(Varien_Http_Client::GET);
+        try {
+            $response = $client->request();
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+
+        $response = json_decode($response->getBody());
+        foreach ($response as $result) {
+            if ($result->id == $serviceId) {
+                return $result;
+            }
+        }
+
+        return '';
     }
 
 }

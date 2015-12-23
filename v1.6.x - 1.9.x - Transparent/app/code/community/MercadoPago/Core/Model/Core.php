@@ -340,8 +340,12 @@ class MercadoPago_Core_Model_Core
         } else {
             $e = "";
             $exception = new MercadoPago_Core_Model_Api_V1_Exception();
-            foreach ($response['response']['cause'] as $error) {
-                $e .= $exception->getUserMessage($error) . " ";
+            if (count($response['response']['cause']) > 0) {
+                foreach ($response['response']['cause'] as $error) {
+                    $e .= $exception->getUserMessage($error) . " ";
+                }
+            } else {
+                $e = $exception->getUserMessage();
             }
 
             Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
@@ -406,14 +410,22 @@ class MercadoPago_Core_Model_Core
     public function getAmount()
     {
         $quote = $this->_getQuote();
+        $total = $quote->getBaseSubtotal() + $quote->getShippingAddress()->getShippingAmount();
+
+        return (float)$total;
+
+    }
+
+    public function getGrandTotal() {
+        $quote = $this->_getQuote();
         $total = $quote->getBaseGrandTotal();
 
-        //caso o valor seja null setta um valor 0
         if (is_null($total)) {
             $total = 0;
         }
 
         return (float)$total;
+
     }
 
     public function validCoupon($id)

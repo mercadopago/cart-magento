@@ -410,19 +410,22 @@ class MercadoPago_Core_Model_Core
     public function getAmount()
     {
         $quote = $this->_getQuote();
-        $total = 0;
-        foreach ($quote->getTotals() as $subtotal) {
-            if ($subtotal->getCode() != 'grand_total') {
-                $total += $subtotal->getValue();
-            }
-        }
+        $total = $quote->getBaseSubtotal() + $quote->getShippingAddress()->getShippingAmount();
 
-        //caso o valor seja null setta um valor 0
+        return (float)$total;
+
+    }
+
+    public function getGrandTotal() {
+        $quote = $this->_getQuote();
+        $total = $quote->getBaseGrandTotal();
+
         if (is_null($total)) {
             $total = 0;
         }
 
         return (float)$total;
+
     }
 
     public function validCoupon($id)

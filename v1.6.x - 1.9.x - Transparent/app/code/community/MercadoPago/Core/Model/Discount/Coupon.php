@@ -13,7 +13,7 @@ class MercadoPago_Core_Model_Discount_Coupon
             $amt = Mage::app()->getRequest()->getPost();
             parent::collect($address);
 
-            $balance = $amt['mercadopago-discount-amount'];
+            $balance = $amt['mercadopago-discount-amount']*1;
             $address->setDiscountCouponAmount($balance);
             $address->setDiscountCouponAmount($balance);
 

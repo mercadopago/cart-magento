@@ -35,7 +35,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
     And I press "#payment-buttons-container .button" element
     And I wait for "10" seconds
 
-    Then I should see "discount MercadoPago"
+    Then I should see "Discount MercadoPago"
 
   @applyDiscount @customTicketFormDiscount
   Scenario: Validate card expiration date
@@ -45,6 +45,6 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
     And I press "#payment-buttons-container .button" element
     And I wait for "10" seconds
 
-    Then I should see "discount MercadoPago"
+    Then I should see "Discount MercadoPago"
 
 

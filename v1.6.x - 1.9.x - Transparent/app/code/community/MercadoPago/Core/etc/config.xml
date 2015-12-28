@@ -66,8 +66,31 @@
                     <mercadopago>
                         <class>mercadopago/custom_finance_cost</class>
                     </mercadopago>
+                    <discount_mercadopago>
+                        <class>mercadopago/discount_coupon</class>
+                    </discount_mercadopago>
                 </totals>
             </quote>
+            <order_invoice>
+                <totals>
+                    <mercadopago>
+                        <class>mercadopago/custom_finance_cost</class>
+                    </mercadopago>
+                    <discount_mercadopago>
+                        <class>mercadopago/discount_coupon</class>
+                    </discount_mercadopago>
+                </totals>
+            </order_invoice>
+            <order_creditmemo>
+                <totals>
+                    <mercadopago>
+                        <class>mercadopago/custom_finance_cost</class>
+                    </mercadopago>
+                    <discount_mercadopago>
+                        <class>mercadopago/discount_coupon</class>
+                    </discount_mercadopago>
+                </totals>
+            </order_creditmemo>
         </sales>
 
         <fieldsets>

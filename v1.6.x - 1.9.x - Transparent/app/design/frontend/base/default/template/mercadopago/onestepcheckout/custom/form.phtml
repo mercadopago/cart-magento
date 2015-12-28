@@ -2,7 +2,12 @@
 $country = Mage::getStoreConfig('payment/mercadopago/country');
 $coupon_mercadopago = Mage::getStoreConfig('payment/mercadopago_custom/coupon_mercadopago');
 $_code = $this->getMethodCode();
-$grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
+$_quote = $this->helper('checkout/cart')->getQuote();
+$grant_total = $_quote->getGrandTotal();
+$_totals = $_quote->getTotals();
+if (isset($_totals['mercadopago'])) {
+    $grant_total = $grant_total - $_totals['mercadopago']->getValue();
+}
 $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
 $logEnabled= Mage::getStoreConfigFlag('payment/mercadopago/logs');
 $route = $this->getRequest()->getRequestedRouteName();

@@ -416,18 +416,6 @@ class MercadoPago_Core_Model_Core
 
     }
 
-    public function getGrandTotal() {
-        $quote = $this->_getQuote();
-        $total = $quote->getBaseGrandTotal();
-
-        if (is_null($total)) {
-            $total = 0;
-        }
-
-        return (float)$total;
-
-    }
-
     public function validCoupon($id)
     {
         $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);

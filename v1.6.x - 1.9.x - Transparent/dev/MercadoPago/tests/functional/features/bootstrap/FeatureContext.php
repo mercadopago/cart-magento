@@ -961,5 +961,15 @@ class FeatureContext
         }
     }
 
+    /**
+     * @Given I select ticket method :arg1
+     */
 
+    public function iSelectTicketMethod($method) {
+        $page = $this->getSession()->getPage();
+
+        $this->getSession()->wait(15000, '(0 === Ajax.activeRequestCount)');
+        $method = '.optionsTicketMp [value="'.$method.'"]';
+        $page->find($method)->press();
+    }
 }

@@ -249,3 +249,14 @@
     width: 100%;
     margin: 0  !important;
 }
+
+.mercadopago-discount-options {
+    display: inline-block;
+}
+.mercadopago-ticket-label {
+    vertical-align: top;
+}
+.optionsTicketMp {
+    float: left;
+    margin-right: 10px;
+}

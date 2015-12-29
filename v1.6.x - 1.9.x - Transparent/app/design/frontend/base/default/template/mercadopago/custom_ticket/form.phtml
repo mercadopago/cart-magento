@@ -30,7 +30,9 @@
                         <?php
                     endif;
                 ?>
-                
+                </li>
+                <br/>
+                <li class="mercadopago-discount-options">
                 <?php
                 $optionsTicket = $this->getTicketsOptions();
                 if(count($optionsTicket) == 1){ ?>
@@ -39,8 +41,11 @@
                         
                     <?php
                     foreach($optionsTicket as $ticket){ ?>
-                        <input type="radio" name="payment[<?php echo $_code; ?>][payment_method_ticket]" class="optionsTicketMp" value="<?php echo $ticket['id']; ?>">
-                        <img src="<?php echo $ticket['secure_thumbnail']; ?>"> (<?php echo $ticket['name']; ?>) <br/>
+                            <br/>
+                            <input type="radio" name="payment[<?php echo $_code; ?>][payment_method_ticket]" class="optionsTicketMp" value="<?php echo $ticket['id']; ?>">
+                            <img src="<?php echo $ticket['secure_thumbnail']; ?>">
+                            <label class="mercadopago-ticket-label"> (<?php echo $ticket['name']; ?>)</label>
+                            <br/>
                     <?php } ?>
                 <?php } ?>
 
@@ -58,7 +63,7 @@
             
         </ul>
     </div>
-
+    <br/>
     <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
         <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
     <?php endif;?>

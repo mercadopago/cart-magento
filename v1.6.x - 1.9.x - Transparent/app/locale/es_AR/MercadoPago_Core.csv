@@ -169,3 +169,4 @@
 "Cannot repeat MercadoEnvios Product size attributes","No puede repetir los atributos de tamaño de producto de MercadoEnvios"
 "Checkout Classic Method must be enabled","El método de pago Checkout Classic debe estar habilitado"
 "MercadoEnvios is not enabled in the country where MercadoPago is configured", "MercadoEnvios no está disponible en el país configurado para MercadoPago"
+"Discount MercadoPago","Descuento de MercadoPago"

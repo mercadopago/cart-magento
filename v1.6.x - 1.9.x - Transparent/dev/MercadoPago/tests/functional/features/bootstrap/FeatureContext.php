@@ -209,8 +209,15 @@ class FeatureContext
     public function iFillTextFieldWith($arg1, $arg2)
     {
         $page = $this->getSession()->getPage();
-
         $page->fillField($arg1, $arg2);
+    }
+
+    /**
+     * @Given I fill text field :arg1 in form :arg2 with :arg3
+     */
+    public function iFillTextFieldInForm($field, $form, $value)
+    {
+        $this->findElement($form . ' ' . $field)->setValue($value);
     }
 
     /**
@@ -322,7 +329,7 @@ class FeatureContext
     }
 
     /**
-     *  @When I am logged in MP as :arg1 :arg2
+     * @When I am logged in MP as :arg1 :arg2
      */
     public function iAmLoggedInMPAs($arg1, $arg2)
     {
@@ -952,7 +959,8 @@ class FeatureContext
     /**
      * @Given I disable promotions to :arg1
      */
-    public function iDisablePromotions($sku) {
+    public function iDisablePromotions($sku)
+    {
         $name = 'Test rule - Freeshipping To ' . $sku;
         $rule = Mage::getModel('salesrule/rule')->load($name, 'name');
         if ($rule->getId()) {
@@ -960,6 +968,4 @@ class FeatureContext
             $rule->save();
         }
     }
-
-
 }

@@ -1,24 +1,22 @@
 <?php
 
-class MercadoPago_Core_Model_Custom_Finance_Cost
+class MercadoPago_Core_Model_Discount_Coupon
     extends Mage_Sales_Model_Quote_Address_Total_Abstract
 {
 
-    protected $_code = 'financing_cost';
+    protected $_code = 'discount_coupon';
 
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
-        if ($this->_getFinancingCondition($address)) {
+        if ($this->_getDiscountCondition($address)) {
 
             $amt = Mage::app()->getRequest()->getPost();
             parent::collect($address);
 
-            $totalAmount = (float)$amt['total_amount'];
-            $amount = (float)$amt['amount'] - (float)$amt['mercadopago-discount-amount'];
-            $balance = $totalAmount - $amount;
+            $balance = $amt['mercadopago-discount-amount'] * -1;
 
-            $address->setFinanceCostAmount($balance);
-            $address->setBaseFinanceCostAmount($balance);
+            $address->setDiscountCouponAmount($balance);
+            $address->setBaseDiscountCouponAmount($balance);
 
             $this->_setAmount($balance);
             $this->_setBaseAmount($balance);
@@ -30,12 +28,12 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
 
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
-        if ($this->_getFinancingCondition($address)) {
-            if ($address->getFinanceCostAmount() > 0) {
+        if ($this->_getDiscountCondition($address)) {
+            if ($address->getDiscountCouponAmount() < 0) {
                 $address->addTotal(array(
                     'code'  => $this->getCode(),
-                    'title' => Mage::helper('mercadopago')->__('Financing Cost'),
-                    'value' => $address->getFinanceCostAmount()
+                    'title' => Mage::helper('mercadopago')->__('Discount MercadoPago'),
+                    'value' => $address->getDiscountCouponAmount()
                 ));
             }
         }
@@ -43,7 +41,7 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
         return $this;
     }
 
-    protected function _getFinancingCondition($address)
+    protected function _getDiscountCondition($address)
     {
         $req = Mage::app()->getRequest()->getParam('total_amount');
 

@@ -203,7 +203,7 @@ var MercadoPagoCustom = (function () {
         }
 
 
-// Inicializa o formulario de pagamento com cartão de credito
+        // Inicializa o formulario de pagamento com cartão de credito
         function initMercadoPagoJs() {
             showLogMercadoPago(self.messages.init);
 
@@ -222,9 +222,7 @@ var MercadoPagoCustom = (function () {
                 //caso não seja o mexico puxa os documentos aceitos
                 Mercadopago.getIdentificationTypes();
             } else {
-                var methods = getPaymentMethods();
-                setPaymentMethodsInfo(methods);
-                TinyJ(self.selectors.paymentMethodSelect).change(setPaymentMethodId);
+                setTimeout(function () {setPaymentMethods()}, 1000);
             }
 
             //add inputs para cada país
@@ -291,6 +289,12 @@ var MercadoPagoCustom = (function () {
 
         }
 
+        function setPaymentMethods() {
+            var methods = getPaymentMethods();
+            setPaymentMethodsInfo(methods);
+            TinyJ(self.selectors.paymentMethodSelect).change(setPaymentMethodId);
+        }
+
         function checkDocNumber(v) {
             var flagReturn = true;
             Mercadopago.getIdentificationTypes(function (status, identificationsTypes) {
@@ -308,7 +312,7 @@ var MercadoPagoCustom = (function () {
             return flagReturn;
         }
 
-//init one click pay
+        //init one click pay
         function initMercadoPagoOCP() {
             showLogMercadoPago(self.messages.initOCP);
             TinyJ(self.selectors.cardId).change(cardsHandler);
@@ -594,7 +598,7 @@ var MercadoPagoCustom = (function () {
                 TinyJ(self.selectors.paymentMethodId).val(paymentMethodId);
                 if (response[0].id != undefined) {
                     var siteId = TinyJ(self.selectors.siteId).val();
-                    if (paymentMethodId != '' && siteId == self.constants.mexico)  {
+                    if (paymentMethodId != '' && siteId == self.constants.mexico) {
                         TinyJ(self.selectors.paymentMethod).val(paymentMethodId);
                     }
                 }

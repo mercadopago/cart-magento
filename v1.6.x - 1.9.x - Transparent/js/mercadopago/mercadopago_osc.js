@@ -1146,6 +1146,7 @@ var MercadoPagoCustom = (function () {
             $formPayment.getElem(self.selectors.couponActionRemove).hide();
             $formPayment.getElem(self.selectors.coupon).val("");
             $formPayment.getElem(self.selectors.discountAmount).val(0);
+            $formPayment.getElem(self.selectors.discountOk).hide();
 
             if (formPaymentMethod == self.selectors.checkoutCustom) {
                 //forca atualização do bin/installment para atualizar os valores de installment

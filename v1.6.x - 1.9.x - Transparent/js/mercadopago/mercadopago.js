@@ -222,7 +222,9 @@ var MercadoPagoCustom = (function () {
                 //caso não seja o mexico puxa os documentos aceitos
                 Mercadopago.getIdentificationTypes();
             } else {
-                setTimeout(function () {setPaymentMethods()}, 1000);
+                setTimeout(function () {
+                    setPaymentMethods()
+                }, 1000);
             }
 
             //add inputs para cada país
@@ -479,7 +481,7 @@ var MercadoPagoCustom = (function () {
             showLogMercadoPago(self.messages.clearOpts);
 
             var bin = getBin();
-            if (bin.length == 0 || TinyJ(self.selectors.cardNumberInput).val() == '') {
+            if (bin != undefined && (bin.length == 0 || TinyJ(self.selectors.cardNumberInput).val() == '')) {
                 var messageInstallment = TinyJ(self.selectors.installmentText).val();
 
                 var issuer = TinyJ(self.selectors.issuer);
@@ -526,31 +528,28 @@ var MercadoPagoCustom = (function () {
             }
         }
 
-//obtem o bin do cartão
         function getBin() {
             showLogMercadoPago(self.messages.getBin);
 
-            try {
-                var cardSelector = TinyJ(self.selectors.cardId).getSelectedOption();
-            }
-            catch (err) {
-                return;
-            }
             var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
-
-            // verifica se a seleção do cartão existe
-            // se ele foi selecionado
-            // e se o formulário esta ativo, pois o cliente pode estar digitando o cartão
-
-            if (oneClickPay == true && cardSelector.val() != "-1") {
-                return cardSelector.attribute(self.constants.firstSixDigits);
+            if (oneClickPay == true) {
+                try {
+                    var cardSelector = TinyJ(self.selectors.cardId).getSelectedOption();
+                }
+                catch (err) {
+                    return;
+                }
+                if (cardSelector.val() != "-1") {
+                    return cardSelector.attribute(self.constants.firstSixDigits);
+                }
+            } else {
+                var ccNumber = TinyJ(self.selectors.cardNumberInput).val();
+                return ccNumber.replace(/[ .-]/g, '').slice(0, 6);
             }
-            var ccNumber = TinyJ(self.selectors.cardNumberInput).val();
-            return ccNumber.replace(/[ .-]/g, '').slice(0, 6);
+            return;
         }
 
 
-// action para identificar qual a bandeira do cartão digitado
         function guessingPaymentMethod(event) {
             showLogMercadoPago(self.messages.guessingPayment);
 
@@ -565,7 +564,7 @@ var MercadoPagoCustom = (function () {
             }
 
             if (event.type == self.constants.keyup) {
-                if (bin.length == 6) {
+                if (bin != undefined && bin.length == 6) {
                     Mercadopago.getPaymentMethod({
                         "bin": bin,
                         "amount": amount
@@ -573,7 +572,7 @@ var MercadoPagoCustom = (function () {
                 }
             } else {
                 setTimeout(function () {
-                    if (bin.length >= 6) {
+                    if (bin != undefined && bin.length >= 6) {
                         Mercadopago.getPaymentMethod({
                             "bin": bin,
                             "amount": amount

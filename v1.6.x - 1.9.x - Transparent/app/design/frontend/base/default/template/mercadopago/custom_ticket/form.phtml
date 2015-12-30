@@ -42,7 +42,7 @@
                     <?php
                     foreach($optionsTicket as $ticket){ ?>
                             <br/>
-                            <input type="radio" name="payment[<?php echo $_code; ?>][payment_method_ticket]" class="optionsTicketMp" value="<?php echo $ticket['id']; ?>">
+                            <input type="radio" name="payment[<?php echo $_code; ?>][payment_method_ticket]" class="optionsTicketMp validate-one-required-by-name" value="<?php echo $ticket['id']; ?>">
                             <img src="<?php echo $ticket['secure_thumbnail']; ?>">
                             <label class="mercadopago-ticket-label"> (<?php echo $ticket['name']; ?>)</label>
                             <br/>

@@ -127,7 +127,7 @@ var MercadoPagoCustom = (function () {
             ticketActionRemove: '#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-remove',
             coupon: '.mercadopago_coupon',
             couponLoading: '.mercadopago-message-coupon .loading',
-            couponList: 'mercadopago-message-coupon li',
+            couponList: '.mercadopago-message-coupon li',
             textCurrency: '.mercadopago-text-currency',
             discountOk: '.mercadopago-message-coupon .discount-ok',
             messageCoupon: '.mercadopago-message-coupon',

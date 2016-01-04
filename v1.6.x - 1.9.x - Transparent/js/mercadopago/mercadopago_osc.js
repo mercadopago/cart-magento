@@ -414,7 +414,7 @@ var MercadoPagoCustom = (function () {
             } else if (siteId == self.constants.brazil) {
 
                 excludeInputs.push(self.selectors.issuer);
-                excludeInputs.push(self.selectors.docType)
+                excludeInputs.push(self.selectors.docType);
 
             } else if (siteId == self.constants.mexico) {
 

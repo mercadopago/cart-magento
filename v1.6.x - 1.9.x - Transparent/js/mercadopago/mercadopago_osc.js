@@ -202,7 +202,6 @@ var MercadoPagoCustom = (function () {
         }
 
 
-// Inicializa o formulario de pagamento com cartão de credito
         function initMercadoPagoJs() {
             showLogMercadoPago(self.messages.init);
 
@@ -227,7 +226,6 @@ var MercadoPagoCustom = (function () {
             showLogMercadoPago(String.format(self.messages.siteId, siteId));
 
             if (siteId != self.constants.mexico) {
-                //caso não seja o mexico puxa os documentos aceitos
                 Mercadopago.getIdentificationTypes();
             } else {
                 var methods = getPaymentMethods();
@@ -235,19 +233,15 @@ var MercadoPagoCustom = (function () {
                 TinyJ(self.selectors.paymentMethodSelect).change(setPaymentMethodId);
             }
 
-            //add inputs para cada país
             defineInputs();
 
-            //Adiciona evento nos elementos
             TinyJ(self.selectors.cardNumberInput).keyup(guessingPaymentMethod);
             TinyJ(self.selectors.cardNumberInput).keyup(clearOptions);
             TinyJ(self.selectors.cardNumberInput).change(guessingPaymentMethod);
             TinyJ(self.selectors.installmentsDontWork).click(guessingPaymentMethod);
 
-            //adiciona evento para a criação do card_token
             releaseEventCreateCardToken();
 
-            //inicia o formulario verificando se ja tem cartão selecionado para obter o bin
             cardsHandler();
 
             TinyJ(self.selectors.installments).getElem().stopObserving();
@@ -329,7 +323,6 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.cardId).change(cardsHandler);
             TinyJ(self.selectors.installments).getElem().stopObserving();
 
-            //açoes para one click pay
             var returnListCard = TinyJ(self.selectors.returnToCardList);
             TinyJ(self.selectors.useOtherCard).click(actionUseOneClickPayOrNo);
             returnListCard.click(actionUseOneClickPayOrNo);
@@ -345,7 +338,6 @@ var MercadoPagoCustom = (function () {
                 registerAjaxObervers();
             }
 
-            //show botão de retornar para lista de cartões
             returnListCard.show();
         }
 
@@ -460,7 +452,6 @@ var MercadoPagoCustom = (function () {
             //Show inputs
             showLogMercadoPago(dataInputs);
 
-            //retorna a lista de inputs aceita para esse pais/metodo de pagamento (cartão ou one click pay)
             return dataInputs;
 
         }
@@ -525,16 +516,12 @@ var MercadoPagoCustom = (function () {
                 setRequiredFields(false);
             }
 
-            //verifica os inputs para esse opção de pagamento
             defineInputs();
             clearOptions();
-            //cria um novo card_token, por que se estiver vinculado ao card_id não da para dar put nas informações
             Mercadopago.clearSession();
 
-            //esconde todos os erros
             hideMessageError();
 
-            //forca a validação para criacao do card token
             checkCreateCardToken();
 
             //update payment_id
@@ -543,7 +530,6 @@ var MercadoPagoCustom = (function () {
 
         }
 
-// caso não tenha bin, ele reseta as installment e os issuer
         function clearOptions() {
             showLogMercadoPago(self.messages.clearOpts);
 
@@ -569,7 +555,6 @@ var MercadoPagoCustom = (function () {
             }
         }
 
-//verifica se tem cartão selecionado
         function cardsHandler() {
             showLogMercadoPago(self.messages.cardHandler);
             clearOptions();
@@ -582,9 +567,6 @@ var MercadoPagoCustom = (function () {
             }
             var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
 
-            // verifica se a seleção do cartão existe
-            // se ele foi selecionado
-            // e se o formulário esta ativo, pois o cliente pode estar digitando o cartão
             if (oneClickPay == true) {
                 var selectedCard = cardSelector.getSelectedOption();
                 if (selectedCard.val() != "-1") {
@@ -617,7 +599,6 @@ var MercadoPagoCustom = (function () {
         }
 
 
-// action para identificar qual a bandeira do cartão digitado
         function guessingPaymentMethod(event) {
             showLogMercadoPago(self.messages.guessingPayment);
 
@@ -659,8 +640,6 @@ var MercadoPagoCustom = (function () {
             hideLoading();
 
             if (status == http.status.OK) {
-                // do somethings ex: show logo of the payment method
-                //adiciona o payment_method no form
                 var paymentMethodId = response[0].id;
                 TinyJ(self.selectors.paymentMethodId).val(paymentMethodId);
                 if (response[0].id != undefined) {
@@ -670,7 +649,6 @@ var MercadoPagoCustom = (function () {
                     }
                 }
 
-                //ADICIONA A BANDEIRA DO CARTÃO DENTRO DO INPUT
                 var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
                 var selector = oneClickPay == true ? self.selectors.cardId : self.selectors.cardNumberInput;
                 TinyJ(selector).getElem().style.background = String.format(self.constants.backgroundUrlFormat, response[0].secure_thumbnail);
@@ -792,13 +770,10 @@ var MercadoPagoCustom = (function () {
                         showLogMercadoPago(status);
                         showLogMercadoPago(response);
 
-                        //atualiza valor no input
                         TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.amount).val(response.amount);
 
-                        //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
                         options.amount = parseFloat(response.amount) - discountAmount;
 
-                        //mostra nos logs os valores
                         showLogMercadoPago(String.format(self.messages.installmentAmount, response.amount));
                         showLogMercadoPago(String.format(self.messages.customDiscountAmount, discountAmount));
                         showLogMercadoPago(String.format(self.messages.finalAmount, options.amount));
@@ -813,7 +788,6 @@ var MercadoPagoCustom = (function () {
                         //hide loaging
                         hideLoading();
 
-                        //mostra message de erro e adiciona evento na action
                         showMessageErrorForm(self.selectors.installmentsDontWork);
                     }
                 });
@@ -822,15 +796,12 @@ var MercadoPagoCustom = (function () {
 
                 showLogMercadoPago(self.messages.usingMagentoStdCheckout);
 
-                //obtem o valor real a ser pago a partir do valor total menos o valor de desconto
                 options.amount = parseFloat(options.amount) - discountAmount;
 
-                //mostra nos logs os valores
                 showLogMercadoPago(String.format(self.messages.installmentAmount, options.amount));
                 showLogMercadoPago(String.format(self.messages.customDiscountAmount, discountAmount));
                 showLogMercadoPago(String.format(self.messages.finalAmount, options.amount));
 
-                //caso seja o checkout padrao, nao faz consulta do amount
                 Mercadopago.getInstallments(options, setInstallmentInfo);
             }
 
@@ -869,7 +840,6 @@ var MercadoPagoCustom = (function () {
 
                 checkCreateCardToken();
 
-                //função para tarjeta mercadopago
                 setTimeout(function () {
                     var siteId = TinyJ(self.selectors.siteId).val();
                     if (siteId == self.constants.mexico) {
@@ -898,7 +868,6 @@ var MercadoPagoCustom = (function () {
                     }
                 }, 100);
             } else {
-                //mostra erro caso não tenha parcelas
                 showMessageErrorForm(self.selectors.errorMethodMinAmount);
             }
         }
@@ -910,7 +879,6 @@ var MercadoPagoCustom = (function () {
          */
 
 
-//função responsável por adicionar os eventos nos elementos
         function releaseEventCreateCardToken() {
             showLogMercadoPago(self.messages.releaseCardTokenEvent);
 
@@ -928,7 +896,6 @@ var MercadoPagoCustom = (function () {
 
         }
 
-//verifica se os inputs estão preenchidos
         function checkCreateCardToken() {
             showLogMercadoPago(self.messages.checkCreateCardToken);
 
@@ -954,7 +921,6 @@ var MercadoPagoCustom = (function () {
             }
         }
 
-//recebe o retorno da criação do token
         function sdkResponseHandler(status, response) {
             showLogMercadoPago(self.messages.responseCardToken);
             showLogMercadoPago(status);
@@ -965,7 +931,6 @@ var MercadoPagoCustom = (function () {
             hideLoading();
 
             if (status == http.status.OK || status == http.status.CREATED) {
-                //preenche o token no form
                 var form = TinyJ(self.selectors.token).val(response.id);
                 setTotalAmount();
                 showLogMercadoPago(response);
@@ -988,7 +953,6 @@ var MercadoPagoCustom = (function () {
 
         function hideMessageError() {
             showLogMercadoPago(self.messages.hideErrors);
-            // hide todas as mensagens de errors
             var allMessageErrors = TinyJ(self.selectors.messageError);
             if (Array.isArray(allMessageErrors)) {
                 for (var x = 0; x < allMessageErrors.length; x++) {
@@ -1030,7 +994,6 @@ var MercadoPagoCustom = (function () {
          *
          */
 
-//funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
         function initDiscountMercadoPagoCustom() {
             showLogMercadoPago(self.messages.initDiscount);
             //inicia o objeto
@@ -1041,7 +1004,6 @@ var MercadoPagoCustom = (function () {
             }
         }
 
-//funções separadas para cada meio de pagamento para não instanciar duas vezes o metodo
         function initDiscountMercadoPagoCustomTicket() {
             showLogMercadoPago(self.messages.initTicket);
             //inicia o objeto
@@ -1066,7 +1028,6 @@ var MercadoPagoCustom = (function () {
             var baseUrl = $formPayment.getElem(self.selectors.baseUrl).val();
 
 
-            //Esconde todas as mensagens
             hideMessageCoupon($formPayment);
 
             //show loading
@@ -1084,8 +1045,6 @@ var MercadoPagoCustom = (function () {
                     $formPayment.getElem(self.selectors.couponLoading).hide();
 
                     if (r.status == http.status.OK) {
-                        //caso o coupon seja valido, mostra uma mensagem + termos e condições
-                        //obtem informações sobre o coupon
                         var couponAmount = (r.response.coupon_amount).toFixed(2)
                         var transactionAmount = (r.response.transaction_amount).toFixed(2)
                         var idCoupon = r.response.id;
@@ -1107,7 +1066,6 @@ var MercadoPagoCustom = (function () {
 
                         $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
                         if (formPaymentMethod == self.selectors.checkoutCustom) {
-                            //forca atualização do bin/installment para atualizar os valores de installment
                             guessingPaymentMethod(event.type = self.constants.keyup);
                         }
                     } else {
@@ -1116,7 +1074,6 @@ var MercadoPagoCustom = (function () {
                         $formPayment.getElem(self.selectors.discountAmount).val(0);
                         $formPayment.getElem(self.selectors.couponActionRemove).show();
 
-                        //caso não seja mostra a mensagem de validação
                         console.log(r.response.error);
                         $formPayment.getElem(self.selectors.messageCoupon + " ." + r.response.error).show();
                         $formPayment.getElem(self.selectors.inputCouponDiscount).addClass(self.constants.invalidCoupon);
@@ -1149,7 +1106,6 @@ var MercadoPagoCustom = (function () {
             $formPayment.getElem(self.selectors.discountOk).hide();
 
             if (formPaymentMethod == self.selectors.checkoutCustom) {
-                //forca atualização do bin/installment para atualizar os valores de installment
                 guessingPaymentMethod(event.type = self.constants.keyup);
             }
             $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
@@ -1159,7 +1115,6 @@ var MercadoPagoCustom = (function () {
         function hideMessageCoupon($formPayment) {
             showLogMercadoPago(self.messages.hideCouponMessages);
 
-            // hide todas as mensagens de errors
             var messageCoupon = $formPayment.getElem().querySelectorAll(self.selectors.couponList);
 
             for (var x = 0; x < messageCoupon.length; x++) {

@@ -10,11 +10,11 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
     {
         if ($this->_getFinancingCondition($address)) {
 
-            $amt = Mage::app()->getRequest()->getPost();
+            $postData = Mage::app()->getRequest()->getPost();
             parent::collect($address);
 
-            $totalAmount = (float)$amt['total_amount'];
-            $amount = (float)$amt['amount'] - (float)$amt['mercadopago-discount-amount'];
+            $totalAmount = (float)$postData['total_amount'];
+            $amount = (float)$postData['amount'] - (float)$postData['mercadopago-discount-amount'];
             $balance = $totalAmount - $amount;
 
             $address->setFinanceCostAmount($balance);

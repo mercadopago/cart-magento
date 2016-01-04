@@ -10,10 +10,10 @@ class MercadoPago_Core_Model_Discount_Coupon
     {
         if ($this->_getDiscountCondition($address)) {
 
-            $amt = Mage::app()->getRequest()->getPost();
+            $postData = Mage::app()->getRequest()->getPost();
             parent::collect($address);
 
-            $balance = $amt['mercadopago-discount-amount'] * -1;
+            $balance = $postData['mercadopago-discount-amount'] * -1;
 
             $address->setDiscountCouponAmount($balance);
             $address->setBaseDiscountCouponAmount($balance);
@@ -30,11 +30,11 @@ class MercadoPago_Core_Model_Discount_Coupon
     {
         if ($this->_getDiscountCondition($address)) {
             if ($address->getDiscountCouponAmount() < 0) {
-                $address->addTotal(array(
+                $address->addTotal([
                     'code'  => $this->getCode(),
                     'title' => Mage::helper('mercadopago')->__('Discount MercadoPago'),
                     'value' => $address->getDiscountCouponAmount()
-                ));
+                ]);
             }
         }
 

@@ -11,11 +11,6 @@ $route = $this->getRequest()->getRequestedRouteName();
 <fieldset class="form-list">
     <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
 
-    <script>
-        //load nas actions para funcionar o js do mercadopago
-        //        loadFilesMP();
-    </script>
-
     <div id="mercadopago_checkout_custom_ticket">
         <ul class="form-list form-mercadopago" id="payment_form_<?php echo $_code ?>" style="display:none;">
             <li>

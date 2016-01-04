@@ -45,7 +45,7 @@ class MercadoPago_Core_Model_Discount_Coupon
     {
         $req = Mage::app()->getRequest()->getParam('total_amount');
 
-        return (!empty($req) && $address->getAddressType() == 'shipping');
+        return (!empty($req) && $address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING);
 
     }
 }

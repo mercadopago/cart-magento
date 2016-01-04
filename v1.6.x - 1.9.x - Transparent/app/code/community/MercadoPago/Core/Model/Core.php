@@ -35,6 +35,7 @@ class MercadoPago_Core_Model_Core
     protected $_canReviewPayment = true;
 
     const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
+
     /**
      * @return Mage_Checkout_Model_Session
      */
@@ -172,12 +173,13 @@ class MercadoPago_Core_Model_Core
 
     protected function getTotalCart($order)
     {
-        $total_cart = $order->getBaseGrandTotal() - $order->getBaseFinanceCostAmount();
-        if (!$total_cart) {
-            $total_cart = $order->getBasePrice() + $order->getBaseShippingAmount() - $order->getBaseFinanceCostAmount();
+        $total = $order->getBaseGrandTotal();
+        if (!$total) {
+            $total = $order->getBasePrice();
         }
+        $totalCart = $total - $order->getBaseFinanceCostAmount() - $order->getBaseDiscountCouponAmount();
 
-        return number_format($total_cart, 2, '.', '');
+        return number_format($totalCart, 2, '.', '');
     }
 
     protected function getCustomerInfo($customer, $order)
@@ -205,7 +207,7 @@ class MercadoPago_Core_Model_Core
         $dataItems = array();
         foreach ($order->getAllVisibleItems() as $item) {
             $product = $item->getProduct();
-            $image = (string) Mage::helper('catalog/image')->init($product, 'image');
+            $image = (string)Mage::helper('catalog/image')->init($product, 'image');
 
             $dataItems[] = array(
                 "id"          => $item->getSku(),
@@ -305,7 +307,7 @@ class MercadoPago_Core_Model_Core
             $coupon = $this->validCoupon($coupon_code);
             Mage::helper('mercadopago')->log("Response API Coupon: ", 'mercadopago-custom.log', $coupon);
 
-            $couponInfo = $this->getCouponInfo($coupon,$coupon_code);
+            $couponInfo = $this->getCouponInfo($coupon, $coupon_code);
             $preference['coupon_amount'] = $couponInfo['coupon_amount'];
             $preference['coupon_code'] = $couponInfo['coupon_code'];
 
@@ -360,7 +362,7 @@ class MercadoPago_Core_Model_Core
     {
         $clienId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
         $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
-        $mp = Mage::helper('mercadopago')->getApiInstance($clienId,$clientSecret);
+        $mp = Mage::helper('mercadopago')->getApiInstance($clienId, $clientSecret);
 
         return $mp->get_payment($payment_id);
     }
@@ -377,7 +379,7 @@ class MercadoPago_Core_Model_Core
     {
         $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
         $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
-        $mp = Mage::helper('mercadopago')->getApiInstance($clientId,$clientSecret);
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
 
         return $mp->get("/merchant_orders/" . $merchant_order_id);
     }

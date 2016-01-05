@@ -345,12 +345,15 @@ class MercadoPago_Core_NotificationsController
 
             $helper = Mage::helper('mercadopago_mercadoenvios');
             $shipmentInfo = $helper->getShipmentInfo($merchant_order['shipments'][0]['id']);
+            Mage::helper('mercadopago')->log("Shipment Info", 'mercadopago-notification.log', $shipmentInfo);
             $serviceInfo = $helper->getServiceInfo($merchant_order['shipments'][0]['service_id'], $merchant_order['site_id']);
+            Mage::helper('mercadopago')->log("Service Info by service id", 'mercadopago-notification.log', $serviceInfo);
             if ($shipmentInfo->status == 200 && isset($shipmentInfo->tracking_number)) {
                     $tracking['number'] = str_replace('#{trackingNumber}', $shipmentInfo->tracking_number, $serviceInfo->tracking_url);
                     $tracking['title'] = MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE;
                     $track = Mage::getModel('sales/order_shipment_track')->addData($tracking);
                     $shipment->addTrack($track);
+                    Mage::helper('mercadopago')->log("Track added", 'mercadopago-notification.log', $track);
             }
 
             Mage::getModel('core/resource_transaction')

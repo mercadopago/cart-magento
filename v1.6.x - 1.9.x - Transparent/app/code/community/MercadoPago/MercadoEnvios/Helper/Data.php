@@ -164,19 +164,6 @@ class MercadoPago_MercadoEnvios_Helper_Data
         return (in_array(Mage::getStoreConfig('payment/mercadopago/country'), self::$enabled_methods));
     }
 
-    public function getTrackingUrlByOrder($_order)
-    {
-        if ($_order->getTracksCollection()->count()) {
-            foreach ($_order->getTracksCollection() as $_track) {
-                if ($_track->getCarrierCode() == MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE) {
-                    return $this->_getFullTrackingUrl($_track->getTrackNumber());
-                }
-            }
-        }
-
-        return false;
-    }
-
     public function getTrackingUrlByShippingInfo($_shippingInfo)
     {
         foreach ($_shippingInfo->getTrackingInfo() as $track) {

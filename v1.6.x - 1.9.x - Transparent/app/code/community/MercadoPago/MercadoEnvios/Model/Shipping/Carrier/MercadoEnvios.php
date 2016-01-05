@@ -189,4 +189,9 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         return parent::isActive();
     }
 
+    public function isTrackingAvailable()
+    {
+        return true;
+    }
+
 }

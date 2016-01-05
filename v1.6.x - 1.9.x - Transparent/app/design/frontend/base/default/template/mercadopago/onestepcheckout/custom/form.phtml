@@ -17,7 +17,7 @@ $customer = $this->getCustomerAndCards();
 <script>
     MercadoPagoCustom.enableLog(<?php echo $logEnabled?>);
     try {
-        TinyJ('#use_other_card_mp');
+        TinyJ('#mercadopago_checkout_custom');
         MercadoPagoCustom.getInstance().init();
     } catch (exception) {
         document.observe("dom:loaded", function() {
@@ -39,7 +39,7 @@ $customer = $this->getCustomerAndCards();
                 ?>
                 <script type="text/javascript">
                     try {
-                        TinyJ('#use_other_card_mp');
+                        TinyJ('#mercadopago_checkout_custom');
                         MercadoPagoCustom.getInstance().initDiscount();
                     } catch (exception) {
                         document.observe("dom:loaded", function() {

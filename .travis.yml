@@ -78,7 +78,6 @@ before_script:
   - sed -e "s?%MAGENTO_URL%?http://${MAGENTO_URL}/?g" --in-place behat.yml
   - sed -e "s?%BROWSER_DRIVER%?firefox?g" --in-place behat.yml
   - composer install --no-interaction
-#  - "phantomjs --webdriver=4444 > /dev/null &"
   - "sh -e /etc/init.d/xvfb start"
   - "export DISPLAY=:99.0"
   - "wget http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar"

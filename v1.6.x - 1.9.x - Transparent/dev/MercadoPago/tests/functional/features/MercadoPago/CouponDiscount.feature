@@ -52,7 +52,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
     And I wait for "10" seconds
     Then I should see "Discount MercadoPago"
 
-  @applyDiscount @orderDetail
+  @applyDiscount @orderDetail @skip
   Scenario: Seeing subtotal discount in order detail
     And I select radio "p_method_mercadopago_customticket"
     And I fill text field "#input-coupon-discount" in form "#payment_form_mercadopago_customticket" with "TESTEMP"

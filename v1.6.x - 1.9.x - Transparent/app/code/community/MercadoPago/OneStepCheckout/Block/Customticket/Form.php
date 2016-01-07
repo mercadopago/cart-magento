@@ -18,8 +18,10 @@ class MercadoPago_OneStepCheckout_Block_Customticket_Form
                     <script type="text/javascript">var PublicKeyMercadoPagoCustom = "' . $public_key . '";</script>
                     <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
                     <script type="text/javascript" src="%s"></script>
+                    <script type="text/javascript" src="%s"></script>
                     <script type="text/javascript" src="%s"></script>',
                     Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/mercadopago_osc.js',
+                    Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/tiny.min.js',
                     Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/tinyJ.js'
                 )
             );

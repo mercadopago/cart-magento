@@ -167,7 +167,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
     public function getTrackingUrlByShippingInfo($_shippingInfo)
     {
         foreach ($_shippingInfo->getTrackingInfo() as $track) {
-            $lastTrack = $track[count($track) - 1];
+            $lastTrack = array_pop($track);
             if (isset($lastTrack['title']) && $lastTrack['title'] == MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE) {
                 return $lastTrack['number'];
             }

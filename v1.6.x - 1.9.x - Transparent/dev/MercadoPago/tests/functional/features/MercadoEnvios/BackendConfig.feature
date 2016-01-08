@@ -47,7 +47,7 @@ Feature: MercadoEnvios configuration
     And I Select option field "carriers_mercadoenvios_active" with "1"
 
     When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][attribute_code]" with "bedding_pattern"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "name"
+    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "url_key"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][attribute_code]" with "sku"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][attribute_code]" with "meta_title"
 
@@ -97,7 +97,7 @@ Feature: MercadoEnvios configuration
      And I Select option field "carriers_mercadoenvios_active" with "1"
 
      When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][attribute_code]" with "bedding_pattern"
-     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "name"
+     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "url_key"
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][attribute_code]" with "sku"
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][attribute_code]" with "meta_title"
 

@@ -47,9 +47,9 @@ Feature: MercadoEnvios configuration
     And I Select option field "carriers_mercadoenvios_active" with "1"
 
     When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][attribute_code]" with "bedding_pattern"
-    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "url_key"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][attribute_code]" with "sku"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][attribute_code]" with "meta_title"
+    And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "name"
 
     And I press ".scalable.save" element
     Then I should see html "The configuration has been saved."
@@ -79,8 +79,8 @@ Feature: MercadoEnvios configuration
     When I press ".meli-btn.button" element
     And I Select option field "carriers_mercadoenvios_active" with "1"
 
-    Then The "groups[mercadoenvios][fields][attributesmapping][value][length][unit]" select element has "mt" selected
     And The "groups[mercadoenvios][fields][attributesmapping][value][length][unit]" select element has "cm" selected
+    And The "groups[mercadoenvios][fields][attributesmapping][value][length][unit]" select element has "mt" selected
     And The "groups[mercadoenvios][fields][attributesmapping][value][width][unit]" select element has "mt" selected
     And The "groups[mercadoenvios][fields][attributesmapping][value][width][unit]" select element has "cm" selected
     And The "groups[mercadoenvios][fields][attributesmapping][value][height][unit]" select element has "mt" selected
@@ -97,9 +97,9 @@ Feature: MercadoEnvios configuration
      And I Select option field "carriers_mercadoenvios_active" with "1"
 
      When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][attribute_code]" with "bedding_pattern"
-     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "url_key"
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][attribute_code]" with "sku"
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][weight][attribute_code]" with "meta_title"
+     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][attribute_code]" with "name"
 
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][unit]" with "mt"
      And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][width][unit]" with "cm"

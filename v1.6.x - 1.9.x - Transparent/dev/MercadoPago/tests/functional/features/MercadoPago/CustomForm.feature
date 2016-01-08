@@ -41,7 +41,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "Card Holder Name is invalid."
 
   @CheckoutCustomForm @CardSC
@@ -67,7 +67,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "Document Number is invalid."
 
   @CheckoutCustomForm @CardEmptyHN
@@ -80,7 +80,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "This is a required field"
 
   @CheckoutCustomForm @CardEmptySC
@@ -93,7 +93,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "This is a required field"
 
   @CheckoutCustomForm @CardEmptyDN
@@ -106,7 +106,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "Document Number is invalid."
 
 

@@ -79,4 +79,11 @@ class MercadoPago_Core_Helper_Data
         return true;
     }
 
+    public function getAccessToken()
+    {
+        $clientId = Mage::getStoreConfig(self::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(self::XML_PATH_CLIENT_SECRET);
+        return $this->getApiInstance($clientId, $clientSecret)->get_access_token();
+    }
+
 }

@@ -19,6 +19,11 @@ class MercadoPago_Lib_Api {
     private $access_data;
     private $sandbox = FALSE;
 
+    private $_platform = null;
+    private $_so = null;
+    private $_type = null;
+
+
     public function __construct() {
         $i = func_num_args();
 
@@ -175,7 +180,8 @@ class MercadoPago_Lib_Api {
     public function create_preference($preference) {
         $access_token = $this->get_access_token();
 
-        $preference_result = MercadoPago_Lib_RestClient::post("/checkout/preferences?access_token=" . $access_token, $preference);
+        $extra_params =  array('platform: ' . $this->_platform, 'so: ' .  $this->_so, 'type: ' .  $this->_type);
+        $preference_result = MercadoPago_Lib_RestClient::post("/checkout/preferences?access_token=" . $access_token, $preference, "application/json", $extra_params);
         return $preference_result;
     }
 
@@ -296,7 +302,8 @@ class MercadoPago_Lib_Api {
             $uri .= $this->build_query($params);
         }
 
-        $result = MercadoPago_Lib_RestClient::post($uri, $data);
+        $extra_params =  array('platform: ' . $this->_platform, 'so: ' .  $this->_so, 'type: ' .  $this->_type);
+        $result = MercadoPago_Lib_RestClient::post($uri, $data, "application/json", $extra_params);
         return $result;
     }
 
@@ -355,6 +362,30 @@ class MercadoPago_Lib_Api {
 
             return implode("&", $elements);
         }
+    }
+
+    /**
+     * @param null $platform
+     */
+    public function set_platform($platform)
+    {
+        $this->_platform = $platform;
+    }
+
+    /**
+     * @param null $so
+     */
+    public function set_so($so)
+    {
+        $this->_so = $so;
+    }
+
+    /**
+     * @param null $type
+     */
+    public function set_type($type)
+    {
+        $this->_type = $type;
     }
 
 }

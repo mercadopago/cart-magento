@@ -9,7 +9,7 @@ class MercadoPago_Lib_RestClient {
 
     const API_BASE_URL = "https://api.mercadopago.com";
 
-    private static function get_connect($uri, $method, $content_type) {
+    private static function get_connect($uri, $method, $content_type, $extra_params = array()) {
         if (!extension_loaded ("curl")) {
             throw new Exception("cURL extension not found. You need to enable cURL in your php.ini or another configuration you have.");
         }
@@ -19,7 +19,13 @@ class MercadoPago_Lib_RestClient {
         curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago Magento-1.9.x-transparent Cart v1.0.2");
         curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($connect, CURLOPT_HTTPHEADER, array("Accept: application/json", "Content-Type: " . $content_type));
+
+        $header_opt = array("Accept: application/json", "Content-Type: " . $content_type);
+        if (count($extra_params) > 0) {
+            $header_opt = array_merge($header_opt, $extra_params);
+        }
+
+        curl_setopt($connect, CURLOPT_HTTPHEADER, $header_opt);
 
         return $connect;
     }
@@ -43,8 +49,8 @@ class MercadoPago_Lib_RestClient {
         curl_setopt($connect, CURLOPT_POSTFIELDS, $data);
     }
 
-    private static function exec($method, $uri, $data, $content_type) {
-        $connect = self::get_connect($uri, $method, $content_type);
+    private static function exec($method, $uri, $data, $content_type, $extra_params) {
+        $connect = self::get_connect($uri, $method, $content_type, $extra_params);
         if ($data) {
             self::set_data($connect, $data, $content_type);
         }
@@ -81,19 +87,19 @@ class MercadoPago_Lib_RestClient {
         return $response;
     }
 
-    public static function get($uri, $content_type = "application/json") {
-        return self::exec("GET", $uri, null, $content_type);
+    public static function get($uri, $content_type = "application/json", $extra_params = array()) {
+        return self::exec("GET", $uri, null, $content_type, $extra_params);
     }
 
-    public static function post($uri, $data, $content_type = "application/json") {
-        return self::exec("POST", $uri, $data, $content_type);
+    public static function post($uri, $data, $content_type = "application/json", $extra_params = array()) {
+        return self::exec("POST", $uri, $data, $content_type, $extra_params);
     }
 
-    public static function put($uri, $data, $content_type = "application/json") {
-        return self::exec("PUT", $uri, $data, $content_type);
+    public static function put($uri, $data, $content_type = "application/json", $extra_params = array()) {
+        return self::exec("PUT", $uri, $data, $content_type, $extra_params);
     }
 
-    public static function delete($uri, $content_type = "application/json") {
-        return self::exec("DELETE", $uri, null, $content_type);
+    public static function delete($uri, $content_type = "application/json", $extra_params = array()) {
+        return self::exec("DELETE", $uri, null, $content_type, $extra_params);
     }
 }

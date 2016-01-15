@@ -49,6 +49,11 @@ class MercadoPago_MercadoEnvios_Model_Observer
         }
     }
 
+    /**
+     * @param $observer
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function trackingPopup($observer)
     {
         $shippingInfoModel = Mage::getModel('shipping/info')->loadByHash(Mage::app()->getRequest()->getParam('hash'));

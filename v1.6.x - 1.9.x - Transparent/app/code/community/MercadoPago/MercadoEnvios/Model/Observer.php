@@ -77,7 +77,7 @@ class MercadoPago_MercadoEnvios_Model_Observer
         //if order has shipments, status is updated. If it doesn't the shipment is created.
         if ($merchant_order['shipments'][0]['status'] == 'ready_to_ship') {
             if ($order->hasShipments()){
-                $shipment = $order->getShipmentsCollection()->getFirstItem();
+                $shipment = Mage::getModel('sales/order_shipment')->load($order->getId(),'order_id');
             } else {
                 $shipment = Mage::getModel('sales/service_order', $order)->prepareShipment();
                 $shipment->register();

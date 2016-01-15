@@ -17,14 +17,14 @@ Feature: Validation of custom checkout form
     And I select radio "p_method_mercadopago_custom"
     And I press "#use_other_card_mp" element
 
-  @CheckoutCustomForm @CardED
+  @CheckoutCustomForm @CardED @skip
   Scenario: Validate card expiration date
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
-    And I select option field "cardExpirationMonth" with "2"
+    And I select option field "cardExpirationMonth" with "1"
     And I fill text field "cardholderName" with "APRO"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2015"
+    And I select option field "cardExpirationYear" with "2016"
     And I select installment "1"
 
     Then I should see "Month is invalid."
@@ -41,7 +41,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "Card Holder Name is invalid."
 
   @CheckoutCustomForm @CardSC
@@ -51,7 +51,7 @@ Feature: Validation of custom checkout form
     And I fill text field "cardholderName" with "APRO"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "12345"
-    And I select option field "cardExpirationYear" with "2015"
+    And I select option field "cardExpirationYear" with "2017"
     And I select installment "1"
 
     Then I should see "CVV is invalid"
@@ -67,7 +67,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "Document Number is invalid."
 
   @CheckoutCustomForm @CardEmptyHN
@@ -80,7 +80,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "This is a required field"
 
   @CheckoutCustomForm @CardEmptySC
@@ -93,7 +93,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "This is a required field"
 
   @CheckoutCustomForm @CardEmptyDN
@@ -106,7 +106,7 @@ Feature: Validation of custom checkout form
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "6" seconds avoiding alert
     Then I should see "Document Number is invalid."
 
 

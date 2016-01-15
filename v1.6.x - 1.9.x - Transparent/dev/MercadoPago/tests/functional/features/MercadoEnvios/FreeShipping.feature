@@ -62,7 +62,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | mlb     | 182         | 01046925 | BR            | 100    | $0.00          |
       | mlb     | 182         | 01046925 | BR            | 150    | $6.81          |
       | mlm     | 501345      | 22615    | MX            | 100    | $0.00          |
-      | mlm     | 501345      | 22615    | MX            | 150    | $121.00        |
+      | mlm     | 501345      | 22615    | MX            | 150    | $131.00        |
 
   @FreeShippingCheckoutStandard
   Scenario: FreeShipping complete checkout

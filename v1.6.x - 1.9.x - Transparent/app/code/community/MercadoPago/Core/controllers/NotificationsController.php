@@ -84,9 +84,10 @@ class MercadoPago_Core_NotificationsController
                         $this->setStatusOrder($data);
                     }
 
-                    if (count($merchant_order['shipments']) > 0) {
-                        $this->_createShipment($data, $merchant_order);
-                    }
+                    Mage::dispatchEvent('mercadopago_standard_notification_received',
+                        array('payment'        => $data,
+                              'merchant_order' => $merchant_order)
+                    );
 
                     return;
                 }
@@ -178,6 +179,21 @@ class MercadoPago_Core_NotificationsController
             if ($data['payer_email']) {
                 $order->setCustomerEmail($data['payer_email']);
             }
+
+            if ($data['coupon_amount']) {
+                $order->setDiscountCouponAmount($data['coupon_amount'] * -1);
+                $order->setBaseDiscountCouponAmount($data['coupon_amount'] * -1);
+                $balance = $data['total_paid_amount'] - ($data['transaction_amount'] - $data['coupon_amount'] + $data['shipping_cost']);
+            } else {
+                $balance = $data['total_paid_amount'] - $data['transaction_amount'] - $data['shipping_cost'];
+            }
+
+            if ($balance > 0) {
+                $order->setFinanceCostAmount($balance);
+                $order->setBaseFinanceCostAmount($balance);
+            }
+
+            $order->setGrandTotal($data['total_paid_amount']);
 
             $status_save = $order->save();
             Mage::helper('mercadopago')->log("Update order", 'mercadopago-notification.log', $status_save->toString());
@@ -288,7 +304,10 @@ class MercadoPago_Core_NotificationsController
             "id",
             "payment_method_id",
             "transaction_amount",
-            "installments"
+            "total_paid_amount",
+            "coupon_amount",
+            "installments",
+            "shipping_cost",
         );
 
         foreach ($fields as $field) {
@@ -329,37 +348,4 @@ class MercadoPago_Core_NotificationsController
         return $data;
     }
 
-    protected function _createShipment($data, $merchant_order)
-    {
-        //if order has shipments, status is updated. If it doesn't the shipment is created.
-        $order = Mage::getModel('sales/order')->loadByIncrementId($data["external_reference"]);
-        if ($merchant_order['shipments'][0]['status'] == 'ready_to_ship') {
-            if ($order->hasShipments()){
-                $shipment = $order->getShipmentsCollection()->getFirstItem();
-            } else {
-                $shipment = Mage::getModel('sales/service_order', $order)->prepareShipment();
-                $shipment->register();
-                $order->setIsInProcess(true);
-            }
-            $shipment->setShippingLabel($merchant_order['shipments'][0]['id']);
-
-            $helper = Mage::helper('mercadopago_mercadoenvios');
-            $shipmentInfo = $helper->getShipmentInfo($merchant_order['shipments'][0]['id']);
-            Mage::helper('mercadopago')->log("Shipment Info", 'mercadopago-notification.log', $shipmentInfo);
-            $serviceInfo = $helper->getServiceInfo($merchant_order['shipments'][0]['service_id'], $merchant_order['site_id']);
-            Mage::helper('mercadopago')->log("Service Info by service id", 'mercadopago-notification.log', $serviceInfo);
-            if ($shipmentInfo->status == 200 && isset($shipmentInfo->tracking_number)) {
-                    $tracking['number'] = str_replace('#{trackingNumber}', $shipmentInfo->tracking_number, $serviceInfo->tracking_url);
-                    $tracking['title'] = MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios::CODE;
-                    $track = Mage::getModel('sales/order_shipment_track')->addData($tracking);
-                    $shipment->addTrack($track);
-                    Mage::helper('mercadopago')->log("Track added", 'mercadopago-notification.log', $track);
-            }
-
-            Mage::getModel('core/resource_transaction')
-                ->addObject($shipment)
-                ->addObject($order)
-                ->save();
-        }
-    }
 }

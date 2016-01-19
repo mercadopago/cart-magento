@@ -78,7 +78,10 @@ before_script:
   - sed -e "s?%MAGENTO_URL%?http://${MAGENTO_URL}/?g" --in-place behat.yml
   - sed -e "s?%BROWSER_DRIVER%?firefox?g" --in-place behat.yml
   - composer install --no-interaction
-  - "phantomjs --webdriver=4444 > /dev/null &"
+  - "sh -e /etc/init.d/xvfb start"
+  - "export DISPLAY=:99.0"
+  - "wget http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar"
+  - "java -jar selenium-server-standalone-2.48.2.jar -log /tmp/selenium.log > /dev/null &"
   - sleep 5
 
 
@@ -86,4 +89,4 @@ script:
   - vendor/bin/phpmd ../../../app/code/community/MercadoPago text static/phpmd/ruleset.xml
   - vendor/bin/phpcs --standard=static/phpcs/Ecg --colors ../../../app/
   - vendor/bin/phpcpd ../../../ --exclude=dev
-  - vendor/bin/behat --config behat.yml --tags ${BEHAT_TAG} --tags="~@skip" 
+  - vendor/bin/behat --config behat.yml --tags ${BEHAT_TAG} --tags="~@skip"

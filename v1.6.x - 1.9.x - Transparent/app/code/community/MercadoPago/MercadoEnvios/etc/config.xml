@@ -16,6 +16,15 @@
                     </mercadopago_mercadoenvios>
                 </observers>
             </controller_action_predispatch_shipping_tracking_popup>
+            <mercadopago_standard_notification_received>
+                <observers>
+                    <mercadopago_mercadoenvios>
+                        <type>singleton</type>
+                        <class>mercadopago_mercadoenvios/observer</class>
+                        <method>createShipment</method>
+                    </mercadopago_mercadoenvios>
+                </observers>
+            </mercadopago_standard_notification_received>
         </events>
     </frontend>
     <global>

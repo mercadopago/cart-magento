@@ -19,7 +19,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
   Scenario: Apply a valid coupon
     And I select radio "p_method_mercadopago_custom"
     And I select option field "cardId" with "144422268"
-    And I fill text field "securityCodeOCP" with "aas"
+    And I fill text field "securityCodeOCP" with "123"
     And I fill text field "input-coupon-discount" with "TESTEMP"
     And I press ".mercadopago-coupon-action-apply" input element
     And I select installment "1"
@@ -30,7 +30,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
   Scenario: Seeing subtotal discount in review with custom checkout
     And I select radio "p_method_mercadopago_custom"
     And I select option field "cardId" with "144422268"
-    And I fill text field "securityCodeOCP" with "aas"
+    And I fill text field "securityCodeOCP" with "123"
     And I fill text field "input-coupon-discount" with "TESTEMP"
     And I press ".mercadopago-coupon-action-apply" input element
     And I select installment "1"
@@ -52,7 +52,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
     And I wait for "10" seconds
     Then I should see "Discount MercadoPago"
 
-  @applyDiscount @orderDetail
+  @applyDiscount @orderDetail @skip
   Scenario: Seeing subtotal discount in order detail
     And I select radio "p_method_mercadopago_customticket"
     And I fill text field "#input-coupon-discount" in form "#payment_form_mercadopago_customticket" with "TESTEMP"

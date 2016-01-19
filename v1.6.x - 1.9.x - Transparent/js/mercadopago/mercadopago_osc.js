@@ -352,7 +352,7 @@ var MercadoPagoCustom = (function () {
             } catch (Exception) {
                 _cost = '';
             }
-			TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val(_cost);
+            TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val(_cost);
 
             if (isOsc()) {
                 //inovarti onestepcheckout
@@ -364,19 +364,17 @@ var MercadoPagoCustom = (function () {
 
         }
 
-        function isOsc()
-        {
+        function isOsc() {
             return (typeof OSCPayment !== self.constants.undefined);
         }
 
-        function isIdeasa()
-        {
+        function isIdeasa() {
             return (typeof payment !== self.constants.undefined);
         }
 
         function registerAjaxObervers() {
             Ajax.Responders.register({
-                onCreate: function() {
+                onCreate: function () {
                     try {
                         TinyJ(self.selectors.installments).disable();
                     } catch (Exception) {
@@ -384,7 +382,7 @@ var MercadoPagoCustom = (function () {
                     }
 
                 },
-                onComplete: function() {
+                onComplete: function () {
                     try {
                         TinyJ(self.selectors.installments).enable();
                     } catch (Exception) {
@@ -588,7 +586,7 @@ var MercadoPagoCustom = (function () {
                 catch (err) {
                     return;
                 }
-                if (cardSelector.val() != "-1"){
+                if (cardSelector.val() != "-1") {
                     return cardSelector.attribute(self.constants.firstSixDigits);
                 }
             } else {
@@ -834,7 +832,7 @@ var MercadoPagoCustom = (function () {
 
                 selectorInstallments.val(installmentOption);
 
-                if (installmentOption){
+                if (installmentOption) {
                     setTotalAmount();
                 }
 
@@ -1009,6 +1007,9 @@ var MercadoPagoCustom = (function () {
             //inicia o objeto
             TinyJ(self.selectors.ticketActionApply).click(applyDiscountCustomTicket);
             TinyJ(self.selectors.ticketActionRemove).click(removeDiscountCustomTicket);
+            if (TinyJ(self.selectors.checkoutTicket).getElem(self.selectors.inputCouponDiscount).val() != '') {
+                applyDiscountCustomTicket();
+            }
 
         }
 
@@ -1067,6 +1068,14 @@ var MercadoPagoCustom = (function () {
                         $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
                         if (formPaymentMethod == self.selectors.checkoutCustom) {
                             guessingPaymentMethod(event.type = self.constants.keyup);
+                        } else {
+                            if (isOsc()) {
+                                //inovarti onestepcheckout
+                                OSCPayment.savePayment();
+                            } else if (isIdeasa()) {
+                                //ideasa onestepcheckout
+                                payment.update();
+                            }
                         }
                     } else {
 
@@ -1096,17 +1105,29 @@ var MercadoPagoCustom = (function () {
         function removeDiscount(formPaymentMethod) {
             showLogMercadoPago(self.messages.removeDiscount);
             var $formPayment = TinyJ(formPaymentMethod);
+            var discount = $formPayment.getElem(self.selectors.discountAmount).val();
 
             //hide all info
             hideMessageCoupon($formPayment);
             $formPayment.getElem(self.selectors.couponActionApply).show();
             $formPayment.getElem(self.selectors.couponActionRemove).hide();
             $formPayment.getElem(self.selectors.coupon).val("");
+
             $formPayment.getElem(self.selectors.discountAmount).val(0);
             $formPayment.getElem(self.selectors.discountOk).hide();
 
             if (formPaymentMethod == self.selectors.checkoutCustom) {
                 guessingPaymentMethod(event.type = self.constants.keyup);
+            } else {
+                amount = $formPayment.getElem(self.selectors.amount).val();
+                $formPayment.getElem(self.selectors.totalAmount).val(amount);
+                if (isOsc()) {
+                    //inovarti onestepcheckout
+                    OSCPayment.savePayment();
+                } else if (isIdeasa()) {
+                    //ideasa onestepcheckout
+                    payment.update();
+                }
             }
             $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
             showLogMercadoPago(self.messages.removeCoupon);

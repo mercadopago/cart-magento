@@ -23,6 +23,10 @@ class MercadoPago_Core_Helper_Data
     const XML_PATH_CLIENT_ID = 'payment/mercadopago_standard/client_id';
     const XML_PATH_CLIENT_SECRET = 'payment/mercadopago_standard/client_secret';
 
+    const PLATFORM_OPENPLATFORM = 'openplatform';
+    const PLATFORM_STD = 'std';
+    const TYPE = 'magento';
+
     public function log($message, $file = "mercadopago.log", $array = null)
     {
         //pega a configuração de log no admin, essa variavel vem como true por padrão
@@ -45,12 +49,17 @@ class MercadoPago_Core_Helper_Data
         }
         if ($params == 1) {
             $api = new MercadoPago_Lib_Api(func_get_arg(0));
+            $api->set_platform(self::PLATFORM_OPENPLATFORM);
         } else {
             $api = new MercadoPago_Lib_Api(func_get_arg(0), func_get_arg(1));
+            $api->set_platform(self::PLATFORM_STD);
         }
         if (Mage::getStoreConfigFlag('payment/mercadopago/sandbox_mode')) {
             $api->sandbox_mode(true);
         }
+
+        $api->set_type(self::TYPE);
+        $api->set_so((string) Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version);
 
         return $api;
 
@@ -77,6 +86,13 @@ class MercadoPago_Core_Helper_Data
         }
 
         return true;
+    }
+
+    public function getAccessToken()
+    {
+        $clientId = Mage::getStoreConfig(self::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(self::XML_PATH_CLIENT_SECRET);
+        return $this->getApiInstance($clientId, $clientSecret)->get_access_token();
     }
 
 }

@@ -72,20 +72,20 @@
             <order_invoice>
                 <totals>
                     <mercadopago>
-                        <class>mercadopago/custom_finance_cost</class>
+                        <class>mercadopago/custom_finance_cost_invoice</class>
                     </mercadopago>
                     <discount_mercadopago>
-                        <class>mercadopago/discount_coupon</class>
+                        <class>mercadopago/discount_coupon_invoice</class>
                     </discount_mercadopago>
                 </totals>
             </order_invoice>
             <order_creditmemo>
                 <totals>
                     <mercadopago>
-                        <class>mercadopago/custom_finance_cost</class>
+                        <class>mercadopago/custom_finance_cost_creditmemo</class>
                     </mercadopago>
                     <discount_mercadopago>
-                        <class>mercadopago/discount_coupon</class>
+                        <class>mercadopago/discount_coupon_creditmemo</class>
                     </discount_mercadopago>
                 </totals>
             </order_creditmemo>

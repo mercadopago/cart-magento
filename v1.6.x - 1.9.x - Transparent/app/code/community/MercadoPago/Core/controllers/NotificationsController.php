@@ -265,14 +265,16 @@ class MercadoPago_Core_NotificationsController
 
         try {
             if ($status == 'approved') {
-                $invoice = $order->prepareInvoice();
-                $invoice->register()->pay();
-                Mage::getModel('core/resource_transaction')
-                    ->addObject($invoice)
-                    ->addObject($invoice->getOrder())
-                    ->save();
+                if (!$order->hasInvoices()) {
+                    $invoice = $order->prepareInvoice();
+                    $invoice->register()->pay();
+                    Mage::getModel('core/resource_transaction')
+                        ->addObject($invoice)
+                        ->addObject($invoice->getOrder())
+                        ->save();
 
-                $invoice->sendEmail(true, $message);
+                    $invoice->sendEmail(true, $message);
+                }
             } elseif ($status == 'refunded' || $status == 'cancelled') {
                 $order->cancel();
             }

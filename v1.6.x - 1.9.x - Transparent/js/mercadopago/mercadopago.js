@@ -48,16 +48,16 @@ function loadFilesMP() {
             $form_custom_payment.find(".msg-status").hide();
             
             //caso tenha alteração no campo de banco
-            $("#issuers").change(function(){
-                
+            $("body").on("change","#issuers_select", function(){
+
                 //pega o bin
                 var card = $("input[data-checkout='cardNumber']").val().replace(/ /g, '').replace(/-/g, '').replace(/\./g, '');
                 var bin = card.substr(0,6);
-                
-                //verifica installments para o banco, pode ocorrer de ter desconto
+                var paymentMethodId = $("#payment_method").val();
+
                 Checkout.getInstallmentsByIssuerId(
-                    bin,
-                    this.value,
+                    ($(".mercadopago-country").html() == 'mlm' ? paymentMethodId : bin),
+                    $(this).val(),
                     parseFloat($form_custom_payment.find(".amount").val()),
                     setInstallmentInfo
                 );
@@ -82,7 +82,7 @@ function loadFilesMP() {
                     var bin = card.substr(0,6);
                     
                     if (bin.length == 6) {
-                        if ($("#mercadopago-country").html() == 'mlm') {
+                        if ($(".mercadopago-country").html() == 'mlm') {
                             Checkout.getPaymentMethod(bin, parseFloat($form_custom_payment.find(".amount").val()), setPaymentMethodInfo, $('#payment_method option:checked').val());
                         }else{
                             Checkout.getPaymentMethod(bin, setPaymentMethodInfo);
@@ -388,11 +388,11 @@ function loadFilesMP() {
             function showIssuers(issuers) {
                 showLogMercadoPago("Issuer set exceptions by card issuer.");
                 
-                var options = '<select name="payment[issuers]" id="issuers" data-checkout="issuers" class="input-text" autocomplete="off">'
-                    options += '<option value="-1">' + choice_text_mercadopago + '...</option>';
+                var options = '<select name="payment[issuers]" id="issuers_select" data-checkout="issuers" class="input-text required-entry" autocomplete="off">'
+                    options += '<option value="">' + choice_text_mercadopago + '...</option>';
                     
                 for(i=0; issuers && i<issuers.length;i++){
-                    var issuer = issuers[i].card_issuer
+                    var issuer = issuers[i].card_issuer;
                     if (issuer.name == "default") {
                         issuer.name = default_issuer_text_mercadopago;
                     }
@@ -403,6 +403,7 @@ function loadFilesMP() {
                 options += "</select>";
                 
                 $("#issuers").html(options);
+                $("#issuersOptions").show();
             }
             
             //para listar todas as issuer

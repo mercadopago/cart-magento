@@ -16,7 +16,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_standard"
     And I press "#payment-buttons-container .button" element
-    And Setting Config "payment/mercadopago/sandbox_mode" is "0"
+    And Setting Config "payment/mercadopago_standard/sandbox_mode" is "0"
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
     And I fill the iframe fields country <country>

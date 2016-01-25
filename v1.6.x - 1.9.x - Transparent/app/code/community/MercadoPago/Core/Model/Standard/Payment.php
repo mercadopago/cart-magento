@@ -53,7 +53,7 @@ class MercadoPago_Core_Model_Standard_Payment
 
         if ($response['status'] == 200 || $response['status'] == 201) {
             $payment = $response['response'];
-            if (Mage::getStoreConfigFlag('payment/mercadopago/sandbox_mode')) {
+            if (Mage::getStoreConfigFlag('payment/mercadopago_standard/sandbox_mode')) {
                 $init_point = $payment['sandbox_init_point'];
             } else {
                 $init_point = $payment['init_point'];

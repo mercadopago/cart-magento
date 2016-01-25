@@ -54,7 +54,7 @@ class MercadoPago_Core_Helper_Data
             $api = new MercadoPago_Lib_Api(func_get_arg(0), func_get_arg(1));
             $api->set_platform(self::PLATFORM_STD);
         }
-        if (Mage::getStoreConfigFlag('payment/mercadopago/sandbox_mode')) {
+        if (Mage::getStoreConfigFlag('payment/mercadopago_standard/sandbox_mode')) {
             $api->sandbox_mode(true);
         }
 

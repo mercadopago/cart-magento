@@ -972,6 +972,7 @@ var MercadoPagoCustom = (function () {
 
                         $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);
                         if (formPaymentMethod == self.selectors.checkoutCustom) {
+                            var event = {};
                             guessingPaymentMethod(event.type = self.constants.keyup);
                         }
                     } else {
@@ -1012,6 +1013,7 @@ var MercadoPagoCustom = (function () {
             $formPayment.getElem(self.selectors.discountOk).hide();
 
             if (formPaymentMethod == self.selectors.checkoutCustom) {
+                var event = {};
                 guessingPaymentMethod(event.type = self.constants.keyup);
             }
             $formPayment.getElem(self.selectors.inputCouponDiscount).removeClass(self.constants.invalidCoupon);

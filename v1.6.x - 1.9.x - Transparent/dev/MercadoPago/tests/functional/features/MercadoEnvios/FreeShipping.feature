@@ -69,7 +69,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     Given Setting merchant "mla"
     When I enable methods of "mla"
     And showmethod always
-    And Setting Config "payment/mercadopago/sandbox_mode" is "0"
+    And Setting Config "payment/mercadopago_standard/sandbox_mode" is "0"
     And I enable ME free shipping "73328"
     And I am on page "checkout/cart/"
     And I press ".btn-proceed-checkout" element

@@ -166,26 +166,31 @@ class MercadoPago_MercadoEnvios_Helper_Data
 
     public function getTrackingUrlByShippingInfo($_shippingInfo)
     {
-        $tracking = Mage::getModel('sales/order_shipment_track')->getCollection()
+        $tracking = Mage::getModel('sales/order_shipment_track');
+        $tracking->getCollection()
             ->addFieldToFilter(
-                array('entity_id', 'parent_id', 'order_id',),
-                array(
-                    array('eq' => $_shippingInfo->getTrackId()),
-                    array('eq' => $_shippingInfo->getShipId()),
-                    array('eq' => $_shippingInfo->getOrderId()),
-                ))->setPageSize(10)->setCurPage(1)->load();
+                ['entity_id', 'parent_id', 'order_id'],
+                [
+                    ['eq' => $_shippingInfo->getTrackId()],
+                    ['eq' => $_shippingInfo->getShipId()],
+                    ['eq' => $_shippingInfo->getOrderId()],
+                ]
+            )
+            ->setPageSize(10)
+            ->setCurPage(1)
+            ->load();
 
-                foreach ($_shippingInfo->getTrackingInfo() as $track) {
-                    $lastTrack = array_pop($track);
-                    if (isset($lastTrack['title']) && $lastTrack['title'] == MercadoPago_MercadoEnvios_Model_Observer::CODE) {
-                        $item = array_pop($tracking->getItems());
-                        if ($item->getId()) {
-                            return $item->getDescription();
-                        }
-                    }
+        foreach ($_shippingInfo->getTrackingInfo() as $track) {
+            $lastTrack = array_pop($track);
+            if (isset($lastTrack['title']) && $lastTrack['title'] == MercadoPago_MercadoEnvios_Model_Observer::CODE) {
+                $item = array_pop($tracking->getItems());
+                if ($item->getId()) {
+                    return $item->getDescription();
                 }
+            }
+        }
 
-                return '';
+        return '';
     }
 
     public function getTrackingPrintUrl($shipmentId)

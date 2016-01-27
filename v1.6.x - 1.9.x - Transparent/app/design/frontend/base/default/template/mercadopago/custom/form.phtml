@@ -14,15 +14,15 @@ $route = $this->getRequest()->getRequestedRouteName();
 
 <fieldset class="form-list mercadopago">
     <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand();?>" />
-    
+
     <script>
         //load nas actions para funcionar o js do mercadopago
-        loadFilesMP(); 
+        loadFilesMP();
     </script>
-    
+
     <div id="mp-form">
         <ul class="form-list form-mercadopago" id="payment_form_<?php  echo $_code ?>" style="display:none;" >
-        
+
             <?php if( $country == 'mlm'):
                 $payment_methods = $this->getCardsPaymentMethods();
             ?>
@@ -42,14 +42,14 @@ $route = $this->getRequest()->getRequestedRouteName();
             <?php else: ?>
                 <input type="hidden" name="payment[payment_method]" type="text" value="" id="payment_method" />
             <?php endif; ?>
-            
+
             <?php
                 if($coupon_mercadopago):
-                    $block = $this->getLayout()->createBlock('MercadoPago_Block_Discount');
+                    $block = $this->getLayout()->createBlock('MercadoPago_Block_Discount')->setCode($_code);
                     echo $block->toHtml();
                 endif;
             ?>
-            
+
             <li>
                 <label for="<?php echo $_code ?>_cn" class="required"><em>*</em><?php echo $this->__('Card Number'); ?></label>
                 <div class="input-box">
@@ -58,7 +58,7 @@ $route = $this->getRequest()->getRequestedRouteName();
                     <p class="msg-status error-132 validation-advice"><?php echo $this->__('Cannot pay this amount with this payment_method_id.'); ?></p>
                 </div>
             </li>
-            
+
             <li id="issuersOptions" style="display: none;">
                 <label for="<?php echo $_code ?>_issuers" class="required"><em>*</em><?php echo $this->__('Banks'); ?></label>
                 <div class="input-box">
@@ -66,7 +66,7 @@ $route = $this->getRequest()->getRequestedRouteName();
                     </div>
                 </div>
             </li>
-            
+
             <li>
                 <div class="box-mes">
                     <label for="<?php echo $_code ?>_month" class="required"><em>*</em><?php echo $this->__('Month'); ?></label>
@@ -79,7 +79,7 @@ $route = $this->getRequest()->getRequestedRouteName();
                         <p class="msg-status error-325 validation-advice"><?php echo $this->__('Month is invalid.'); ?></p>
                     </div>
                 </div>
-                
+
                 <div class="box-ano">
                     <label for="<?php echo $_code ?>_year" class="required"><em>*</em><?php echo $this->__('Year'); ?></label>
                     <div class="input-box">
@@ -92,8 +92,8 @@ $route = $this->getRequest()->getRequestedRouteName();
                     </div>
                 </div>
             </li>
-            
-            
+
+
             <li>
                 <div class="box-input">
                     <label for="<?php echo $_code ?>_name" class="required"><em>*</em><?php echo $this->__('Card Holder Name'); ?></label>
@@ -103,11 +103,11 @@ $route = $this->getRequest()->getRequestedRouteName();
                     </div>
                 </div>
             </li>
-            
+
             <?php
             //mexico não possui documento no checkout
             if( $country != 'mlm'): ?>
-            
+
                 <li>
                     <div class="box-input">
                         <label for="<?php echo $_code ?>_doc" class="required"><em>*</em><?php echo $this->__('Document Number'); ?></label>
@@ -123,7 +123,7 @@ $route = $this->getRequest()->getRequestedRouteName();
                                     <option value="Otro">Otro</option>
                                 </select>
                             <?php endif; ?>
-                            
+
                             <input name="payment[doc_number]" data-checkout="docNumber" id="<?php echo $_code ?>_doc" type="text" class="input-text required-entry validate-digits" type="text" maxlength="11" />
                             <p class="msg-status error-324 validation-advice"><?php echo $this->__('Document Number is invalid.'); ?></p>
                             <p class="msg-status error-322 validation-advice"><?php echo $this->__('Document Type is invalid.'); ?></p>
@@ -131,7 +131,7 @@ $route = $this->getRequest()->getRequestedRouteName();
                     </div>
                 </li>
             <?php endif; ?>
-            
+
              <li>
                 <div class="box-input">
                     <label for="<?php echo $_code ?>_code" class="required"><em>*</em><?php echo $this->__('CVV'); ?></label>
@@ -140,8 +140,8 @@ $route = $this->getRequest()->getRequestedRouteName();
                         <p class="msg-status error-E302 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
                     </div>
                 </div>
-            </li>  
-            
+            </li>
+
             <li>
                 <div class="box-input">
                     <label for="<?php echo $_code ?>_installments" class="required"><em>*</em><?php echo $this->__('Installments'); ?></label>
@@ -154,26 +154,26 @@ $route = $this->getRequest()->getRequestedRouteName();
                         <p class="msg-status error-other validation-advice"><?php echo $this->__('Please validate your data.'); ?></p>
                     </div>
                 </div>
-                
+
                 <div id="mercadopago-loading">
                     <img src="<?php echo $this->getSkinUrl('mercadopago/images/loading.gif')  ;?>" alt="loading" />
                     <!--<p><?php echo $this->__('Validating Data'); ?>...</p>-->
                 </div>
-                
+
                 <input type="hidden" name="payment[card_token_id]" type="text" value="" id="card_token_id" />
                 <input type="hidden" name="payment[trunc_card]" type="text" value="" id="trunc_card" />
-                
+
                 <!-- -->
                 <input type="hidden" class="amount" value="<?php echo $grant_total; ?>">
                 <input type="hidden" class="mercadopago-discount-amount" value="0">
                 <input type="hidden" type="text" value="<?php echo $base_url; ?>" class="mercado_base_url" />
                 <input type="hidden" type="text" value="<?php echo $route; ?>" class="mercado_route" />
                 <!-- -->
-                
+
                 <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
                     <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
                 <?php endif;?>
-                
+
                 <div style="display: none;">
                     <span class="mercadopago-text-currency"><?php echo $this->__('$'); ?></span>
                     <span class="mercadopago-text-choice"><?php echo $this->__('Choice'); ?></span>
@@ -183,6 +183,6 @@ $route = $this->getRequest()->getRequestedRouteName();
             </li>
         </ul>
 
-        
+
     </div>
 </fieldset>

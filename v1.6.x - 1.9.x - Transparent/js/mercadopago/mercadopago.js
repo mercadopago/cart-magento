@@ -314,6 +314,11 @@ function loadFilesMP() {
                             showLogMercadoPago("Response amount: ");
                             showLogMercadoPago(response);
                             
+                            //case api return string in object
+                            if(typeof response == 'string'){
+                                response = $.parseJSON(response)
+                            }
+                            
                             //atualiza valor no input 
                             $form_custom_payment.find(".amount").attr("value", response.amount);
                             
@@ -363,10 +368,14 @@ function loadFilesMP() {
                 var html_options = '<option value="">' + choice_text_mercadopago + '... </option>';
                 for(i=0; installments && i<installments.length; i++){
                     if (installments[i] != undefined) {
-                        html_options += "<option value='"+installments[i].installments+"'>"+installments[i].installments +" de " + currency_text_mercadopago + " " + installments[i].share_amount+" ("+ currency_text_mercadopago + " "+ installments[i].total_amount+")</option>";
+                        html_options += '<option value="'+installments[i].installments+'">'+installments[i].installments + ' de ' + currency_text_mercadopago + ' '+ installments[i].share_amount+ '('+ currency_text_mercadopago + ' '+ installments[i].total_amount+')</option>';
                     }
                 };
-                $("#installments").html(html_options);
+                
+                //only updates when really the values have changed
+                if ($("#installments").html().toString() != html_options.toString()) {
+                    $("#installments").html(html_options);
+                }
             }
             
             

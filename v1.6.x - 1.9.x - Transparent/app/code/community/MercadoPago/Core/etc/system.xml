@@ -50,7 +50,7 @@
                             <label>Choose the status of approved orders</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status</source_model>
+                            <source_model>mercadopago/source_order_status</source_model>
                             <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -60,7 +60,7 @@
                             <label>Choose the status of refunded orders</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status</source_model>
+                            <source_model>mercadopago/source_order_status</source_model>
                             <sort_order>80</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -70,7 +70,7 @@
                             <label>Choose the status when payment is pending</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status</source_model>
+                            <source_model>mercadopago/source_order_status</source_model>
                             <sort_order>90</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -80,7 +80,7 @@
                             <label>Choose the status when client open a mediation</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status</source_model>
+                            <source_model>mercadopago/source_order_status</source_model>
                             <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -90,7 +90,7 @@
                             <label>Choose the status when payment was reject</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status</source_model>
+                            <source_model>mercadopago/source_order_status</source_model>
                             <sort_order>110</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -100,7 +100,7 @@
                             <label>Choose the status when payment was canceled</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status</source_model>
+                            <source_model>mercadopago/source_order_status</source_model>
                             <sort_order>120</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -110,7 +110,7 @@
                             <label>Choose the status when payment was chargeback</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status</source_model>
+                            <source_model>mercadopago/source_order_status</source_model>
                             <sort_order>130</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>

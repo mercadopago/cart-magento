@@ -32,11 +32,12 @@ Scenario: See MercadoPago option as a payment method
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_custom"
     And I select option field "cardId" with "144422268"
-    And I select option field "installments" with "12"
     And I fill text field "securityCodeOCP" with "123"
+    And I select option field "installments" with "12"
+    And I blur field "#securityCodeOCP"
 
-    When I press "#payment-buttons-container .button" element
-    And I wait for "10" seconds
+    When I wait for "10" seconds
+    And I press "#payment-buttons-container .button" element
 
     Then I should see financing cost detail
 

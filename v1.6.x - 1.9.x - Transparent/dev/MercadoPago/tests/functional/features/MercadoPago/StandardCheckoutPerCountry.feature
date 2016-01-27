@@ -21,8 +21,8 @@ Feature: Payment results in MercadoPago Standard Checkout
     And I switch to the iframe "checkout_mercadopago"
     And I fill the iframe fields country <country>
     And I press "#next" input element
-    And I wait for "7" seconds
-    Then I should see html "Listo"
+    And I wait for "18" seconds
+    Then I should be on "/mercadopago/success"
 
     Examples:
       | country | user                            | pass    |

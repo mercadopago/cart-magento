@@ -453,14 +453,22 @@ class FeatureContext
      */
     public function iFillTheIframeShippingAddressFields()
     {
-        $page = $this->getSession()->getPage();
-        $page->fillField('streetName', 'Mitre');
-        $page->fillField('streetNumber', '123');
-        $page->fillField('zipCode', '7000');
-        $page->fillField('cityName', 'Tandil');
-        $page->selectFieldOption('stateId', 'AR-B');
-        $page->fillField('contact', 'test');
-        $page->fillField('phone', '43434343');
+        try {
+            $element = $this->findElement('streetName');
+        } catch (Exception $e) {
+            return;
+        }
+
+        if ($element) {
+            $page = $this->getSession()->getPage();
+            $page->fillField('streetName', 'Mitre');
+            $page->fillField('streetNumber', '123');
+            $page->fillField('zipCode', '7000');
+            $page->fillField('cityName', 'Tandil');
+            $page->selectFieldOption('stateId', 'AR-B');
+            $page->fillField('contact', 'test');
+            $page->fillField('phone', '43434343');
+        }
 
     }
 

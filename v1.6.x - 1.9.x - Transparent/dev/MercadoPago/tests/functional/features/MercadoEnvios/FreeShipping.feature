@@ -82,12 +82,11 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I press "#payment-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     And I press "#review-buttons-container .button" element
+    And I wait for "10" seconds
     And I switch to the iframe "checkout_mercadopago"
     And I am logged in MP as "test_user_2135227@testuser.com" "qatest5030"
     And I fill the iframe shipping address fields
-    And I press "#next" input element
-    And I wait for "10" seconds
-    Then I should see html "Gratis."
+    Then I should see "Gratis."
 
   @FreeShippingCartRule
   Scenario: FreeShipping configured

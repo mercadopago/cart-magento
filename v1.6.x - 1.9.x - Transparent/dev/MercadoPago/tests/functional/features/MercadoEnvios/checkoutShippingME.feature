@@ -78,7 +78,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I should see element "#checkout-review-table .a-right .price" with text "$77.99"
 
   @CheckoutShippingMethods @addShipmentToRequest
-  Scenario: the only payment method available should be MercadoPago Classic
+  Scenario: Get succes mercadoenvio page with a request including mercadoenvios data
     Given showmethod always
     And I set product "hde006" attributes:
       | mp_width | mp_height | mp_length | mp_weight |
@@ -95,4 +95,4 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I wait for "10" seconds
     And I switch to the iframe "checkout_mercadopago"
     And I am logged in MP as "test_user_2135227@testuser.com" "qatest5030"
-    Then I should see "Modifica tu dirección de envío"
+    Then I should see "Elige la forma de entrega"

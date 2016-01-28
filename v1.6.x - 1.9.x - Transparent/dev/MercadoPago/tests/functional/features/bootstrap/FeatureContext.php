@@ -338,27 +338,17 @@ class FeatureContext
         $login = $session->getPage()->find('css', '#user_id');
         $pwd = $session->getPage()->find('css', '#password');
         $submit = $session->getPage()->find('css', '#init');
-        if ($login && $pwd && $submit) {
+        if ($login && $pwd) {
             $email = $arg1;
             $password = $arg2;
             $login->setValue($email);
             $pwd->setValue($password);
-            $submit->click();
-            $page = $session->getPage();
-            $element = $page->find('css', '#payerAccount');
-            if (empty($element)) {
-                $login = $this->findElement("[name='user_id']");
-                $pwd = $this->findElement("[name='password']");
-                $submit = $this->findElement("[value='Ingresar']");
-                if ($login && $pwd && $submit) {
-                    $email = $arg1;
-                    $password = $arg2;
-                    $login->setValue($email);
-                    $pwd->setValue($password);
-                    $submit->click();
-                    $this->findElement('#payerAccount');
-                }
+            if (empty($submit)){
+                $submit = $session->getPage()->find('css', '#signInButton');
             }
+            $submit->click();
+            $this->iWaitForSeconds(5);
+            $this->findElement('#payerAccount');
         }
     }
 

@@ -342,15 +342,15 @@ class FeatureContext
         $login = $session->getPage()->find('css', '#user_id');
         $pwd = $session->getPage()->find('css', '#password');
         $submit = $session->getPage()->find('css', $arg3);
-        if ($login && $pwd) {
+        if ($login && $pwd && $submit) {
             $email = $arg1;
             $password = $arg2;
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
             $this->iWaitForSeconds(5);
-            $this->iAmLoggedInMPAs($arg1,$arg2,'#signInButton');
         }
+        $this->iAmLoggedInMPAs($arg1,$arg2,'#signInButton');
     }
 
     /**

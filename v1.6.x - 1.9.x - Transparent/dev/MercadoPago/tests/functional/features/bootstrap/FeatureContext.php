@@ -352,6 +352,10 @@ class FeatureContext
             $pwd->setValue($password);
             $submit->click();
             $this->iWaitForSeconds(5);
+            $logged = $session->getPage()->find('css', '#payerAccount');
+            if (!$logged) {
+                echo $session->getPage()->getHtml();
+            }
         }
     }
 

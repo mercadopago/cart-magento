@@ -85,7 +85,6 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I wait for "10" seconds
     And I switch to the iframe "checkout_mercadopago"
     And I am logged in MP as "test_user_2135227@testuser.com" "qatest5030"
-    And I am logged in MP as "test_user_2135227@testuser.com" "qatest5030"
     Then I should find element "label.free-shipping"
 
   @FreeShippingCartRule

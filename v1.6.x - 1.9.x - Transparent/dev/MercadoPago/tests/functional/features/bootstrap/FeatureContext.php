@@ -331,7 +331,7 @@ class FeatureContext
     /**
      * @When I am logged in MP as :arg1 :arg2
      */
-    public function iAmLoggedInMPAs($arg1, $arg2)
+    public function iAmLoggedInMPAs($arg1, $arg2, $arg3 = 0)
     {
         $session = $this->getSession();
 
@@ -344,9 +344,15 @@ class FeatureContext
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
-            $this->iWaitForSeconds(5);
-            $this->findElement('#payerAccount');
-
+            $page = $session->getPage();
+            $element = $page->find('css', '#payerAccount');
+            if (empty($element)){
+                if ($arg3 == 0) {
+                    $this->iAmLoggedInMPAs($arg1, $arg2, 1);
+                } else {
+                    throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'css', '#payerAccount');
+                }
+            }
         }
     }
 

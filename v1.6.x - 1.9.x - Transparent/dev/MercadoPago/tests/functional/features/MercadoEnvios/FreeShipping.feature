@@ -64,7 +64,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | mlm     | 501345      | 22615    | MX            | 100    | $0.00          |
       | mlm     | 501345      | 22615    | MX            | 150    | $131.00        |
 
-  @FreeShippingCheckoutStandard
+  @FreeShippingCheckoutStandard @currenttest
   Scenario: FreeShipping complete checkout
     Given Setting merchant "mla"
     When I enable methods of "mla"
@@ -84,6 +84,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I press "#review-buttons-container .button" element
     And I wait for "10" seconds
     And I switch to the iframe "checkout_mercadopago"
+    And I am logged in MP as "test_user_2135227@testuser.com" "qatest5030"
     And I wait for "5" seconds
     Then I should find element "label.free-shipping"
 

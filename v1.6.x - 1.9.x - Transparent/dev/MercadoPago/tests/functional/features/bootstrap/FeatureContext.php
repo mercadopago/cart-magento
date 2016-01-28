@@ -346,13 +346,14 @@ class FeatureContext
             $submit->click();
             $page = $session->getPage();
             $element = $page->find('css', '#payerAccount');
-            if (empty($element)){
+            if (empty($element)) {
                 if ($arg3 == 0) {
                     $this->iAmLoggedInMPAs($arg1, $arg2, 1);
-                } else {
-                    throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'css', '#payerAccount');
                 }
             }
+            throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'css', '#payerAccount');
+        } else {
+            throw new ExpectationException('Elements login not found ', $this->getSession()->getDriver());
         }
     }
 

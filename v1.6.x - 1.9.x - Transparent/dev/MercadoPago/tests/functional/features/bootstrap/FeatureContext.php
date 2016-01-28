@@ -353,7 +353,9 @@ class FeatureContext
             }
             throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'css', '#payerAccount');
         } else {
-            throw new ExpectationException('Elements login not found ', $this->getSession()->getDriver());
+            if ($arg3 == 1) {
+                throw new ExpectationException('Elements login not found ', $this->getSession()->getDriver());
+            }
         }
     }
 

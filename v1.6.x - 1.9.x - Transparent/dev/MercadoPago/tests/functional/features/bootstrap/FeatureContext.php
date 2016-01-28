@@ -345,7 +345,6 @@ class FeatureContext
             $pwd->setValue($password);
             $submit->click();
             $this->iWaitForSeconds(5);
-            $this->iSwitchToIframe('checkout_mercadopago');
             $this->findElement('#payerAccount');
 
         }

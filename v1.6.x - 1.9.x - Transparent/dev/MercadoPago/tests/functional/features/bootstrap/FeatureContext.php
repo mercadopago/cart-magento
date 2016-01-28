@@ -344,6 +344,7 @@ class FeatureContext
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
+            $page = $session->getPage();
             $element = $page->find('css', '#payerAccount');
             if (empty($element)) {
                 $login = $this->findElement("[name='user_id']");

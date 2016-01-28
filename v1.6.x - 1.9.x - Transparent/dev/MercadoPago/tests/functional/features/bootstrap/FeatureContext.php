@@ -369,8 +369,9 @@ class FeatureContext
             $pwd->setValue($password);
             $form = $this->findElement('#authForm');
             $form->submit();
-            return;
         }
+
+        $this->iWaitForSeconds(7);
         $this->iAmLogged2InMPAs($arg1,$arg2);
     }
 

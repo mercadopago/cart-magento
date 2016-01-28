@@ -1,6 +1,6 @@
 <?php
 
-class MercadoPago_Core_Model_Custom_Finance_Cost_Creditmemo
+class MercadoPago_Core_Model_Discount_Coupon_Creditmemo
     extends Mage_Sales_Model_Order_Creditmemo_Total_Abstract
 {
 

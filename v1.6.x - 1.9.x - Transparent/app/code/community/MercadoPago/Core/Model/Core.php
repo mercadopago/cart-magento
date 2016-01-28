@@ -439,4 +439,52 @@ class MercadoPago_Core_Model_Core
 
         return $details_discount;
     }
+
+    public function setStatusOrder($payment, $stateObject = null)
+    {
+        $helper = Mage::helper('mercadopago');
+        $order = Mage::getModel('sales/order')->loadByIncrementId($payment["external_reference"]);
+        $status = $payment['status'];
+
+        if (isset($payment['status_final'])) {
+            $status = $payment['status_final'];
+        }
+        $message = $this->getMessage($status, $payment);
+
+        try {
+            if ($status == 'approved') {
+                if (!$order->hasInvoices()) {
+                    $invoice = $order->prepareInvoice();
+                    $invoice->register()->pay();
+                    Mage::getModel('core/resource_transaction')
+                        ->addObject($invoice)
+                        ->addObject($invoice->getOrder())
+                        ->save();
+
+                    $invoice->sendEmail(true, $message);
+                }
+            } elseif ($status == 'refunded' || $status == 'cancelled') {
+                $order->cancel();
+            }
+
+            $statusOrder = $helper->getStatusOrder($status);
+            if ($stateObject) {
+                $stateObject->setStatus($statusOrder);
+                $stateObject->setState($helper->_getAssignedState($statusOrder));
+                $stateObject->setIsNotified(true);
+            }
+
+            $order->addStatusToHistory($statusOrder, $message, true);
+            $order->sendOrderUpdateEmail(true, $message);
+
+            $status_save = $order->save();
+            $helper->log("Update order", 'mercadopago.log', $status_save->toString());
+            $helper->log($message, 'mercadopago.log');
+
+            return ['text' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
+        } catch (Exception $e) {
+            $helper->log("erro in set order status: " . $e, 'mercadopago.log');
+            return ['text' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST];
+        }
+    }
 }

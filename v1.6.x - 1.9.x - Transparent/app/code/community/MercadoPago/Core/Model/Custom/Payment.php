@@ -46,10 +46,12 @@ class MercadoPago_Core_Model_Custom_Payment
         if ($response !== false):
 
             $payment = $response['response'];
-
             //set status
             $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
             $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
+
+            Mage::helper('mercadopago')->log("Received Payment data", 'mercadopago-custom.log', $payment);
+            Mage::getModel('mercadopago/core')->setStatusOrder($payment, $stateObject);
 
             return true;
         endif;

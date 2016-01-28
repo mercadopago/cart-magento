@@ -81,7 +81,10 @@ class MercadoPago_Core_NotificationsController
 
                     if ($status_final != false) {
                         $data['status_final'] = $status_final;
-                        $this->setStatusOrder($data);
+                        Mage::helper('mercadopago')->log("Received Payment data", 'mercadopago-notification.log', $data);
+                        $setStatusResponse = $core->setStatusOrder($data);
+                        $this->getResponse()->setBody($setStatusResponse['text']);
+                        $this->getResponse()->setHttpResponseCode($setStatusResponse['code']);
                     }
 
                     Mage::dispatchEvent('mercadopago_standard_notification_received',
@@ -122,7 +125,9 @@ class MercadoPago_Core_NotificationsController
                 $payment['payer_email'] = $payment['payer']['email'];
 
                 $this->updateOrder($payment);
-                $this->setStatusOrder($payment);
+                $setStatusResponse = $core->setStatusOrder($payment);
+                $this->getResponse()->setBody($setStatusResponse['text']);
+                $this->getResponse()->setHttpResponseCode($setStatusResponse['code']);
 
                 return;
             }
@@ -180,20 +185,8 @@ class MercadoPago_Core_NotificationsController
                 $order->setCustomerEmail($data['payer_email']);
             }
 
-            if ($data['coupon_amount']) {
-                $order->setDiscountCouponAmount($data['coupon_amount'] * -1);
-                $order->setBaseDiscountCouponAmount($data['coupon_amount'] * -1);
-                $balance = $data['total_paid_amount'] - ($data['transaction_amount'] - $data['coupon_amount'] + $data['shipping_cost']);
-            } else {
-                $balance = $data['total_paid_amount'] - $data['transaction_amount'] - $data['shipping_cost'];
-            }
 
-            if ($balance > 0) {
-                $order->setFinanceCostAmount($balance);
-                $order->setBaseFinanceCostAmount($balance);
-            }
-
-            $order->setGrandTotal($data['total_paid_amount']);
+            Mage::helper('mercadopago')->setOrderSubtotals($data, $order);
 
             $status_save = $order->save();
             Mage::helper('mercadopago')->log("Update order", 'mercadopago-notification.log', $status_save->toString());
@@ -202,96 +195,6 @@ class MercadoPago_Core_NotificationsController
             $this->getResponse()->setBody($e);
 
             //caso erro no processo de notificação de pagamento, mercadopago ira notificar novamente.
-            $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
-        }
-    }
-
-    protected function getStatusOrder($status)
-    {
-        switch ($status) {
-            case 'approved': {
-                $status = Mage::getStoreConfig('payment/mercadopago/order_status_approved');
-                break;
-            }
-            case 'refunded': {
-                $status = Mage::getStoreConfig('payment/mercadopago/order_status_refunded');
-                break;
-            }
-            case 'in_mediation': {
-                $status = Mage::getStoreConfig('payment/mercadopago/order_status_in_mediation');
-                break;
-            }
-            case 'cancelled': {
-                $status = Mage::getStoreConfig('payment/mercadopago/order_status_cancelled');
-                break;
-            }
-            case 'rejected': {
-                $status = Mage::getStoreConfig('payment/mercadopago/order_status_rejected');
-                break;
-            }
-            case 'chargeback': {
-                $status = Mage::getStoreConfig('payment/mercadopago/order_status_chargeback');
-                break;
-            }
-            default: {
-                $status = Mage::getStoreConfig('payment/mercadopago/order_status_in_process');
-            }
-        }
-
-        return $status;
-    }
-
-    protected function getMessage($status, $payment)
-    {
-        $rawMessage = Mage::helper('mercadopago')->__(Mage::helper('mercadopago/statusOrderMessage')->getMessage($status));
-        $rawMessage .= Mage::helper('mercadopago')->__('<br/> Payment id: %s', $payment['id']);
-        $rawMessage .= Mage::helper('mercadopago')->__('<br/> Status: %s', $payment['status']);
-        $rawMessage .= Mage::helper('mercadopago')->__('<br/> Status Detail: %s', $payment['status_detail']);
-
-        return $rawMessage;
-    }
-
-    public function setStatusOrder($payment)
-    {
-        Mage::helper('mercadopago')->log("Received Payment data", 'mercadopago-notification.log', $payment);
-
-        $order = Mage::getModel('sales/order')->loadByIncrementId($payment["external_reference"]);
-        $status = $payment['status'];
-
-        if (isset($payment['status_final'])) {
-            $status = $payment['status_final'];
-        }
-        $message = $this->getMessage($status, $payment);
-
-        try {
-            if ($status == 'approved') {
-                if (!$order->hasInvoices()) {
-                    $invoice = $order->prepareInvoice();
-                    $invoice->register()->pay();
-                    Mage::getModel('core/resource_transaction')
-                        ->addObject($invoice)
-                        ->addObject($invoice->getOrder())
-                        ->save();
-
-                    $invoice->sendEmail(true, $message);
-                }
-            } elseif ($status == 'refunded' || $status == 'cancelled') {
-                $order->cancel();
-            }
-
-            $statusOrder = $this->getStatusOrder($status);
-
-            $order->addStatusToHistory($statusOrder, $message, true);
-            $order->sendOrderUpdateEmail(true, $message);
-
-            $status_save = $order->save();
-            Mage::helper('mercadopago')->log("Update order", 'mercadopago-notification.log', $status_save->toString());
-            Mage::helper('mercadopago')->log($message, 'mercadopago-notification.log');
-
-            $this->getResponse()->setBody($message);
-        } catch (Exception $e) {
-            Mage::helper('mercadopago')->log("erro in set order status: " . $e, 'mercadopago-notification.log');
-            $this->getResponse()->setBody($e);
             $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
         }
     }

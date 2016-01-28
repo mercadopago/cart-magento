@@ -54,7 +54,7 @@ class MercadoPago_Core_Helper_Data
             $api = new MercadoPago_Lib_Api(func_get_arg(0), func_get_arg(1));
             $api->set_platform(self::PLATFORM_STD);
         }
-        if (Mage::getStoreConfigFlag('payment/mercadopago/sandbox_mode')) {
+        if (Mage::getStoreConfigFlag('payment/mercadopago_standard/sandbox_mode')) {
             $api->sandbox_mode(true);
         }
 
@@ -93,6 +93,83 @@ class MercadoPago_Core_Helper_Data
         $clientId = Mage::getStoreConfig(self::XML_PATH_CLIENT_ID);
         $clientSecret = Mage::getStoreConfig(self::XML_PATH_CLIENT_SECRET);
         return $this->getApiInstance($clientId, $clientSecret)->get_access_token();
+    }
+
+    public function getStatusOrder($status)
+    {
+        switch ($status) {
+            case 'approved': {
+                $status = Mage::getStoreConfig('payment/mercadopago/order_status_approved');
+                break;
+            }
+            case 'refunded': {
+                $status = Mage::getStoreConfig('payment/mercadopago/order_status_refunded');
+                break;
+            }
+            case 'in_mediation': {
+                $status = Mage::getStoreConfig('payment/mercadopago/order_status_in_mediation');
+                break;
+            }
+            case 'cancelled': {
+                $status = Mage::getStoreConfig('payment/mercadopago/order_status_cancelled');
+                break;
+            }
+            case 'rejected': {
+                $status = Mage::getStoreConfig('payment/mercadopago/order_status_rejected');
+                break;
+            }
+            case 'chargeback': {
+                $status = Mage::getStoreConfig('payment/mercadopago/order_status_chargeback');
+                break;
+            }
+            default: {
+                $status = Mage::getStoreConfig('payment/mercadopago/order_status_in_process');
+            }
+        }
+
+        return $status;
+    }
+
+    /**
+     * Get the assigned state of an order status
+     *
+     * @param string $status
+     */
+    public function _getAssignedState($status)
+    {
+        $item = Mage::getResourceModel('sales/order_status_collection')
+            ->joinStates()
+            ->addFieldToFilter('main_table.status', $status);
+
+        return array_pop($item->getItems())->getState();
+    }
+
+    public function getMessage($status, $payment)
+    {
+        $rawMessage = Mage::helper('mercadopago')->__(Mage::helper('mercadopago/statusOrderMessage')->getMessage($status));
+        $rawMessage .= Mage::helper('mercadopago')->__('<br/> Payment id: %s', $payment['id']);
+        $rawMessage .= Mage::helper('mercadopago')->__('<br/> Status: %s', $payment['status']);
+        $rawMessage .= Mage::helper('mercadopago')->__('<br/> Status Detail: %s', $payment['status_detail']);
+
+        return $rawMessage;
+    }
+
+    public function setOrderSubtotals($data, $order)
+    {
+        if ($data['coupon_amount']) {
+            $order->setDiscountCouponAmount($data['coupon_amount'] * -1);
+            $order->setBaseDiscountCouponAmount($data['coupon_amount'] * -1);
+            $balance = $data['total_paid_amount'] - ($data['transaction_amount'] - $data['coupon_amount'] + $data['shipping_cost']);
+        } else {
+            $balance = $data['total_paid_amount'] - $data['transaction_amount'] - $data['shipping_cost'];
+        }
+
+        if ($balance > 0) {
+            $order->setFinanceCostAmount($balance);
+            $order->setBaseFinanceCostAmount($balance);
+        }
+
+        $order->setGrandTotal($data['total_paid_amount']);
     }
 
 }

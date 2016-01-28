@@ -367,7 +367,11 @@ class FeatureContext
             $password = $arg2;
             $login->setValue($email);
             $pwd->setValue($password);
-            $form = $this->findElement('#authForm');
+            $form = $session->getPage()->find('css', '#authForm');
+            if (!$form) {
+                echo $session->getPage()->getHtml();
+                return;
+            }
             $form->submit();
         }
 

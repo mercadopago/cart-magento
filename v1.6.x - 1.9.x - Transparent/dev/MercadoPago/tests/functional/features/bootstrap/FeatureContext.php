@@ -355,6 +355,11 @@ class FeatureContext
     {
         $session = $this->getSession();
 
+        $logged = $session->getPage()->find('css', '#payerAccount');
+        if ($logged) {
+            return;
+        }
+
         $login = $session->getPage()->find('css', '#user_id');
         $pwd = $session->getPage()->find('css', '#password');
         if ($login && $pwd) {
@@ -364,8 +369,9 @@ class FeatureContext
             $pwd->setValue($password);
             $form = $this->findElement('#authForm');
             $form->submit();
-
+            return;
         }
+        $this->iAmLogged2InMPAs($arg1,$arg2);
     }
 
     /**

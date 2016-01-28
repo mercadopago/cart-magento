@@ -104,7 +104,7 @@ class FeatureContext
         $page = $this->getSession()->getPage();
         $element = $page->find('css', $cssClass);
         if (null === $element) {
-            throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'css', $cssClass);
+            throw new ElementNotFoundException($this->getSession()->getDriver(), 'Element', 'css', $cssClass);
         }
 
         return $element;
@@ -331,24 +331,25 @@ class FeatureContext
     /**
      * @When I am logged in MP as :arg1 :arg2
      */
-    public function iAmLoggedInMPAs($arg1, $arg2)
+    public function iAmLoggedInMPAs($arg1, $arg2,$arg3 = '#init')
     {
         $session = $this->getSession();
+        $logged = $session->getPage()->find('css', '#payerAccount');
+        if ($logged) {
+            return;
+        }
 
         $login = $session->getPage()->find('css', '#user_id');
         $pwd = $session->getPage()->find('css', '#password');
-        $submit = $session->getPage()->find('css', '#init');
+        $submit = $session->getPage()->find('css', $arg3);
         if ($login && $pwd) {
             $email = $arg1;
             $password = $arg2;
             $login->setValue($email);
             $pwd->setValue($password);
-            if (empty($submit)){
-                $submit = $session->getPage()->find('css', '#signInButton');
-            }
             $submit->click();
             $this->iWaitForSeconds(5);
-            $this->findElement('#payerAccount');
+            $this->iAmLoggedInMPAs($arg1,$arg2,'#signInButton');
         }
     }
 

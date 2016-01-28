@@ -334,28 +334,37 @@ class FeatureContext
     public function iAmLoggedInMPAs($arg1, $arg2)
     {
         $session = $this->getSession();
-        $logged = $session->getPage()->find('css', '#payerAccount');
-        if ($logged) {
-            return;
-        }
 
         $login = $session->getPage()->find('css', '#user_id');
         $pwd = $session->getPage()->find('css', '#password');
         $submit = $session->getPage()->find('css', '#init');
-        if (!$submit) {
-            $submit = $session->getPage()->find('css', '#signInButton');
-        }
         if ($login && $pwd && $submit) {
             $email = $arg1;
             $password = $arg2;
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
-            $this->iWaitForSeconds(5);
-            $logged = $session->getPage()->find('css', '#payerAccount');
-            if (!$logged) {
-                echo $session->getPage()->getHtml();
-            }
+
+        }
+    }
+
+    /**
+     * @When I am logged 2 in MP as :arg1 :arg2
+     */
+    public function iAmLogged2InMPAs($arg1, $arg2)
+    {
+        $session = $this->getSession();
+
+        $login = $session->getPage()->find('css', '#user_id');
+        $pwd = $session->getPage()->find('css', '#password');
+        if ($login && $pwd) {
+            $email = $arg1;
+            $password = $arg2;
+            $login->setValue($email);
+            $pwd->setValue($password);
+            $form = $this->findElement('#authForm');
+            $form->submit();
+
         }
     }
 

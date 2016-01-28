@@ -82,9 +82,12 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I press "#payment-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     And I press "#review-buttons-container .button" element
-    And I wait for "10" seconds
+    And I wait for "6" seconds
     And I switch to the iframe "checkout_mercadopago"
     And I am logged in MP as "test_user_2135227@testuser.com" "qatest5030"
+    And I wait for "5" seconds
+    And I am logged 2 in MP as "test_user_2135227@testuser.com" "qatest5030"
+    And I wait for "5" seconds
     Then I should find element "label.free-shipping"
 
   @FreeShippingCartRule

@@ -77,7 +77,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     Then I should see "(MercadoEnvíos - Normal"
     And I should see element "#checkout-review-table .a-right .price" with text "$77.99"
 
-  @CheckoutShippingMethods @addShipmentToRequest @currenttest
+  @CheckoutShippingMethods @addShipmentToRequest
   Scenario: Get succes mercadoenvio page with a request including mercadoenvios data
     Given showmethod always
     And I set product "hde006" attributes:

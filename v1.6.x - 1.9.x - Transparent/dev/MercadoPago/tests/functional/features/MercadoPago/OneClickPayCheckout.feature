@@ -14,7 +14,7 @@ Feature: Validation of custom checkout with one click pay
   And I press "#shipping-method-buttons-container .button" element
   And I select radio "p_method_mercadopago_custom"
 
-  @OCP @InvalidSC
+  @OCP @InvalidSC @currenttest
   Scenario: See payment pending and credit card saved in Mercado Pago
     Given I select option field "cardId" with "144422268"
     And I fill text field "securityCodeOCP" with "aas"

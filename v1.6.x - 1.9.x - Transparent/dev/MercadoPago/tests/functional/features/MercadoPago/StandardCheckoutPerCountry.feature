@@ -1,7 +1,7 @@
 @MercadoPago @reset_configs
 Feature: Payment results in MercadoPago Standard Checkout
 
-  @STANDARDPerCountry
+  @STANDARDPerCountry @currenttest
   Scenario Outline: Generate order with sandbox mode
     When Setting merchant <country>
     And User "<user>" "<pass>" exists
@@ -21,7 +21,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     And I switch to the iframe "checkout_mercadopago"
     And I fill the iframe fields country <country>
     And I press "#next" input element
-    And I wait for "18" seconds
+    And I switch to the site
     Then I should be on "/mercadopago/success"
 
     Examples:

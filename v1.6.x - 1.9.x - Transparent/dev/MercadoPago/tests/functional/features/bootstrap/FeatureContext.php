@@ -258,7 +258,16 @@ class FeatureContext
         try {
             $this->getSession()->wait($milliseconds, '(0 === Ajax.activeRequestCount)');
         } catch (Exception $e) {
+            $this->acceptAlert();
+        }
+    }
+
+    protected function acceptAlert()
+    {
+        try {
             $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+        } catch (Exception $e) {
+            return;
         }
     }
 
@@ -369,14 +378,12 @@ class FeatureContext
             $pwd->setValue($password);
             $form = $session->getPage()->find('css', '#authForm');
             if (!$form) {
-                echo $session->getPage()->getHtml();
                 return;
             }
             $form->submit();
         }
 
         $this->iWaitForSeconds(7);
-        $this->iAmLogged2InMPAs($arg1,$arg2);
     }
 
     /**

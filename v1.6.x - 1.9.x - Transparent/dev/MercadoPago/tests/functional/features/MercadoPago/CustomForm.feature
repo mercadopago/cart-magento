@@ -30,7 +30,7 @@ Feature: Validation of custom checkout form
     Then I should see "Month is invalid."
     And I should see "Year is invalid."
 
-  @CheckoutCustomForm @CardHN
+  @CheckoutCustomForm @CardHN @currenttest
   Scenario: Validate cardholder name
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "10"

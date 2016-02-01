@@ -458,19 +458,17 @@ var MercadoPagoCustom = (function () {
             //hide loaging
             hideLoading();
 
-            var selectorPaymentMethods = jQuery("#paymentMethod");
+            var selectorPaymentMethods = TinyJ(self.selectors.paymentMethod);
 
             selectorPaymentMethods.empty();
 
+            var message_choose = document.querySelector(".mercadopago-text-choice").value;
+            var option = new Option(message_choose + "... ", '');
+            selectorPaymentMethods.appendChild(option);
             if (methods.length > 0) {
-                var message_choose = document.querySelector(".mercadopago-text-choice").value;
-
-                var option = new Option(message_choose + "... ", '');
-
-                selectorPaymentMethods.append(option);
                 for (var i = 0; i < methods.length; i++) {
                     option = new Option(methods[i].name, methods[i].id);
-                    selectorPaymentMethods.append(option);
+                    selectorPaymentMethods.appendChild(option);
                 }
             }
         }

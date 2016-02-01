@@ -65,5 +65,35 @@ window types (i.e. redirect, iframe, modal, blank and popup). Customization is n
 	* Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
 	* Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
 
-![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup.png)<br />
-![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup2.png)<br />
+![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup3.png)<br />
+![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup4.png)<br />
+
+---
+<a name="Update"></a>
+## Update MercadoPago
+
+1. Delete the following files and directories from your current installation
+to ensure upgrade correct functionality (or execute commands detailed below).
+
+        app/code/community/MercadoPago
+		app/design/frontend/base/default/template/mercadopago
+		app/design/adminhtml/default/default/template/mercadopago
+		lib/mercadopago
+        /app/locale/en_US/mercadopago.csv
+        /app/locale/en_AR/mercadopago.csv
+        /app/locale/en_CL/mercadopago.csv
+        /app/locale/en_CO/mercadopago.csv
+        /app/locale/en_ES/mercadopago.csv
+        /app/locale/en_MX/mercadopago.csv
+        /app/locale/en_BR/mercadopago.csv
+
+Linux Commands:
+```sh
+$ rm -rf  app/code/community/MercadoPago
+		app/design/frontend/base/default/template/mercadopago
+		app/design/adminhtml/default/default/template/mercadopago
+		lib/mercadopago
+```
+```sh
+find . -name "mercadopago.csv" -type f -delete
+```

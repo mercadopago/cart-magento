@@ -193,7 +193,9 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function getOrCreateCustomer($email)
     {
-
+        if (empty($email)){
+            return false;
+        }
         $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
 
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);

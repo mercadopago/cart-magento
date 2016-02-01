@@ -156,20 +156,42 @@ class MercadoPago_Core_Helper_Data
 
     public function setOrderSubtotals($data, $order)
     {
+        if (isset($data['total_paid_amount'])){
+            $balance = $data['total_paid_amount'];
+        } else {
+            $balance = $data['transaction_details']['total_paid_amount'];
+        }
+
+        $order->setGrandTotal($balance);
+
         if ($data['coupon_amount']) {
             $order->setDiscountCouponAmount($data['coupon_amount'] * -1);
             $order->setBaseDiscountCouponAmount($data['coupon_amount'] * -1);
-            $balance = $data['total_paid_amount'] - ($data['transaction_amount'] - $data['coupon_amount'] + $data['shipping_cost']);
+            $balance = $balance - ($data['transaction_amount'] - $data['coupon_amount'] + $data['shipping_cost']);
         } else {
-            $balance = $data['total_paid_amount'] - $data['transaction_amount'] - $data['shipping_cost'];
+            $balance = $balance - $data['transaction_amount'] - $data['shipping_cost'];
         }
 
         if ($balance > 0) {
             $order->setFinanceCostAmount($balance);
             $order->setBaseFinanceCostAmount($balance);
         }
+    }
 
-        $order->setGrandTotal($data['total_paid_amount']);
+    /**
+     * @param $payment
+     *
+     * @return mixed
+     */
+    public function setPayerInfo(&$payment)
+    {
+        $payment["trunc_card"] = "xxxx xxxx xxxx " . $payment['card']["last_four_digits"];
+        $payment["cardholder_name"] = $payment['card']["cardholder"]["name"];
+        $payment['payer_first_name'] = $payment['payer']['first_name'];
+        $payment['payer_last_name'] = $payment['payer']['last_name'];
+        $payment['payer_email'] = $payment['payer']['email'];
+
+        return $payment;
     }
 
 }

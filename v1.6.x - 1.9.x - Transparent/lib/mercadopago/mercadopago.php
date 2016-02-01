@@ -368,14 +368,16 @@ class MPRestClient {
             throw new Exception("cURL extension not found. You need to enable cURL in your php.ini or another configuration you have.");
         }
 
-        $connect = curl_init(self::API_BASE_URL . $uri);
-
-        curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago Magento-1.9.x-transparent Cart v1.0.2");
-        curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($connect, CURLOPT_HTTPHEADER, array("Accept: application/json", "Content-Type: " . $content_type));
-
-        return $connect;
+        try {
+            $connect = curl_init(self::API_BASE_URL . $uri);
+            curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago Magento-1.9.x-transparent Cart v1.0.2");
+            curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
+            curl_setopt($connect, CURLOPT_HTTPHEADER, array("Accept: application/json", "Content-Type: " . $content_type));
+            return $connect;
+        } catch (Exception $e) {
+            throw new Exception('Can not connect to MercadoPago API. Error: '.$e->getMessage());
+        }
     }
 
     private static function set_data(&$connect, $data, $content_type) {

@@ -400,9 +400,9 @@ class MercadoPago_Core_Model_Core
         $customer = Mage::getSingleton('customer/session')->getCustomer();
         $email = $customer->getEmail();
 
-        if ($email == "") {
-            $order = $this->_getOrder();
-            $email = $order['customer_email'];
+        if (empty($email)) {
+            $quote = $this->_getQuote();
+            $email = $quote->getBillingAddress()->getEmail();
         }
 
         return $email;

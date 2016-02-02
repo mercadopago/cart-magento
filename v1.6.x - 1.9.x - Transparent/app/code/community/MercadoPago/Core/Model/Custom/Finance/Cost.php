@@ -23,9 +23,14 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
             $this->_setAmount($balance);
             $this->_setBaseAmount($balance);
 
+            return $this;
         }
 
-        return $this;
+        if ($address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING) {
+            $address->setFinanceCostAmount(0);
+            $address->setBaseFinanceCostAmount(0);
+        }
+
     }
 
     public function fetch(Mage_Sales_Model_Quote_Address $address)

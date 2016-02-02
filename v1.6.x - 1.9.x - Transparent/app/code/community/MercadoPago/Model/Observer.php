@@ -110,12 +110,17 @@ class MercadoPago_Model_Observer{
 		
         $client_secret = Mage::getStoreConfig('payment/mercadopago/client_secret');
         Mage::helper('mercadopago')->log("Get client secret: " . $client_secret, 'mercadopago.log');
-        
-		$mp = new MP($client_id, $client_secret);
-        $user = $mp->get("/users/me");
-        Mage::helper('mercadopago')->log("API Users response", 'mercadopago.log', $user);
-        
-            //caso api retorne 403 (error no get) verifica se a mensagem e do usuario com test credentials
+
+        $user = array();
+        if($client_id && $client_secret) {
+            $mp = new MP($client_id, $client_secret);
+            $user = $mp->get("/users/me");
+            Mage::helper('mercadopago')->log("API Users response", 'mercadopago.log', $user);
+        } else {
+            Mage::helper('mercadopago')->log("Missing client id or client secret.", 'mercadopago.log');
+        }
+
+        //caso api retorne 403 (error no get) verifica se a mensagem e do usuario com test credentials
         if( $user['status'] == 200 && !in_array("test_user", $user['response']['tags']) ){
             
             $sponsor_id = 1;

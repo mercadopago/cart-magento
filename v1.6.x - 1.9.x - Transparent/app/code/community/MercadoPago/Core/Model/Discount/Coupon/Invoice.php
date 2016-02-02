@@ -10,8 +10,10 @@ class MercadoPago_Core_Model_Discount_Coupon_Invoice
     {
         $order = $invoice->getOrder();
         $amount = $order->getDiscountCouponAmount();
-        $baseAmount = $order->getDiscountCouponAmount();
+        $baseAmount = $order->getBaseDiscountCouponAmount();
         if ($amount) {
+            $invoice->setDiscountCouponAmount($amount);
+            $invoice->setDiscountCouponAmount($baseAmount);
             $invoice->setGrandTotal($invoice->getGrandTotal() + $amount);
             $invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() + $baseAmount);
         }

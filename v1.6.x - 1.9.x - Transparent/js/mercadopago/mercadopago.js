@@ -231,6 +231,7 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.cardNumberInput).keyup(clearOptions);
             TinyJ(self.selectors.cardNumberInput).change(guessingPaymentMethod);
             TinyJ(self.selectors.installmentsDontWork).click(guessingPaymentMethod);
+            TinyJ(self.selectors.installments).change(setTotalAmount);
 
             releaseEventCreateCardToken();
 

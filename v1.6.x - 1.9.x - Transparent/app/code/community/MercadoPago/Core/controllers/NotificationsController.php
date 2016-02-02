@@ -77,7 +77,7 @@ class MercadoPago_Core_NotificationsController
                     $data = $this->_getDataPayments($merchant_order);
                     $status_final = $this->getStatusFinal($data['status']);
 
-                    $this->updateOrder($data);
+                    $core->updateOrder($data);
 
                     if ($status_final != false) {
                         $data['status_final'] = $status_final;
@@ -118,13 +118,9 @@ class MercadoPago_Core_NotificationsController
             if ($response['status'] == 200 || $response['status'] == 201) {
                 $payment = $response['response'];
 
-                $payment["trunc_card"] = "xxxx xxxx xxxx " . $payment['card']["last_four_digits"];
-                $payment["cardholder_name"] = $payment['card']["cardholder"]["name"];
-                $payment['payer_first_name'] = $payment['payer']['first_name'];
-                $payment['payer_last_name'] = $payment['payer']['last_name'];
-                $payment['payer_email'] = $payment['payer']['email'];
+                $payment = Mage::helper('mercadopago')->setPayerInfo($payment);
 
-                $this->updateOrder($payment);
+                $core->updateOrder($payment);
                 $setStatusResponse = $core->setStatusOrder($payment);
                 $this->getResponse()->setBody($setStatusResponse['text']);
                 $this->getResponse()->setHttpResponseCode($setStatusResponse['code']);
@@ -136,67 +132,6 @@ class MercadoPago_Core_NotificationsController
         Mage::helper('mercadopago')->log("Payment not found", 'mercadopago-notification.log', $request->getParams());
         $this->getResponse()->getBody("Payment not found");
         $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
-    }
-
-    public function updateOrder($data)
-    {
-        Mage::helper('mercadopago')->log("Update Order", 'mercadopago-notification.log');
-
-        try {
-            $order = Mage::getModel('sales/order')->loadByIncrementId($data["external_reference"]);
-
-            //update info de status no pagamento
-            $payment_order = $order->getPayment();
-
-            $additionalFields = array(
-                'status',
-                'status_detail',
-                'payment_id',
-                'transaction_amount',
-                'cardholderName',
-                'installments',
-                'statement_descriptor',
-                'trunc_card'
-
-            );
-
-            foreach ($additionalFields as $field) {
-                if (isset($data[$field])) {
-                    $payment_order->setAdditionalInformation($field, $data[$field]);
-                }
-            }
-
-            if (isset($data['payment_method_id'])) {
-                $payment_order->setAdditionalInformation('payment_method', $data['payment_method_id']);
-            }
-
-            $payment_status = $payment_order->save();
-            Mage::helper('mercadopago')->log("Update Payment", 'mercadopago-notification.log', $payment_status->toString());
-
-            if ($data['payer_first_name']) {
-                $order->setCustomerFirstname($data['payer_first_name']);
-            }
-
-            if ($data['payer_last_name']) {
-                $order->setCustomerLastname($data['payer_last_name']);
-            }
-
-            if ($data['payer_email']) {
-                $order->setCustomerEmail($data['payer_email']);
-            }
-
-
-            Mage::helper('mercadopago')->setOrderSubtotals($data, $order);
-
-            $status_save = $order->save();
-            Mage::helper('mercadopago')->log("Update order", 'mercadopago-notification.log', $status_save->toString());
-        } catch (Exception $e) {
-            Mage::helper('mercadopago')->log("erro in update order status: " . $e, 'mercadopago-notification.log');
-            $this->getResponse()->setBody($e);
-
-            //caso erro no processo de notificação de pagamento, mercadopago ira notificar novamente.
-            $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
-        }
     }
 
     public function formatArrayPayment($data, $payment)

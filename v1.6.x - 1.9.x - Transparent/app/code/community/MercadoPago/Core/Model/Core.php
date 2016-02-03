@@ -443,6 +443,8 @@ class MercadoPago_Core_Model_Core
 
         try {
             if ($status == 'approved') {
+                Mage::helper('mercadopago')->setOrderSubtotals($payment, $order);
+
                 if (!$order->hasInvoices()) {
                     $invoice = $order->prepareInvoice();
                     $invoice->register()->pay();
@@ -453,6 +455,8 @@ class MercadoPago_Core_Model_Core
 
                     $invoice->sendEmail(true, $message);
                 }
+
+
             } elseif ($status == 'refunded' || $status == 'cancelled') {
                 $order->cancel();
             }
@@ -464,6 +468,7 @@ class MercadoPago_Core_Model_Core
                 $stateObject->setIsNotified(true);
             }
 
+            $order->setState($helper->_getAssignedState($statusOrder));
             $order->addStatusToHistory($statusOrder, $message, true);
             $order->sendOrderUpdateEmail(true, $message);
 
@@ -526,9 +531,7 @@ class MercadoPago_Core_Model_Core
                 $order->setCustomerEmail($data['payer_email']);
             }
 
-            if ($data['status'] == 'approved') {
-                Mage::helper('mercadopago')->setOrderSubtotals($data, $order);
-            }
+
             $status_save = $order->save();
             Mage::helper('mercadopago')->log("Update order", 'mercadopago-notification.log', $status_save->toString());
         } catch (Exception $e) {

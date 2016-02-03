@@ -157,19 +157,23 @@ class MercadoPago_Core_Helper_Data
     public function setOrderSubtotals($data, $order)
     {
         if (isset($data['total_paid_amount'])){
-            $balance = $data['total_paid_amount'];
+            $balance = $this->_getMultiCardValue($data['total_paid_amount']);
         } else {
             $balance = $data['transaction_details']['total_paid_amount'];
         }
 
         $order->setGrandTotal($balance);
+        $order->setBaseGrandTotal($balance);
 
-        if ($data['coupon_amount']) {
-            $order->setDiscountCouponAmount($data['coupon_amount'] * -1);
-            $order->setBaseDiscountCouponAmount($data['coupon_amount'] * -1);
-            $balance = $balance - ($data['transaction_amount'] - $data['coupon_amount'] + $data['shipping_cost']);
+        $couponAmount = $this->_getMultiCardValue($data['coupon_amount']);
+        $transactionAmount = $this->_getMultiCardValue($data['transaction_amount']);
+        $shippingCost = $this->_getMultiCardValue($data['shipping_cost']);
+        if ($couponAmount) {
+            $order->setDiscountCouponAmount($couponAmount * -1);
+            $order->setBaseDiscountCouponAmount($couponAmount * -1);
+            $balance = $balance - ($transactionAmount - $couponAmount + $shippingCost);
         } else {
-            $balance = $balance - $data['transaction_amount'] - $data['shipping_cost'];
+            $balance = $balance - $transactionAmount - $shippingCost;
         }
 
         if ($balance > 0) {
@@ -192,6 +196,17 @@ class MercadoPago_Core_Helper_Data
         $payment['payer_email'] = $payment['payer']['email'];
 
         return $payment;
+    }
+
+    protected function _getMultiCardValue($fullValue) {
+        $finalValue = 0;
+        $values = explode('|', $fullValue);
+        foreach ($values as $value) {
+            $value = (float) str_replace(' ', '', $value);
+            $finalValue = $finalValue + $value;
+        }
+
+        return $finalValue;
     }
 
 }

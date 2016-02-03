@@ -42,6 +42,7 @@ class MercadoPago_Core_NotificationsController
         $status_final = "";
         $statuses = explode('|', $dataStatus);
         foreach ($statuses as $status) {
+            $status = str_replace(' ', '', $status);
             if ($status_final == "") {
                 $status_final = $status;
             } else {
@@ -70,7 +71,6 @@ class MercadoPago_Core_NotificationsController
             $response = $core->getMerchantOrder($id);
             Mage::helper('mercadopago')->log("Return merchant_order", 'mercadopago-notification.log', $response);
             if ($response['status'] == 200 || $response['status'] == 201) {
-                $data = array();
                 $merchant_order = $response['response'];
 
                 if (count($merchant_order['payments']) > 0) {

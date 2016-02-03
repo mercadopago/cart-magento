@@ -229,6 +229,7 @@ class MercadoPago_Core_Model_Core
         $infoCoupon = array();
         $infoCoupon['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
         $infoCoupon['coupon_code'] = $coupon_code;
+        $infoCoupon['campaign_id'] = $coupon['response']['id'];
         if ($coupon['status'] == 200) {
             Mage::helper('mercadopago')->log("Coupon applied. API response 200.", 'mercadopago-custom.log');
         } else {
@@ -299,6 +300,7 @@ class MercadoPago_Core_Model_Core
             $couponInfo = $this->getCouponInfo($coupon, $coupon_code);
             $preference['coupon_amount'] = $couponInfo['coupon_amount'];
             $preference['coupon_code'] = $couponInfo['coupon_code'];
+            $preference['campaign_id'] = $couponInfo['campaign_id'];
 
         }
 

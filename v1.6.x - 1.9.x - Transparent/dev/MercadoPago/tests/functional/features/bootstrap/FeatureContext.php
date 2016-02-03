@@ -378,7 +378,11 @@ class FeatureContext
             $pwd->setValue($password);
             $form = $session->getPage()->find('css', '#authForm');
             if (!$form) {
-                return;
+                if ($this->iShouldSee("captcha")) {
+                    throw new ExpectationException('This form has a captcha', $this->getSession()->getDriver());
+                } else {
+                    return;
+                }
             }
             $form->submit();
         }

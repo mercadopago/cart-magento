@@ -50,8 +50,14 @@ class MercadoPago_Core_Model_Custom_Payment
             $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
             $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
 
-            Mage::helper('mercadopago')->log("Received Payment data", 'mercadopago-custom.log', $payment);
-            Mage::getModel('mercadopago/core')->setStatusOrder($payment, $stateObject);
+            if ($response['status'] == 200 || $response['status'] == 201) {
+                Mage::helper('mercadopago')->log("Received Payment data", 'mercadopago-custom.log', $payment);
+
+                $payment = Mage::helper('mercadopago')->setPayerInfo($payment);
+                $core = Mage::getModel('mercadopago/core');
+                $core->updateOrder($payment);
+                $core->setStatusOrder($payment, $stateObject);
+            }
 
             return true;
         endif;
@@ -187,7 +193,9 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function getOrCreateCustomer($email)
     {
-
+        if (empty($email)){
+            return false;
+        }
         $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
 
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);

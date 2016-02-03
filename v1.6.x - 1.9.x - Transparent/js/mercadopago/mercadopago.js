@@ -231,6 +231,7 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.cardNumberInput).keyup(clearOptions);
             TinyJ(self.selectors.cardNumberInput).change(guessingPaymentMethod);
             TinyJ(self.selectors.installmentsDontWork).click(guessingPaymentMethod);
+            TinyJ(self.selectors.installments).change(setTotalAmount);
 
             releaseEventCreateCardToken();
 
@@ -569,19 +570,16 @@ var MercadoPagoCustom = (function () {
             hideLoading();
 
             if (status == http.status.OK) {
-                // do somethings ex: show logo of the payment method
-                var paymentMethodId = response[0].id;
-                TinyJ(self.selectors.paymentMethodId).val(paymentMethodId);
-                if (response[0].id != undefined) {
-                    var siteId = TinyJ(self.selectors.siteId).val();
-                    if (paymentMethodId != '' && siteId == self.constants.mexico) {
-                        TinyJ(self.selectors.paymentMethod).val(paymentMethodId);
-                    }
+                if (response.length == 1) {
+                    var paymentMethodId = response[0].id;
+                    TinyJ(self.selectors.paymentMethodId).val(paymentMethodId);
                 }
 
                 var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
                 var selector = oneClickPay == true ? self.selectors.cardId : self.selectors.cardNumberInput;
-                TinyJ(selector).getElem().style.background = String.format(self.constants.backgroundUrlFormat, response[0].secure_thumbnail);
+                if (response.length == 1) {
+                    TinyJ(selector).getElem().style.background = String.format(self.constants.backgroundUrlFormat, response[0].secure_thumbnail);
+                }
 
                 var bin = getBin();
                 try {

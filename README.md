@@ -27,6 +27,18 @@ This feature will allow merchants to have a standard checkout. It includes all
 payment methods (i.e. all credit cards, bar code payment, account money) and all
 window types (i.e. redirect, iframe, modal, blank and popup). Customization is not allowed.
 
+**Compatibility with OSC extensions**
+
+This feature allows easy integration with two of the most used One Step Checkout extensions in the market:
+* [Inovarti OSC](http://onestepcheckout.com.br)
+* Checkout Venda Mais
+
+**Shipment integartion**
+
+This feature allows to setup and integrate with MercadoEnvios shipment method as another shipment option for customers. It includes integration for all countries (except Venezuela). Also includes the posibility to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
+
+_Note: Only available for Standard checkout_
+
 <a name="usage"></a>
 ## Installation:
 

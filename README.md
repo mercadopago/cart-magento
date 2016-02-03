@@ -65,8 +65,8 @@ window types (i.e. redirect, iframe, modal, blank and popup). Customization is n
 	* Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
 	* Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
 
-![setup 1](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup3.png)<br />
-![setup 2](https://raw.github.com/mercadopago/cart-magento/master/README.img/setup4.png)<br />
+![setup 1](/README.img/setup3.png?raw=true)<br />
+![setup 2](/README.img/setup4.png?raw=true)<br />
 
 ---
 <a name="Update"></a>

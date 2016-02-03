@@ -21,9 +21,13 @@ class MercadoPago_Core_Model_Discount_Coupon
             $this->_setAmount($balance);
             $this->_setBaseAmount($balance);
 
+            return $this;
+        }
+        if ($address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING) {
+            $address->setDiscountCouponAmount(0);
+            $address->setBaseDiscountCouponAmount(0);
         }
 
-        return $this;
     }
 
     public function fetch(Mage_Sales_Model_Quote_Address $address)

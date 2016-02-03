@@ -31,7 +31,7 @@ window types (i.e. redirect, iframe, modal, blank and popup). Customization is n
 
 This feature allows easy integration with two of the most used One Step Checkout extensions in the market:
 * [Inovarti OSC](http://onestepcheckout.com.br)
-* Checkout Venda Mais
+* Idecheckoutvm
 
 **Shipment integartion**
 

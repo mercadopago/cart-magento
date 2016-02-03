@@ -604,7 +604,6 @@ var MercadoPagoCustom = (function () {
                         this.issuerMandatory = true;
                     }
                 }
-                ;
 
                 showLogMercadoPago(String.format(self.messages.issuerMandatory, this.issuerMandatory));
 

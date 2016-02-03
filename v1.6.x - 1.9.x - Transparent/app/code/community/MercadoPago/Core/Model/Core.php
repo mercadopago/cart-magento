@@ -171,17 +171,6 @@ class MercadoPago_Core_Model_Core
         return $message;
     }
 
-    protected function getTotalCart($order)
-    {
-        $total = $order->getBaseGrandTotal();
-        if (!$total) {
-            $total = $order->getBasePrice();
-        }
-        $totalCart = $total - $order->getBaseFinanceCostAmount() - $order->getBaseDiscountCouponAmount();
-
-        return number_format($totalCart, 2, '.', '');
-    }
-
     protected function getCustomerInfo($customer, $order)
     {
         $email = htmlentities($customer->getEmail());
@@ -240,6 +229,7 @@ class MercadoPago_Core_Model_Core
         $infoCoupon = array();
         $infoCoupon['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
         $infoCoupon['coupon_code'] = $coupon_code;
+        $infoCoupon['campaign_id'] = $coupon['response']['id'];
         if ($coupon['status'] == 200) {
             Mage::helper('mercadopago')->log("Coupon applied. API response 200.", 'mercadopago-custom.log');
         } else {
@@ -263,7 +253,7 @@ class MercadoPago_Core_Model_Core
         $preference = array();
 
         $preference['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK) . "mercadopago/notifications/custom";
-        $preference['transaction_amount'] = (float)$this->getTotalCart($order);
+        $preference['transaction_amount'] = (float)$this->getAmount();
         $preference['external_reference'] = $order_id;
         $preference['payer']['email'] = $customerInfo['email'];
 
@@ -310,6 +300,7 @@ class MercadoPago_Core_Model_Core
             $couponInfo = $this->getCouponInfo($coupon, $coupon_code);
             $preference['coupon_amount'] = $couponInfo['coupon_amount'];
             $preference['coupon_code'] = $couponInfo['coupon_code'];
+            $preference['campaign_id'] = $couponInfo['campaign_id'];
 
         }
 
@@ -333,7 +324,6 @@ class MercadoPago_Core_Model_Core
 
         //seta sdk php mercadopago
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
-
         $response = $mp->post("/v1/payments", $preference);
         Mage::helper('mercadopago')->log("POST /v1/payments", 'mercadopago-custom.log', $response);
 
@@ -400,9 +390,9 @@ class MercadoPago_Core_Model_Core
         $customer = Mage::getSingleton('customer/session')->getCustomer();
         $email = $customer->getEmail();
 
-        if ($email == "") {
-            $order = $this->_getOrder();
-            $email = $order['customer_email'];
+        if (empty($email)) {
+            $quote = $this->_getQuote();
+            $email = $quote->getBillingAddress()->getEmail();
         }
 
         return $email;
@@ -412,7 +402,7 @@ class MercadoPago_Core_Model_Core
     public function getAmount()
     {
         $quote = $this->_getQuote();
-        $total = $quote->getBaseSubtotal() + $quote->getShippingAddress()->getShippingAmount();
+        $total = $quote->getBaseSubtotalWithDiscount() + $quote->getShippingAddress()->getShippingAmount();
 
         return (float)$total;
 
@@ -484,6 +474,7 @@ class MercadoPago_Core_Model_Core
             return ['text' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
         } catch (Exception $e) {
             $helper->log("erro in set order status: " . $e, 'mercadopago.log');
+
             return ['text' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST];
         }
     }

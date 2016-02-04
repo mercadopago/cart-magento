@@ -378,7 +378,8 @@ class FeatureContext
             $pwd->setValue($password);
             $form = $session->getPage()->find('css', '#authForm');
             if (!$form) {
-                if ($this->iShouldSee("captcha")) {
+                $actual = $this->getSession()->getPage()->getHtml();
+                if ($this->_stringMatch($actual, "captcha")) {
                     throw new ExpectationException('This form has a captcha', $this->getSession()->getDriver());
                 } else {
                     return;
@@ -547,7 +548,7 @@ class FeatureContext
         if (strpos($currentUrl, $arg1)) {
             return;
         }
-
+        echo $this->getSession()->getPage()->getHtml();
         throw new ExpectationException('Wrong url: you are in ' . $currentUrl, $this->getSession()->getDriver());
     }
 

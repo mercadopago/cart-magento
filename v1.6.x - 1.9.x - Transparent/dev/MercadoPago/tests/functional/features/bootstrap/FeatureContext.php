@@ -343,6 +343,12 @@ class FeatureContext
     public function iAmLoggedInMPAs($arg1, $arg2)
     {
         $session = $this->getSession();
+        $logged = $session->getPage()->find('css', '#payerAccount');
+        if ($logged) {
+            $exit = $session->getPage()->find('css', '#payerAccount a');
+            $exit->press();
+            $this->iWaitForSeconds(5);
+        }
 
         $login = $session->getPage()->find('css', '#user_id');
         $pwd = $session->getPage()->find('css', '#password');
@@ -353,7 +359,16 @@ class FeatureContext
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
-
+            $this->iWaitForSeconds(7);
+            $logged = $session->getPage()->find('css', '#payerAccount');
+            if ($logged) {
+                return;
+            } else {
+                $actual = $this->getSession()->getPage()->getHtml();
+                if ($this->_stringMatch($actual, "captcha")) {
+                    throw new ExpectationException('This form has a captcha', $this->getSession()->getDriver());
+                }
+            }
         }
     }
 
@@ -378,12 +393,7 @@ class FeatureContext
             $pwd->setValue($password);
             $form = $session->getPage()->find('css', '#authForm');
             if (!$form) {
-                $actual = $this->getSession()->getPage()->getHtml();
-                if ($this->_stringMatch($actual, "captcha")) {
-                    throw new ExpectationException('This form has a captcha', $this->getSession()->getDriver());
-                } else {
-                    return;
-                }
+                return;
             }
             $form->submit();
         }
@@ -548,7 +558,6 @@ class FeatureContext
         if (strpos($currentUrl, $arg1)) {
             return;
         }
-        echo $this->getSession()->getPage()->getHtml();
         throw new ExpectationException('Wrong url: you are in ' . $currentUrl, $this->getSession()->getDriver());
     }
 

@@ -104,7 +104,7 @@ class FeatureContext
         $page = $this->getSession()->getPage();
         $element = $page->find('css', $cssClass);
         if (null === $element) {
-            throw new ElementNotFoundException($this->getSession()->getDriver(), 'form field', 'css', $cssClass);
+            throw new ElementNotFoundException($this->getSession()->getDriver(), 'Element', 'css', $cssClass);
         }
 
         return $element;
@@ -258,7 +258,16 @@ class FeatureContext
         try {
             $this->getSession()->wait($milliseconds, '(0 === Ajax.activeRequestCount)');
         } catch (Exception $e) {
+            $this->acceptAlert();
+        }
+    }
+
+    protected function acceptAlert()
+    {
+        try {
             $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+        } catch (Exception $e) {
+            return;
         }
     }
 
@@ -334,6 +343,12 @@ class FeatureContext
     public function iAmLoggedInMPAs($arg1, $arg2)
     {
         $session = $this->getSession();
+        $logged = $session->getPage()->find('css', '#payerAccount');
+        if ($logged) {
+            $exit = $session->getPage()->find('css', '#payerAccount a');
+            $exit->press();
+            $this->iWaitForSeconds(5);
+        }
 
         $login = $session->getPage()->find('css', '#user_id');
         $pwd = $session->getPage()->find('css', '#password');
@@ -344,9 +359,46 @@ class FeatureContext
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
-            $this->findElement('#payerAccount');
-
+            $this->iWaitForSeconds(7);
+            $logged = $session->getPage()->find('css', '#payerAccount');
+            if ($logged) {
+                return;
+            } else {
+                $actual = $this->getSession()->getPage()->getHtml();
+                if ($this->_stringMatch($actual, "captcha")) {
+                    throw new ExpectationException('This form has a captcha', $this->getSession()->getDriver());
+                }
+            }
         }
+    }
+
+    /**
+     * @When I am logged 2 in MP as :arg1 :arg2
+     */
+    public function iAmLogged2InMPAs($arg1, $arg2)
+    {
+        $session = $this->getSession();
+
+        $logged = $session->getPage()->find('css', '#payerAccount');
+        if ($logged) {
+            return;
+        }
+
+        $login = $session->getPage()->find('css', '#user_id');
+        $pwd = $session->getPage()->find('css', '#password');
+        if ($login && $pwd) {
+            $email = $arg1;
+            $password = $arg2;
+            $login->setValue($email);
+            $pwd->setValue($password);
+            $form = $session->getPage()->find('css', '#authForm');
+            if (!$form) {
+                return;
+            }
+            $form->submit();
+        }
+
+        $this->iWaitForSeconds(7);
     }
 
     /**
@@ -453,14 +505,22 @@ class FeatureContext
      */
     public function iFillTheIframeShippingAddressFields()
     {
-        $page = $this->getSession()->getPage();
-        $page->fillField('streetName', 'Mitre');
-        $page->fillField('streetNumber', '123');
-        $page->fillField('zipCode', '7000');
-        $page->fillField('cityName', 'Tandil');
-        $page->selectFieldOption('stateId', 'AR-B');
-        $page->fillField('contact', 'test');
-        $page->fillField('phone', '43434343');
+        try {
+            $element = $this->findElement('streetName');
+        } catch (Exception $e) {
+            return;
+        }
+
+        if ($element) {
+            $page = $this->getSession()->getPage();
+            $page->fillField('streetName', 'Mitre');
+            $page->fillField('streetNumber', '123');
+            $page->fillField('zipCode', '7000');
+            $page->fillField('cityName', 'Tandil');
+            $page->selectFieldOption('stateId', 'AR-B');
+            $page->fillField('contact', 'test');
+            $page->fillField('phone', '43434343');
+        }
 
     }
 
@@ -498,7 +558,6 @@ class FeatureContext
         if (strpos($currentUrl, $arg1)) {
             return;
         }
-
         throw new ExpectationException('Wrong url: you are in ' . $currentUrl, $this->getSession()->getDriver());
     }
 

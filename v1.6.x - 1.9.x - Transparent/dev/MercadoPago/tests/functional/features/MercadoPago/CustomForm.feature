@@ -17,7 +17,7 @@ Feature: Validation of custom checkout form
     And I select radio "p_method_mercadopago_custom"
     And I press "#use_other_card_mp" element
 
-  @CheckoutCustomForm @CardED @skip
+  @CheckoutCustomForm @CardED
   Scenario: Validate card expiration date
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "1"

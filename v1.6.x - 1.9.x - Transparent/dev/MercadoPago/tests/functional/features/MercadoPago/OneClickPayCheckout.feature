@@ -20,14 +20,15 @@ Feature: Validation of custom checkout with one click pay
     And I fill text field "securityCodeOCP" with "aas"
     And I select option field "installments" with "1"
     And I press "#payment-buttons-container .button" element
-    And I wait for "20" seconds
+    And I wait for "12" seconds avoiding alert
     Then I should stay step "#opc-payment"
 
   @OCP @OCPAPRO
   Scenario: See payment approved in Mercado Pago with OCP
     Given I select option field "cardId" with "144422269"
-    And I select option field "installments" with "1"
     And I fill text field "securityCodeOCP" with "123"
+    And I wait for "5" seconds with "(0 === Ajax.activeRequestCount)"
+    And I select option field "installments" with "1"
     And I blur field "#securityCodeOCP"
     And I press "#payment-buttons-container .button" element
     When I press "#review-buttons-container .button" element

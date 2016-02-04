@@ -1,7 +1,7 @@
 @MercadoPago @reset_configs
 Feature: Payment results in MercadoPago Standard Checkout
 
-  @STANDARDPerCountry @currenttest
+  @STANDARDPerCountry
   Scenario Outline: Generate order with sandbox mode
     When Setting merchant <country>
     And User "<user>" "<pass>" exists

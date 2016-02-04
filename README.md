@@ -1,9 +1,9 @@
 # Magento - MercadoPago Module (1.4.x to 1.9.x)
 ---
 
-*Checkout Custom available for Argentina, Brazil and Mexico*
+*Checkout Custom available for Argentina, Brazil, Colombia, Mexico and Venezuela*
 
-*Checkout Standard available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+*Checkout Standard available for Argentina, Brazil, Chile, Colombia, Mexico and Venezuela*
 
 * [Features](#features)
 * [Installation](#installation)

@@ -64,7 +64,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | mlm     | 501345      | 22615    | MX            | 100    | $0.00          |
       | mlm     | 501345      | 22615    | MX            | 150    | $131.00        |
 
-  @FreeShippingCheckoutStandard
+  @FreeShippingCheckoutStandard @skip
   Scenario: FreeShipping complete checkout
     Given Setting merchant "mla"
     When I enable methods of "mla"

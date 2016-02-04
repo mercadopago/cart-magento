@@ -38,7 +38,7 @@ This feature allows easy integration with two of the most used One Step Checkout
 * [Inovarti OSC](http://onestepcheckout.com.br)
 * Idecheckoutvm
 
-**Shipment integartion**
+**Shipment integration**
 
 This feature allows to setup and integrate with MercadoEnvios shipment method as another shipment option for customers. It includes integration for all countries (except Venezuela). Also includes the posibility to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
 
@@ -74,7 +74,9 @@ _Note: Only available for Standard checkout_
 	* Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
 	* Venezuela: [https://www.mercadopago.com/mlv/herramientas/aplicaciones](https://www.mercadopago.com/mlv/herramientas/aplicaciones)
 
-4. Get your **public_key** in the following address:
+	![setup 1](/README.img/setup3.png?raw=true)<br />
+
+4. Get your **PUBLIC_KEY** and **ACCESS_TOKEN** in the following address:
 
 	* Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
 	* Brazil: [https://www.mercadopago.com/mlb/account/credentials](https://www.mercadopago.com/mlb/account/credentials)
@@ -82,8 +84,7 @@ _Note: Only available for Standard checkout_
 	* Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
 	* Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
 
-![setup 1](/README.img/setup3.png?raw=true)<br />
-![setup 2](/README.img/setup4.png?raw=true)<br />
+	![setup 2](/README.img/setup4.png?raw=true)<br />
 
 ---
 <a name="update-mercadopago"></a>

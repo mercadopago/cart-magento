@@ -1,11 +1,16 @@
-# Magento - Mercadopago Module (1.4.x to 1.9.x)
+# Magento - MercadoPago Module (1.4.x to 1.9.x)
 ---
 
-*Checkout Custom Available for Argentina, Brazil and Mexico*
+*Checkout Custom available for Argentina, Brazil and Mexico*
 
-*Checkout Standard Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+*Checkout Standard available for Argentina, Brazil, Colombia, Mexico and Venezuela*
 
+* [Features](#features)
+* [Installation](#installation)
+* [Setup MercadoPago](#setup-mercadopago)
+* [Update MercadoPago](#update-mercadopago)
 
+<a name="features"></a>
 ## Features:
 
 **Credit Card Customized Checkout**
@@ -39,7 +44,7 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 
 _Note: Only available for Standard checkout_
 
-<a name="usage"></a>
+<a name="installation"></a>
 ## Installation:
 
 1. Copy the folders **app**, **skin**, **js** and **lib** to the Magento root installation. Make sure to keep the Magento folders structure intact.
@@ -51,7 +56,7 @@ _Note: Only available for Standard checkout_
 	![Index Managment](https://raw.github.com/mercadopago/cart-magento/master/README.img/indexmanagment.png)
 
 ---
-<a name="Setup"></a>
+<a name="setup-mercadopago"></a>
 ## Setup MercadoPago
 
 1. Go to **System > Configuration > Sales > Payment Methods**. Select **MercadoPago**.
@@ -81,7 +86,7 @@ _Note: Only available for Standard checkout_
 ![setup 2](/README.img/setup4.png?raw=true)<br />
 
 ---
-<a name="Update"></a>
+<a name="update-mercadopago"></a>
 ## Update MercadoPago
 
 1. Delete the following files and directories from your current installation

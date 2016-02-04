@@ -74,6 +74,8 @@ _Note: Only available for Standard checkout_
 	* Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
 	* Venezuela: [https://www.mercadopago.com/mlv/herramientas/aplicaciones](https://www.mercadopago.com/mlv/herramientas/aplicaciones)
 
+	![setup 1](/README.img/setup3.png?raw=true)<br />
+
 4. Get your **PUBLIC_KEY** and **ACCESS_TOKEN** in the following address:
 
 	* Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
@@ -82,8 +84,7 @@ _Note: Only available for Standard checkout_
 	* Mexico: [https://www.mercadopago.com/mlm/account/credentials](https://www.mercadopago.com/mlm/account/credentials)
 	* Venezuela: [https://www.mercadopago.com/mlv/account/credentials](https://www.mercadopago.com/mlv/account/credentials)
 
-![setup 1](/README.img/setup3.png?raw=true)<br />
-![setup 2](/README.img/setup4.png?raw=true)<br />
+	![setup 2](/README.img/setup4.png?raw=true)<br />
 
 ---
 <a name="update-mercadopago"></a>

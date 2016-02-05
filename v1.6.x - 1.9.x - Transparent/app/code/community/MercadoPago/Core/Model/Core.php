@@ -455,6 +455,11 @@ class MercadoPago_Core_Model_Core
 
                     $invoice->sendEmail(true, $message);
                 }
+                //Associate card to customer
+                $additionalInfo = $order->getPayment()->getAdditionalInformation();
+                if ($additionalInfo['token']) {
+                    Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
+                }
 
 
             } elseif ($status == 'refunded' || $status == 'cancelled') {
@@ -517,7 +522,7 @@ class MercadoPago_Core_Model_Core
             }
 
             $payment_status = $payment_order->save();
-            Mage::helper('mercadopago')->log("Update Payment", 'mercadopago-notification.log', $payment_status->toString());
+            Mage::helper('mercadopago')->log("Update Payment", 'mercadopago.log', $payment_status->toString());
 
             if ($data['payer_first_name']) {
                 $order->setCustomerFirstname($data['payer_first_name']);
@@ -533,9 +538,9 @@ class MercadoPago_Core_Model_Core
 
 
             $status_save = $order->save();
-            Mage::helper('mercadopago')->log("Update order", 'mercadopago-notification.log', $status_save->toString());
+            Mage::helper('mercadopago')->log("Update order", 'mercadopago.log', $status_save->toString());
         } catch (Exception $e) {
-            Mage::helper('mercadopago')->log("erro in update order status: " . $e, 'mercadopago-notification.log');
+            Mage::helper('mercadopago')->log("erro in update order status: " . $e, 'mercadopago.log');
             $this->getResponse()->setBody($e);
 
             //caso erro no processo de notificação de pagamento, mercadopago ira notificar novamente.

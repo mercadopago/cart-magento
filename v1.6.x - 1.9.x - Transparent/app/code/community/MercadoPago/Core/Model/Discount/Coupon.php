@@ -28,6 +28,8 @@ class MercadoPago_Core_Model_Discount_Coupon
             $address->setBaseDiscountCouponAmount(0);
         }
 
+        return $this;
+
     }
 
     public function fetch(Mage_Sales_Model_Quote_Address $address)

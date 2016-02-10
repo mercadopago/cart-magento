@@ -55,6 +55,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
                 $payment = Mage::helper('mercadopago')->setPayerInfo($payment);
                 $core = Mage::getModel('mercadopago/core');
+                Mage::helper('mercadopago')->log("Update Order", 'mercadopago-custom.log');
                 $core->updateOrder($payment);
                 $core->setStatusOrder($payment, $stateObject);
             }
@@ -175,10 +176,6 @@ class MercadoPago_Core_Model_Custom_Payment
         $order->setBaseFinanceCostAmount($balance);
         $order->save();
 
-        if ($response !== false && $response['response']['status'] == 'approved') {
-            $this->customerAndCards($preference['token'], $response['response']);
-        }
-
         return $response;
     }
 
@@ -278,5 +275,8 @@ class MercadoPago_Core_Model_Custom_Payment
         return Mage::getUrl('mercadopago/success', ['_secure' => true]);
     }
 
+    public function getCode() {
+        return $this->_code;
+    }
 
 }

@@ -76,7 +76,7 @@ class MercadoPago_Core_NotificationsController
                 if (count($merchant_order['payments']) > 0) {
                     $data = $this->_getDataPayments($merchant_order);
                     $status_final = $this->getStatusFinal($data['status']);
-
+                    Mage::helper('mercadopago')->log("Update Order", 'mercadopago-notification.log');
                     $core->updateOrder($data);
 
                     if ($status_final != false) {
@@ -120,6 +120,7 @@ class MercadoPago_Core_NotificationsController
 
                 $payment = Mage::helper('mercadopago')->setPayerInfo($payment);
 
+                Mage::helper('mercadopago')->log("Update Order", 'mercadopago-notification.log');
                 $core->updateOrder($payment);
                 $setStatusResponse = $core->setStatusOrder($payment);
                 $this->getResponse()->setBody($setStatusResponse['text']);

@@ -243,7 +243,8 @@ class MercadoPago_Core_Model_Standard_Payment
         $shippingCost = $order->getBaseShippingAmount();
         $shippingAddress = $order->getShippingAddress();
         $method = $order->getShippingMethod();
-        if (Mage::helper('mercadopago_mercadoenvios')->isMercadoEnviosMethod($method)) {
+        $methodCode = substr($method, 0, strpos($method, '_'));
+        if ($methodCode == 'mercadoenvios') {
             $zipCode = $shippingAddress->getPostcode();
             $defaultShippingId = substr($method, strpos($method, '_') + 1);
             $params = [

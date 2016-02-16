@@ -154,14 +154,9 @@ class MercadoPago_Core_Model_Standard_Payment
         $paramsShipment = new Varien_Object();
 
         Mage::dispatchEvent('mercadopago_standard_make_preference_before',
-            [
-                'params' => $paramsShipment,
-                'order'  => $order
-            ]
-        );
+            ['params' => $paramsShipment, 'order' => $order]);
 
         $arr = [];
-
         $arr['external_reference'] = $orderIncrementId;
         $arr['items'] = $this->getItems($order);
 
@@ -169,12 +164,10 @@ class MercadoPago_Core_Model_Standard_Payment
         $this->_calculateBaseTaxAmount($arr['items'], $order);
         $total_item = $this->getTotalItems($arr['items']);
         $total_item += (float)$order->getBaseShippingAmount();
-
         $order_amount = (float)$order->getBaseGrandTotal();
         if (!$order_amount) {
             $order_amount = (float)$order->getBasePrice() + $order->getBaseShippingAmount();
         }
-
         if ($total_item > $order_amount || $total_item < $order_amount) {
             $diff_price = $order_amount - $total_item;
             $arr['items'][] = [
@@ -190,23 +183,15 @@ class MercadoPago_Core_Model_Standard_Payment
         }
 
         $shippingAddress = $order->getShippingAddress();
-        $shipping =$shippingAddress->getData();
+        $shipping = $shippingAddress->getData();
 
         $arr['payer']['phone'] = [
             "area_code" => "-",
             "number"    => $shipping['telephone']
         ];
 
-        $paramsShipment = ($paramsShipment->getValues() != null) ? $paramsShipment->getValues() : [];
-
-        $paramsShipment['receiver_address'] = [
-            "floor"         => "-",
-            "zip_code"      => $shippingAddress->getPostcode(),
-            "street_name"   => $shippingAddress->getStreet()[0] . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
-            "apartment"     => "-",
-            "street_number" => ""
-        ];
-
+        $paramsShipment = $paramsShipment->getValues();
+        $paramsShipment['receiver_address'] = $this->getReceiverAddress($shippingAddress);
         $arr['shipments'] = $paramsShipment;
 
         $billing_address = $order->getBillingAddress()->getData();
@@ -253,8 +238,18 @@ class MercadoPago_Core_Model_Standard_Payment
             $arr['sponsor_id'] = (int)$sponsor_id;
         }
 
-
         return $arr;
+    }
+
+    protected function getReceiverAddress($shippingAddress)
+    {
+        return [
+            "floor"         => "-",
+            "zip_code"      => $shippingAddress->getPostcode(),
+            "street_name"   => $shippingAddress->getStreet()[0] . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
+            "apartment"     => "-",
+            "street_number" => ""
+        ];
     }
 
     public function getSuccessBlockType()

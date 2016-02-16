@@ -151,6 +151,15 @@ class MercadoPago_Core_Model_Standard_Payment
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
         $customer = Mage::getSingleton('customer/session')->getCustomer();
         $payment = $order->getPayment();
+        $paramsShipment = new Varien_Object();
+
+        Mage::dispatchEvent('mercadopago_standard_make_preference_before',
+            [
+                'params' => $paramsShipment,
+                'order'  => $order
+            ]
+        );
+
         $arr = [];
 
         $arr['external_reference'] = $orderIncrementId;
@@ -180,14 +189,25 @@ class MercadoPago_Core_Model_Standard_Payment
             Mage::helper('mercadopago')->log("Difference add itens: " . $diff_price, 'mercadopago-standard.log');
         }
 
-        $shipping = $order->getShippingAddress()->getData();
+        $shippingAddress = $order->getShippingAddress();
+        $shipping =$shippingAddress->getData();
 
         $arr['payer']['phone'] = [
             "area_code" => "-",
             "number"    => $shipping['telephone']
         ];
 
-        $arr['shipments'] = $this->_getShipmentsParams($order);
+        $paramsShipment = ($paramsShipment->getValues() != null) ? $paramsShipment->getValues() : [];
+
+        $paramsShipment['receiver_address'] = [
+            "floor"         => "-",
+            "zip_code"      => $shippingAddress->getPostcode(),
+            "street_name"   => $shippingAddress->getStreet()[0] . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
+            "apartment"     => "-",
+            "street_number" => ""
+        ];
+
+        $arr['shipments'] = $paramsShipment;
 
         $billing_address = $order->getBillingAddress()->getData();
 
@@ -235,31 +255,6 @@ class MercadoPago_Core_Model_Standard_Payment
 
 
         return $arr;
-    }
-
-    protected function _getShipmentsParams($order)
-    {
-        $params = new Varien_Object();
-        $shippingAddress = $order->getShippingAddress();
-        Mage::dispatchEvent('mercadoenvios_request_params',
-            [
-                'params' => $params,
-                'order'  => $order
-            ]
-        );
-
-        $params = ($params->getValues() != null) ? $params->getValues() : [];
-
-        $params['receiver_address'] = [
-            "floor"         => "-",
-            "zip_code"      => $shippingAddress->getPostcode(),
-            "street_name"   => $shippingAddress->getStreet()[0] . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
-            "apartment"     => "-",
-            "street_number" => ""
-        ];
-
-        return $params;
-
     }
 
     public function getSuccessBlockType()

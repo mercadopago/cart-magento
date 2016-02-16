@@ -239,27 +239,16 @@ class MercadoPago_Core_Model_Standard_Payment
 
     protected function _getShipmentsParams($order)
     {
-        $params = [];
-        $shippingCost = $order->getBaseShippingAmount();
+        $params = new Varien_Object();
         $shippingAddress = $order->getShippingAddress();
-        $method = $order->getShippingMethod();
-        $methodCode = substr($method, 0, strpos($method, '_'));
-        if ($methodCode == 'mercadoenvios') {
-            $zipCode = $shippingAddress->getPostcode();
-            $defaultShippingId = substr($method, strpos($method, '_') + 1);
-            $params = [
-                'mode'                    => 'me2',
-                'zip_code'                => $zipCode,
-                'default_shipping_method' => intval($defaultShippingId),
-                'dimensions'              => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
-            ];
-            if ($shippingCost == 0) {
-                $params['free_methods'] = [['id' => intval($defaultShippingId)]];
-            }
-        }
-        if (!empty($shippingCost)) {
-            $params['cost'] = (float)$order->getBaseShippingAmount();
-        }
+        Mage::dispatchEvent('mercadoenvios_request_params',
+            [
+                'params' => $params,
+                'order'  => $order
+            ]
+        );
+
+        $params = ($params->getValues() != null) ? $params->getValues() : [];
 
         $params['receiver_address'] = [
             "floor"         => "-",

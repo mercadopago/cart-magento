@@ -16,6 +16,15 @@
                     </mercadopago_mercadoenvios>
                 </observers>
             </controller_action_predispatch_shipping_tracking_popup>
+            <mercadoenvios_request_params>
+                <observers>
+                    <mercadopago_mercadoenvios>
+                        <type>model</type>
+                        <class>mercadopago_mercadoenvios/observer</class>
+                        <method>setShippingParams</method>
+                    </mercadopago_mercadoenvios>
+                </observers>
+            </mercadoenvios_request_params>
             <mercadopago_standard_notification_received>
                 <observers>
                     <mercadopago_mercadoenvios>

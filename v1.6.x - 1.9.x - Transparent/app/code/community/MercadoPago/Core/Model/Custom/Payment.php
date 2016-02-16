@@ -22,6 +22,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
     protected $_code = 'mercadopago_custom';
 
+    const LOG_FILE = 'mercadopago-custom.log';
     const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
 
     public static $exclude_inputs_opc = ['issuer_id', 'card_expiration_month', 'card_expiration_year', 'card_holder_name', 'doc_type', 'doc_number'];
@@ -51,11 +52,11 @@ class MercadoPago_Core_Model_Custom_Payment
             $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
 
             if ($response['status'] == 200 || $response['status'] == 201) {
-                Mage::helper('mercadopago')->log("Received Payment data", 'mercadopago-custom.log', $payment);
+                Mage::helper('mercadopago')->log("Received Payment data", self::LOG_FILE, $payment);
 
                 $payment = Mage::helper('mercadopago')->setPayerInfo($payment);
                 $core = Mage::getModel('mercadopago/core');
-                Mage::helper('mercadopago')->log("Update Order", 'mercadopago-custom.log');
+                Mage::helper('mercadopago')->log("Update Order", self::LOG_FILE);
                 $core->updateOrder($payment);
                 $core->setStatusOrder($payment, $stateObject);
             }
@@ -95,7 +96,7 @@ class MercadoPago_Core_Model_Custom_Payment
             throw $exception;
         }
 
-        Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $info_form);
+        Mage::helper('mercadopago')->log("info form", self::LOG_FILE, $info_form);
         $info = $this->getInfoInstance();
         $info->setAdditionalInformation($info_form);
         $info->setAdditionalInformation('payment_type_id', "credit_card");
@@ -139,7 +140,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function preparePostPayment()
     {
-        Mage::helper('mercadopago')->log("Credit Card -> init prepare post payment", 'mercadopago-custom.log');
+        Mage::helper('mercadopago')->log("Credit Card -> init prepare post payment", self::LOG_FILE);
         $core = Mage::getModel('mercadopago/core');
         $quote = $this->_getQuote();
         $order_id = $quote->getReservedOrderId();
@@ -162,10 +163,10 @@ class MercadoPago_Core_Model_Custom_Payment
             $preference['payer']['id'] = $payment->getAdditionalInformation("customer_id");
         }
 
-        $preference['binary_mode'] = Mage::getStoreConfig('payment/mercadopago_custom/binary_mode') == 1 ? true : false;
+        $preference['binary_mode'] = Mage::getStoreConfigFlag('payment/mercadopago_custom/binary_mode');
         $preference['statement_descriptor'] = Mage::getStoreConfig('payment/mercadopago_custom/statement_descriptor');
 
-        Mage::helper('mercadopago')->log("Credit Card -> PREFERENCE to POST /v1/payments", 'mercadopago-custom.log', $preference);
+        Mage::helper('mercadopago')->log("Credit Card -> PREFERENCE to POST /v1/payments", self::LOG_FILE, $preference);
 
         /* POST /v1/payments */
         $response = $core->postPaymentV1($preference);
@@ -199,18 +200,18 @@ class MercadoPago_Core_Model_Custom_Payment
 
         $customer = $mp->get("/v1/customers/search", ["email" => $email]);
 
-        Mage::helper('mercadopago')->log("Response search customer", 'mercadopago-custom.log', $customer);
+        Mage::helper('mercadopago')->log("Response search customer", self::LOG_FILE, $customer);
 
         if ($customer['status'] == 200) {
 
             if ($customer['response']['paging']['total'] > 0) {
                 return $customer['response']['results'][0];
             } else {
-                Mage::helper('mercadopago')->log("Customer not found: " . $email, 'mercadopago-custom.log');
+                Mage::helper('mercadopago')->log("Customer not found: " . $email, self::LOG_FILE);
 
                 $customer = $mp->post("/v1/customers", ["email" => $email]);
 
-                Mage::helper('mercadopago')->log("Response create customer", 'mercadopago-custom.log', $customer);
+                Mage::helper('mercadopago')->log("Response create customer", self::$_logFile, $customer);
 
                 if ($customer['status'] == 201) {
                     return $customer['response'];
@@ -237,7 +238,7 @@ class MercadoPago_Core_Model_Custom_Payment
                 && $card['expiration_month'] == $payment['card']['expiration_month']
                 && $card['expiration_year'] == $payment['card']['expiration_year']
             ) {
-                Mage::helper('mercadopago')->log("Card already exists", 'mercadopago-custom.log', $card);
+                Mage::helper('mercadopago')->log("Card already exists", self::LOG_FILE, $card);
 
                 return $card;
             }
@@ -251,7 +252,7 @@ class MercadoPago_Core_Model_Custom_Payment
         }
         $card = $mp->post("/v1/customers/" . $customer['id'] . "/cards", $params);
 
-        Mage::helper('mercadopago')->log("Response create card", 'mercadopago-custom.log', $card);
+        Mage::helper('mercadopago')->log("Response create card", self::LOG_FILE, $card);
 
         if ($card['status'] == 201) {
             return $card['response'];

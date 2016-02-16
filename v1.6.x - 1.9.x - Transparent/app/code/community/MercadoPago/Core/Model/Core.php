@@ -35,6 +35,7 @@ class MercadoPago_Core_Model_Core
     protected $_canReviewPayment = true;
 
     const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
+    const LOG_FILE = 'mercadopago-custom.log';
 
     /**
      * @return Mage_Checkout_Model_Session
@@ -231,9 +232,9 @@ class MercadoPago_Core_Model_Core
         $infoCoupon['coupon_code'] = $coupon_code;
         $infoCoupon['campaign_id'] = $coupon['response']['id'];
         if ($coupon['status'] == 200) {
-            Mage::helper('mercadopago')->log("Coupon applied. API response 200.", 'mercadopago-custom.log');
+            Mage::helper('mercadopago')->log("Coupon applied. API response 200.", self::LOG_FILE);
         } else {
-            Mage::helper('mercadopago')->log("Coupon invalid, not applied.", 'mercadopago-custom.log');
+            Mage::helper('mercadopago')->log("Coupon invalid, not applied.", self::LOG_FILE);
         }
 
         return $infoCoupon;
@@ -292,10 +293,10 @@ class MercadoPago_Core_Model_Core
 
         if (!empty($payment_info['coupon_code'])) {
             $coupon_code = $payment_info['coupon_code'];
-            Mage::helper('mercadopago')->log("Validating coupon_code: " . $coupon_code, 'mercadopago-custom.log');
+            Mage::helper('mercadopago')->log("Validating coupon_code: " . $coupon_code, self::LOG_FILE);
 
             $coupon = $this->validCoupon($coupon_code);
-            Mage::helper('mercadopago')->log("Response API Coupon: ", 'mercadopago-custom.log', $coupon);
+            Mage::helper('mercadopago')->log("Response API Coupon: ", self::LOG_FILE, $coupon);
 
             $couponInfo = $this->getCouponInfo($coupon, $coupon_code);
             $preference['coupon_amount'] = $couponInfo['coupon_amount'];
@@ -307,7 +308,7 @@ class MercadoPago_Core_Model_Core
         $sponsor_id = Mage::getStoreConfig('payment/mercadopago/sponsor_id');
         Mage::helper('mercadopago')->log("Sponsor_id", 'mercadopago-standard.log', $sponsor_id);
         if (!empty($sponsor_id)) {
-            Mage::helper('mercadopago')->log("Sponsor_id identificado", 'mercadopago-custom.log', $sponsor_id);
+            Mage::helper('mercadopago')->log("Sponsor_id identificado", self::LOG_FILE, $sponsor_id);
             $preference['sponsor_id'] = (int)$sponsor_id;
         }
 
@@ -320,12 +321,12 @@ class MercadoPago_Core_Model_Core
 
         //obtem access_token
         $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
-        Mage::helper('mercadopago')->log("Access Token for Post", 'mercadopago-custom.log', $access_token);
+        Mage::helper('mercadopago')->log("Access Token for Post", self::LOG_FILE, $access_token);
 
         //seta sdk php mercadopago
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
         $response = $mp->post("/v1/payments", $preference);
-        Mage::helper('mercadopago')->log("POST /v1/payments", 'mercadopago-custom.log', $response);
+        Mage::helper('mercadopago')->log("POST /v1/payments", self::LOG_FILE, $response);
 
         if ($response['status'] == 200 || $response['status'] == 201) {
             return $response;
@@ -340,8 +341,8 @@ class MercadoPago_Core_Model_Core
                 $e = $exception->getUserMessage();
             }
 
-            Mage::helper('mercadopago')->log("erro post pago: " . $e, 'mercadopago-custom.log');
-            Mage::helper('mercadopago')->log("response post pago: ", 'mercadopago-custom.log', $response);
+            Mage::helper('mercadopago')->log("erro post pago: " . $e, self::LOG_FILE);
+            Mage::helper('mercadopago')->log("response post pago: ", self::LOG_FILE, $response);
 
             $exception->setMessage($e);
             throw $exception;

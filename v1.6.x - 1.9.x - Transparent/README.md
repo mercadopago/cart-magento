@@ -1,5 +1,7 @@
 # Magento - MercadoPago Module (v1.6.x - 1.9.x)
 
+[![Build Status](https://travis-ci.org/SummaSolutions/cart-magento.svg?branch=master)](https://travis-ci.org/SummaSolutions/cart-magento)
+
 * [Features](#features)
 * [Installation](#installation)
 * [Configuration](#configuration)

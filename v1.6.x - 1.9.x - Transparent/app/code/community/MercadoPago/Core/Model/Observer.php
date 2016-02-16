@@ -34,7 +34,8 @@ class MercadoPago_Core_Model_Observer
             "mlb" => "http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg",
             "mco" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlc" => "https://secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
-            "mlv" => "https://imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg"
+            "mlv" => "https://imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
+            "mlm" => "http://imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG"
         ]
     ];
     

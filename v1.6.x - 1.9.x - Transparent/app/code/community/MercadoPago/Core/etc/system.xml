@@ -161,7 +161,6 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment><![CDATA[a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank">Click here to get your Access Token</a>]]></comment>
                             <comment><![CDATA[
                                 <span>Click to get your Access Token for: </span>
                                 <a href="https://www.mercadopago.com/mla/account/credentials" target="_blank">Argentina</a>

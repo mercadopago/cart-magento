@@ -211,7 +211,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
                 $customer = $mp->post("/v1/customers", ["email" => $email]);
 
-                Mage::helper('mercadopago')->log("Response create customer", self::$_logFile, $customer);
+                Mage::helper('mercadopago')->log("Response create customer", self::LOG_FILE, $customer);
 
                 if ($customer['status'] == 201) {
                     return $customer['response'];

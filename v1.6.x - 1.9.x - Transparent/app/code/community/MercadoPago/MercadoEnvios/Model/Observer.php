@@ -117,5 +117,32 @@ class MercadoPago_MercadoEnvios_Model_Observer
         }
     }
 
+    public function setShippingParams($observer)
+    {
+        $order = $observer->getOrder();
+        $method = $order->getShippingMethod();
+        if (Mage::helper('mercadopago_mercadoenvios')->isMercadoEnviosMethod($method)) {
+            $shippingAddress = $order->getShippingAddress();
+            $zipCode = $shippingAddress->getPostcode();
+            $defaultShippingId = substr($method, strpos($method, '_') + 1);
+            $paramsME = [
+                'mode'                    => 'me2',
+                'zip_code'                => $zipCode,
+                'default_shipping_method' => intval($defaultShippingId),
+                'dimensions'              => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
+            ];
+            $shippingCost = $order->getShippingCost();
+            if ($shippingCost == 0) {
+                $paramsME['free_methods'] = [['id' => intval($defaultShippingId)]];
+            }
+        }
+        if (!empty($shippingCost)) {
+            $paramsME['cost'] = (float)$order->getBaseShippingAmount();
+        }
+        $observer->getParams()->setValues($paramsME);
+
+        return $observer;
+    }
+
 
 }

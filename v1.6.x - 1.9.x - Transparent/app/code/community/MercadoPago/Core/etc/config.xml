@@ -63,9 +63,13 @@
                 <totals>
                     <mercadopago>
                         <class>mercadopago/custom_finance_cost</class>
+                        <before>grand_total</before>
+                        <after>tax</after>
                     </mercadopago>
                     <discount_mercadopago>
                         <class>mercadopago/discount_coupon</class>
+                        <before>grand_total</before>
+                        <after>tax</after>
                     </discount_mercadopago>
                 </totals>
             </quote>

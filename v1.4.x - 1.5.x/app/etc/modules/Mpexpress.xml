@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config>
     <modules>
-        <Mpexpress>
+        <MercadoPago_Mpexpress>
             <active>true</active>
             <codePool>community</codePool>
              <depends>
@@ -9,6 +9,6 @@
                 <Mage_Checkout/>
                 <Mage_Sales/>
             </depends>
-        </Mpexpress>
+        </MercadoPago_Mpexpress>
     </modules>
 </config>

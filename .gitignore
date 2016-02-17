@@ -1,0 +1,15 @@
+#SOs
+Thumbs.db
+*~
+._*
+.DS_Store
+
+#IDEs
+nbproject
+.idea
+
+.travis/build.properties.local
+
+/htdocs
+/dev
+/tmp

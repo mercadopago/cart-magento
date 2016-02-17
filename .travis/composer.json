@@ -1,0 +1,45 @@
+{
+  "name": "mercadopago/magento-plugin",
+  "description": "MercadoPago Magento Plugin",
+  "authors": [
+    {
+      "name": "MercadoPago",
+      "email": "info@mercadopago.com"
+    }
+  ],
+  "require": {
+    "aydin-hassan/magento-core-composer-installer": "~1.0",
+    "magento/magento": "1.9.2.1",
+    "phing/phing": "^2.13@dev"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:AydinHassan/magento-community.git"
+    }
+  ],
+  "extra": {
+    "magento-root-dir": "htdocs",
+    "magento-core-deploy": {
+      "excludes": [
+        "composer.json",
+        "composer.lock"
+      ]
+    }
+  },
+  "config":{
+    "bin-dir" : "bin"
+  },
+  "autoload": {
+    "psr-0": {
+      "": [
+        "htdocs/app",
+        "htdocs/lib",
+        "htdocs/app/code/local",
+        "htdocs/app/code/community",
+        "htdocs/app/code/core"
+      ]
+    }
+  },
+  "minimum-stability": "dev"
+}

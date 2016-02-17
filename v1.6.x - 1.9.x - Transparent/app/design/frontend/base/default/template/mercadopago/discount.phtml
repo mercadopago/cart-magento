@@ -1,8 +1,8 @@
-<li>
+<li class="mercadopago-discount-options">
     <div class="box-input">
         <label for="mercadopago_coupon"><?php echo $this->__('Discount coupon'); ?></label>
         <div class="input-box">
-            <input class="mercadopago_coupon" type="text" class="input-text" type="text" name="payment[coupon_code]"/>
+            <input class="mercadopago_coupon input-text validate-discount" id="input-coupon-discount" type="text" type="text" name="payment[<?php echo $this->code; ?>][coupon_code]"/>
         </div>
     </div>
     
@@ -19,8 +19,8 @@
         <li class="error amount-doesnt-match transaction_amount_invalid validation-advice">
             <?php echo $this->__('The coupon can not be applied to this amount.'); ?>
         </li>
-        
-        <li class="error campaign-code-doesnt-match validation-advice">
+
+        <li class="error campaign-code-doesnt-match collector-doesnt-match validation-advice">
             <?php echo $this->__("Doesn't find a campaign with the given code."); ?>
         </li>
         

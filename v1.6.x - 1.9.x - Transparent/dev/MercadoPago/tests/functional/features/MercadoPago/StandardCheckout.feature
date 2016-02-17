@@ -3,7 +3,7 @@ Feature: Payment results in MercadoPago Standard Checkout
 
   Background:
     Given User "test_user_2135227@testuser.com" "magento" exists
-    And Setting Config "payment/mercadopago_standard/sandbox_mode" is "1"
+    And Setting Config "payment/mercadopago_standard/sandbox_mode" is "0"
     And I am logged in as "test_user_2135227@testuser.com" "magento"
     And I am on page "swiss-movement-sports-watch.html"
     And Product with sku "acj005" has a price of "100"
@@ -20,7 +20,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     When I press "#review-buttons-container .button" element
 
   @STANDARD
-  Scenario: Generate order with sandbox mode
+  Scenario: Generate order with standard checkout
     Given I switch to the iframe "checkout_mercadopago"
     And I fill the iframe fields
 

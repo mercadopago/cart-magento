@@ -1,4 +1,4 @@
-# Magento - MercadoPago Module (1.4.x to 1.9.x)
+# Magento - MercadoPago Module (v1.4.x to 1.9.x)
 ---
 
 * [Features](#features)

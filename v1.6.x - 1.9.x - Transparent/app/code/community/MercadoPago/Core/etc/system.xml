@@ -161,7 +161,15 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>Get your access_token in the following address: https://www.mercadopago.com/mlb/account/credentials</comment>
+                            <comment><![CDATA[
+                                <span>Click to get your Access Token for: </span>
+                                <a href="https://www.mercadopago.com/mla/account/credentials" target="_blank">Argentina</a>
+                                <a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank">Brazil</a><br>
+                                <a href="https://www.mercadopago.com/mco/account/credentials" target="_blank">Colombia</a>
+                                <a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank">Mexico</a>
+                                <a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank">Venezuela</a>
+                                ]]>
+                            </comment>
                         </access_token>
                         <mercadopago_custom type="group" translate="label">
                             <label>Checkout Custom - Credit Card</label>

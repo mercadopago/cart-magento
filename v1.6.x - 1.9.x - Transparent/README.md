@@ -28,7 +28,7 @@ have merchant's logo.
 
 *Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
 
-**Standard checkout**
+**Standard Checkout**
 
 This feature allows merchants to have a standard checkout. It includes all
 payment methods (i.e. all credit cards, bar code payment, account money) and all

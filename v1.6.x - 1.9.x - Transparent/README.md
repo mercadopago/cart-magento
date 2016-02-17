@@ -18,7 +18,7 @@ payment. Thus, it will be possible to customize its look and feel, customers won
 redirected away to complete the payment, and it will also reduce the checkout steps
 improving conversion rates.
 
-*Available for Argentina, Brazil and Mexico*
+*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
 
 **Customized Bar Code Payment**
 
@@ -26,7 +26,7 @@ This feature allows merchants to have a customized bar code payment. It
 reduces the checkout steps improving conversion rates. The bar code payment will
 have merchant's logo.
 
-*Available for Argentina, Brazil and Mexico*
+*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
 
 **Standard checkout**
 
@@ -34,10 +34,10 @@ This feature allows merchants to have a standard checkout. It includes all
 payment methods (i.e. all credit cards, bar code payment, account money) and all
 window types (i.e. redirect, iframe, modal, blank and popup). Customization is not allowed.
 
-*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+*Available for Argentina, Brazil, Chile, Colombia, Mexico and Venezuela*
 
 **OneClick Pay**
-This feature allows to store credit card information for the customer, so that the next time there is no need to enter all the card details.
+This feature allows to store credit card information for the customer, so that the next time there is no need to enter all the card details.  Customers will just need to re-enter the security code of the credit card they want to use.
 
 **Compatibility with OSC extensions**
 
@@ -45,11 +45,11 @@ This feature allows easy integration with two of the most used One Step Checkout
 * [Inovarti OSC](http://onestepcheckout.com.br)
 * Idecheckoutvm
 
-**Shipment integartion**
+**Shipment integration**
 
 This feature allows to setup and integrate with MercadoEnvios shipment method as another shipment option for customers. It includes integration for all countries (except Venezuela). Also includes the possibility to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
 
-*Available only in Standard checkout*
+*Available only with Standard checkout*
 
 ---
 
@@ -131,6 +131,7 @@ If you want to enable ticket solution, check the configurations under **Checkout
 Get them in the following address:
 	* Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
 	* Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
+	* Chile: [https://www.mercadopago.com/mlc/herramientas/aplicaciones](https://www.mercadopago.com/mlc/herramientas/aplicaciones)
 	* Colombia: [https://www.mercadopago.com/mco/herramientas/aplicaciones](https://www.mercadopago.com/mco/herramientas/aplicaciones)
 	* Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
 	* Venezuela: [https://www.mercadopago.com/mlv/herramientas/aplicaciones](https://www.mercadopago.com/mlv/herramientas/aplicaciones)
@@ -180,13 +181,13 @@ find . -name "mercadopago.csv" -type f -delete
 3. Follow the setup instructions according to the payment solution you've chosen:<br />
 
 * [Custom Checkout](#checkout_custom)
-* [Custom Standard](#checkout_standard)
+* [Standard Checkout](#checkout_standard)
 
 ---
 <a name="mercadoenvios">
 ## MercadoEnvios ##
 In order to setup MercadoEnvios follow these instructions:<br />
-1. Setup MercadoPago Standard solutions following [these instructions](#checkout_standard). <br />
+1. Setup MercadoPago Standard Checkout following [these instructions](#checkout_standard). <br />
 2. Go to **System > Configuration > Sales > Shipping Methods > MercadoEnvios**.<br />
 3. Setup the plugin:<br />
 

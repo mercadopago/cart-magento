@@ -1,6 +1,6 @@
-# Magento - Mercadopago Module (1.4.x)
+# Magento - MercadoPago Module (v1.4.x to 1.5.x)
 ---
-*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+*Available for Argentina, Brazil, Chile, Colombia, Mexico and Venezuela*
 
 
 This module provides MercadoPago Checkout Express functionality that allow customers paid their shops much faster, increasing the store conversion.
@@ -54,6 +54,7 @@ Yes.  You can disable it at the Store Administration
 Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
 * Argentina: [https://www.mercadopago.com/mla/herramientas/aplicaciones](https://www.mercadopago.com/mla/herramientas/aplicaciones)
 * Brazil: [https://www.mercadopago.com/mlb/ferramentas/aplicacoes](https://www.mercadopago.com/mlb/ferramentas/aplicacoes)
+* Chile: [https://www.mercadopago.com/mlc/herramientas/aplicaciones](https://www.mercadopago.com/mlc/herramientas/aplicaciones)
 * Colombia: [https://www.mercadopago.com/mco/herramientas/aplicaciones](https://www.mercadopago.com/mco/herramientas/aplicaciones)
 * Mexico: [https://www.mercadopago.com/mlm/herramientas/aplicaciones](https://www.mercadopago.com/mlm/herramientas/aplicaciones)
 * Venezuela: [https://www.mercadopago.com/mlv/herramientas/aplicaciones](https://www.mercadopago.com/mlv/herramientas/aplicaciones)
@@ -72,6 +73,7 @@ Get your **CLIENT_ID** and **CLIENT_SECRET** in the following address:
 1. Go to **Mercadopago IPN configuration**:
     * Argentina: [https://www.mercadopago.com/mla/herramientas/notificaciones](https://www.mercadopago.com/mla/herramientas/notificaciones)
     * Brazil: [https://www.mercadopago.com/mlb/ferramentas/notificacoes](https://www.mercadopago.com/mlb/ferramentas/notificacoes)
+    * Chile: [https://www.mercadopago.com/mlc/herramientas/notificaciones](https://www.mercadopago.com/mlc/herramientas/notificaciones)
     * Colombia: [https://www.mercadopago.com/mco/herramientas/notificaciones](https://www.mercadopago.com/mco/herramientas/notificaciones)
     * Mexico: [https://www.mercadopago.com/mlm/herramientas/notificaciones](https://www.mercadopago.com/mlm/herramientas/notificaciones)
     * Venezuela: [https://www.mercadopago.com/mlv/herramientas/notificaciones](https://www.mercadopago.com/mlv/herramientas/notificaciones)

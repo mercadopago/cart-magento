@@ -2,9 +2,9 @@
 Feature: Payment results in MercadoPago Standard Checkout
 
   Background:
-    Given User "test_user_2135227@testuser.com" "magento" exists
+    Given User "test_user_58666377@testuser.com" "magento" exists
     And Setting Config "payment/mercadopago_standard/sandbox_mode" is "0"
-    And I am logged in as "test_user_2135227@testuser.com" "magento"
+    And I am logged in as "test_user_58666377@testuser.com" "magento"
     And I am on page "swiss-movement-sports-watch.html"
     And Product with sku "acj005" has a price of "100"
     And I press ".add-to-cart-buttons .btn-cart" element

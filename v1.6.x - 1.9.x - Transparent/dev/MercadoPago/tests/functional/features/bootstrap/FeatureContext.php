@@ -465,7 +465,7 @@ class FeatureContext
 
         $page->selectFieldOption('pmtOption', 'visa');
 
-        $page->fillField('cardNumber', '4444 4444 4444 0008');
+        $page->fillField('cardNumber', '4509 9535 6623 3704');
         $this->getSession()->wait(3000);
         $page->selectFieldOption('creditCardIssuerOption', '1');
         $page->selectFieldOption('cardExpirationMonth', '01');

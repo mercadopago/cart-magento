@@ -1,0 +1,12 @@
+
+<fieldset class="form-list">
+    <!--<link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>" /> -->
+    
+    <?php $_code = $this->getMethodCode(); ?>
+    <?php $_country = $this->getMethodCountry(); ?>
+
+    <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+        <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
+    <?php endif;?>
+
+</fieldset>

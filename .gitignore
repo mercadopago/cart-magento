@@ -8,7 +8,7 @@ Thumbs.db
 nbproject
 .idea
 
-.travis/build.properties.local
+.travis/build/build.properties.local
 
 /htdocs
 /dev

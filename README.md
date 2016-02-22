@@ -1,14 +1,8 @@
 # Magento - MercadoPago Module (v1.4.x to 1.9.x)
 ---
 
-*Checkout Custom available for Argentina, Brazil, Colombia, Mexico and Venezuela*
-
-*Checkout Standard available for Argentina, Brazil, Chile, Colombia, Mexico and Venezuela*
-
 * [Features](#features)
-* [Installation](#installation)
-* [Setup MercadoPago](#setup-mercadopago)
-* [Update MercadoPago](#update-mercadopago)
+* [Available versions](#available_versions)
 
 <a name="features"></a>
 ##Features##
@@ -29,7 +23,7 @@ have merchant's logo.
 
 *Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
 
-**Standard checkout**
+**Standard Checkout**
 
 This feature allows merchants to have a standard checkout. It includes all
 payment methods (i.e. all credit cards, bar code payment, account money) and all
@@ -53,7 +47,7 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 *Available only with Standard checkout*
 
 <a name="available_versions"></a>
-##Available Versions##
+##Available versions##
 <table>
   <thead>
     <tr>
@@ -65,12 +59,12 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
   <tbody>
     <tr>
       <td><a href="/1.4.x-1.5.x/">v1.4.x - 1.5.x</a></td>
-      <td>Deprecated (Old Version)</td>
+      <td>Deprecated (Old version)</td>
       <td>Community Edition 1.4.x - 1.5.x<br />Enterprise Edition 1.9.x - 1.10.x</td>
     <tr>
     <tr>
       <td><a href="/1.6.x-1.9.x/">v1.6.x - v1.9.x</a></td>
-      <td>Stable (Current Version)</td>
+      <td>Stable (Current version)</td>
       <td>Community Edition 1.6.x - 1.9.x<br />Enterprise Edition 1.11.x - 1.14.x</td>
   </tbody>
 </table>

@@ -1,0 +1,38 @@
+{
+  "name": "mercadopago/magento-plugin",
+  "description": "Mercado Pago - Magento Plugin",
+  "type": "project",
+  "authors": [
+    {
+      "name": "MercadoPago",
+      "email": "info@mercadopago.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": "~5.3.0|~5.4.0"
+  },
+  "require-dev": {
+    "magetest/magento-behat-extension": "dev-feature/Behat3",
+    "behat/mink-extension": "*",
+    "behat/mink-goutte-driver": "*",
+    "behat/mink-selenium2-driver": "*",
+    "bossa/phpspec2-expect": "1.*",
+    "magetest/magento-phpspec-extension": "~2.0",
+    "ciaranmcnulty/behat-stepthroughextension": "dev-master",
+    "phpmd/phpmd": "@stable",
+    "squizlabs/php_codesniffer": "2.3.*",
+    "sebastian/phpcpd": "*"
+  },
+  "autoload": {
+    "psr-0": {
+      "": [
+        "../../../../htdocs/app",
+        "../../../../htdocs/lib",
+        "../../../../htdocs/app/code/local",
+        "../../../../htdocs/app/code/community",
+        "../../../../htdocs/app/code/core"
+      ]
+    }
+  }
+}

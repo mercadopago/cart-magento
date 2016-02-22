@@ -2,6 +2,11 @@
 
 class MercadoPago_OneStepCheckout_Model_Observer
 {
+    /**
+     * @param $observer
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function successPredispatch($observer)
     {
         $session = Mage::getSingleton('checkout/session');

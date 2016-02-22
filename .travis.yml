@@ -68,12 +68,12 @@ before_script:
   - cp -R ./tmp/magento-sample-data-1.9.1.0/media/ ./htdocs/media/
   - cp -R ./tmp/magento-sample-data-1.9.1.0/skin/ ./htdocs/skin/
   - php ./htdocs/install.php --license_agreement_accepted 'yes' --locale 'en_US' --db_host '127.0.0.1' --db_name ${MAGENTO_DB_NAME} --db_user 'travis' --timezone 'America/Los_Angeles' --default_currency 'USD' --skip_url_validation 'yes' --url "http://${MAGENTO_URL}/" --secure_base_url "http://${MAGENTO_URL}/" --use_rewrites 'yes' --use_secure 'no' --use_secure_admin 'no' --session_save 'db' --admin_firstname 'Facundo' --admin_lastname 'Capua' --admin_email 'fcapua@summasolutions.net' --admin_username 'admin' --admin_password 'MercadoPago2015'
-  - cp -R v1.6.x\ -\ 1.9.x\ -\ Transparent/* htdocs/
+  - cp -R 1.6.x-1.9.x/* htdocs/
   - ls -al htdocs/app/code/community/
   - ls -al bin/
   - bin/phing -f .travis/build/build.xml magento_configuration
   - rm -rf htdocs/var/cache
-  - cd v1.6.x\ -\ 1.9.x\ -\ Transparent/dev/MercadoPago/tests/
+  - cd 1.6.x-1.9.x/dev/MercadoPago/tests/
   - cp behat.yml.dist behat.yml
   - sed -e "s?%MAGENTO_URL%?http://${MAGENTO_URL}/?g" --in-place behat.yml
   - sed -e "s?%BROWSER_DRIVER%?firefox?g" --in-place behat.yml

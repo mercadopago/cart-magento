@@ -58,12 +58,12 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
   <thead>
   <tbody>
     <tr>
-      <td><a href="/1.4.x-1.5.x/">v1.4.x - 1.5.x</a></td>
+      <td><a href="https://github.com/mercadopago/cart-magento/tree/master/1.4.x-1.5.x">v1.4.x - 1.5.x</a></td>
       <td>Deprecated (Old version)</td>
       <td>Community Edition 1.4.x - 1.5.x<br />Enterprise Edition 1.9.x - 1.10.x</td>
     </tr>
     <tr>
-      <td><a href="/1.6.x-1.9.x/">v1.6.x - v1.9.x</a></td>
+      <td><a href="https://github.com/mercadopago/cart-magento/tree/master/1.6.x-1.9.x">v1.6.x - v1.9.x</a></td>
       <td>Stable (Current version)</td>
       <td>Community Edition 1.6.x - 1.9.x<br />Enterprise Edition 1.11.x - 1.14.x</td>
     </tr>

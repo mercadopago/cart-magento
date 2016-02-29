@@ -121,6 +121,7 @@ class MercadoPago_MercadoEnvios_Model_Observer
     {
         $order = $observer->getOrder();
         $method = $order->getShippingMethod();
+        $shippingCost = $order->getBaseShippingAmount();
         if (Mage::helper('mercadopago_mercadoenvios')->isMercadoEnviosMethod($method)) {
             $shippingAddress = $order->getShippingAddress();
             $zipCode = $shippingAddress->getPostcode();
@@ -131,7 +132,6 @@ class MercadoPago_MercadoEnvios_Model_Observer
                 'default_shipping_method' => intval($defaultShippingId),
                 'dimensions'              => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
             ];
-            $shippingCost = $order->getShippingCost();
             if ($shippingCost == 0) {
                 $paramsME['free_methods'] = [['id' => intval($defaultShippingId)]];
             }
@@ -142,6 +142,31 @@ class MercadoPago_MercadoEnvios_Model_Observer
         $observer->getParams()->setValues($paramsME);
 
         return $observer;
+    }
+
+    public function setOrderShipmentData($observer) {
+        $observerData = $observer->getData();
+
+        $orderId = $observerData['orderId'];
+        $shipmentData = $observerData['shipmentData'];
+        $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
+        $method = $order->getShippingMethod();
+        if (Mage::helper('mercadopago_mercadoenvios')->isMercadoEnviosMethod($method)) {
+            $methodId = $shipmentData['shipping_option']['shipping_method_id'];
+            $name = $shipmentData['shipping_option']['name'];
+            $order->setShippingMethod('mercadoenvios_' . $methodId);
+
+            $estimatedDate = Mage::helper('core')->formatDate($shipmentData['shipping_option']['estimated_delivery']['date']);
+            $estimatedDate = Mage::helper('mercadopago')->__('(estimated date %s)', $estimatedDate);
+            $shippingDescription = 'MercadoEnvíos - ' . $name . ' ' . $estimatedDate;
+            $order->setShippingDescription($shippingDescription);
+
+            try {
+                $order->save();
+            } catch (Exception $e) {
+                Mage::helper('mercadopago')->log("error in update shipment data: " . $e, 'mercadopago.log');
+            }
+        }
     }
 
 

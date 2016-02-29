@@ -2,7 +2,7 @@
 Feature: As a customer I want to choose shipping method MercadoEnvios
 
   Background:
-    Given User "test_user_2135227@testuser.com" "magento" exists
+    Given User "test_user_58666377@testuser.com" "magento" exists
     And I am logged in as "test_user_2135227@testuser.com" "magento"
     And I empty cart
     And I create mp attributes
@@ -94,5 +94,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I press "#review-buttons-container .button" element
     And I wait for "10" seconds
     And I switch to the iframe "checkout_mercadopago"
-    And I am logged in MP as "test_user_2135227@testuser.com" "qatest5030"
+    And I am logged in MP as "test_user_58666377@testuser.com" "qatest3200"
     Then I should see "Elige la forma de entrega"
+    And I should see "$ 77"
+    And I should see "$ 113"

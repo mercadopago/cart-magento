@@ -23,8 +23,8 @@ class MercadoPago_Core_Helper_Data
     const XML_PATH_CLIENT_ID = 'payment/mercadopago_standard/client_id';
     const XML_PATH_CLIENT_SECRET = 'payment/mercadopago_standard/client_secret';
 
-    const PLATFORM_OPENPLATFORM = 'openplatform';
-    const PLATFORM_STD = 'std';
+    const PLATFORM_V1_WHITELABEL = 'v1-whitelabel';
+    const PLATFORM_DESKTOP = 'Desktop';
     const TYPE = 'magento';
 
     public function log($message, $file = "mercadopago.log", $array = null)
@@ -49,17 +49,16 @@ class MercadoPago_Core_Helper_Data
         }
         if ($params == 1) {
             $api = new MercadoPago_Lib_Api(func_get_arg(0));
-            $api->set_platform(self::PLATFORM_OPENPLATFORM);
+            $api->set_platform(self::PLATFORM_V1_WHITELABEL);
         } else {
             $api = new MercadoPago_Lib_Api(func_get_arg(0), func_get_arg(1));
-            $api->set_platform(self::PLATFORM_STD);
+            $api->set_platform(self::PLATFORM_DESKTOP);
         }
         if (Mage::getStoreConfigFlag('payment/mercadopago_standard/sandbox_mode')) {
             $api->sandbox_mode(true);
         }
 
-        $api->set_type(self::TYPE);
-        $api->set_so((string) Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version);
+        $api->set_type(self::TYPE . ' ' . (string) Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version);
 
         return $api;
 
@@ -161,13 +160,16 @@ class MercadoPago_Core_Helper_Data
         } else {
             $balance = $data['transaction_details']['total_paid_amount'];
         }
+        $shippingCost = $this->_getMultiCardValue($data['shipping_cost']);
 
         $order->setGrandTotal($balance);
         $order->setBaseGrandTotal($balance);
+        $order->setBaseShippingAmount($shippingCost);
+        $order->setShippingAmount($shippingCost);
 
         $couponAmount = $this->_getMultiCardValue($data['coupon_amount']);
         $transactionAmount = $this->_getMultiCardValue($data['transaction_amount']);
-        $shippingCost = $this->_getMultiCardValue($data['shipping_cost']);
+
         if ($couponAmount) {
             $order->setDiscountCouponAmount($couponAmount * -1);
             $order->setBaseDiscountCouponAmount($couponAmount * -1);
@@ -176,7 +178,7 @@ class MercadoPago_Core_Helper_Data
             $balance = $balance - $transactionAmount - $shippingCost;
         }
 
-        if ($balance > 0) {
+        if (round($balance,4) > 0) {
             $order->setFinanceCostAmount($balance);
             $order->setBaseFinanceCostAmount($balance);
         }

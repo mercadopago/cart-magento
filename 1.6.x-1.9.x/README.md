@@ -47,9 +47,9 @@ This feature allows easy integration with two of the most used One Step Checkout
 
 **Shipment integration**
 
-This feature allows to setup and integrate with MercadoEnvios shipment method as another shipment option for customers. It includes integration for all countries (except Venezuela). Also includes the possibility to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
+This feature allows to setup and integrate with MercadoEnvios shipment method as another shipment option for customers. It includes the possibility to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
 
-*Available only with Standard checkout*
+*Available for Argentina, Brazil and Mexico only with Standard Checkout*
 
 ---
 

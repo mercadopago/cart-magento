@@ -34,6 +34,15 @@
                     </mercadopago_mercadoenvios>
                 </observers>
             </mercadopago_standard_notification_received>
+            <mercadopago_standard_notification_before_set_status>
+                <observers>
+                    <mercadopago_mercadoenvios>
+                        <type>model</type>
+                        <class>mercadopago_mercadoenvios/observer</class>
+                        <method>setOrderShipmentData</method>
+                    </mercadopago_mercadoenvios>
+                </observers>
+            </mercadopago_standard_notification_before_set_status>
         </events>
     </frontend>
     <global>

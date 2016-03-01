@@ -78,9 +78,15 @@ class MercadoPago_Core_NotificationsController
                 if (count($merchant_order['payments']) > 0) {
                     $data = $this->_getDataPayments($merchant_order);
                     $status_final = $this->getStatusFinal($data['status']);
+                    $shipmentData = (isset($merchant_order['shipments'][0])) ? $merchant_order['shipments'][0] : [];
                     Mage::helper('mercadopago')->log("Update Order", self::LOG_FILE);
                     $core->updateOrder($data);
-
+                    if(!empty($shipmentData)) {
+                        Mage::dispatchEvent('mercadopago_standard_notification_before_set_status',
+                            array('shipmentData'        => $shipmentData,
+                                  'orderId' => $merchant_order['external_reference'])
+                        );
+                    }
                     if ($status_final != false) {
                         $data['status_final'] = $status_final;
                         Mage::helper('mercadopago')->log("Received Payment data", self::LOG_FILE, $data);

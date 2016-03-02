@@ -61,6 +61,7 @@ var MercadoPagoCustom = (function () {
             default: 'default',
             checkout: 'checkout',
             mexico: 'MLM',
+            colombia: 'MCO',
             brazil: 'MLB',
             mercadopagoCustom: 'mercadopago_custom',
             validateDiscount: 'validate-discount',
@@ -224,6 +225,11 @@ var MercadoPagoCustom = (function () {
                     setPaymentMethods()
                 }, 1000);
             }
+            if (siteId == self.constants.colombia) {
+                setTimeout(function () {
+                    setPaymentMethods()
+                }, 1000);
+            }
 
             defineInputs();
 
@@ -351,14 +357,20 @@ var MercadoPagoCustom = (function () {
 
             } else if (siteId == self.constants.mexico) {
 
-                excludeInputs.push(self.selectors.docType)
+                excludeInputs.push(self.selectors.docType);
                 excludeInputs.push(self.selectors.docNumber);
                 disabledInputs.push(self.selectors.issuer);
+
                 var index = excludeInputs.indexOf(self.selectors.paymentMethod);
                 if (index > -1) {
                     excludeInputs.splice(index, 1);
                 }
 
+            } else if (siteId == self.constants.colombia) {
+                var indexColombia = excludeInputs.indexOf(self.selectors.paymentMethod);
+                if (indexColombia > -1) {
+                    excludeInputs.splice(indexColombia, 1);
+                }
             }
             if (!this.issuerMandatory) {
                 excludeInputs.push(self.selectors.issuer);

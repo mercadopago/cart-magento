@@ -219,7 +219,7 @@ class MercadoPago_Core_Model_Standard_Payment
         $arr['back_urls'] = [
             "success" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/success",
             "pending" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/success",
-            "failure" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/success"
+            "failure" => Mage::getUrl('checkout/onepage/failure')
         ];
 
         $arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/notifications/standard";

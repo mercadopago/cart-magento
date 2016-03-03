@@ -40,6 +40,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $weight = ceil($weight);
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
+            Mage::helper('mercadopago_mercadoenvios')->log('Invalid dimensions in cart:', ['width'=>$width,'height'=>$height,'length'=>$length,'weight'=>$weight,]);
             Mage::throwException('Invalid dimensions cart');
         }
 
@@ -64,6 +65,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
             $qty = $helperItem->itemGetQty($item);
             $result = $result * $qty;
             if (empty($result)) {
+                Mage::helper('mercadopago_mercadoenvios')->log('Invalid dimension product: PRODUCT ', $item->getData());
                 Mage::throwException('Invalid dimensions product');
             }
 
@@ -168,17 +170,17 @@ class MercadoPago_MercadoEnvios_Helper_Data
     {
         $tracking = Mage::getModel('sales/order_shipment_track');
         $tracking = $tracking->getCollection()
-                        ->addFieldToFilter(
-                            ['entity_id', 'parent_id', 'order_id'],
-                            [
-                                ['eq' => $_shippingInfo->getTrackId()],
-                                ['eq' => $_shippingInfo->getShipId()],
-                                ['eq' => $_shippingInfo->getOrderId()],
-                            ]
-                        )
-                        ->setPageSize(10)
-                        ->setCurPage(1)
-                        ->load();
+            ->addFieldToFilter(
+                ['entity_id', 'parent_id', 'order_id'],
+                [
+                    ['eq' => $_shippingInfo->getTrackId()],
+                    ['eq' => $_shippingInfo->getShipId()],
+                    ['eq' => $_shippingInfo->getOrderId()],
+                ]
+            )
+            ->setPageSize(10)
+            ->setCurPage(1)
+            ->load();
 
         foreach ($_shippingInfo->getTrackingInfo() as $track) {
             $lastTrack = array_pop($track);
@@ -221,6 +223,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         try {
             $response = $client->request();
         } catch (Exception $e) {
+            Mage::helper('mercadopago_mercadoenvios')->log($e);
             throw new Exception($e);
         }
 
@@ -234,6 +237,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         try {
             $response = $client->request();
         } catch (Exception $e) {
+            Mage::helper('mercadopago_mercadoenvios')->log($e);
             throw new Exception($e);
         }
 
@@ -245,6 +249,18 @@ class MercadoPago_MercadoEnvios_Helper_Data
         }
 
         return '';
+    }
+
+    public function log($message, $array = null, $level = Zend_Log::ERR, $file = "mercadoenvios.log")
+    {
+        $actionLog = Mage::getStoreConfig('carriers/mercadoenvios/log');
+        if ($actionLog) {
+            if (!is_null($array)) {
+                $message .= " - " . json_encode($array);
+            }
+
+            Mage::log($message, $level, $file, $actionLog);
+        }
     }
 
 }

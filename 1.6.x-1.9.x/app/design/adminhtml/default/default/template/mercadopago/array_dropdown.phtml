@@ -30,7 +30,9 @@ $prevValues = $this->_getStoredMappingValues();
                     <td>
                         <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $meOption ?>][attribute_code]">
                             <?php foreach($productCode as $option):?>
-                                <option value="<?php echo $option->getAttributeCode() ?>" <?php echo ($prevValues[$meOption]['attribute_code'] == $option->getAttributeCode()) ? "selected='selected'" : "" ?>><?php echo $option->getFrontendLabel() ?></option>
+                                <option value="<?php echo $option->getAttributeCode() ?>"
+                                    <?php echo ( isset($prevValues[$meOption]['attribute_code']) && $prevValues[$meOption]['attribute_code'] == $option->getAttributeCode()) ? "selected='selected'" : "" ?>><?php echo $option->getFrontendLabel() ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -38,7 +40,7 @@ $prevValues = $this->_getStoredMappingValues();
                     <td>
                         <select name="groups[mercadoenvios][fields][attributesmapping][value][<?php echo $meOption ?>][unit]">
                             <?php foreach($unit as $_u):?>
-                                <option value="<?php echo $_u ?>" <?php echo ($prevValues[$meOption]['unit'] == $_u) ? "selected='selected'" : '' ?>><?php echo $_u ?></option>
+                                <option value="<?php echo $_u ?>" <?php echo (isset($prevValues[$meOption]['unit']) && $prevValues[$meOption]['unit'] == $_u) ? "selected='selected'" : '' ?>><?php echo $_u ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>

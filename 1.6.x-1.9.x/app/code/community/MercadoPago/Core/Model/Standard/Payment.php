@@ -217,12 +217,12 @@ class MercadoPago_Core_Model_Standard_Payment
         ];
 
         $arr['back_urls'] = [
-            "success" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/success",
-            "pending" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/success",
+            "success" => Mage::getUrl('mercadopago/success'),
+            "pending" => Mage::getUrl('mercadopago/success'),
             "failure" => Mage::getUrl('checkout/onepage/failure')
         ];
 
-        $arr['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true) . "mercadopago/notifications/standard";
+        $arr['notification_url'] = Mage::getUrl('mercadopago/notifications/standard');
 
         $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods();
         $installments = $this->getConfigData('installments');

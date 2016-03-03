@@ -22,27 +22,32 @@ class MercadoPago_Core_Model_Source_PaymentMethods
     public function toOptionArray()
     {
         $methods = array();
+        $helper = Mage::helper('mercadopago');
 
         //adiciona um valor vazio caso nao queria excluir nada
         $methods[] = array("value" => "", "label" => "");
 
-        $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        $accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
         $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
         $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
-        if (empty($access_token) && (empty($clientId) || empty($clientSecret))) {
+        if (empty($accessToken) && !$helper->isValidClientCredentials($clientId, $clientSecret)) {
             return $methods;
         }
 
-        //verifico se as credenciais não são vazias, caso sejam não é possível obte-los
-        if (empty($access_token)) {
-            $access_token = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret)->get_access_token();
+        //if accessToken is empty uses clientId and clientSecret to obtain it
+        if (empty($accessToken)) {
+            $accessToken = $helper->getAccessToken();
         }
 
-        Mage::helper('mercadopago')->log("Get payment methods by country... ", 'mercadopago.log');
-        Mage::helper('mercadopago')->log("API payment methods: " . "/v1/payment_methods?access_token=" . $access_token, 'mercadopago.log');
-        $response = MercadoPago_Lib_RestClient::get("/v1/payment_methods?access_token=" . $access_token);
+        $helper->log("Get payment methods by country... ", 'mercadopago.log');
+        $helper->log("API payment methods: " . "/v1/payment_methods?access_token=" . $accessToken, 'mercadopago.log');
+        $response = MercadoPago_Lib_RestClient::get("/v1/payment_methods?access_token=" . $accessToken);
 
-        Mage::helper('mercadopago')->log("API payment methods", 'mercadopago.log', $response);
+        $helper->log("API payment methods", 'mercadopago.log', $response);
+
+        if (isset($response['error'])) {
+            return $methods;
+        }
 
         $response = $response['response'];
 
@@ -50,7 +55,7 @@ class MercadoPago_Core_Model_Source_PaymentMethods
             if ($m['id'] != 'account_money') {
                 $methods[] = array(
                     'value' => $m['id'],
-                    'label' => Mage::helper('mercadopago')->__($m['name'])
+                    'label' => $helper->__($m['name'])
                 );
             }
         }

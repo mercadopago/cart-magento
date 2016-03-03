@@ -228,7 +228,7 @@ var MercadoPagoCustom = (function () {
             if (siteId == self.constants.colombia) {
                 setTimeout(function () {
                     setPaymentMethods()
-                }, 1000);
+                }, 5000);
             }
 
             defineInputs();

@@ -341,7 +341,7 @@ class MercadoPago_Core_Model_Core
                 $e = $exception->getUserMessage();
             }
 
-            Mage::helper('mercadopago')->log("erro post pago: " . $e, self::LOG_FILE);
+            Mage::helper('mercadopago')->log("error post pago: " . $e, self::LOG_FILE);
             Mage::helper('mercadopago')->log("response post pago: ", self::LOG_FILE, $response);
 
             $exception->setMessage($e);
@@ -458,7 +458,7 @@ class MercadoPago_Core_Model_Core
                 }
                 //Associate card to customer
                 $additionalInfo = $order->getPayment()->getAdditionalInformation();
-                if ($additionalInfo['token']) {
+                if (isset($additionalInfo['token'])) {
                     Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
                 }
 
@@ -479,12 +479,12 @@ class MercadoPago_Core_Model_Core
             $order->sendOrderUpdateEmail(true, $message);
 
             $status_save = $order->save();
-            $helper->log("Update order", 'mercadopago.log', $status_save->toString());
+            $helper->log("Update order", 'mercadopago.log', $status_save->getData());
             $helper->log($message, 'mercadopago.log');
 
             return ['text' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
         } catch (Exception $e) {
-            $helper->log("erro in set order status: " . $e, 'mercadopago.log');
+            $helper->log("error in set order status: " . $e, 'mercadopago.log');
 
             return ['text' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST];
         }
@@ -497,7 +497,6 @@ class MercadoPago_Core_Model_Core
         try {
             $order = Mage::getModel('sales/order')->loadByIncrementId($data["external_reference"]);
 
-            //update info de status no pagamento
             $payment_order = $order->getPayment();
 
             $additionalFields = array(
@@ -523,7 +522,7 @@ class MercadoPago_Core_Model_Core
             }
 
             $payment_status = $payment_order->save();
-            Mage::helper('mercadopago')->log("Update Payment", 'mercadopago.log', $payment_status->toString());
+            Mage::helper('mercadopago')->log("Update Payment", 'mercadopago.log', $payment_status->getData());
 
             if ($data['payer_first_name']) {
                 $order->setCustomerFirstname($data['payer_first_name']);
@@ -539,12 +538,11 @@ class MercadoPago_Core_Model_Core
 
 
             $status_save = $order->save();
-            Mage::helper('mercadopago')->log("Update order", 'mercadopago.log', $status_save->toString());
+            Mage::helper('mercadopago')->log("Update order", 'mercadopago.log', $status_save->getData());
         } catch (Exception $e) {
-            Mage::helper('mercadopago')->log("erro in update order status: " . $e, 'mercadopago.log');
+            Mage::helper('mercadopago')->log("error in update order status: " . $e, 'mercadopago.log');
             $this->getResponse()->setBody($e);
 
-            //caso erro no processo de notificação de pagamento, mercadopago ira notificar novamente.
             $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
         }
     }

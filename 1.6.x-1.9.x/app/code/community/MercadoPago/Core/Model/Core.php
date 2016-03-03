@@ -544,7 +544,6 @@ class MercadoPago_Core_Model_Core
             Mage::helper('mercadopago')->log("erro in update order status: " . $e, 'mercadopago.log');
             $this->getResponse()->setBody($e);
 
-            //caso erro no processo de notificação de pagamento, mercadopago ira notificar novamente.
             $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
         }
     }

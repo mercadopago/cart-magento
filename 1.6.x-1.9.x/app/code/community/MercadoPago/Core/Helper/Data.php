@@ -29,16 +29,15 @@ class MercadoPago_Core_Helper_Data
 
     public function log($message, $file = "mercadopago.log", $array = null)
     {
-        //pega a configuração de log no admin, essa variavel vem como true por padrão
-        $action_log = Mage::getStoreConfig('payment/mercadopago/logs');
+        $actionLog = Mage::getStoreConfig('payment/mercadopago/logs');
 
-        //caso tenha um array, transforma em json para melhor visualização
-        if (!is_null($array)) {
-            $message .= " - " . json_encode($array);
+        if ($actionLog) {
+            if (!is_null($array)) {
+                $message .= " - " . json_encode($array);
+            }
+
+            Mage::log($message, null, $file, $actionLog);
         }
-
-        //set log
-        Mage::log($message, null, $file, $action_log);
     }
 
     public function getApiInstance()

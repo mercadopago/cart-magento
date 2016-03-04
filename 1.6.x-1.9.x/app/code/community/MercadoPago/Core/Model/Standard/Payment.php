@@ -192,9 +192,7 @@ class MercadoPago_Core_Model_Standard_Payment
             "number"    => $shipping['telephone']
         ];
 
-        $paramsShipment = $paramsShipment->getValues();
-        $paramsShipment['receiver_address'] = $this->getReceiverAddress($shippingAddress);
-        $arr['shipments'] = $paramsShipment;
+        $arr['shipments'] = $this->_getParamShipment($paramsShipment,$order,$shippingAddress);
 
         $billing_address = $order->getBillingAddress()->getData();
 
@@ -252,6 +250,16 @@ class MercadoPago_Core_Model_Standard_Payment
             "apartment"     => "-",
             "street_number" => ""
         ];
+    }
+
+    protected function _getParamShipment($params,$order,$shippingAddress) {
+        $paramsShipment = $params->getValues();
+        if (empty($paramsShipment)) {
+            $paramsShipment = $params->getData();
+            $paramsShipment['cost'] = (float)$order->getBaseShippingAmount();
+        }
+        $paramsShipment['receiver_address'] = $this->getReceiverAddress($shippingAddress);
+        return $paramsShipment;
     }
 
     public function getSuccessBlockType()

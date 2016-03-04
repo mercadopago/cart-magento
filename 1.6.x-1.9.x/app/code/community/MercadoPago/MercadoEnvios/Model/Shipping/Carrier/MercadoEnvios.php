@@ -87,7 +87,6 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 $dimensions = Mage::helper('mercadopago_mercadoenvios')->getDimensions($quote->getAllItems());
             } catch (Exception $e) {
                 $this->_methods = self::INVALID_METHOD;
-
                 return;
             }
 
@@ -105,6 +104,8 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 $this->_methods = $response['response']['options'];
             } else {
                 $this->_methods = self::INVALID_METHOD;
+                Mage::helper('mercadopago_mercadoenvios')->log('Request params: ', $params);
+                Mage::helper('mercadopago_mercadoenvios')->log('Error response API: ', $response);
             }
         }
 
@@ -157,7 +158,6 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         $error->setCarrierTitle($this->getConfigData('title'));
         $msg = $this->getConfigData('specificerrmsg');
         $error->setErrorMessage($msg);
-
         return $error;
     }
 

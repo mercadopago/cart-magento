@@ -225,11 +225,6 @@ var MercadoPagoCustom = (function () {
                     setPaymentMethods()
                 }, 1000);
             }
-            if (siteId == self.constants.colombia) {
-                setTimeout(function () {
-                    setPaymentMethods()
-                }, 5000);
-            }
 
             defineInputs();
 
@@ -266,6 +261,7 @@ var MercadoPagoCustom = (function () {
                 }
                 return true;
             });
+
         }
 
         function setPaymentMethodId(event) {
@@ -578,6 +574,10 @@ var MercadoPagoCustom = (function () {
             showLogMercadoPago(status);
             showLogMercadoPago(response);
 
+            var siteId = TinyJ(self.selectors.siteId).val();
+            if (siteId == self.constants.colombia) {
+                setPaymentMethods()
+            }
             //hide loading
             hideLoading();
 

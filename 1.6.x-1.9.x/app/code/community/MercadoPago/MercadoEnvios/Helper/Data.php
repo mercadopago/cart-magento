@@ -178,7 +178,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
                     ['eq' => $_shippingInfo->getOrderId()],
                 ]
             )
-            ->setPageSize(10)
+            ->setPageSize(1)
             ->setCurPage(1)
             ->load();
 

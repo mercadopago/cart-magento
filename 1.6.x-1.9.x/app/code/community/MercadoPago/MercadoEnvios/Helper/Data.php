@@ -40,7 +40,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $weight = ceil($weight);
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
-            Mage::helper('mercadopago_mercadoenvios')->log('Invalid dimensions in cart:', ['width'=>$width,'height'=>$height,'length'=>$length,'weight'=>$weight,]);
+            $this->log('Invalid dimensions in cart:', ['width'=>$width,'height'=>$height,'length'=>$length,'weight'=>$weight,]);
             Mage::throwException('Invalid dimensions cart');
         }
 
@@ -65,7 +65,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
             $qty = $helperItem->itemGetQty($item);
             $result = $result * $qty;
             if (empty($result)) {
-                Mage::helper('mercadopago_mercadoenvios')->log('Invalid dimension product: PRODUCT ', $item->getData());
+                $this->log('Invalid dimension product: PRODUCT ', $item->getData());
                 Mage::throwException('Invalid dimensions product');
             }
 
@@ -223,7 +223,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         try {
             $response = $client->request();
         } catch (Exception $e) {
-            Mage::helper('mercadopago_mercadoenvios')->log($e);
+            $this->log($e);
             throw new Exception($e);
         }
 
@@ -237,7 +237,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         try {
             $response = $client->request();
         } catch (Exception $e) {
-            Mage::helper('mercadopago_mercadoenvios')->log($e);
+            $this->log($e);
             throw new Exception($e);
         }
 

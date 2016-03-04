@@ -29,7 +29,6 @@
 "Select payment methods not accepted","Seleccione los medios de pago no aceptados"
 "For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","Para el funcionamento del Checkout Custom - Tickets de pago, es necesario configurar las Credenciales 'CLIENT_ID' y 'CLIENT_SECRET' en 'MercadoPago - Configuración'"
 "For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","Para el funcionamento del Checkout Standard, es necesario configurar las Credenciales 'CLIENT_ID' y 'CLIENT_SECRET' en 'MercadoPago - Configuración'"
-"Enable to test checkout with real credit cards. For further information check this link: <a href=""https://www.mercadopago.com.ar/developers/en/solutions/payments/basic-checkout/test/basic-sandbox/"" target=""_blank"">Basic Checkout Sandbox</a>", "Traduccion"
 "Sandbox Mode", "Modo Sandbox"
 
 "Payment Method", "Medio de pago"

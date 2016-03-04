@@ -140,11 +140,13 @@ class MercadoPago_MercadoEnvios_Model_Observer
             $paramsME['cost'] = (float)$order->getBaseShippingAmount();
         }
         $observer->getParams()->setValues($paramsME);
+        Mage::helper('mercadopago_mercadoenvios')->log('REQUEST SHIPMENT ME: ', $paramsME, Zend_Log::INFO);
 
         return $observer;
     }
 
-    public function setOrderShipmentData($observer) {
+    public function setOrderShipmentData($observer)
+    {
         $observerData = $observer->getData();
 
         $orderId = $observerData['orderId'];
@@ -160,14 +162,14 @@ class MercadoPago_MercadoEnvios_Model_Observer
             $estimatedDate = Mage::helper('mercadopago')->__('(estimated date %s)', $estimatedDate);
             $shippingDescription = 'MercadoEnvíos - ' . $name . ' ' . $estimatedDate;
             $order->setShippingDescription($shippingDescription);
-
             try {
                 $order->save();
+                Mage::helper('mercadopago_mercadoenvios')->log('Order ' . $order->getIncrementId() . ' shipping data setted ',$shipmentData, Zend_Log::INFO);
             } catch (Exception $e) {
-                Mage::helper('mercadopago')->log("error in update shipment data: " . $e, 'mercadopago.log');
+                Mage::helper('mercadopago')->log("error when update shipment data: " . $e, 'mercadopago.log');
+                Mage::helper('mercadopago_mercadoenvios')->log($e);
             }
         }
     }
-
 
 }

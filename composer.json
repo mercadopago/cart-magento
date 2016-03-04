@@ -1,0 +1,10 @@
+{
+    "name": "mercadopago/cart-magento",
+    "type": "magento-module",
+    "description": "Magento - MercadoPago Module",
+    "homepage": "https://github.com/mercadopago/cart-magento",
+    "require": {
+        "php": ">=5.3",
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

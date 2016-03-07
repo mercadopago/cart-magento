@@ -90,7 +90,13 @@ class MercadoPago_Core_Helper_Data
     {
         $clientId = Mage::getStoreConfig(self::XML_PATH_CLIENT_ID);
         $clientSecret = Mage::getStoreConfig(self::XML_PATH_CLIENT_SECRET);
-        return $this->getApiInstance($clientId, $clientSecret)->get_access_token();
+        try {
+            $accessToken = $this->getApiInstance($clientId, $clientSecret)->get_access_token();
+        } catch (\Exception $e) {
+            $accessToken = false;
+        }
+
+        return $accessToken;
     }
 
     public function getStatusOrder($status)

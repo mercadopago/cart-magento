@@ -62,6 +62,7 @@ var MercadoPagoCustom = (function () {
             checkout: 'onestepcheckout',
             mexico: 'MLM',
             brazil: 'MLB',
+            colombia: 'MCO',
             mercadopagoCustom: 'mercadopago_custom',
             validateDiscount: 'validate-discount',
             validateDocNumber: 'mp-validate-docnumber',
@@ -231,6 +232,11 @@ var MercadoPagoCustom = (function () {
                 var methods = getPaymentMethods();
                 setPaymentMethodsInfo(methods);
                 TinyJ(self.selectors.paymentMethodSelect).change(setPaymentMethodId);
+            }
+            if (siteId == self.constants.colombia) {
+                setTimeout(function () {
+                    setPaymentMethods()
+                }, 5000);
             }
 
             defineInputs();
@@ -424,6 +430,11 @@ var MercadoPagoCustom = (function () {
                     excludeInputs.splice(index, 1);
                 }
 
+            } else if (siteId == self.constants.colombia) {
+                var indexColombia = excludeInputs.indexOf(self.selectors.paymentMethod);
+                if (indexColombia > -1) {
+                    excludeInputs.splice(indexColombia, 1);
+                }
             }
             if (!this.issuerMandatory) {
                 excludeInputs.push(self.selectors.issuer);

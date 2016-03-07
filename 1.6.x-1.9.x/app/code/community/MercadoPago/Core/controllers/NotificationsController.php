@@ -93,6 +93,9 @@ class MercadoPago_Core_NotificationsController
                         $setStatusResponse = $core->setStatusOrder($data);
                         $this->getResponse()->setBody($setStatusResponse['text']);
                         $this->getResponse()->setHttpResponseCode($setStatusResponse['code']);
+                    } else {
+                        $this->getResponse()->setBody("Status not final");
+                        $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_OK);
                     }
 
                     Mage::dispatchEvent('mercadopago_standard_notification_received',
@@ -100,14 +103,17 @@ class MercadoPago_Core_NotificationsController
                               'merchant_order' => $merchant_order)
                     );
 
+                    Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
                     return;
                 }
             }
+        } else {
+            Mage::helper('mercadopago')->log("Merchant Order not found", self::LOG_FILE, $request->getParams());
+            $this->getResponse()->setBody("Merchant Order not found");
+            $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
         }
 
-        Mage::helper('mercadopago')->log("Merchant Order not found", self::LOG_FILE, $request->getParams());
-        $this->getResponse()->setBody("Merchant Order not found");
-        $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
+        Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
     }
 
     public function customAction()
@@ -133,7 +139,7 @@ class MercadoPago_Core_NotificationsController
                 $setStatusResponse = $core->setStatusOrder($payment);
                 $this->getResponse()->setBody($setStatusResponse['text']);
                 $this->getResponse()->setHttpResponseCode($setStatusResponse['code']);
-
+                Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
                 return;
             }
         }
@@ -141,6 +147,7 @@ class MercadoPago_Core_NotificationsController
         Mage::helper('mercadopago')->log("Payment not found", self::LOG_FILE, $request->getParams());
         $this->getResponse()->getBody("Payment not found");
         $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
+        Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
     }
 
     public function formatArrayPayment($data, $payment)

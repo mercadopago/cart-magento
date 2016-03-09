@@ -1,41 +1,67 @@
 <?php
-/**
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL).
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * @category       Payment Gateway
- * @package        MercadoPago
- * @author         Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
- * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
- * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
 
+/**
+ * Class MercadoPago_Core_SuccessController
+ */
 class MercadoPago_Core_SuccessController
     extends Mage_Core_Controller_Front_Action
 {
-    public function indexAction()
+
+    /**
+     * @var Mage_Sales_Model_Order
+     */
+    protected $_order;
+
+    /**
+     * @return Mage_Sales_Model_Order
+     */
+    protected function getOrder()
     {
-        $checkoutTypeHandle = $this->getCheckoutHandle();
-        $this->loadLayout(['default', $checkoutTypeHandle]);
+        if (empty($this->_order)) {
+            $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+            $this->_order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
+        }
 
-
-        $this->_initLayoutMessages('core/session');
-
-        $this->renderLayout();
+        return $this->_order;
     }
 
-    public function getCheckoutHandle()
+    /**
+     * Send email of new order
+     */
+    protected function sendNewOrderMail()
     {
-        $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
-        $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
+        $order = $this->getOrder();
+        if ($order->getCanSendNewEmailFlag()) {
+            try {
+                $order->sendNewOrderEmail();
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+    }
 
+    /**
+     * Return handle name depending on payment method
+     *
+     * @return string
+     */
+    protected function getCheckoutHandle()
+    {
+        $order = $this->getOrder();
         $handle = $order->getPayment()->getMethod();
         $handle .= '_success';
 
         return $handle;
+    }
+
+    public function indexAction()
+    {
+        $this->sendNewOrderMail();
+        $checkoutTypeHandle = $this->getCheckoutHandle();
+        $this->loadLayout(['default', $checkoutTypeHandle]);
+
+        $this->_initLayoutMessages('core/session');
+
+        $this->renderLayout();
     }
 }

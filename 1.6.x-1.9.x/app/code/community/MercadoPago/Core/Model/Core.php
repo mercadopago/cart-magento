@@ -254,7 +254,9 @@ class MercadoPago_Core_Model_Core
         $preference = array();
 
         $preference['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK) . "mercadopago/notifications/custom";
+
         $preference['transaction_amount'] = (float)$this->getAmount();
+
         $preference['external_reference'] = $order_id;
         $preference['payer']['email'] = $customerInfo['email'];
 
@@ -403,7 +405,7 @@ class MercadoPago_Core_Model_Core
     public function getAmount()
     {
         $quote = $this->_getQuote();
-        $total = $quote->getBaseSubtotalWithDiscount() + $quote->getShippingAddress()->getShippingAmount();
+        $total = $quote->getBaseSubtotalWithDiscount() + $quote->getShippingAddress()->getShippingAmount() + $quote->getShippingAddress()->getBaseTaxAmount();
 
         return (float)$total;
 

@@ -169,8 +169,10 @@ class MercadoPago_Core_Helper_Data
 
         $order->setGrandTotal($balance);
         $order->setBaseGrandTotal($balance);
-        $order->setBaseShippingAmount($shippingCost);
-        $order->setShippingAmount($shippingCost);
+        if ($shippingCost > 0) {
+            $order->setBaseShippingAmount($shippingCost);
+            $order->setShippingAmount($shippingCost);
+        }
 
         $couponAmount = $this->_getMultiCardValue($data['coupon_amount']);
         $transactionAmount = $this->_getMultiCardValue($data['transaction_amount']);

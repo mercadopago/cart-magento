@@ -107,11 +107,12 @@ class MercadoPago_Core_NotificationsController
                     return;
                 }
             }
+        } else {
+            Mage::helper('mercadopago')->log("Merchant Order not found", self::LOG_FILE, $request->getParams());
+            $this->getResponse()->setBody("Merchant Order not found");
+            $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
         }
 
-        Mage::helper('mercadopago')->log("Merchant Order not found", self::LOG_FILE, $request->getParams());
-        $this->getResponse()->setBody("Merchant Order not found");
-        $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_OK);
         Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
     }
 
@@ -145,7 +146,7 @@ class MercadoPago_Core_NotificationsController
 
         Mage::helper('mercadopago')->log("Payment not found", self::LOG_FILE, $request->getParams());
         $this->getResponse()->getBody("Payment not found");
-        $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_OK);
+        $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
         Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
     }
 

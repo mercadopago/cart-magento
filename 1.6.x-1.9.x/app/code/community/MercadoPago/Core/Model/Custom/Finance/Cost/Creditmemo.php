@@ -12,8 +12,8 @@ class MercadoPago_Core_Model_Custom_Finance_Cost_Creditmemo
         $amount = $order->getFinanceCostAmount();
         $baseAmount = $order->getBaseFinanceCostAmount();
         if ($amount) {
-            $amount->setFinanceCostAmount($amount);
-            $amount->setBaseFinanceCostAmount($baseAmount);
+            $creditmemo->setFinanceCostAmount($amount);
+            $creditmemo->setBaseFinanceCostAmount($baseAmount);
             $creditmemo->setGrandTotal($creditmemo->getGrandTotal() + $amount);
             $creditmemo->setBaseGrandTotal($creditmemo->getBaseGrandTotal() + $baseAmount);
         }

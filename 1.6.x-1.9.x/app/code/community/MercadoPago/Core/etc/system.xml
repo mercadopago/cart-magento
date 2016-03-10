@@ -21,7 +21,7 @@
         <payment translate="label">
             <groups>
                 <mercadopago type="group">
-                    <label>MercadoPago - Global Configuration</label>
+                    <label>Mercado Pago - Global Configuration</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>100</sort_order>
                     <show_in_default>1</show_in_default>
@@ -140,7 +140,7 @@
                 </mercadopago>
 
                 <mercadopago_custom_checkout translate="label" module="mercadopago">
-                    <label>MercadoPago - Custom Checkout</label>
+                    <label>Mercado Pago - Custom Checkout</label>
                     <sort_order>110</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -233,7 +233,7 @@
                                     <frontend_class>validate-number</frontend_class>
                                 </sort_order>
                                 <coupon_mercadopago translate="label">
-                                    <label>Marketing - Coupon MercadoPago</label>
+                                    <label>Marketing - Coupon Mercado Pago</label>
                                     <frontend_type>select</frontend_type>
                                     <source_model>adminhtml/system_config_source_yesno</source_model>
                                     <sort_order>80</sort_order>
@@ -261,7 +261,7 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>0</show_in_store>
-                                    <comment>For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'</comment>
+                                    <comment>For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'</comment>
                                 </active>
                                 <title translate="label">
                                     <label>Payment Title</label>
@@ -289,7 +289,7 @@
                                     <frontend_class>validate-number</frontend_class>
                                 </sort_order>
                                 <coupon_mercadopago translate="label">
-                                    <label>Marketing - Coupon MercadoPago</label>
+                                    <label>Marketing - Coupon Mercado Pago</label>
                                     <frontend_type>select</frontend_type>
                                     <source_model>adminhtml/system_config_source_yesno</source_model>
                                     <sort_order>50</sort_order>
@@ -304,7 +304,7 @@
                 </mercadopago_custom_checkout>
 
                 <mercadopago_standard_checkout translate="label" module="mercadopago">
-                    <label>MercadoPago - Classic Checkout</label>
+                    <label>Mercado Pago - Classic Checkout</label>
                     <sort_order>130</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -327,7 +327,7 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>0</show_in_store>
-                                    <comment>For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'</comment>
+                                    <comment>For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'</comment>
                                 </active>
                                 <client_id translate="label">
                                     <label>Client Id</label>

@@ -12,11 +12,11 @@ var MercadoPagoCustom = (function () {
     };
     var self = {
         messages: {
-            init: 'Init MercadoPago JS',
-            initOCP: 'Init MercadoPago OCP',
-            initDiscount: 'Init MercadoPago Custom Discount',
-            initTicket: 'Init MercadoPago Custom Ticket',
-            mpIncorrectlyConfigured: 'MercadoPago was not configured correctly. Public Key not found.',
+            init: 'Init Mercado Pago JS',
+            initOCP: 'Init Mercado Pago OCP',
+            initDiscount: 'Init Mercado Pago Custom Discount',
+            initTicket: 'Init Mercado Pago Custom Ticket',
+            mpIncorrectlyConfigured: 'Mercado Pago was not configured correctly. Public Key not found.',
             publicKey: 'Public Key: {0}',
             siteId: 'SITE_ID: {0}',
             invalidDocument: 'Document Number is invalid.',

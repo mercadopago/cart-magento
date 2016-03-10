@@ -178,7 +178,7 @@ class MercadoPago_Core_Helper_Data
             $balance = $balance - $transactionAmount - $shippingCost;
         }
 
-        if (round($balance,4) > 0) {
+        if (Zend_Locale_Math::round($balance,4) > 0) {
             $order->setFinanceCostAmount($balance);
             $order->setBaseFinanceCostAmount($balance);
         }

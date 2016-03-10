@@ -159,7 +159,7 @@ class FeatureContext
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $element = $this->findElement('#dt_method_mercadopago_custom');
 
-        expect($element->getText())->toBe("Credit Card - MercadoPago");
+        expect($element->getText())->toBe("Credit Card - Mercado Pago");
     }
 
 
@@ -185,7 +185,7 @@ class FeatureContext
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $element = $this->findElement('#dt_method_mercadopago_standard');
 
-        expect($element->getText())->toBe("MercadoPago");
+        expect($element->getText())->toBe("Mercado Pago");
     }
 
 

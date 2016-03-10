@@ -70,8 +70,8 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 <a name="configuration"></a>
 ## Configuration
 
-1. Go to **System > Configuration > Sales > Payment Methods**. Select **MercadoPago - Global Configuration**.
-![MercadoPago Global Configuration](/README.img/mercadopago_global_configuration.jpg?raw=true)<br /> 
+1. Go to **System > Configuration > Sales > Payment Methods**. Select **Mercado Pago - Global Configuration**.
+![Mercado Pago Global Configuration](/README.img/mercadopago_global_configuration.jpg?raw=true)<br /> 
 2. Set your Country to the same where your account was created on, and save config.
 	**Note: If you change the Country where your account was created you need save configuration in order to refresh the excluded payment methods.**
 	
@@ -91,8 +91,8 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 <a name="checkout_custom"></a>
 ###Custom Checkout Payment Solution:###
 
-1. Go to **System > Configuration > Sales > Payment Methods**. Select **MercadoPago - Custom Checkout**.
-![MercadoPago Custom Checkout Configuration](/README.img/mercadopago_custom_checkout_configuration.jpg?raw=true)<br /> 
+1. Go to **System > Configuration > Sales > Payment Methods**. Select **Mercado Pago - Custom Checkout**.
+![Mercado Pago Custom Checkout Configuration](/README.img/mercadopago_custom_checkout_configuration.jpg?raw=true)<br /> 
 2. Set your **Public Key** and **Access Token**.
  	In order to get them check the following links according to the country you are opperating in:
 	
@@ -104,28 +104,28 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 
 
 If you want to enable credit card solution, check the configurations under **Checkout Custom - Credit Card**:
-![MercadoPago Custom Checkout Credit Card](/README.img/mercadopago_custom_checkout_cc.jpg?raw=true)<br /> 
+![Mercado Pago Custom Checkout Credit Card](/README.img/mercadopago_custom_checkout_cc.jpg?raw=true)<br /> 
 * **Enabled**: Enables/disables this payment solution.
 * **Payment Title**: Sets the payment title.
 * **Statement Descriptor**: Sets the label as the customer will see the charge for amount in his/her bill.
 * **Binary Mode**: When set to true, the payment can only be approved or rejected. Otherwise in_process status is added.
 * **Banner Checkout**: Sets the URL for the banner image in the payment method selection in the checkout process.
 * **Checkout Position**: The position of the payment solution in the checkout process.
-* **Marketing - Coupon MercadoPago**: Enables/disables the coupon form.
+* **Marketing - Coupon Mercado Pago**: Enables/disables the coupon form.
 
 If you want to enable ticket solution, check the configurations under **Checkout Custom - Ticket**:
 
-![MercadoPago Custom Checkout Ticket](/README.img/mercadopago_custom_checkout_ticket.jpg?raw=true)<br /> 
+![Mercado Pago Custom Checkout Ticket](/README.img/mercadopago_custom_checkout_ticket.jpg?raw=true)<br /> 
 * **Enabled**: Enables/disables this payment solution.
 * **Payment Title**: Sets the payment title.
 * **Banner Checkout**: Sets the URL for the banner image in the payment method selection in the checkout process.
 * **Checkout Position**: The position of the payment solution in the checkout process.
-* **Marketing - Coupon MercadoPago**: Enables/disables the coupon form.
+* **Marketing - Coupon Mercado Pago**: Enables/disables the coupon form.
 
 <a name="checkout_standard"></a>
 ###Standard Checkout Payment Solution:###
 
-1. Go to **System > Configuration > Sales > Payment Methods**. Select **MercadoPago - Classic Checkout**.
+1. Go to **System > Configuration > Sales > Payment Methods**. Select **Mercado Pago - Classic Checkout**.
 
 2. Enable the solution and set your **Client Id** and **Client Secret**. <br />
 Get them in the following address:
@@ -142,7 +142,7 @@ Get them in the following address:
 	* **Checkout Position**: The position of the payment solution in the checkout process.
 	* **Type Checkout**: Sets the type of checkout, the options are:
 		*  *Iframe*: Opens a Magento URL with a iframe as the content.
-		*  *Redirect*: Redirects to MercadoPago URL.
+		*  *Redirect*: Redirects to Mercado Pago URL.
 		*  *Lightbox*: Similar to Iframe option but opens a lightbox instead of an iframe. 
 
 ---

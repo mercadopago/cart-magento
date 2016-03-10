@@ -60,8 +60,9 @@ class MercadoPago_MercadoEnvios_Model_Observer
         $shippingInfoModel = Mage::getModel('shipping/info')->loadByHash(Mage::app()->getRequest()->getParam('hash'));
 
         if ($url = Mage::helper('mercadopago_mercadoenvios')->getTrackingUrlByShippingInfo($shippingInfoModel)) {
-            Mage::app()->getRequest()->setDispatched(true);
-            Mage::app()->getResponse()->setRedirect($url);
+            $controller = $observer->getControllerAction();
+            $controller->getResponse()->setRedirect($url);
+            $controller->setFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_DISPATCH, true);
         }
     }
 

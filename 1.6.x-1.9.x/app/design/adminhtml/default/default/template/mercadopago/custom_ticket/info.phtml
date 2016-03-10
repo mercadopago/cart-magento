@@ -5,7 +5,7 @@
 <p><strong><?php echo $this->getMethod()->getTitle() ?></strong></p>
 
 <?php if(isset($info_payment['payment_id']) && $info_payment['payment_id']['value'] != ""): ?>
-    <p><?php echo $this->__('Payment Id (MercadoPago): %s', $info_payment['payment_id']['value']); ?></p>
+    <p><?php echo $this->__('Payment Id (Mercado Pago): %s', $info_payment['payment_id']['value']); ?></p>
 <?php endif; ?>
     
 <?php if(isset($info_payment['status']) && $info_payment['status']['value'] != ""): ?>

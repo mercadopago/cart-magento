@@ -39,7 +39,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
     And I press "#payment-buttons-container .button" element
     And I wait for "10" seconds
 
-    Then I should see "Discount MercadoPago"
+    Then I should see "Discount Mercado Pago"
 
   @applyDiscount @customTicketFormDiscountReview
   Scenario: Seeing subtotal discount in review with custom ticket checkout
@@ -50,7 +50,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
     And I wait for "6" seconds
     And I press "#payment-buttons-container .button" element
     And I wait for "10" seconds
-    Then I should see "Discount MercadoPago"
+    Then I should see "Discount Mercado Pago"
 
   @applyDiscount @orderDetail @skip
   Scenario: Seeing subtotal discount in order detail
@@ -66,5 +66,5 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
     And I should see "Payment Status: approved"
     And I am on page "sales/order/history/"
     And I press "span.nobr a" element
-    Then I should see "Discount MercadoPago"
+    Then I should see "Discount Mercado Pago"
 

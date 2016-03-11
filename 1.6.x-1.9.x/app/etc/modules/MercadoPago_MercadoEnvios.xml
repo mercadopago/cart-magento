@@ -4,6 +4,9 @@
         <MercadoPago_MercadoEnvios>
             <active>true</active>
             <codePool>community</codePool>
+            <depends>
+                <MercadoPago_Core />
+            </depends>
         </MercadoPago_MercadoEnvios>
     </modules>
 </config>

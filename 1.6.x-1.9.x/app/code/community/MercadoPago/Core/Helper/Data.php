@@ -29,16 +29,15 @@ class MercadoPago_Core_Helper_Data
 
     public function log($message, $file = "mercadopago.log", $array = null)
     {
-        //pega a configuração de log no admin, essa variavel vem como true por padrão
-        $action_log = Mage::getStoreConfig('payment/mercadopago/logs');
+        $actionLog = Mage::getStoreConfig('payment/mercadopago/logs');
 
-        //caso tenha um array, transforma em json para melhor visualização
-        if (!is_null($array)) {
-            $message .= " - " . json_encode($array);
+        if ($actionLog) {
+            if (!is_null($array)) {
+                $message .= " - " . json_encode($array);
+            }
+
+            Mage::log($message, null, $file, $actionLog);
         }
-
-        //set log
-        Mage::log($message, null, $file, $action_log);
     }
 
     public function getApiInstance()
@@ -91,7 +90,13 @@ class MercadoPago_Core_Helper_Data
     {
         $clientId = Mage::getStoreConfig(self::XML_PATH_CLIENT_ID);
         $clientSecret = Mage::getStoreConfig(self::XML_PATH_CLIENT_SECRET);
-        return $this->getApiInstance($clientId, $clientSecret)->get_access_token();
+        try {
+            $accessToken = $this->getApiInstance($clientId, $clientSecret)->get_access_token();
+        } catch (\Exception $e) {
+            $accessToken = false;
+        }
+
+        return $accessToken;
     }
 
     public function getStatusOrder($status)
@@ -164,8 +169,10 @@ class MercadoPago_Core_Helper_Data
 
         $order->setGrandTotal($balance);
         $order->setBaseGrandTotal($balance);
-        $order->setBaseShippingAmount($shippingCost);
-        $order->setShippingAmount($shippingCost);
+        if ($shippingCost > 0) {
+            $order->setBaseShippingAmount($shippingCost);
+            $order->setShippingAmount($shippingCost);
+        }
 
         $couponAmount = $this->_getMultiCardValue($data['coupon_amount']);
         $transactionAmount = $this->_getMultiCardValue($data['transaction_amount']);
@@ -178,7 +185,7 @@ class MercadoPago_Core_Helper_Data
             $balance = $balance - $transactionAmount - $shippingCost;
         }
 
-        if (round($balance,4) > 0) {
+        if (Zend_Locale_Math::round($balance,4) > 0) {
             $order->setFinanceCostAmount($balance);
             $order->setBaseFinanceCostAmount($balance);
         }

@@ -12,11 +12,11 @@ var MercadoPagoCustom = (function () {
     };
     var self = {
         messages: {
-            init: 'Init MercadoPago JS',
-            initOCP: 'Init MercadoPago OCP',
-            initDiscount: 'Init MercadoPago Custom Discount',
-            initTicket: 'Init MercadoPago Custom Ticket',
-            mpIncorrectlyConfigured: 'MercadoPago was not configured correctly. Public Key not found.',
+            init: 'Init Mercado Pago JS',
+            initOCP: 'Init Mercado Pago OCP',
+            initDiscount: 'Init Mercado Pago Custom Discount',
+            initTicket: 'Init Mercado Pago Custom Ticket',
+            mpIncorrectlyConfigured: 'Mercado Pago was not configured correctly. Public Key not found.',
             publicKey: 'Public Key: {0}',
             siteId: 'SITE_ID: {0}',
             invalidDocument: 'Document Number is invalid.',
@@ -61,6 +61,7 @@ var MercadoPagoCustom = (function () {
             default: 'default',
             checkout: 'checkout',
             mexico: 'MLM',
+            colombia: 'MCO',
             brazil: 'MLB',
             mercadopagoCustom: 'mercadopago_custom',
             validateDiscount: 'validate-discount',
@@ -260,6 +261,7 @@ var MercadoPagoCustom = (function () {
                 }
                 return true;
             });
+
         }
 
         function setPaymentMethodId(event) {
@@ -351,14 +353,20 @@ var MercadoPagoCustom = (function () {
 
             } else if (siteId == self.constants.mexico) {
 
-                excludeInputs.push(self.selectors.docType)
+                excludeInputs.push(self.selectors.docType);
                 excludeInputs.push(self.selectors.docNumber);
                 disabledInputs.push(self.selectors.issuer);
+
                 var index = excludeInputs.indexOf(self.selectors.paymentMethod);
                 if (index > -1) {
                     excludeInputs.splice(index, 1);
                 }
 
+            } else if (siteId == self.constants.colombia) {
+                var indexColombia = excludeInputs.indexOf(self.selectors.paymentMethod);
+                if (indexColombia > -1) {
+                    excludeInputs.splice(indexColombia, 1);
+                }
             }
             if (!this.issuerMandatory) {
                 excludeInputs.push(self.selectors.issuer);
@@ -566,6 +574,10 @@ var MercadoPagoCustom = (function () {
             showLogMercadoPago(status);
             showLogMercadoPago(response);
 
+            var siteId = TinyJ(self.selectors.siteId).val();
+            if (siteId == self.constants.colombia) {
+                setPaymentMethods()
+            }
             //hide loading
             hideLoading();
 

@@ -20,7 +20,7 @@ class MercadoPago_Core_Block_Sales_Order_Totals_Discount_Coupon
             'code'  => 'discount_coupon',
             'field' => 'discount_coupon_amount',
             'value' => $this->getSource()->getDiscountCouponAmount(),
-            'label' => $this->__('Discount MercadoPago'),
+            'label' => $this->__('Discount Mercado Pago'),
         ));
         $this->getParentBlock()->addTotalBefore($total, 'shipping');
 

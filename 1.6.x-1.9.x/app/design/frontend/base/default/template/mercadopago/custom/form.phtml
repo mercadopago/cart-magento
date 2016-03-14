@@ -9,7 +9,7 @@ $route = $this->getRequest()->getRequestedRouteName();
 $customer = $this->getCustomerAndCards();
 ?>
 
-<script>
+<script type="text/javascript">
         MercadoPagoCustom.enableLog(<?php echo $logEnabled?>);
         MercadoPagoCustom.getInstance().init();
 </script>

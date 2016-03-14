@@ -1,9 +1,9 @@
 ﻿"Enabled","Activo"
 
-"MercadoPago - Configuration", "MercadoPago - Configuración"
-"Credit Card - MercadoPago","Tarjetas de crédito - MercadoPago"
+"Mercado Pago - Configuration", "Mercado Pago - Configuración"
+"Credit Card - Mercado Pago","Tarjetas de crédito - Mercado Pago"
 
-"MercadoPago Custom - Credit Card","MercadoPago Custom - Tarjeta de Crédito"
+"Mercado Pago Custom - Credit Card","Mercado Pago Custom - Tarjeta de Crédito"
 "Payment Title","Título"
 "Category of your store","Categoria de la tienda"
 "Choose the status of approved orders","Elija el estado de los pedidos para pagos Aprobados"
@@ -15,9 +15,9 @@
 "Checkout Position","Posición en el Checkout"
 "To manage the status available go to System > Order Statuses","Para gerenciar los estados disponibles vaya a 'System > Order Statuses'"
 
-"MercadoPago Custom - Ticket","MercadoPago Custom - Tickets de pago"
+"Mercado Pago Custom - Ticket","Mercado Pago Custom - Tickets de pago"
 
-"MercadoPago Standard - Credit Card, Ticket and Account Money","MercadoPago Standard - Tarjetas, Tickets y Dinero en Cuenta"
+"Mercado Pago Standard - Credit Card, Ticket and Account Money","Mercado Pago Standard - Tarjetas, Tickets y Dinero en Cuenta"
 "Country","País"
 "Type Checkout","Tipo de Checkout"
 "Auto Redirect","Auto-Redireccionar"
@@ -27,8 +27,8 @@
 "Height Checkout Iframe","Alto de la zona del Checkout (Iframe)"
 "Auto-redirect the buyer when finishing the payment.","Auto-Redireccionar al comprador al finalizar el pago."
 "Select payment methods not accepted","Seleccione los medios de pago no aceptados"
-"For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","Para el funcionamento del Checkout Custom - Tickets de pago, es necesario configurar las Credenciales 'CLIENT_ID' y 'CLIENT_SECRET' en 'MercadoPago - Configuración'"
-"For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","Para el funcionamento del Checkout Standard, es necesario configurar las Credenciales 'CLIENT_ID' y 'CLIENT_SECRET' en 'MercadoPago - Configuración'"
+"For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'","Para el funcionamento del Checkout Custom - Tickets de pago, es necesario configurar las Credenciales 'CLIENT_ID' y 'CLIENT_SECRET' en 'Mercado Pago - Configuración'"
+"For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'","Para el funcionamento del Checkout Standard, es necesario configurar las Credenciales 'CLIENT_ID' y 'CLIENT_SECRET' en 'Mercado Pago - Configuración'"
 
 "Card Number","Número de Tarjeta"
 "Month","Mes"
@@ -58,7 +58,7 @@
 "Expiration Date: %s","Fecha de Expiración: %s"
 "Installments: %s","Cuotas: %s"
 "Statement Descriptor: %s","Identificación en la Factura de la Tarjeta de Crédito: %s"
-"Payment Id (MercadoPago): %s","Número de Pago (MercadoPago): %s"
+"Payment Id (Mercado Pago): %s","Número de Pago (Mercado Pago): %s"
 "Payment Status: %s (%s)","Estado del Pago: %s (%s)"
 
 "Click on the link to generate the ticket","Clique en el link para mostrar el ticket de pago"
@@ -83,7 +83,7 @@
 "Check the security code.","Revisa el código de seguridad."
 "We could not process your payment.","No pudimos procesar tu pago."
 
-"You must authorize to %s the payment of $ %s to MercadoPago.","Debes llamar y autorizar ante %s el pago de $ %s a MercadoPago"
+"You must authorize to %s the payment of $ %s to Mercado Pago.","Debes llamar y autorizar ante %s el pago de $ %s a Mercado Pago"
 "Call %s to activate your card.<br/>The phone is on the back of your card.","Llama a %s para que active tu tarjeta.<br/>El teléfono está al dorso de tu tarjeta."
 "We could not process your payment.","No pudimos procesar tu pago."
 "You already made a payment by that value.<br/>If you need to repay, use another card or other payment method.","Ya hiciste un pago por ese valor.<br/>Si necesitas volver a pagar usa otra tarjeta u otro medio de pago."
@@ -107,13 +107,13 @@
 
 "Verify the form data or wait until the validation of the payment data","Verifique los datos del formulario o aguarde la validación de los datos del pago."
 
-"Automatic notification of the MercadoPago: The payment was approved.","Notificación automática de MercadoPago: El pago fué aprobado."
-"Automatic notification of the MercadoPago: The payment was refunded.","Notificación automática de MercadoPago: El pago fué devuelto."
-"Automatic notification of the MercadoPago: The payment is being processed.","Notificación automática de MercadoPago: El pago esta siendo procesado."
-"Automatic notification of the MercadoPago: The payment is being processed. Will be approved within 2 business days.","Notificación automática de MercadoPago: El pago esta siendo procesado. Será aprobado en hasta 2 días hábiles."
-"Automatic notification of the MercadoPago: The payment is in the process of Dispute, check the graphic account of the MercadoPago for more information.","Notificación automática de MercadoPago: El pago está en un proceso de disputa, chequea tu cuenta de MercadoPago para mayor información."
-"Automatic notification of the MercadoPago: The payment was cancelled.","Notificación automática de MercadoPago: El pago fué cancelado."
-"Automatic notification of the MercadoPago: The payment was rejected.","Notificación automática de MercadoPago: El pago fué rechazado."
+"Automatic notification of the Mercado Pago: The payment was approved.","Notificación automática de Mercado Pago: El pago fué aprobado."
+"Automatic notification of the Mercado Pago: The payment was refunded.","Notificación automática de Mercado Pago: El pago fué devuelto."
+"Automatic notification of the Mercado Pago: The payment is being processed.","Notificación automática de Mercado Pago: El pago esta siendo procesado."
+"Automatic notification of the Mercado Pago: The payment is being processed. Will be approved within 2 business days.","Notificación automática de Mercado Pago: El pago esta siendo procesado. Será aprobado en hasta 2 días hábiles."
+"Automatic notification of the Mercado Pago: The payment is in the process of Dispute, check the graphic account of the Mercado Pago for more information.","Notificación automática de Mercado Pago: El pago está en un proceso de disputa, chequea tu cuenta de Mercado Pago para mayor información."
+"Automatic notification of the Mercado Pago: The payment was cancelled.","Notificación automática de Mercado Pago: El pago fué cancelado."
+"Automatic notification of the Mercado Pago: The payment was rejected.","Notificación automática de Mercado Pago: El pago fué rechazado."
 "<br/> Payment id: %s","<br/> Número de Pago: %s"
 "<br/> Status: %s","<br/> Estado: %s"
 "<br/> Status Detail: %s","<br/> Detalle del Estado: %s"

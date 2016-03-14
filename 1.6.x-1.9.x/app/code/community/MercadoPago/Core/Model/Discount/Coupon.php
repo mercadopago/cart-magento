@@ -38,7 +38,7 @@ class MercadoPago_Core_Model_Discount_Coupon
             if ($address->getDiscountCouponAmount() < 0) {
                 $address->addTotal([
                     'code'  => $this->getCode(),
-                    'title' => Mage::helper('mercadopago')->__('Discount MercadoPago'),
+                    'title' => Mage::helper('mercadopago')->__('Discount Mercado Pago'),
                     'value' => $address->getDiscountCouponAmount()
                 ]);
             }

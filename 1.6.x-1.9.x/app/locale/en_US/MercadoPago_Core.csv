@@ -1,9 +1,9 @@
 ﻿"Enabled","Enabled"
 
-"MercadoPago - Configuration", "MercadoPago - Configuration"
-"Credit Card - MercadoPago","Credit Card - MercadoPago"
+"Mercado Pago - Configuration", "Mercado Pago - Configuration"
+"Credit Card - Mercado Pago","Credit Card - Mercado Pago"
 
-"MercadoPago Custom - Credit Card","MercadoPago Custom - Credit Card"
+"Mercado Pago Custom - Credit Card","Mercado Pago Custom - Credit Card"
 "Payment Title","Payment Title"
 "Category of your store","Category of your store"
 "Choose the status of approved orders","Choose the status of approved orders"
@@ -15,9 +15,9 @@
 "Checkout Position","Checkout Position"
 "To manage the status available go to System > Order Statuses","To manage the status available go to System > Order Statuses"
 
-"MercadoPago Custom - Ticket","MercadoPago Custom - Ticket"
+"Mercado Pago Custom - Ticket","Mercado Pago Custom - Ticket"
 
-"MercadoPago Standard - Credit Card, Ticket and Account Money","MercadoPago Standard - Credit Card, Ticket and Account Money"
+"Mercado Pago Standard - Credit Card, Ticket and Account Money","Mercado Pago Standard - Credit Card, Ticket and Account Money"
 "Country","Country"
 "Type Checkout","Type Checkout"
 "Auto Redirect","Auto Redirect"
@@ -27,8 +27,8 @@
 "Height Checkout Iframe","Height Checkout Iframe"
 "Auto-redirect the buyer when finishing the payment.","Auto-redirect the buyer when finishing the payment."
 "Select payment methods not accepted","Select payment methods not accepted"
-"For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'"
-"For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'","For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'MercadoPago - Configuration'"
+"For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'","For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'"
+"For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'","For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'"
 
 "Card Number","Card Number"
 "Month","Month"
@@ -58,7 +58,7 @@
 "Expiration Date: %s","Expiration Date: %s"
 "Installments: %s","Installments: %s"
 "Statement Descriptor: %s","Statement Descriptor: %s"
-"Payment Id (MercadoPago): %s","Payment Id (MercadoPago): %s"
+"Payment Id (Mercado Pago): %s","Payment Id (Mercado Pago): %s"
 "Payment Status: %s (%s)","Payment Status: %s (%s)"
 
 "Click on the link to generate the ticket","Click on the link to generate the ticket"
@@ -84,7 +84,7 @@
 "Check the security code.","Check the security code."
 "We could not process your payment.","We could not process your payment."
 
-"You must authorize to %s the payment of $ %s to MercadoPago.","You must authorize to %s the payment of $ %s to MercadoPago."
+"You must authorize to %s the payment of $ %s to Mercado Pago.","You must authorize to %s the payment of $ %s to Mercado Pago."
 "Call %s to activate your card.<br/>The phone is on the back of your card.","Call %s to activate your card.<br/>The phone is on the back of your card."
 "We could not process your payment.","We could not process your payment."
 "You already made a payment by that value.<br/>If you need to repay, use another card or other payment method.","You already made a payment by that value.<br/>If you need to repay, use another card or other payment method."
@@ -108,13 +108,13 @@
 
 "Verify the form data or wait until the validation of the payment data","Verify the form data or wait until the validation of the payment data"
 
-"Automatic notification of the MercadoPago: The payment was approved.","Automatic notification of the MercadoPago: The payment was approved."
-"Automatic notification of the MercadoPago: The payment was refunded.","Automatic notification of the MercadoPago: The payment was refunded."
-"Automatic notification of the MercadoPago: The payment is being processed.","Automatic notification of the MercadoPago: The payment is being processed."
-"Automatic notification of the MercadoPago: The payment is being processed. Will be approved within 2 business days.","Automatic notification of the MercadoPago: The payment is being processed. Will be approved within 2 business days."
-"Automatic notification of the MercadoPago: The payment is in the process of Dispute, check the graphic account of the MercadoPago for more information.","Automatic notification of the MercadoPago: The payment is in the process of Dispute, check the graphic account of the MercadoPago for more information."
-"Automatic notification of the MercadoPago: The payment was cancelled.","Automatic notification of the MercadoPago: The payment was cancelled."
-"Automatic notification of the MercadoPago: The payment was rejected.","Automatic notification of the MercadoPago: The payment was rejected."
+"Automatic notification of the Mercado Pago: The payment was approved.","Automatic notification of the Mercado Pago: The payment was approved."
+"Automatic notification of the Mercado Pago: The payment was refunded.","Automatic notification of the Mercado Pago: The payment was refunded."
+"Automatic notification of the Mercado Pago: The payment is being processed.","Automatic notification of the Mercado Pago: The payment is being processed."
+"Automatic notification of the Mercado Pago: The payment is being processed. Will be approved within 2 business days.","Automatic notification of the Mercado Pago: The payment is being processed. Will be approved within 2 business days."
+"Automatic notification of the Mercado Pago: The payment is in the process of Dispute, check the graphic account of the Mercado Pago for more information.","Automatic notification of the Mercado Pago: The payment is in the process of Dispute, check the graphic account of the Mercado Pago for more information."
+"Automatic notification of the Mercado Pago: The payment was cancelled.","Automatic notification of the Mercado Pago: The payment was cancelled."
+"Automatic notification of the Mercado Pago: The payment was rejected.","Automatic notification of the Mercado Pago: The payment was rejected."
 "<br/> Payment id: %s","<br/> Payment id: %s"
 "<br/> Status: %s","<br/> Status: %s"
 "<br/> Status Detail: %s","<br/> Status Detail: %s"
@@ -162,5 +162,5 @@
 "Mercado Pago - Classic Checkout: Invalid client id or client secret","Mercado Pago - Classic Checkout: Invalid client id or client secret"
 "Mercado Pago - Custom Checkout: Invalid access token","Mercado Pago - Custom Checkout: Invalid access token"
 "(estimated date %s)","(estimated date %s)"
-"MercadoEnvios is not enabled in the country where MercadoPago is configured", "MercadoEnvios is not enabled in the country where MercadoPago is configured"
-"Discount MercadoPago","Discount MercadoPago"
+"MercadoEnvios is not enabled in the country where Mercado Pago is configured", "MercadoEnvios is not enabled in the country where Mercado Pago is configured"
+"Discount Mercado Pago","Discount Mercado Pago"

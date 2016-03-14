@@ -159,7 +159,7 @@ class FeatureContext
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $element = $this->findElement('#dt_method_mercadopago_custom');
 
-        expect($element->getText())->toBe("Credit Card - MercadoPago");
+        expect($element->getText())->toBe("Credit Card - Mercado Pago");
     }
 
 
@@ -185,7 +185,7 @@ class FeatureContext
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $element = $this->findElement('#dt_method_mercadopago_standard');
 
-        expect($element->getText())->toBe("MercadoPago");
+        expect($element->getText())->toBe("Mercado Pago");
     }
 
 
@@ -901,6 +901,12 @@ class FeatureContext
                 'client_secret' => 'bASLUlb5s12QYPAUJwCQUMa21wFzFrzz',
                 'public_key'    => 'TEST-a4f588fd-5bb8-406c-9811-1536154d5d73',
                 'access_token'  => 'TEST-201313175671817-111108-b30483a389dbc6a04e401c23e62da2c1__LB_LC__-193994249'
+            ],
+            'mco' => [
+                'client_id'     => '3688958250893559',
+                'client_secret' => 'bASLUlb5s12QYPAUJwCQUMa21wFzFrzz',
+                'public_key'    => 'TEST-d6e2006f-933f-4dd2-aea4-c3986b30e691',
+                'access_token'  => 'TEST-3688958250893559-030308-19e24cdca75845d460c2935585b1e375__LA_LB__-207596493'
             ]
         ];
         $clientId = $dataCountry[$arg1]['client_id'];

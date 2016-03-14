@@ -12,11 +12,11 @@ var MercadoPagoCustom = (function () {
     };
     var self = {
         messages: {
-            init: 'Init MercadoPago JS',
-            initOCP: 'Init MercadoPago OCP',
-            initDiscount: 'Init MercadoPago Custom Discount',
-            initTicket: 'Init MercadoPago Custom Ticket',
-            mpIncorrectlyConfigured: 'MercadoPago was not configured correctly. Public Key not found.',
+            init: 'Init Mercado Pago JS',
+            initOCP: 'Init Mercado Pago OCP',
+            initDiscount: 'Init Mercado Pago Custom Discount',
+            initTicket: 'Init Mercado Pago Custom Ticket',
+            mpIncorrectlyConfigured: 'Mercado Pago was not configured correctly. Public Key not found.',
             publicKey: 'Public Key: {0}',
             siteId: 'SITE_ID: {0}',
             invalidDocument: 'Document Number is invalid.',
@@ -62,6 +62,7 @@ var MercadoPagoCustom = (function () {
             checkout: 'onestepcheckout',
             mexico: 'MLM',
             brazil: 'MLB',
+            colombia: 'MCO',
             mercadopagoCustom: 'mercadopago_custom',
             validateDiscount: 'validate-discount',
             validateDocNumber: 'mp-validate-docnumber',
@@ -231,6 +232,11 @@ var MercadoPagoCustom = (function () {
                 var methods = getPaymentMethods();
                 setPaymentMethodsInfo(methods);
                 TinyJ(self.selectors.paymentMethodSelect).change(setPaymentMethodId);
+            }
+            if (siteId == self.constants.colombia) {
+                setTimeout(function () {
+                    setPaymentMethods()
+                }, 5000);
             }
 
             defineInputs();
@@ -424,6 +430,11 @@ var MercadoPagoCustom = (function () {
                     excludeInputs.splice(index, 1);
                 }
 
+            } else if (siteId == self.constants.colombia) {
+                var indexColombia = excludeInputs.indexOf(self.selectors.paymentMethod);
+                if (indexColombia > -1) {
+                    excludeInputs.splice(indexColombia, 1);
+                }
             }
             if (!this.issuerMandatory) {
                 excludeInputs.push(self.selectors.issuer);

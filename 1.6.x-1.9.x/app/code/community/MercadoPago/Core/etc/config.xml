@@ -18,7 +18,7 @@
 <config>
     <modules>
         <MercadoPago_Core>
-            <version>2.1.4</version>
+            <version>2.1.5</version>
         </MercadoPago_Core>
     </modules>
 
@@ -176,7 +176,7 @@
                 <active>0</active>
                 <model>mercadopago/custom_payment</model>
                 <!-- nome do modulo na exibição para o comprador -->
-                <title translate="label">Credit Card - MercadoPago</title>
+                <title translate="label">Credit Card - Mercado Pago</title>
                 <allowspecific>0</allowspecific>
                 <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg</banner_checkout>
                 <sort_order>-2</sort_order>
@@ -188,7 +188,7 @@
                 <active>0</active>
                 <model>mercadopago/customTicket_payment</model>
                 <!-- nome do modulo na exibição para o comprador -->
-                <title translate="label">Ticket - MercadoPago</title>
+                <title translate="label">Ticket - Mercado Pago</title>
                 <allowspecific>0</allowspecific>
                 <binary_mode>0</binary_mode>
                 <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/2014/230x60.png</banner_checkout>
@@ -201,7 +201,7 @@
                 <active>0</active>
                 <model>mercadopago/standard_payment</model>
                 <!-- nome do modulo na exibição para o comprador -->
-                <title>MercadoPago</title>
+                <title>Mercado Pago</title>
                 <allowspecific>0</allowspecific>
                 <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg</banner_checkout>
                 <sort_order>-1</sort_order>

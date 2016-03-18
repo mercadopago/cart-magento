@@ -27,12 +27,10 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $weight = 0;
         $helperItem = Mage::helper('mercadopago_mercadoenvios/itemData');
         foreach ($items as $item) {
-            if (!$helperItem->itemHasChildren($item)) {
-                $width += $this->_getShippingDimension($item, 'width');
-                $height += $this->_getShippingDimension($item, 'height');
-                $length += $this->_getShippingDimension($item, 'length');
-                $weight += $this->_getShippingDimension($item, 'weight');
-            }
+            $width += $this->_getShippingDimension($item, 'width');
+            $height += $this->_getShippingDimension($item, 'height');
+            $length += $this->_getShippingDimension($item, 'length');
+            $weight += $this->_getShippingDimension($item, 'weight');
         }
         $height = ceil($height);
         $width = ceil($width);
@@ -40,7 +38,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $weight = ceil($weight);
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
-            $this->log('Invalid dimensions in cart:', ['width'=>$width,'height'=>$height,'length'=>$length,'weight'=>$weight,]);
+            $this->log('Invalid dimensions in cart:', ['width' => $width, 'height' => $height, 'length' => $length, 'weight' => $weight,]);
             Mage::throwException('Invalid dimensions cart');
         }
 

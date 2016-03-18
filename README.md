@@ -61,7 +61,7 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 
 **Database**
 
-MySQL 5.6 (Oracle or Percona)
+<ul><li>MySQL 5.6 (Oracle or Percona)</li></ul>
 
 **PHP**
 
@@ -70,9 +70,9 @@ MySQL 5.6 (Oracle or Percona)
 <li>PHP 5.5.x</li>
 </ul>
 
-*Required extensions:*
+    *Required extensions:*
 
-PDO_MySQL, simplexml, mcrypt, hash, GD, DOM, iconv, curl
+        PDO_MySQL, simplexml, mcrypt, hash, GD, DOM, iconv, curl
 
 ---
 

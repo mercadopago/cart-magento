@@ -54,28 +54,25 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 
 **Web Server**
 
-*Apache 2.x*
-*Nginx 1.7.x*
+<ul>
+<li>Apache 2.x</li>
+<li>Nginx 1.7.x</li>
+</ul>
 
 **Database**
 
-*MySQL 5.6 (Oracle or Percona)*
+MySQL 5.6 (Oracle or Percona)
 
 **PHP**
 
-*PHP 5.4.x*
-*PHP 5.5.x*
+<ul>
+<li>PHP 5.4.x</li>
+<li>PHP 5.5.x</li>
+</ul>
 
 *Required extensions:*
 
-PDO_MySQL
-simplexml
-mcrypt
-hash
-GD
-DOM
-iconv
-curl
+PDO_MySQL, simplexml, mcrypt, hash, GD, DOM, iconv, curl
 
 ---
 

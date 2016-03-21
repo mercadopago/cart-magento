@@ -25,7 +25,6 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $height = 0;
         $length = 0;
         $weight = 0;
-        $helperItem = Mage::helper('mercadopago_mercadoenvios/itemData');
         foreach ($items as $item) {
             $width += $this->_getShippingDimension($item, 'width');
             $height += $this->_getShippingDimension($item, 'height');

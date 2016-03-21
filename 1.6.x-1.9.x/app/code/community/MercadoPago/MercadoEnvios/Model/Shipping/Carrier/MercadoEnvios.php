@@ -87,6 +87,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 $dimensions = Mage::helper('mercadopago_mercadoenvios')->getDimensions($this->getAllItems());
             } catch (Exception $e) {
                 $this->_methods = self::INVALID_METHOD;
+
                 return;
             }
 
@@ -158,6 +159,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         $error->setCarrierTitle($this->getConfigData('title'));
         $msg = $this->getConfigData('specificerrmsg');
         $error->setErrorMessage($msg);
+
         return $error;
     }
 
@@ -179,13 +181,15 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         return in_array($rateId, $this->_available);
     }
 
-    public function isActive() {
+    public function isActive()
+    {
         if (!Mage::getStoreConfigFlag('payment/mercadopago_standard/active')) {
             return false;
         }
         if (!Mage::helper('mercadopago_mercadoenvios')->isCountryEnabled()) {
             return false;
         }
+
         return parent::isActive();
     }
 
@@ -200,31 +204,31 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
      * despite each item by itself is not)
      *
      * @param Mage_Shipping_Model_Rate_Request $request
+     *
      * @return array
      */
     public function getAllItems()
     {
         $items = array();
-        if ($this->_request->getAllItems()) {
-            foreach ($this->_request->getAllItems() as $item) {
-                /* @var $item Mage_Sales_Model_Quote_Item */
-                if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
-                    // Don't process children here - we will process (or already have processed) them below
-                    continue;
-                }
+        foreach ($this->_request->getAllItems() as $item) {
+            /* @var $item Mage_Sales_Model_Quote_Item */
+            if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
+                // Don't process children here - we will process (or already have processed) them below
+                continue;
+            }
 
-                if ($item->getHasChildren() && $item->isShipSeparately()) {
-                    foreach ($item->getChildren() as $child) {
-                        if (!$child->getFreeShipping() && !$child->getProduct()->isVirtual()) {
-                            $items[] = $child;
-                        }
+            if ($item->getHasChildren() && $item->isShipSeparately()) {
+                foreach ($item->getChildren() as $child) {
+                    if (!$child->getFreeShipping() && !$child->getProduct()->isVirtual()) {
+                        $items[] = $child;
                     }
-                } else {
-                    // Ship together - count compound item as one solid
-                    $items[] = $item;
                 }
+            } else {
+                // Ship together - count compound item as one solid
+                $items[] = $item;
             }
         }
+
         return $items;
     }
 

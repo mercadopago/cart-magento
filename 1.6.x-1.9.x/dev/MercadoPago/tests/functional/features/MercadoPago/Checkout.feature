@@ -32,6 +32,7 @@ Scenario: See MercadoPago option as a payment method
     And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_custom"
+    And I wait for "5" seconds
     And I select option field "cardId" with "144422268"
     And I fill text field "securityCodeOCP" with "123"
     And I select option field "installments" with "12"

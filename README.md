@@ -52,6 +52,12 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 <a name="requirements"></a>
 ## Requirements:
 
+**Operating System**
+
+<ul>
+<li>Linux x86-64</li>
+</ul>
+
 **Web Server**
 
 <ul>

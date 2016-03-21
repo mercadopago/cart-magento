@@ -435,6 +435,20 @@ class MercadoPago_Core_Model_Core
         return $details_discount;
     }
 
+    protected function _createInvoice($order, $message)
+    {
+        if (!$order->hasInvoices()) {
+            $invoice = $order->prepareInvoice();
+            $invoice->register()->pay();
+            Mage::getModel('core/resource_transaction')
+                ->addObject($invoice)
+                ->addObject($invoice->getOrder())
+                ->save();
+
+            $invoice->sendEmail(true, $message);
+        }
+    }
+
     public function setStatusOrder($payment, $stateObject = null)
     {
         $helper = Mage::helper('mercadopago');
@@ -452,23 +466,12 @@ class MercadoPago_Core_Model_Core
         try {
             if ($status == 'approved') {
                 Mage::helper('mercadopago')->setOrderSubtotals($payment, $order);
+                $this->_createInvoice($order,$message);
 
-                if (!$order->hasInvoices()) {
-                    $invoice = $order->prepareInvoice();
-                    $invoice->register()->pay();
-                    Mage::getModel('core/resource_transaction')
-                        ->addObject($invoice)
-                        ->addObject($invoice->getOrder())
-                        ->save();
-
-                    $invoice->sendEmail(true, $message);
-                }
                 //Associate card to customer
-
                 if (isset($additionalInfo['token'])) {
                     Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
                 }
-
 
             } elseif ($status == 'refunded' || $status == 'cancelled') {
                 $order->cancel();

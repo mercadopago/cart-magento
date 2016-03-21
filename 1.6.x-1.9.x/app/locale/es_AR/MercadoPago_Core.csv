@@ -170,3 +170,11 @@
 "Checkout Classic Method must be enabled","El método de pago Checkout Classic debe estar habilitado"
 "MercadoEnvios is not enabled in the country where Mercado Pago is configured", "MercadoEnvios no está disponible en el país configurado para Mercado Pago"
 "Discount Mercado Pago","Descuento de Mercado Pago"
+
+"Is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+                                        During the sandbox mode tests, you can operate over HTTP,
+                                        but for homologation you'll need to acquire the certificate in case you don't have it.
+                                        <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Learn More</a>",
+                                        "es requisito que cuentes con un certificado SSL, y que el formulario de pagos sea servido bajo una página HTTPS.
+                                         Durante las pruebas en modo sandbox, puedes operar en HTTP, pero para homologarte, deberás adquirir el certificado en caso de que no lo poseas.
+                                                                                 <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Ver más</a>"

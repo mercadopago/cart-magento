@@ -125,3 +125,11 @@
 
 "Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials","Obtén tu public_key en la siguiente dirección: https://www.mercadopago.com/mco/account/credentials"
 "Choose the status when payment was chargeback", "Elija el estado de los pedidos para pagos con status Chargeback"
+
+"Is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+                                        During the sandbox mode tests, you can operate over HTTP,
+                                        but for homologation you'll need to acquire the certificate in case you don't have it.
+                                        <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Learn More</a>",
+                                        "es requisito que cuentes con un certificado SSL, y que el formulario de pagos sea servido bajo una página HTTPS.
+                                         Durante las pruebas en modo sandbox, puedes operar en HTTP, pero para homologarte, deberás adquirir el certificado en caso de que no lo poseas.
+                                                                                 <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Ver más</a>"

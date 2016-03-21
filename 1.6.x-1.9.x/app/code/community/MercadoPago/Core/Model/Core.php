@@ -225,11 +225,11 @@ class MercadoPago_Core_Model_Core
 
     }
 
-    protected function getCouponInfo($coupon, $coupon_code)
+    protected function getCouponInfo($coupon, $couponCode)
     {
         $infoCoupon = array();
         $infoCoupon['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
-        $infoCoupon['coupon_code'] = $coupon_code;
+        $infoCoupon['coupon_code'] = $couponCode;
         $infoCoupon['campaign_id'] = $coupon['response']['id'];
         if ($coupon['status'] == 200) {
             Mage::helper('mercadopago')->log("Coupon applied. API response 200.", self::LOG_FILE);
@@ -247,7 +247,7 @@ class MercadoPago_Core_Model_Core
         $order = $this->_getOrder($order_id);
         $customer = Mage::getSingleton('customer/session')->getCustomer();
 
-        $billing_address = $quote->getBillingAddress()->getData();
+        $billingAddress = $quote->getBillingAddress()->getData();
         $customerInfo = $this->getCustomerInfo($customer, $order);
 
         /* INIT PREFERENCE */
@@ -270,8 +270,8 @@ class MercadoPago_Core_Model_Core
         $preference['additional_info']['payer']['last_name'] = $customerInfo['last_name'];
 
         $preference['additional_info']['payer']['address'] = array(
-            "zip_code"      => $billing_address['postcode'],
-            "street_name"   => $billing_address['street'] . " - " . $billing_address['city'] . " - " . $billing_address['country_id'],
+            "zip_code"      => $billingAddress['postcode'],
+            "street_name"   => $billingAddress['street'] . " - " . $billingAddress['city'] . " - " . $billingAddress['country_id'],
             "street_number" => ''
         );
 
@@ -292,17 +292,17 @@ class MercadoPago_Core_Model_Core
 
         $preference['additional_info']['payer']['phone'] = array(
             "area_code" => "0",
-            "number"    => $billing_address['telephone']
+            "number"    => $billingAddress['telephone']
         );
 
         if (!empty($payment_info['coupon_code'])) {
-            $coupon_code = $payment_info['coupon_code'];
-            Mage::helper('mercadopago')->log("Validating coupon_code: " . $coupon_code, self::LOG_FILE);
+            $couponCode = $payment_info['coupon_code'];
+            Mage::helper('mercadopago')->log("Validating coupon_code: " . $couponCode, self::LOG_FILE);
 
-            $coupon = $this->validCoupon($coupon_code);
+            $coupon = $this->validCoupon($couponCode);
             Mage::helper('mercadopago')->log("Response API Coupon: ", self::LOG_FILE, $coupon);
 
-            $couponInfo = $this->getCouponInfo($coupon, $coupon_code);
+            $couponInfo = $this->getCouponInfo($coupon, $couponCode);
             $preference['coupon_amount'] = $couponInfo['coupon_amount'];
             $preference['coupon_code'] = $couponInfo['coupon_code'];
             $preference['campaign_id'] = $couponInfo['campaign_id'];

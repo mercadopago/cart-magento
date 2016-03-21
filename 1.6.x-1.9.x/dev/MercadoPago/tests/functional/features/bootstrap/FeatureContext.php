@@ -60,7 +60,6 @@ class FeatureContext
     public function iFillTheBillingAddress()
     {
         $page = $this->getSession()->getPage();
-
         if ($page->findById('billing-address-select')) {
             $page->selectFieldOption('billing-address-select', '');
         }

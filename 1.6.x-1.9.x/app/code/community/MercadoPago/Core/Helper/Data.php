@@ -27,6 +27,8 @@ class MercadoPago_Core_Helper_Data
     const PLATFORM_DESKTOP = 'Desktop';
     const TYPE = 'magento';
 
+    protected $_statusUpdatedFlag = false;
+
     public function log($message, $file = "mercadopago.log", $array = null)
     {
         $actionLog = Mage::getStoreConfig('payment/mercadopago/logs');
@@ -37,6 +39,19 @@ class MercadoPago_Core_Helper_Data
             }
 
             Mage::log($message, null, $file, $actionLog);
+        }
+    }
+
+    public function isStatusUpdated() {
+        return $this->_statusUpdatedFlag;
+    }
+
+    public function setStatusUpdated ($notificationData) {
+        $order = Mage::getModel('sales/order')->loadByIncrementId($notificationData["external_reference"]);
+        $status = $notificationData['status'];
+        $currentStatus = $order->getPayment()->getAdditionalInformation('status');
+        if ($status == $currentStatus){
+            $this->_statusUpdatedFlag = true;
         }
     }
 

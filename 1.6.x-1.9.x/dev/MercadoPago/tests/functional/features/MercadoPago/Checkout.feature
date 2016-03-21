@@ -1,23 +1,6 @@
 @MercadoPago
 Feature: A customer should be able to do a checkout with MercadoPago
 
-@frontend @WIP
-Scenario: See MercadoPago option as a payment method
-  Given I am on page "blue-horizons-bracelets.html"
-    And I press ".add-to-cart-buttons .btn-cart" element
-    And I press ".btn-proceed-checkout" element
-
-  When I press "#onepage-guest-register-button" element
-
-    And I fill the billing address
-    And I select radio "billing:use_for_shipping_yes"
-    And I press "#billing-buttons-container .button" element
-
-    And I select shipping method "s_method_flatrate_flatrate"
-    And I press "#shipping-method-buttons-container .button" element
-
-  Then I should see MercadoPago Custom available
-
   @frontend @Availability @FinancingCost
   Scenario: Validate financing cost detail
     Given User "test_user_2135227@testuser.com" "magento" exists
@@ -31,15 +14,32 @@ Scenario: See MercadoPago option as a payment method
     And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_custom"
-    And I select option field "cardId" with "144422268"
     And I fill text field "securityCodeOCP" with "123"
-    And I select option field "installments" with "12"
     And I blur field "#securityCodeOCP"
+    And I select option field "cardId" with "144422268"
+    And I select option field "installments" with "12"
 
     When I wait for "10" seconds
     And I press "#payment-buttons-container .button" element
 
     Then I should see financing cost detail
+    
+  @frontend @WIP
+  Scenario: See MercadoPago option as a payment method
+    Given I am on page "blue-horizons-bracelets.html"
+    And I press ".add-to-cart-buttons .btn-cart" element
+    And I press ".btn-proceed-checkout" element
+
+    When I press "#onepage-guest-register-button" element
+
+    And I fill the billing address
+    And I select radio "billing:use_for_shipping_yes"
+    And I press "#billing-buttons-container .button" element
+
+    And I select shipping method "s_method_flatrate_flatrate"
+    And I press "#shipping-method-buttons-container .button" element
+
+    Then I should see MercadoPago Custom available
 
   @frontend @Availability @StandardActive
   Scenario: Not See MercadoPago option as a payment method when is not available

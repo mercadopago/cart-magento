@@ -26,6 +26,7 @@ Scenario: See MercadoPago option as a payment method
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element
+    And I press "#onepage-guest-register-button" element
     And I fill the billing address
     And I press "#billing-buttons-container .button" element
     And I select shipping method "s_method_flatrate_flatrate"

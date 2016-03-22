@@ -43,7 +43,7 @@ $customer = $this->getCustomerAndCards();
                             <label for="cardNumber"><?php echo $this->__('Payment Method'); ?></label>
                             <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp">
                                 <?php foreach ($customer['cards'] as $card) { ?>
-                                    <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>">
+                                    <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>" secure_thumb="<?php echo $card["payment_method"]["secure_thumbnail"]; ?>">
 
                                         <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
                                     </option>

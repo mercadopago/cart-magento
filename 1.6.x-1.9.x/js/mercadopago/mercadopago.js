@@ -533,7 +533,6 @@ var MercadoPagoCustom = (function () {
                 var ccNumber = TinyJ(self.selectors.cardNumberInput).val();
                 return ccNumber.replace(/[ .-]/g, '').slice(0, 6);
             }
-            return;
         }
 
 
@@ -591,7 +590,10 @@ var MercadoPagoCustom = (function () {
                 var selector = oneClickPay == true ? self.selectors.cardId : self.selectors.cardNumberInput;
                 if (response.length == 1) {
                     TinyJ(selector).getElem().style.background = String.format(self.constants.backgroundUrlFormat, response[0].secure_thumbnail);
+                } else if (oneClickPay) {
+                    TinyJ(selector).getElem().style.background = String.format(self.constants.backgroundUrlFormat, TinyJ(selector).getSelectedOption().attribute('secure_thumb'));
                 }
+
 
                 var bin = getBin();
                 try {
@@ -607,7 +609,6 @@ var MercadoPagoCustom = (function () {
                 });
 
                 // check if the issuer is necessary to pay
-                this.issuerMandatory;
                 this.issuerMandatory = false;
                 var additionalInfo = response[0].additional_info_needed;
 
@@ -647,7 +648,7 @@ var MercadoPagoCustom = (function () {
             var messageChoose = TinyJ(self.selectors.mercadoPagoTextChoice).val();
             var messageDefaultIssuer = TinyJ(self.selectors.textDefaultIssuer).val();
 
-            fragment = document.createDocumentFragment();
+            var fragment = document.createDocumentFragment();
 
             var option = new Option(messageChoose + "...", '');
             fragment.appendChild(option);

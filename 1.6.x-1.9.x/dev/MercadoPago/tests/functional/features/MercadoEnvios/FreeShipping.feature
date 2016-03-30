@@ -54,15 +54,15 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     Examples:
       | country | free_method | zip_code | country_code  | amount | price_expected |
       | mla     | 73328       | 7000     | AR            | 100    | $0.00          |
-      | mla     | 73328       | 7000     | AR            | 150    | $67.99         |
+      | mla     | 73328       | 7000     | AR            | 150    | -              |
       | mla     | 73330       | 7000     | AR            | 100    | $0.00          |
-      | mla     | 73330       | 7000     | AR            | 150    | $79.99         |
+      | mla     | 73330       | 7000     | AR            | 150    | -              |
       | mlb     | 100009      | 01046925 | BR            | 100    | $0.00          |
-      | mlb     | 100009      | 01046925 | BR            | 150    | $7.99          |
+      | mlb     | 100009      | 01046925 | BR            | 150    | -              |
       | mlb     | 182         | 01046925 | BR            | 100    | $0.00          |
-      | mlb     | 182         | 01046925 | BR            | 150    | $6.81          |
+      | mlb     | 182         | 01046925 | BR            | 150    | -              |
       | mlm     | 501345      | 22615    | MX            | 100    | $0.00          |
-      | mlm     | 501345      | 22615    | MX            | 150    | $131.00        |
+      | mlm     | 501345      | 22615    | MX            | 150    | -              |
 
   @FreeShippingCheckoutStandard
   Scenario: FreeShipping complete checkout

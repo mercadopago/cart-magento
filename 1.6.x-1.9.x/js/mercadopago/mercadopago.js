@@ -590,7 +590,7 @@ var MercadoPagoCustom = (function () {
                 var selector = oneClickPay == true ? self.selectors.cardId : self.selectors.cardNumberInput;
                 if (response.length == 1) {
                     TinyJ(selector).getElem().style.background = String.format(self.constants.backgroundUrlFormat, response[0].secure_thumbnail);
-                } else if (oneClickPay) {
+                } else if (oneClickPay != 0) {
                     TinyJ(selector).getElem().style.background = String.format(self.constants.backgroundUrlFormat, TinyJ(selector).getSelectedOption().attribute('secure_thumb'));
                 }
 

@@ -154,7 +154,7 @@
             </updates>
         </layout>
     </adminhtml>
-                
+
     <default>
         <payment>            
             <mercadopago>

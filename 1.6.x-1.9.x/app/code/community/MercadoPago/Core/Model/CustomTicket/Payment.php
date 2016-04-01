@@ -101,8 +101,8 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
     public function getOrderPlaceRedirectUrl()
     {
-        // requisicao vem da pagina de finalizacao de pedido
-        return Mage::getUrl('mercadopago/success', array('_secure' => true));
+        $url = Mage::helper('mercadopago')->getSuccessUrl();
+        return Mage::getUrl($url, array('_secure' => true));
     }
 
 

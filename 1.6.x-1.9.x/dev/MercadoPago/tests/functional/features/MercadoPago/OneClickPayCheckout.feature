@@ -3,6 +3,7 @@ Feature: Validation of custom checkout with one click pay
 
   Background:
   Given User "test_user_2135227@testuser.com" "magento" exists
+  And Setting Config "payment/mercadopago/debug_mode" is "1"
   And I am logged in as "test_user_2135227@testuser.com" "magento"
   And I empty cart
   And I am on page "blue-horizons-bracelets.html"

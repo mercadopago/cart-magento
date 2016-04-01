@@ -4,6 +4,7 @@ Feature: A customer should be able to do a checkout with MercadoPago
   @frontend @Availability @FinancingCost
   Scenario: Validate financing cost detail
     Given User "test_user_2135227@testuser.com" "magento" exists
+    And Setting Config "payment/mercadopago/debug_mode" is "1"
     And I am logged in as "test_user_2135227@testuser.com" "magento"
     And I empty cart
     And I am on page "blue-horizons-bracelets.html"
@@ -27,6 +28,7 @@ Feature: A customer should be able to do a checkout with MercadoPago
   @frontend @WIP
   Scenario: See MercadoPago option as a payment method
     Given I am on page "blue-horizons-bracelets.html"
+    And Setting Config "payment/mercadopago/debug_mode" is "1"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element
 

@@ -233,4 +233,13 @@ class MercadoPago_Core_Helper_Data
         return $finalValue;
     }
 
+    public function getSuccessUrl() {
+        if (Mage::getStoreConfig('payment/mercadopago/use_successpage_mp')) {
+            $url = 'mercadopago/success';
+        } else {
+            $url = 'checkout/onepage/success';
+        }
+        return $url;
+    }
+
 }

@@ -178,3 +178,6 @@
                                         "es requisito que cuentes con un certificado SSL, y que el formulario de pagos sea servido bajo una página HTTPS.
                                          Durante las pruebas en modo sandbox, puedes operar en HTTP, pero para homologarte, deberás adquirir el certificado en caso de que no lo poseas.
                                                                                  <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Ver más</a>"
+
+"Use Mercado Pago success page","Usar succes page de Mercado Pago"
+"If set this config with NO, magento success page will be used","Si esta configuración se setea en NO, se usará la success page de Magento"

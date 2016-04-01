@@ -201,3 +201,6 @@
                                         <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Learn More</a>",
                                         "é um requisito que tenha um certificado SSL e que o formulário de pagamentos esteja sobre uma página HTTPS.
                                          Durante os testes em modo sandbox, pode operar em HTTP, mas para a homologação, deverá adquirir o certificado caso não tenha."
+
+"Use Mercado Pago success page","Use página de sucesso Mercado Pago"
+"If set this config with NO, magento success page will be used","Se definir essa configuração com NO, página de sucesso magento será usado"

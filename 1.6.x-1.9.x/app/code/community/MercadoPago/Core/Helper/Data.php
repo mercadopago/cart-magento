@@ -28,6 +28,7 @@ class MercadoPago_Core_Helper_Data
     const TYPE = 'magento';
 
     protected $_statusUpdatedFlag = false;
+    protected $_apiInstance;
 
     public function log($message, $file = "mercadopago.log", $array = null)
     {
@@ -57,25 +58,27 @@ class MercadoPago_Core_Helper_Data
 
     public function getApiInstance()
     {
-        $params = func_num_args();
-        if ($params > 2 || $params < 1) {
-            Mage::throwException("Invalid arguments. Use CLIENT_ID and CLIENT SECRET, or ACCESS_TOKEN");
-        }
-        if ($params == 1) {
-            $api = new MercadoPago_Lib_Api(func_get_arg(0));
-            $api->set_platform(self::PLATFORM_V1_WHITELABEL);
-        } else {
-            $api = new MercadoPago_Lib_Api(func_get_arg(0), func_get_arg(1));
-            $api->set_platform(self::PLATFORM_DESKTOP);
-        }
-        if (Mage::getStoreConfigFlag('payment/mercadopago_standard/sandbox_mode')) {
-            $api->sandbox_mode(true);
-        }
+        if (empty($this->_apiInstance)) {
+            $params = func_num_args();
+            if ($params > 2 || $params < 1) {
+                Mage::throwException("Invalid arguments. Use CLIENT_ID and CLIENT SECRET, or ACCESS_TOKEN");
+            }
+            if ($params == 1) {
+                $api = new MercadoPago_Lib_Api(func_get_arg(0));
+                $api->set_platform(self::PLATFORM_V1_WHITELABEL);
+            } else {
+                $api = new MercadoPago_Lib_Api(func_get_arg(0), func_get_arg(1));
+                $api->set_platform(self::PLATFORM_DESKTOP);
+            }
+            if (Mage::getStoreConfigFlag('payment/mercadopago_standard/sandbox_mode')) {
+                $api->sandbox_mode(true);
+            }
 
-        $api->set_type(self::TYPE . ' ' . (string) Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version);
+            $api->set_type(self::TYPE . ' ' . (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version);
 
-        return $api;
-
+            $this->_apiInstance = $api;
+        }
+        return $this->_apiInstance;
     }
 
     public function isValidAccessToken($accessToken)

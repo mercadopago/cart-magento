@@ -113,3 +113,5 @@
 "<br/> Payment id: %s","<br/> Número de Pago: %s"
 "<br/> Status: %s","<br/> Estado: %s"
 "<br/> Status Detail: %s","<br/> Detalle del Estado: %s"
+
+"MercadoEnvíos - Please enable a shipping method at least","MercadoEnvíos - Por favor habilita un método de envío al menos"

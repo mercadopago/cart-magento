@@ -120,3 +120,5 @@
 
 "Get your public_key in the following address: https://www.mercadopago.com/mlb/account/credentials","Obtén tu public_key en la siguiente dirección: https://www.mercadopago.com/mla/account/credentials"
 "Choose the status when payment was chargeback", "Elija el estado de los pedidos para pagos con status Chargeback"
+
+"MercadoEnvíos - Please enable a shipping method at least","MercadoEnvíos - Por favor habilita un método de envío al menos"

@@ -193,7 +193,7 @@ class MercadoPago_MercadoEnvios_Model_Observer
 
         if (!$validate){
             Mage::getConfig()->saveConfig('carriers/mercadoenvios/active', '0');
-            Mage::throwException(Mage::helper('mercadopago_mercadoenvios')->__('Mercado Envíos - Please enable a shipping method at least'));
+            Mage::throwException(Mage::helper('mercadopago_mercadoenvios')->__('MercadoEnvíos - Please enable a shipping method at least'));
         }
     }
 

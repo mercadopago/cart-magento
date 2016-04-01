@@ -154,8 +154,6 @@
             </updates>
         </layout>
     </adminhtml>
-    
-                
                 
     <default>
         <payment>            
@@ -168,6 +166,7 @@
                 <order_status_rejected>pending</order_status_rejected>
                 <order_status_cancelled>pending</order_status_cancelled>
                 <order_status_chargeback>pending</order_status_chargeback>
+                <use_successpage_mp>1</use_successpage_mp>
                 <logs>0</logs>
                 <debug_mode>0</debug_mode>
             </mercadopago>

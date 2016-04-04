@@ -87,6 +87,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I am logged in MP as "test_user_58666377@testuser.com" "qatest3200"
     And I wait for "5" seconds
     And I am logged 2 in MP as "test_user_58666377@testuser.com" "qatest3200"
+    And I switch to the site
     And I switch to the iframe "checkout_mercadopago"
     Then I should find element "label.free-shipping"
 

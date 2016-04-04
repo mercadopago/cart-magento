@@ -195,4 +195,13 @@
 "MercadoEnvios is not enabled in the country where Mercado Pago is configured","MercadoEnvios não está habilitado no país onde Mercado Pago está configurado"
 "Discount Mercado Pago","Desconto de Mercado Pago"
 
+"It is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+                                        During the sandbox mode tests, you can operate over HTTP,
+                                        but for homologation you'll need to acquire the certificate in case you don't have it.
+                                        <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Learn More</a>",
+                                        "é um requisito que tenha um certificado SSL e que o formulário de pagamentos esteja sobre uma página HTTPS.
+                                         Durante os testes em modo sandbox, pode operar em HTTP, mas para a homologação, deverá adquirir o certificado caso não tenha.
+                                        <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Ver mais</a>"
+"Use Mercado Pago success page","Use página de sucesso Mercado Pago"
+"If set this config with NO, magento success page will be used","Se definir essa configuração com NO, página de sucesso magento será usado"
 "MercadoEnvíos - Please enable a shipping method at least","MercadoEnvíos - Ative um método de envio pelo menos."

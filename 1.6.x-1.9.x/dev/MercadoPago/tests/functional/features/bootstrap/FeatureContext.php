@@ -362,11 +362,6 @@ class FeatureContext
             $logged = $session->getPage()->find('css', '#payerAccount');
             if ($logged) {
                 return;
-            } else {
-                $actual = $this->getSession()->getPage()->getHtml();
-                if ($this->_stringMatch($actual, "captcha")) {
-                    throw new ExpectationException('This form has a captcha', $this->getSession()->getDriver());
-                }
             }
         }
     }

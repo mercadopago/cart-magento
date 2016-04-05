@@ -533,7 +533,6 @@ var MercadoPagoCustom = (function () {
                 var ccNumber = TinyJ(self.selectors.cardNumberInput).val();
                 return ccNumber.replace(/[ .-]/g, '').slice(0, 6);
             }
-            return;
         }
 
 
@@ -594,6 +593,7 @@ var MercadoPagoCustom = (function () {
                 } else if (oneClickPay != 0) {
                     TinyJ(selector).getElem().style.background = String.format(self.constants.backgroundUrlFormat, TinyJ(selector).getSelectedOption().attribute('secure_thumb'));
                 }
+
 
                 var bin = getBin();
                 try {

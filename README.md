@@ -79,6 +79,11 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 
     PDO_MySQL, simplexml, mcrypt, hash, GD, DOM, iconv, curl
 
+**SSL certificate**
+
+It is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+During the sandbox mode tests, you can operate over HTTP, but for homologation you'll need to acquire the certificate in case you don't have it.
+
 ---
 
 <a name="available_versions"></a>

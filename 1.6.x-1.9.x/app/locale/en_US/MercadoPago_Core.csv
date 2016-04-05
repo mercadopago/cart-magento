@@ -164,3 +164,15 @@
 "(estimated date %s)","(estimated date %s)"
 "MercadoEnvios is not enabled in the country where Mercado Pago is configured", "MercadoEnvios is not enabled in the country where Mercado Pago is configured"
 "Discount Mercado Pago","Discount Mercado Pago"
+
+"Is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+                                         During the sandbox mode tests, you can operate over HTTP,
+                                         but for homologation you'll need to acquire the certificate in case you don't have it.
+                                         <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Learn More</a>",
+                                         "It is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+                                                                                  During the sandbox mode tests, you can operate over HTTP,
+                                                                                  but for homologation you'll need to acquire the certificate in case you don't have it.
+                                                                                  <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Learn More</a>"
+
+"Use Mercado Pago success page","Use Mercado Pago success page"
+"If set this config with NO, magento success page will be used","If set this config with NO, magento success page will be used"

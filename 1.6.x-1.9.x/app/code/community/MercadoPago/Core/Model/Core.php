@@ -243,8 +243,8 @@ class MercadoPago_Core_Model_Core
     public function makeDefaultPreferencePaymentV1($payment_info = array())
     {
         $quote = $this->_getQuote();
-        $order_id = $quote->getReservedOrderId();
-        $order = $this->_getOrder($order_id);
+        $orderId = $quote->getReservedOrderId();
+        $order = $this->_getOrder($orderId);
         $customer = Mage::getSingleton('customer/session')->getCustomer();
 
         $billingAddress = $quote->getBillingAddress()->getData();
@@ -254,10 +254,10 @@ class MercadoPago_Core_Model_Core
         $preference = array();
 
         $preference['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK) . "mercadopago/notifications/custom";
-
+        $preference['description'] = Mage::helper('mercadopago')->__("Order # %s in store %s", $orderId, Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true));
         $preference['transaction_amount'] = (float)$this->getAmount();
 
-        $preference['external_reference'] = $order_id;
+        $preference['external_reference'] = $orderId;
         $preference['payer']['email'] = $customerInfo['email'];
 
         if (!empty($payment_info['identification_type'])) {
@@ -466,7 +466,7 @@ class MercadoPago_Core_Model_Core
         try {
             if ($status == 'approved') {
                 Mage::helper('mercadopago')->setOrderSubtotals($payment, $order);
-                $this->_createInvoice($order,$message);
+                $this->_createInvoice($order, $message);
 
                 //Associate card to customer
                 if (isset($additionalInfo['token'])) {

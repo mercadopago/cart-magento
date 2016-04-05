@@ -86,8 +86,20 @@
                         <class>MercadoPago_MercadoEnvios_Model_Observer</class>
                         <method>checkAndValidateData</method>
                     </payment_section_observer>
+                    <payment_section_observer_shipping_method>
+                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <method>validateShippingMethod</method>
+                    </payment_section_observer_shipping_method>
                 </observers>
             </admin_system_config_changed_section_payment>
+            <admin_system_config_changed_section_carriers>
+                <observers>
+                    <payment_section_observer_shipping_method>
+                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <method>validateShippingMethod</method>
+                    </payment_section_observer_shipping_method>
+                </observers>
+            </admin_system_config_changed_section_carriers>
         </events>
 
     </global>

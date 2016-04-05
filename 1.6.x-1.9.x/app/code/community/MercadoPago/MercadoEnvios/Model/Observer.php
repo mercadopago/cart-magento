@@ -173,4 +173,28 @@ class MercadoPago_MercadoEnvios_Model_Observer
         }
     }
 
+    public function validateShippingMethod()
+    {
+        $selectedMethods = Mage::getStoreConfig('carriers/mercadoenvios/availablemethods');
+        $validate = true;
+        if (Mage::getStoreConfig('carriers/mercadoenvios/active')){
+            if (empty($selectedMethods)) {
+                $validate = false;
+            } else {
+                $methods = Mage::getModel('mercadopago_mercadoenvios/adminhtml_source_shipping_method')->getAvailableCodes();
+                $currentMethods = explode(',', Mage::getStoreConfig('carriers/mercadoenvios/availablemethods', '0'));
+                foreach ($currentMethods as $currentMethod) {
+                    if (!in_array($currentMethod,$methods)) {
+                        $validate = false;
+                    }
+                }
+            }
+        }
+
+        if (!$validate){
+            Mage::getConfig()->saveConfig('carriers/mercadoenvios/active', '0');
+            Mage::throwException(Mage::helper('mercadopago_mercadoenvios')->__('MercadoEnvíos - Please enable a shipping method at least'));
+        }
+    }
+
 }

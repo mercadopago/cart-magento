@@ -199,7 +199,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
                 if ($shipment->getShippingLabel()) {
                     $params = [
                         'shipment_ids'  => $shipment->getShippingLabel(),
-                        'response_type' => 'zpl2',
+                        'response_type' => Mage::getStoreConfig('carriers/mercadoenvios/shipping_label'),
                         'access_token'  => Mage::helper('mercadopago')->getAccessToken()
                     ];
 

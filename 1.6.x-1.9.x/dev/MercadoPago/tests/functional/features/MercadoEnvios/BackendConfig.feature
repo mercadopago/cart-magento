@@ -45,6 +45,7 @@ Feature: MercadoEnvios configuration
     And I open "carriers_mercadoenvios_carrier" configuration
     And I press ".meli-btn.button" element
     And I Select option field "carriers_mercadoenvios_active" with "1"
+    And I enable methods "73328,73330"
 
     When I Select option field "groups[mercadoenvios][fields][attributesmapping][value][length][attribute_code]" with "bedding_pattern"
     And I Select option field "groups[mercadoenvios][fields][attributesmapping][value][height][attribute_code]" with "sku"

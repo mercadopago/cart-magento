@@ -80,6 +80,7 @@ class MercadoPago_Core_NotificationsController
                     $status_final = $this->getStatusFinal($data['status']);
                     $shipmentData = (isset($merchant_order['shipments'][0])) ? $merchant_order['shipments'][0] : [];
                     Mage::helper('mercadopago')->log("Update Order", self::LOG_FILE);
+                    Mage::helper('mercadopago')->setStatusUpdated($data);
                     $core->updateOrder($data);
                     if(!empty($shipmentData)) {
                         Mage::dispatchEvent('mercadopago_standard_notification_before_set_status',

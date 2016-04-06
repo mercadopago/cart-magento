@@ -60,7 +60,6 @@ class FeatureContext
     public function iFillTheBillingAddress()
     {
         $page = $this->getSession()->getPage();
-
         if ($page->findById('billing-address-select')) {
             $page->selectFieldOption('billing-address-select', '');
         }
@@ -363,11 +362,6 @@ class FeatureContext
             $logged = $session->getPage()->find('css', '#payerAccount');
             if ($logged) {
                 return;
-            } else {
-                $actual = $this->getSession()->getPage()->getHtml();
-                if ($this->_stringMatch($actual, "captcha")) {
-                    throw new ExpectationException('This form has a captcha', $this->getSession()->getDriver());
-                }
             }
         }
     }
@@ -953,7 +947,17 @@ class FeatureContext
      */
     public function iShouldSeeElementPriceMethod($method, $text)
     {
-        $this->iShouldSeeElementWithText("label[for='s_method_mercadoenvios_$method'] span.price", $text);
+        if ($text == '-') {
+            $elements = $this->getSession()->getPage()->findAll('css', "label[for='s_method_mercadoenvios_$method'] span.price");
+            foreach ($elements as $element) {
+                if (filter_var(strtolower($element->getText()), FILTER_SANITIZE_NUMBER_INT) > 0) {
+                    return;
+                }
+                throw new ExpectationException('Element with price > 0 not found', $this->getSession()->getDriver());
+            }
+        } else {
+            $this->iShouldSeeElementWithText("label[for='s_method_mercadoenvios_$method'] span.price", $text);
+        }
     }
 
     /**

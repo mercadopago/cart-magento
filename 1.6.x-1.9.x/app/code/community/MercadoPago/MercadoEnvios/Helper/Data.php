@@ -25,14 +25,11 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $height = 0;
         $length = 0;
         $weight = 0;
-        $helperItem = Mage::helper('mercadopago_mercadoenvios/itemData');
         foreach ($items as $item) {
-            if (!$helperItem->itemHasChildren($item)) {
-                $width += $this->_getShippingDimension($item, 'width');
-                $height += $this->_getShippingDimension($item, 'height');
-                $length += $this->_getShippingDimension($item, 'length');
-                $weight += $this->_getShippingDimension($item, 'weight');
-            }
+            $width += $this->_getShippingDimension($item, 'width');
+            $height += $this->_getShippingDimension($item, 'height');
+            $length += $this->_getShippingDimension($item, 'length');
+            $weight += $this->_getShippingDimension($item, 'weight');
         }
         $height = ceil($height);
         $width = ceil($width);
@@ -40,7 +37,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $weight = ceil($weight);
 
         if (!($height > 0 && $length > 0 && $width > 0 && $weight > 0)) {
-            $this->log('Invalid dimensions in cart:', ['width'=>$width,'height'=>$height,'length'=>$length,'weight'=>$weight,]);
+            $this->log('Invalid dimensions in cart:', ['width' => $width, 'height' => $height, 'length' => $length, 'weight' => $weight,]);
             Mage::throwException('Invalid dimensions cart');
         }
 
@@ -202,7 +199,7 @@ class MercadoPago_MercadoEnvios_Helper_Data
                 if ($shipment->getShippingLabel()) {
                     $params = [
                         'shipment_ids'  => $shipment->getShippingLabel(),
-                        'response_type' => 'zpl2',
+                        'response_type' => Mage::getStoreConfig('carriers/mercadoenvios/shipping_label'),
                         'access_token'  => Mage::helper('mercadopago')->getAccessToken()
                     ];
 
@@ -263,4 +260,35 @@ class MercadoPago_MercadoEnvios_Helper_Data
         }
     }
 
+    /**
+     * Return items for further shipment rate evaluation. We need to pass children of a bundle instead passing the
+     * bundle itself, otherwise we may not get a rate at all (e.g. when total weight of a bundle exceeds max weight
+     * despite each item by itself is not)
+     *
+     * @return array
+     */
+    public function getAllItems($allItems)
+    {
+        $items = array();
+        foreach ($allItems as $item) {
+            /* @var $item Mage_Sales_Model_Quote_Item */
+            if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
+                // Don't process children here - we will process (or already have processed) them below
+                continue;
+            }
+
+            if ($item->getHasChildren() && $item->isShipSeparately()) {
+                foreach ($item->getChildren() as $child) {
+                    if (!$child->getFreeShipping() && !$child->getProduct()->isVirtual()) {
+                        $items[] = $child;
+                    }
+                }
+            } else {
+                // Ship together - count compound item as one solid
+                $items[] = $item;
+            }
+        }
+
+        return $items;
+    }
 }

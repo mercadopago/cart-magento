@@ -75,7 +75,6 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I press "#payment-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should see "(MercadoEnvíos - Normal"
-    And I should see element "#checkout-review-table .a-right .price" with text "$77.99"
 
   @CheckoutShippingMethods @addShipmentToRequest
   Scenario: Get succes mercadoenvio page with a request including mercadoenvios data
@@ -96,5 +95,5 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I switch to the iframe "checkout_mercadopago"
     And I am logged in MP as "test_user_58666377@testuser.com" "qatest3200"
     Then I should see "Elige la forma de entrega"
-    And I should see "$ 77"
-    And I should see "$ 113"
+    And I should see "Normal a domicilio"
+    And I should see "Prioritario a domicilio"

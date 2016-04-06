@@ -27,4 +27,13 @@ class MercadoPago_MercadoEnvios_Model_Adminhtml_Source_Shipping_Method
         return null;
     }
 
+    public function getAvailableCodes() {
+        $methods = $this->toOptionArray();
+        $codes = [];
+        foreach ($methods as $method) {
+            $codes[] = $method['value'];
+        }
+        return $codes;
+    }
+
 }

@@ -260,4 +260,35 @@ class MercadoPago_MercadoEnvios_Helper_Data
         }
     }
 
+    /**
+     * Return items for further shipment rate evaluation. We need to pass children of a bundle instead passing the
+     * bundle itself, otherwise we may not get a rate at all (e.g. when total weight of a bundle exceeds max weight
+     * despite each item by itself is not)
+     *
+     * @return array
+     */
+    public function getAllItems($allItems)
+    {
+        $items = array();
+        foreach ($allItems as $item) {
+            /* @var $item Mage_Sales_Model_Quote_Item */
+            if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
+                // Don't process children here - we will process (or already have processed) them below
+                continue;
+            }
+
+            if ($item->getHasChildren() && $item->isShipSeparately()) {
+                foreach ($item->getChildren() as $child) {
+                    if (!$child->getFreeShipping() && !$child->getProduct()->isVirtual()) {
+                        $items[] = $child;
+                    }
+                }
+            } else {
+                // Ship together - count compound item as one solid
+                $items[] = $item;
+            }
+        }
+
+        return $items;
+    }
 }

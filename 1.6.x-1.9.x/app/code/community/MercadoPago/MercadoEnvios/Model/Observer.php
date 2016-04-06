@@ -127,11 +127,12 @@ class MercadoPago_MercadoEnvios_Model_Observer
             $shippingAddress = $order->getShippingAddress();
             $zipCode = $shippingAddress->getPostcode();
             $defaultShippingId = substr($method, strpos($method, '_') + 1);
+            $helperMe = Mage::helper('mercadopago_mercadoenvios');
             $paramsME = [
                 'mode'                    => 'me2',
                 'zip_code'                => $zipCode,
                 'default_shipping_method' => intval($defaultShippingId),
-                'dimensions'              => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
+                'dimensions'              => $helperMe->getDimensions($helperMe->getAllItems($order->getAllItems()))
             ];
             if ($shippingCost == 0) {
                 $paramsME['free_methods'] = [['id' => intval($defaultShippingId)]];

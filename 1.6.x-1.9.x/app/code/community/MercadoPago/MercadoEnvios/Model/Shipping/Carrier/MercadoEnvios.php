@@ -84,7 +84,8 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
             $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
 
             try {
-                $dimensions = Mage::helper('mercadopago_mercadoenvios')->getDimensions($this->getAllItems());
+                $helperMe = Mage::helper('mercadopago_mercadoenvios');
+                $dimensions = $helperMe->getDimensions($helperMe->getAllItems($this->_request->getAllItems()));
             } catch (Exception $e) {
                 $this->_methods = self::INVALID_METHOD;
 
@@ -196,40 +197,6 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
     public function isTrackingAvailable()
     {
         return true;
-    }
-
-    /**
-     * Return items for further shipment rate evaluation. We need to pass children of a bundle instead passing the
-     * bundle itself, otherwise we may not get a rate at all (e.g. when total weight of a bundle exceeds max weight
-     * despite each item by itself is not)
-     *
-     * @param Mage_Shipping_Model_Rate_Request $request
-     *
-     * @return array
-     */
-    public function getAllItems()
-    {
-        $items = array();
-        foreach ($this->_request->getAllItems() as $item) {
-            /* @var $item Mage_Sales_Model_Quote_Item */
-            if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
-                // Don't process children here - we will process (or already have processed) them below
-                continue;
-            }
-
-            if ($item->getHasChildren() && $item->isShipSeparately()) {
-                foreach ($item->getChildren() as $child) {
-                    if (!$child->getFreeShipping() && !$child->getProduct()->isVirtual()) {
-                        $items[] = $child;
-                    }
-                }
-            } else {
-                // Ship together - count compound item as one solid
-                $items[] = $item;
-            }
-        }
-
-        return $items;
     }
 
 }

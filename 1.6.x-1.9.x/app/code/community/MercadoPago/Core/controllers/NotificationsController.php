@@ -136,6 +136,7 @@ class MercadoPago_Core_NotificationsController
                 $payment = Mage::helper('mercadopago')->setPayerInfo($payment);
 
                 Mage::helper('mercadopago')->log("Update Order", self::LOG_FILE);
+                Mage::helper('mercadopago')->setStatusUpdated($payment);
                 $core->updateOrder($payment);
                 $setStatusResponse = $core->setStatusOrder($payment);
                 $this->getResponse()->setBody($setStatusResponse['text']);

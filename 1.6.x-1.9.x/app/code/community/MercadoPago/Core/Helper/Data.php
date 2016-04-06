@@ -27,6 +27,9 @@ class MercadoPago_Core_Helper_Data
     const PLATFORM_DESKTOP = 'Desktop';
     const TYPE = 'magento';
 
+    protected $_statusUpdatedFlag = false;
+    protected $_apiInstance;
+
     public function log($message, $file = "mercadopago.log", $array = null)
     {
         $actionLog = Mage::getStoreConfig('payment/mercadopago/logs');
@@ -40,27 +43,42 @@ class MercadoPago_Core_Helper_Data
         }
     }
 
+    public function isStatusUpdated() {
+        return $this->_statusUpdatedFlag;
+    }
+
+    public function setStatusUpdated ($notificationData) {
+        $order = Mage::getModel('sales/order')->loadByIncrementId($notificationData["external_reference"]);
+        $status = $notificationData['status'];
+        $currentStatus = $order->getPayment()->getAdditionalInformation('status');
+        if ($status == $currentStatus){
+            $this->_statusUpdatedFlag = true;
+        }
+    }
+
     public function getApiInstance()
     {
-        $params = func_num_args();
-        if ($params > 2 || $params < 1) {
-            Mage::throwException("Invalid arguments. Use CLIENT_ID and CLIENT SECRET, or ACCESS_TOKEN");
-        }
-        if ($params == 1) {
-            $api = new MercadoPago_Lib_Api(func_get_arg(0));
-            $api->set_platform(self::PLATFORM_V1_WHITELABEL);
-        } else {
-            $api = new MercadoPago_Lib_Api(func_get_arg(0), func_get_arg(1));
-            $api->set_platform(self::PLATFORM_DESKTOP);
-        }
-        if (Mage::getStoreConfigFlag('payment/mercadopago_standard/sandbox_mode')) {
-            $api->sandbox_mode(true);
-        }
+        if (empty($this->_apiInstance)) {
+            $params = func_num_args();
+            if ($params > 2 || $params < 1) {
+                Mage::throwException("Invalid arguments. Use CLIENT_ID and CLIENT SECRET, or ACCESS_TOKEN");
+            }
+            if ($params == 1) {
+                $api = new MercadoPago_Lib_Api(func_get_arg(0));
+                $api->set_platform(self::PLATFORM_V1_WHITELABEL);
+            } else {
+                $api = new MercadoPago_Lib_Api(func_get_arg(0), func_get_arg(1));
+                $api->set_platform(self::PLATFORM_DESKTOP);
+            }
+            if (Mage::getStoreConfigFlag('payment/mercadopago_standard/sandbox_mode')) {
+                $api->sandbox_mode(true);
+            }
 
-        $api->set_type(self::TYPE . ' ' . (string) Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version);
+            $api->set_type(self::TYPE . ' ' . (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version);
 
-        return $api;
-
+            $this->_apiInstance = $api;
+        }
+        return $this->_apiInstance;
     }
 
     public function isValidAccessToken($accessToken)
@@ -216,6 +234,15 @@ class MercadoPago_Core_Helper_Data
         }
 
         return $finalValue;
+    }
+
+    public function getSuccessUrl() {
+        if (Mage::getStoreConfig('payment/mercadopago/use_successpage_mp')) {
+            $url = 'mercadopago/success';
+        } else {
+            $url = 'checkout/onepage/success';
+        }
+        return $url;
     }
 
 }

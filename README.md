@@ -2,6 +2,7 @@
 ---
 
 * [Features](#features)
+* [Requirements](#requirements)
 * [Available versions](#available_versions)
 
 <a name="features"></a>
@@ -45,6 +46,45 @@ This feature allows easy integration with two of the most used One Step Checkout
 This feature allows to setup and integrate with MercadoEnvios shipment method as another shipment option for customers. It includes the possibility to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
 
 *Available for Argentina, Brazil and Mexico only with Standard Checkout*
+
+---
+
+<a name="requirements"></a>
+## Requirements:
+
+**Operating System**
+
+<ul>
+<li>Linux x86-64</li>
+</ul>
+
+**Web Server**
+
+<ul>
+<li>Apache 2.x</li>
+<li>Nginx 1.7.x</li>
+</ul>
+
+**Database**
+
+<ul><li>MySQL 5.6 (Oracle or Percona)</li></ul>
+
+**PHP**
+
+<ul>
+<li>PHP 5.4.x</li>
+<li>PHP 5.5.x</li>
+</ul>
+    Required extensions:
+
+    PDO_MySQL, simplexml, mcrypt, hash, GD, DOM, iconv, curl
+
+**SSL certificate**
+
+It is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+During the sandbox mode tests, you can operate over HTTP, but for homologation you'll need to acquire the certificate in case you don't have it.
+
+---
 
 <a name="available_versions"></a>
 ##Available versions##

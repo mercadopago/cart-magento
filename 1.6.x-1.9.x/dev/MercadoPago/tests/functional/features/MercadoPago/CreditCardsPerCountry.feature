@@ -4,6 +4,7 @@ Feature: Payment results in MercadoPago Custom Checkout
   @CustomCheckoutPerCountry
   Scenario Outline:
     Given Setting merchant <country>
+    And Setting Config "payment/mercadopago/debug_mode" is "1"
     And User "<user>" "<pass>" exists
     And I am logged in as "<user>" "<pass>"
     And I empty cart

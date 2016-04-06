@@ -127,11 +127,12 @@ class MercadoPago_MercadoEnvios_Model_Observer
             $shippingAddress = $order->getShippingAddress();
             $zipCode = $shippingAddress->getPostcode();
             $defaultShippingId = substr($method, strpos($method, '_') + 1);
+            $helperMe = Mage::helper('mercadopago_mercadoenvios');
             $paramsME = [
                 'mode'                    => 'me2',
                 'zip_code'                => $zipCode,
                 'default_shipping_method' => intval($defaultShippingId),
-                'dimensions'              => Mage::helper('mercadopago_mercadoenvios')->getDimensions($order->getAllItems())
+                'dimensions'              => $helperMe->getDimensions($helperMe->getAllItems($order->getAllItems()))
             ];
             if ($shippingCost == 0) {
                 $paramsME['free_methods'] = [['id' => intval($defaultShippingId)]];
@@ -170,6 +171,30 @@ class MercadoPago_MercadoEnvios_Model_Observer
                 Mage::helper('mercadopago')->log("error when update shipment data: " . $e, 'mercadopago.log');
                 Mage::helper('mercadopago_mercadoenvios')->log($e);
             }
+        }
+    }
+
+    public function validateShippingMethod()
+    {
+        $selectedMethods = Mage::getStoreConfig('carriers/mercadoenvios/availablemethods');
+        $validate = true;
+        if (Mage::getStoreConfig('carriers/mercadoenvios/active')){
+            if (empty($selectedMethods)) {
+                $validate = false;
+            } else {
+                $methods = Mage::getModel('mercadopago_mercadoenvios/adminhtml_source_shipping_method')->getAvailableCodes();
+                $currentMethods = explode(',', Mage::getStoreConfig('carriers/mercadoenvios/availablemethods', '0'));
+                foreach ($currentMethods as $currentMethod) {
+                    if (!in_array($currentMethod,$methods)) {
+                        $validate = false;
+                    }
+                }
+            }
+        }
+
+        if (!$validate){
+            Mage::getConfig()->saveConfig('carriers/mercadoenvios/active', '0');
+            Mage::throwException(Mage::helper('mercadopago_mercadoenvios')->__('MercadoEnvíos - Please enable a shipping method at least'));
         }
     }
 

@@ -39,6 +39,12 @@ abstract class MercadoPago_Core_Model_CustomPayment
             return false;
         }
 
+        $debugMode = Mage::getStoreConfig('payment/mercadopago/debug_mode');
+        $secure = Mage::app()->getFrontController()->getRequest()->isSecure();
+        if (!$secure && !$debugMode ) {
+            return false;
+        }
+
         return Mage::helper('mercadopago')->isValidAccessToken($accessToken);
     }
 

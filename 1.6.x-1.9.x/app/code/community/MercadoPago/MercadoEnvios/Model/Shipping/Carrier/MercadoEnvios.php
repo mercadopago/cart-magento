@@ -84,9 +84,11 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
             $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
 
             try {
-                $dimensions = Mage::helper('mercadopago_mercadoenvios')->getDimensions($quote->getAllItems());
+                $helperMe = Mage::helper('mercadopago_mercadoenvios');
+                $dimensions = $helperMe->getDimensions($helperMe->getAllItems($this->_request->getAllItems()));
             } catch (Exception $e) {
                 $this->_methods = self::INVALID_METHOD;
+
                 return;
             }
 
@@ -158,6 +160,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         $error->setCarrierTitle($this->getConfigData('title'));
         $msg = $this->getConfigData('specificerrmsg');
         $error->setErrorMessage($msg);
+
         return $error;
     }
 
@@ -179,13 +182,15 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         return in_array($rateId, $this->_available);
     }
 
-    public function isActive() {
+    public function isActive()
+    {
         if (!Mage::getStoreConfigFlag('payment/mercadopago_standard/active')) {
             return false;
         }
         if (!Mage::helper('mercadopago_mercadoenvios')->isCountryEnabled()) {
             return false;
         }
+
         return parent::isActive();
     }
 

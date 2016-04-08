@@ -165,6 +165,7 @@ class MercadoPago_Core_NotificationsController
             "coupon_amount",
             "installments",
             "shipping_cost",
+            "amount_refunded",
         );
 
         foreach ($fields as $field) {

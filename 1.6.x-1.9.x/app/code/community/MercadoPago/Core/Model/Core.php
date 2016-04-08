@@ -474,7 +474,16 @@ class MercadoPago_Core_Model_Core
                 }
 
             } elseif ($status == 'refunded' || $status == 'cancelled') {
-                $order->cancel();
+                //generate credit memo and return items to stock according to setting
+                if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0 && $payment['amount_refunded'] == $payment['total_paid_amount']) {
+                    $order->getPayment()->registerRefundNotification($payment['amount_refunded']);
+                    $creditMemo = $order->getCreditmemosCollection()->getFirstItem();
+                    foreach ($creditMemo->getAllItems() as $creditMemoItem) {
+                        $creditMemoItem->setBackToStock(Mage::helper('cataloginventory')->isAutoReturnEnabled());
+                    }
+                    $creditMemo->save();
+                    $order->cancel();
+                }
             }
 
             $statusOrder = $helper->getStatusOrder($status);

@@ -183,17 +183,17 @@ class MercadoPago_Core_Model_Standard_Payment
             Mage::helper('mercadopago')->log("Total order: " . $order_amount, self::LOG_FILE);
             Mage::helper('mercadopago')->log("Difference add itens: " . $diff_price, self::LOG_FILE);
         }
+        if ($order->canShip()) {
+            $shippingAddress = $order->getShippingAddress();
+            $shipping = $shippingAddress->getData();
 
-        $shippingAddress = $order->getShippingAddress();
-        $shipping = $shippingAddress->getData();
+            $arr['payer']['phone'] = [
+                "area_code" => "-",
+                "number"    => $shipping['telephone']
+            ];
 
-        $arr['payer']['phone'] = [
-            "area_code" => "-",
-            "number"    => $shipping['telephone']
-        ];
-
-        $arr['shipments'] = $this->_getParamShipment($paramsShipment,$order,$shippingAddress);
-
+            $arr['shipments'] = $this->_getParamShipment($paramsShipment, $order, $shippingAddress);
+        }
         $billing_address = $order->getBillingAddress()->getData();
 
         $arr['payer']['date_created'] = date('Y-m-d', $customer->getCreatedAtTimestamp()) . "T" . date('H:i:s', $customer->getCreatedAtTimestamp());

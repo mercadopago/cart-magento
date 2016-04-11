@@ -24,11 +24,7 @@ class MercadoPago_Core_Model_Core
 
     protected $_isGateway = true;
     protected $_canOrder = true;
-    protected $_canAuthorize = true;
-    protected $_canCapture = true;
-    protected $_canCapturePartial = true;
     protected $_canRefund = true;
-    protected $_canRefundInvoicePartial = true;
     protected $_canVoid = true;
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
@@ -489,15 +485,7 @@ class MercadoPago_Core_Model_Core
 
             } elseif ($status == 'refunded' || $status == 'cancelled') {
                 //generate credit memo and return items to stock according to setting
-                if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0 && $payment['amount_refunded'] == $payment['total_paid_amount']) {
-                    $order->getPayment()->registerRefundNotification($payment['amount_refunded']);
-                    $creditMemo = $order->getCreditmemosCollection()->getFirstItem();
-                    foreach ($creditMemo->getAllItems() as $creditMemoItem) {
-                        $creditMemoItem->setBackToStock(Mage::helper('cataloginventory')->isAutoReturnEnabled());
-                    }
-                    $creditMemo->save();
-                    $order->cancel();
-                }
+                $this->_generateCreditMemo($order, $payment);
             }
 
             $statusOrder = $helper->getStatusOrder($status);
@@ -521,6 +509,21 @@ class MercadoPago_Core_Model_Core
 
             return ['text' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST];
         }
+    }
+
+    protected function _generateCreditMemo($order, $payment)
+    {
+
+        if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0 && $payment['amount_refunded'] == $payment['total_paid_amount']) {
+            $order->getPayment()->registerRefundNotification($payment['amount_refunded']);
+            $creditMemo = array_pop($order->getCreditmemosCollection()->setPageSize(1)->setCurPage(1)->load()->getItems());
+            foreach ($creditMemo->getAllItems() as $creditMemoItem) {
+                $creditMemoItem->setBackToStock(Mage::helper('cataloginventory')->isAutoReturnEnabled());
+            }
+            $creditMemo->save();
+            $order->cancel();
+        }
+
     }
 
     public function updateOrder($data)

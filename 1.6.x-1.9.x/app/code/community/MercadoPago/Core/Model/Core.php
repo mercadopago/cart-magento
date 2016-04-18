@@ -18,14 +18,13 @@ class MercadoPago_Core_Model_Core
     extends Mage_Payment_Model_Method_Abstract
 {
     protected $_code = 'mercadopago';
+    protected $_accessToken;
+    protected $_clientId;
+    protected $_clientSecret;
 
     protected $_isGateway = true;
     protected $_canOrder = true;
-    protected $_canAuthorize = true;
-    protected $_canCapture = true;
-    protected $_canCapturePartial = true;
     protected $_canRefund = true;
-    protected $_canRefundInvoicePartial = true;
     protected $_canVoid = true;
     protected $_canUseInternal = true;
     protected $_canUseCheckout = true;
@@ -323,12 +322,13 @@ class MercadoPago_Core_Model_Core
     public function postPaymentV1($preference)
     {
 
-        //obtem access_token
-        $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
-        Mage::helper('mercadopago')->log("Access Token for Post", self::LOG_FILE, $access_token);
+        if (!$this->_accessToken) {
+            $this->_accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        }
+        Mage::helper('mercadopago')->log("Access Token for Post", self::LOG_FILE, $this->_accessToken);
 
-        //seta sdk php mercadopago
-        $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
+        //set sdk php mercadopago
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->_accessToken);
         $response = $mp->post("/v1/payments", $preference);
         Mage::helper('mercadopago')->log("POST /v1/payments", self::LOG_FILE, $response);
 
@@ -355,35 +355,43 @@ class MercadoPago_Core_Model_Core
 
     public function getPayment($payment_id)
     {
-        $clienId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
-        $mp = Mage::helper('mercadopago')->getApiInstance($clienId, $clientSecret);
+        if (!$this->_clientId || !$this->_clientSecret) {
+            $this->_clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+            $this->_clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        }
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->_clientId, $this->_clientSecret);
 
         return $mp->get_payment($payment_id);
     }
 
     public function getPaymentV1($payment_id)
     {
-        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
-        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
+        if (!$this->_accessToken) {
+            $this->_accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        }
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->_accessToken);
 
         return $mp->get("/v1/payments/" . $payment_id);
     }
 
     public function getMerchantOrder($merchant_order_id)
     {
-        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
-        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+        if (!$this->_clientId || !$this->_clientSecret) {
+            $this->_clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+            $this->_clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        }
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->_clientId, $this->_clientSecret);
 
         return $mp->get("/merchant_orders/" . $merchant_order_id);
     }
 
     public function getPaymentMethods()
     {
-        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        if (!$this->_accessToken) {
+            $this->_accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        }
 
-        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->_accessToken);
 
         $payment_methods = $mp->get("/v1/payment_methods");
 
@@ -415,9 +423,11 @@ class MercadoPago_Core_Model_Core
 
     public function validCoupon($id)
     {
-        $this->access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        if (!$this->_accessToken) {
+            $this->_accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        }
 
-        $mp = Mage::helper('mercadopago')->getApiInstance($this->access_token);
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->_accessToken);
 
         $params = array(
             "transaction_amount" => $this->getAmount(),
@@ -474,7 +484,8 @@ class MercadoPago_Core_Model_Core
                 }
 
             } elseif ($status == 'refunded' || $status == 'cancelled') {
-                $order->cancel();
+                //generate credit memo and return items to stock according to setting
+                $this->_generateCreditMemo($order, $payment);
             }
 
             $statusOrder = $helper->getStatusOrder($status);
@@ -498,6 +509,21 @@ class MercadoPago_Core_Model_Core
 
             return ['text' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST];
         }
+    }
+
+    protected function _generateCreditMemo($order, $payment)
+    {
+
+        if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0 && $payment['amount_refunded'] == $payment['total_paid_amount']) {
+            $order->getPayment()->registerRefundNotification($payment['amount_refunded']);
+            $creditMemo = array_pop($order->getCreditmemosCollection()->setPageSize(1)->setCurPage(1)->load()->getItems());
+            foreach ($creditMemo->getAllItems() as $creditMemoItem) {
+                $creditMemoItem->setBackToStock(Mage::helper('cataloginventory')->isAutoReturnEnabled());
+            }
+            $creditMemo->save();
+            $order->cancel();
+        }
+
     }
 
     public function updateOrder($data)

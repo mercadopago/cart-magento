@@ -277,7 +277,8 @@ class MercadoPago_Core_Model_Core
         $preference['additional_info']['payer']['registration_date'] = date('Y-m-d', $customer->getCreatedAtTimestamp()) . "T" . date('H:i:s', $customer->getCreatedAtTimestamp());
 
         if ($order->canShip()) {
-            $shipping = $order->getShippingAddress()->getData();
+            $shippingAddress = $order->getShippingAddress();
+            $shipping = $shippingAddress->getData();
 
             $preference['additional_info']['shipments']['receiver_address'] = array(
                 "zip_code"      => $shipping['postcode'],
@@ -560,19 +561,6 @@ class MercadoPago_Core_Model_Core
 
                 $payment_status = $payment_order->save();
                 Mage::helper('mercadopago')->log("Update Payment", 'mercadopago.log', $payment_status->getData());
-
-                if ($data['payer_first_name']) {
-                    $order->setCustomerFirstname($data['payer_first_name']);
-                }
-
-                if ($data['payer_last_name']) {
-                    $order->setCustomerLastname($data['payer_last_name']);
-                }
-
-                if ($data['payer_email']) {
-                    $order->setCustomerEmail($data['payer_email']);
-                }
-
 
                 $status_save = $order->save();
                 Mage::helper('mercadopago')->log("Update order", 'mercadopago.log', $status_save->getData());

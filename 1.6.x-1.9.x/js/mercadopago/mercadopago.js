@@ -270,6 +270,9 @@ var MercadoPagoCustom = (function () {
             if (paymentMethodId != '') {
                 var payment_method_id = TinyJ(self.selectors.paymentMethodId);
                 payment_method_id.val(paymentMethodId);
+                if (issuerMandatory) {
+                    Mercadopago.getIssuers(paymentMethodId, showCardIssuers);
+                }
             }
         }
 
@@ -368,7 +371,7 @@ var MercadoPagoCustom = (function () {
                     excludeInputs.splice(indexColombia, 1);
                 }
             }
-            if (!this.issuerMandatory) {
+            if (!issuerMandatory) {
                 excludeInputs.push(self.selectors.issuer);
             }
 
@@ -564,7 +567,7 @@ var MercadoPagoCustom = (function () {
                             "amount": amount
                         }, setPaymentMethodInfo);
                     }
-                }, 100);
+                }, 1000);
             }
         };
 
@@ -584,6 +587,8 @@ var MercadoPagoCustom = (function () {
                 if (response.length == 1) {
                     var paymentMethodId = response[0].id;
                     TinyJ(self.selectors.paymentMethodId).val(paymentMethodId);
+                } else {
+                    var paymentMethodId = TinyJ(self.selectors.paymentMethodId).val();
                 }
 
                 var oneClickPay = TinyJ(self.selectors.oneClickPayment).val();
@@ -609,22 +614,24 @@ var MercadoPagoCustom = (function () {
                 });
 
                 // check if the issuer is necessary to pay
-                this.issuerMandatory = false;
+                issuerMandatory = false;
                 var additionalInfo = response[0].additional_info_needed;
 
                 for (var i = 0; i < additionalInfo.length; i++) {
                     if (additionalInfo[i] == self.selectors.issuerId) {
-                        this.issuerMandatory = true;
+                        issuerMandatory = true;
                     }
                 }
 
-                showLogMercadoPago(String.format(self.messages.issuerMandatory, this.issuerMandatory));
+                showLogMercadoPago(String.format(self.messages.issuerMandatory, issuerMandatory));
 
                 var issuer = TinyJ(self.selectors.issuer);
 
-                if (this.issuerMandatory) {
-                    Mercadopago.getIssuers(response[0].id, showCardIssuers);
-                    issuer.change(setInstallmentsByIssuerId);
+                if (issuerMandatory) {
+                    if (paymentMethodId != '') {
+                        Mercadopago.getIssuers(paymentMethodId, showCardIssuers);
+                        issuer.change(setInstallmentsByIssuerId);
+                    }
                 } else {
                     TinyJ(self.selectors.issuerMp).hide();
                     issuer.hide();
@@ -644,7 +651,6 @@ var MercadoPagoCustom = (function () {
             showLogMercadoPago(self.messages.setIssuer);
             showLogMercadoPago(status);
             showLogMercadoPago(issuers);
-
             var messageChoose = TinyJ(self.selectors.mercadoPagoTextChoice).val();
             var messageDefaultIssuer = TinyJ(self.selectors.textDefaultIssuer).val();
 
@@ -771,33 +777,33 @@ var MercadoPagoCustom = (function () {
                 selectorInstallments.enable();
 
 
-                setTimeout(function () {
-                    var siteId = TinyJ(self.selectors.siteId).val();
-                    if (siteId == self.constants.mexico) {
-
-                        var issuers = TinyJ(self.selectors.issuer);
-                        var issuerExist = false;
-                        try {
-                            issuersOptions = issuers.getElem(self.constants.option);
-                            for (i = 0; i < issuersOptions.length; ++i) {
-                                if (issuersOptions[i].val() == response[0].issuer.id) {
-                                    issuers.val(response[0].issuer.id);
-                                    issuerExist = true;
-                                }
-                            }
-                        }
-                        catch (err) {
-                            //nothing is needed here right now
-                        }
-
-                        if (issuerExist === false) {
-                            var option = new Option(response[0].issuer.name, response[0].issuer.id);
-                            issuers.appendChild(option);
-                        }
-
-                        showLogMercadoPago(String.format(self.messages.issuerSet, response[0].issuer));
-                    }
-                }, 100);
+                //setTimeout(function () {
+                //    var siteId = TinyJ(self.selectors.siteId).val();
+                //    if (siteId == self.constants.mexico) {
+                //
+                //        var issuers = TinyJ(self.selectors.issuer);
+                //        var issuerExist = false;
+                //        try {
+                //            var issuersOptions = issuers.getElem(self.constants.option);
+                //            for (i = 0; i < issuersOptions.length; ++i) {
+                //                if (issuersOptions[i].val() == response[0].issuer.id) {
+                //                    issuers.val(response[0].issuer.id);
+                //                    issuerExist = true;
+                //                }
+                //            }
+                //        }
+                //        catch (err) {
+                //            //nothing is needed here right now
+                //        }
+                //
+                //        if (issuerExist === false) {
+                //            var option = new Option(response[0].issuer.name, response[0].issuer.id);
+                //            issuers.appendChild(option);
+                //        }
+                //
+                //        showLogMercadoPago(String.format(self.messages.issuerSet, response[0].issuer));
+                //    }
+                //}, 100);
             } else {
                 showMessageErrorForm(self.selectors.errorMethodMinAmount);
             }

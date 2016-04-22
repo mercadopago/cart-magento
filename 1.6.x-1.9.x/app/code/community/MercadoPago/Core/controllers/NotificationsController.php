@@ -23,6 +23,8 @@ class MercadoPago_Core_NotificationsController
     protected $_mpcartid = null;
     protected $_sendemail = false;
     protected $_hash = null;
+    protected $_finalStatus = ['rejected', 'cancelled', 'refunded', 'charge_back'];
+    protected $_notFinalStatus = ['authorized', 'process', 'in_mediation'];
 
     const LOG_FILE = 'mercadopago-notification.log';
 
@@ -39,22 +41,47 @@ class MercadoPago_Core_NotificationsController
         return $data;
     }
 
-    protected function getStatusFinal($dataStatus)
+    protected function _dateCompare($a, $b)
     {
-        $status_final = "";
+        $t1 = strtotime($a['value']);
+        $t2 = strtotime($b['value']);
+
+        return $t2 - $t1;
+    }
+
+    protected function _getLastPaymentIndex($payments, $status)
+    {
+        $dates = [];
+        foreach ($payments as $key => $payment) {
+            if (in_array($payment['status'], $status)) {
+                $dates[] = ['key' => $key, 'value' => $payment['last_modified']];
+            }
+        }
+        usort($dates, array(get_class($this), "_dateCompare"));
+        if ($dates) {
+            $lastModified = array_pop($dates);
+
+            return $lastModified['key'];
+        }
+
+        return 0;
+    }
+
+    protected function getStatusFinal($dataStatus, $payments)
+    {
         $statuses = explode('|', $dataStatus);
         foreach ($statuses as $status) {
             $status = str_replace(' ', '', $status);
-            if ($status_final == "") {
-                $status_final = $status;
-            } else {
-                if ($status_final != $status) {
-                    $status_final = false;
-                }
+            if (in_array($status, $this->_notFinalStatus)) {
+                $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_notFinalStatus);
+
+                return $payments[$lastPaymentIndex]['status'];
             }
         }
 
-        return $status_final;
+        $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_finalStatus);
+
+        return $payments[$lastPaymentIndex]['status'];
     }
 
 
@@ -77,15 +104,19 @@ class MercadoPago_Core_NotificationsController
 
                 if (count($merchant_order['payments']) > 0) {
                     $data = $this->_getDataPayments($merchant_order);
-                    $status_final = $this->getStatusFinal($data['status']);
+                    if ($merchant_order['total_amount'] == $merchant_order['paid_amount']) {
+                        $status_final = 'approved';
+                    } else {
+                        $status_final = $this->getStatusFinal($data['status'], $merchant_order['payments']);
+                    }
                     $shipmentData = (isset($merchant_order['shipments'][0])) ? $merchant_order['shipments'][0] : [];
                     Mage::helper('mercadopago')->log("Update Order", self::LOG_FILE);
                     Mage::helper('mercadopago')->setStatusUpdated($data);
                     $core->updateOrder($data);
-                    if(!empty($shipmentData)) {
+                    if (!empty($shipmentData)) {
                         Mage::dispatchEvent('mercadopago_standard_notification_before_set_status',
-                            array('shipmentData'        => $shipmentData,
-                                  'orderId' => $merchant_order['external_reference'])
+                            array('shipmentData' => $shipmentData,
+                                  'orderId'      => $merchant_order['external_reference'])
                         );
                     }
                     if ($status_final != false) {
@@ -105,6 +136,7 @@ class MercadoPago_Core_NotificationsController
                     );
 
                     Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
+
                     return;
                 }
             }
@@ -142,6 +174,7 @@ class MercadoPago_Core_NotificationsController
                 $this->getResponse()->setBody($setStatusResponse['text']);
                 $this->getResponse()->setHttpResponseCode($setStatusResponse['code']);
                 Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
+
                 return;
             }
         }

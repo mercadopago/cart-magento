@@ -70,7 +70,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
     protected function getDataAllowedMethods()
     {
-        if (empty($this->_methods)) {
+        if (empty($this->_methods) && !empty($this->_request)) {
             $quote = Mage::helper('mercadopago_mercadoenvios')->getQuote();
 
             $shippingAddress = $quote->getShippingAddress();
@@ -78,10 +78,6 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 return null;
             }
             $postcode = $shippingAddress->getPostcode();
-
-            $client_id = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-            $client_secret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
-            $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
 
             try {
                 $helperMe = Mage::helper('mercadopago_mercadoenvios');
@@ -91,6 +87,10 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
 
                 return;
             }
+
+            $client_id = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+            $client_secret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+            $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
 
             $params = [
                 "dimensions" => $dimensions,

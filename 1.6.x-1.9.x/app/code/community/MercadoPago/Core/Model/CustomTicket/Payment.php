@@ -17,7 +17,6 @@
 class MercadoPago_Core_Model_CustomTicket_Payment
     extends MercadoPago_Core_Model_CustomPayment
 {
-    //configura o lugar do arquivo para listar meios de pagamento
     protected $_formBlockType = 'mercadopago/customticket_form';
     protected $_infoBlockType = 'mercadopago/customticket_info';
 
@@ -46,23 +45,21 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
     public function assignData($data)
     {
-
         // route /checkout/onepage/savePayment
         if (!($data instanceof Varien_Object)) {
             $data = new Varien_Object($data);
         }
 
-        //get array info
-        $info_form = $data->getData();
-        $info_form = $info_form['mercadopago_customticket'];
+        $infoForm = $data->getData();
+        $info_form = $infoForm['mercadopago_customticket'];
 
-        Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $info_form);
+        Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $infoForm);
 
         $info = $this->getInfoInstance();
-        $info->setAdditionalInformation('payment_method', $info_form['payment_method_ticket']);
+        $info->setAdditionalInformation('payment_method', $infoForm['payment_method_ticket']);
 
         if (isset($info_form['coupon_code'])) {
-            $info->setAdditionalInformation('coupon_code', $info_form['coupon_code']);
+            $info->setAdditionalInformation('coupon_code', $infoForm['coupon_code']);
         }
 
         return $this;
@@ -73,23 +70,19 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         Mage::helper('mercadopago')->log("Ticket -> init prepare post payment", 'mercadopago-custom.log');
         $core = Mage::getModel('mercadopago/core');
         $quote = $this->_getQuote();
-        $order_id = $quote->getReservedOrderId();
-        $order = $this->_getOrder($order_id);
+        $orderId = $quote->getReservedOrderId();
+        $order = $this->_getOrder($orderId);
 
-        //pega payment dentro da order para pegar as informacoes adicionadas pela funcao assignData()
         $payment = $order->getPayment();
 
-        $payment_info = array();
+        $paymentInfo = [];
 
-        /* verifica se o pagamento possui coupon_code */
         if ($payment->getAdditionalInformation("coupon_code") != "") {
-            $payment_info['coupon_code'] = $payment->getAdditionalInformation("coupon_code");
+            $paymentInfo['coupon_code'] = $payment->getAdditionalInformation("coupon_code");
         }
 
-        /* cria a preferencia padrão */
-        $preference = $core->makeDefaultPreferencePaymentV1($payment_info);
+        $preference = $core->makeDefaultPreferencePaymentV1($paymentInfo);
 
-        /* adiciona informações sobre pagamento com ticket */
         $preference['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
 
         Mage::helper('mercadopago')->log("Ticket -> PREFERENCE to POST /v1/payments", 'mercadopago-custom.log', $preference);
@@ -101,14 +94,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
     public function getOrderPlaceRedirectUrl()
     {
-        return Mage::getUrl('mercadopago/success', array('_secure' => true));
+        return Mage::getUrl('mercadopago/success', ['_secure' => true]);
     }
-
-
-    public function getSuccessBlockType()
-    {
-        return $this->_successBlockType;
-    }
-
 
 }

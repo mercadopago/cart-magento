@@ -44,25 +44,18 @@ class MercadoPago_Core_Model_Custom_Payment
 
         $response = $this->preparePostPayment();
 
-        if ($response !== false):
-
+        if ($response) {
             $payment = $response['response'];
             //set status
             $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
             $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
-
-            if ($response['status'] == 200 || $response['status'] == 201) {
-                Mage::helper('mercadopago')->log("Received Payment data", self::LOG_FILE, $payment);
-
-                $payment = Mage::helper('mercadopago')->setPayerInfo($payment);
-                $core = Mage::getModel('mercadopago/core');
-                Mage::helper('mercadopago')->log("Update Order", self::LOG_FILE);
-                $core->updateOrder($payment);
-                $core->setStatusOrder($payment, $stateObject);
-            }
+            $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $payment['id']);
+            $stateObject->setState(Mage::helper('mercadopago')->_getAssignedState('pending_payment'));
+            $stateObject->setStatus('pending_payment');
+            $stateObject->setIsNotified(false);
 
             return true;
-        endif;
+        }
 
         return false;
     }
@@ -187,7 +180,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function getOrCreateCustomer($email)
     {
-        if (empty($email)){
+        if (empty($email)) {
             return false;
         }
         $access_token = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
@@ -240,10 +233,10 @@ class MercadoPago_Core_Model_Custom_Payment
             }
         }
         $params = ["token" => $token];
-        if (isset($payment['issuer_id'])){
+        if (isset($payment['issuer_id'])) {
             $params['issuer_id'] = (int)$payment['issuer_id'];
         }
-        if (isset($payment['payment_method_id'])){
+        if (isset($payment['payment_method_id'])) {
             $params['payment_method_id'] = $payment['payment_method_id'];
         }
         $card = $mp->post("/v1/customers/" . $customer['id'] . "/cards", $params);
@@ -270,10 +263,12 @@ class MercadoPago_Core_Model_Custom_Payment
     public function getOrderPlaceRedirectUrl()
     {
         $url = Mage::helper('mercadopago')->getSuccessUrl();
+
         return Mage::getUrl($url, ['_secure' => true]);
     }
 
-    public function getCode() {
+    public function getCode()
+    {
         return $this->_code;
     }
 

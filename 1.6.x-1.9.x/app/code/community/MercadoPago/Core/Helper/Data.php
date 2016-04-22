@@ -51,7 +51,7 @@ class MercadoPago_Core_Helper_Data
         $order = Mage::getModel('sales/order')->loadByIncrementId($notificationData["external_reference"]);
         $status = $notificationData['status'];
         $currentStatus = $order->getPayment()->getAdditionalInformation('status');
-        if ($status == $currentStatus){
+        if ($status == $currentStatus && $order->getState()=== Mage_Sales_Model_Order::STATE_COMPLETE) {
             $this->_statusUpdatedFlag = true;
         }
     }

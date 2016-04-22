@@ -49,6 +49,12 @@ class MercadoPago_Core_NotificationsController
         return $t2 - $t1;
     }
 
+    /**
+     * @param $payments
+     * @param $status
+     *
+     * @return int
+     */
     protected function _getLastPaymentIndex($payments, $status)
     {
         $dates = [];
@@ -67,8 +73,21 @@ class MercadoPago_Core_NotificationsController
         return 0;
     }
 
-    protected function getStatusFinal($dataStatus, $payments)
+    /**
+     * Returns status that must be set to order, if a not final status exists
+     * then the last of this statuses is returned. Else the last of final statuses
+     * is returned
+     * @param $dataStatus
+     * @param $merchantOrder
+     *
+     * @return string
+     */
+    protected function getStatusFinal($dataStatus, $merchantOrder)
     {
+        if ($merchantOrder['total_amount'] == $merchantOrder['paid_amount']) {
+            return 'approved';
+        }
+        $payments = $merchantOrder['payments'];
         $statuses = explode('|', $dataStatus);
         foreach ($statuses as $status) {
             $status = str_replace(' ', '', $status);
@@ -100,23 +119,21 @@ class MercadoPago_Core_NotificationsController
             $response = $core->getMerchantOrder($id);
             Mage::helper('mercadopago')->log("Return merchant_order", self::LOG_FILE, $response);
             if ($response['status'] == 200 || $response['status'] == 201) {
-                $merchant_order = $response['response'];
+                $merchantOrder = $response['response'];
 
-                if (count($merchant_order['payments']) > 0) {
-                    $data = $this->_getDataPayments($merchant_order);
-                    if ($merchant_order['total_amount'] == $merchant_order['paid_amount']) {
-                        $status_final = 'approved';
-                    } else {
-                        $status_final = $this->getStatusFinal($data['status'], $merchant_order['payments']);
-                    }
-                    $shipmentData = (isset($merchant_order['shipments'][0])) ? $merchant_order['shipments'][0] : [];
+                if (count($merchantOrder['payments']) > 0) {
+                    $data = $this->_getDataPayments($merchantOrder);
+
+                    $status_final = $this->getStatusFinal($data['status'], $merchantOrder);
+
+                    $shipmentData = (isset($merchantOrder['shipments'][0])) ? $merchantOrder['shipments'][0] : [];
                     Mage::helper('mercadopago')->log("Update Order", self::LOG_FILE);
                     Mage::helper('mercadopago')->setStatusUpdated($data);
                     $core->updateOrder($data);
                     if (!empty($shipmentData)) {
                         Mage::dispatchEvent('mercadopago_standard_notification_before_set_status',
                             array('shipmentData' => $shipmentData,
-                                  'orderId'      => $merchant_order['external_reference'])
+                                  'orderId'      => $merchantOrder['external_reference'])
                         );
                     }
                     if ($status_final != false) {
@@ -132,7 +149,7 @@ class MercadoPago_Core_NotificationsController
 
                     Mage::dispatchEvent('mercadopago_standard_notification_received',
                         array('payment'        => $data,
-                              'merchant_order' => $merchant_order)
+                              'merchant_order' => $merchantOrder)
                     );
 
                     Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());

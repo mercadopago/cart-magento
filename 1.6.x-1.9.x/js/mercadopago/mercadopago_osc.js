@@ -439,7 +439,7 @@ var MercadoPagoCustom = (function () {
                     excludeInputs.splice(indexColombia, 1);
                 }
             }
-            if (!issuerMandatory) {
+            if (!this.issuerMandatory) {
                 excludeInputs.push(self.selectors.issuer);
             }
 
@@ -716,27 +716,32 @@ var MercadoPagoCustom = (function () {
             showLogMercadoPago(self.messages.setIssuer);
             showLogMercadoPago(status);
             showLogMercadoPago(issuers);
+            if (issuers.length > 0) {
+                var messageChoose = TinyJ(self.selectors.mercadoPagoTextChoice).val();
+                var messageDefaultIssuer = TinyJ(self.selectors.textDefaultIssuer).val();
 
-            var messageChoose = TinyJ(self.selectors.mercadoPagoTextChoice).val();
-            var messageDefaultIssuer = TinyJ(self.selectors.textDefaultIssuer).val();
+                var fragment = document.createDocumentFragment();
 
-            var fragment = document.createDocumentFragment();
-
-            var option = new Option(messageChoose + "...", '');
-            fragment.appendChild(option);
-
-            for (var i = 0; i < issuers.length; i++) {
-                if (issuers[i].name != self.constants.default) {
-                    option = new Option(issuers[i].name, issuers[i].id);
-                } else {
-                    option = new Option(messageDefaultIssuer, issuers[i].id);
-                }
+                var option = new Option(messageChoose + "...", '');
                 fragment.appendChild(option);
-            }
 
-            TinyJ(self.selectors.issuer).empty().appendChild(fragment).enable().removeAttribute(self.constants.style);
-            TinyJ(self.selectors.issuerMp).removeAttribute(self.constants.style);
-            TinyJ(self.selectors.issuerMpLabel).removeAttribute(self.constants.style);
+                for (var i = 0; i < issuers.length; i++) {
+                    if (issuers[i].name != self.constants.default) {
+                        option = new Option(issuers[i].name, issuers[i].id);
+                    } else {
+                        option = new Option(messageDefaultIssuer, issuers[i].id);
+                    }
+                    fragment.appendChild(option);
+                }
+
+                TinyJ(self.selectors.issuer).empty().appendChild(fragment).enable().removeAttribute(self.constants.style);
+                TinyJ(self.selectors.issuerMp).removeAttribute(self.constants.style);
+                TinyJ(self.selectors.issuerMpLabel).removeAttribute(self.constants.style);
+            } else {
+                TinyJ(self.selectors.issuer).hide();
+                TinyJ(self.selectors.issuerMp).hide();
+                TinyJ(self.selectors.issuerMpLabel).hide();
+            }
             defineInputs();
         };
 
@@ -852,7 +857,7 @@ var MercadoPagoCustom = (function () {
                 checkCreateCardToken();
 
             } else {
-                showMessageErrorForm(self.selectors.errorMethodMinAmount);
+                showMessageErrorForm(self.selectors.paymenMethodNotFound);
             }
         }
 

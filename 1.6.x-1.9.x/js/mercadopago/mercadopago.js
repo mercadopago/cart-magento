@@ -223,7 +223,7 @@ var MercadoPagoCustom = (function () {
             } else {
                 setTimeout(function () {
                     setPaymentMethods()
-                }, 1000);
+                }, 3000);
             }
 
             defineInputs();

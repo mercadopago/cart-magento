@@ -651,26 +651,34 @@ var MercadoPagoCustom = (function () {
             showLogMercadoPago(self.messages.setIssuer);
             showLogMercadoPago(status);
             showLogMercadoPago(issuers);
-            var messageChoose = TinyJ(self.selectors.mercadoPagoTextChoice).val();
-            var messageDefaultIssuer = TinyJ(self.selectors.textDefaultIssuer).val();
+            if (issuers.length > 0) {
+                var messageChoose = TinyJ(self.selectors.mercadoPagoTextChoice).val();
+                var messageDefaultIssuer = TinyJ(self.selectors.textDefaultIssuer).val();
 
-            var fragment = document.createDocumentFragment();
+                var fragment = document.createDocumentFragment();
 
-            var option = new Option(messageChoose + "...", '');
-            fragment.appendChild(option);
-
-            for (var i = 0; i < issuers.length; i++) {
-                if (issuers[i].name != self.constants.default) {
-                    option = new Option(issuers[i].name, issuers[i].id);
-                } else {
-                    option = new Option(messageDefaultIssuer, issuers[i].id);
-                }
+                var option = new Option(messageChoose + "...", '');
                 fragment.appendChild(option);
-            }
 
-            TinyJ(self.selectors.issuer).empty().appendChild(fragment).enable().removeAttribute(self.constants.style);
-            TinyJ(self.selectors.issuerMp).removeAttribute(self.constants.style);
-            TinyJ(self.selectors.issuerMpLabel).removeAttribute(self.constants.style);
+                for (var i = 0; i < issuers.length; i++) {
+                    if (issuers[i].name != self.constants.default) {
+                        option = new Option(issuers[i].name, issuers[i].id);
+                    } else {
+                        option = new Option(messageDefaultIssuer, issuers[i].id);
+                    }
+                    fragment.appendChild(option);
+                }
+
+                TinyJ(self.selectors.issuer).empty().appendChild(fragment).enable().removeAttribute(self.constants.style);
+                TinyJ(self.selectors.issuerMp).removeAttribute(self.constants.style);
+                TinyJ(self.selectors.issuerMpLabel).removeAttribute(self.constants.style);
+            } else {
+                TinyJ(self.selectors.issuer).hide();
+                TinyJ(self.selectors.issuerMp).hide();
+                TinyJ(self.selectors.issuerMpLabel).hide();
+
+
+            }
             defineInputs();
         };
 
@@ -775,37 +783,8 @@ var MercadoPagoCustom = (function () {
                     TinyJ(option).attribute(self.constants.cost, payerCosts[i].total_amount);
                 }
                 selectorInstallments.enable();
-
-
-                //setTimeout(function () {
-                //    var siteId = TinyJ(self.selectors.siteId).val();
-                //    if (siteId == self.constants.mexico) {
-                //
-                //        var issuers = TinyJ(self.selectors.issuer);
-                //        var issuerExist = false;
-                //        try {
-                //            var issuersOptions = issuers.getElem(self.constants.option);
-                //            for (i = 0; i < issuersOptions.length; ++i) {
-                //                if (issuersOptions[i].val() == response[0].issuer.id) {
-                //                    issuers.val(response[0].issuer.id);
-                //                    issuerExist = true;
-                //                }
-                //            }
-                //        }
-                //        catch (err) {
-                //            //nothing is needed here right now
-                //        }
-                //
-                //        if (issuerExist === false) {
-                //            var option = new Option(response[0].issuer.name, response[0].issuer.id);
-                //            issuers.appendChild(option);
-                //        }
-                //
-                //        showLogMercadoPago(String.format(self.messages.issuerSet, response[0].issuer));
-                //    }
-                //}, 100);
             } else {
-                showMessageErrorForm(self.selectors.errorMethodMinAmount);
+                showMessageErrorForm(self.selectors.paymenMethodNotFound);
             }
         }
 

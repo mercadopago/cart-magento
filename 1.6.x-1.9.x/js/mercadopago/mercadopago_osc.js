@@ -228,12 +228,9 @@ var MercadoPagoCustom = (function () {
 
             if (siteId != self.constants.mexico) {
                 Mercadopago.getIdentificationTypes();
-            } else {
-                var methods = getPaymentMethods();
-                setPaymentMethodsInfo(methods);
-                TinyJ(self.selectors.paymentMethodSelect).change(setPaymentMethodId);
             }
-            if (siteId == self.constants.colombia) {
+
+            if (siteId == self.constants.colombia || siteId == self.constants.mexico) {
                 setTimeout(function () {
                     setPaymentMethods()
                 }, 5000);
@@ -280,6 +277,12 @@ var MercadoPagoCustom = (function () {
                 }
                 return true;
             });
+        }
+
+        function setPaymentMethods() {
+            var methods = getPaymentMethods();
+            setPaymentMethodsInfo(methods);
+            TinyJ(self.selectors.paymentMethodSelect).change(setPaymentMethodId);
         }
 
         function setPaymentMethodId(event) {

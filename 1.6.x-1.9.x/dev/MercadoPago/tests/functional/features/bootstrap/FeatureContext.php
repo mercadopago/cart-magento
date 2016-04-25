@@ -888,7 +888,9 @@ class FeatureContext
             ],
             'mlm' => [
                 'client_id'     => '2272101328791208',
-                'client_secret' => 'cPi6Mlzc7bGkEaubEJjHRipqmojXLtKm'
+                'client_secret' => 'cPi6Mlzc7bGkEaubEJjHRipqmojXLtKm',
+                'public_key'    => 'TEST-687f89f2-19d1-4a8b-893e-8da5c7e238ac',
+                'access_token'  => 'TEST-2272101328791208-111108-fabd0182d1c7c7ba554b1773558a828a__LD_LB__-193996689'
             ],
             'mlv' => [
                 'client_id'     => '201313175671817',

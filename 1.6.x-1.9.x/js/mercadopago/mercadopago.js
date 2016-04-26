@@ -567,7 +567,7 @@ var MercadoPagoCustom = (function () {
                             "amount": amount
                         }, setPaymentMethodInfo);
                     }
-                }, 1000);
+                }, 100);
             }
         };
 

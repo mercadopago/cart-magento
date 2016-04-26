@@ -31,7 +31,7 @@ class MercadoPago_Core_SuccessController
     protected function sendNewOrderMail()
     {
         $order = $this->getOrder();
-        if ($order->getCanSendNewEmailFlag()) {
+        if ($order->getCanSendNewEmailFlag() && !$order->getEmailSent()) {
             try {
                 $order->sendNewOrderEmail();
             } catch (Exception $e) {

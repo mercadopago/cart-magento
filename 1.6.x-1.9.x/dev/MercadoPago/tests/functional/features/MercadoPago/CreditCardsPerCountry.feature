@@ -64,7 +64,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I select installment "1"
     And I wait for "3" seconds
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "3" seconds
     When I press "#review-buttons-container .button" element
     And I wait for "20" seconds
 

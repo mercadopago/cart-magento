@@ -2,11 +2,11 @@
 Feature: Validation of custom checkout form
 
   Background:
-    Given User "test_user_2135227@testuser.com" "magento" exists
+    Given User "test_user_58666377@testuser.com" "magento" exists
     And Setting Config "general/locale/code" is "en_US"
     And Setting Config "payment/mercadopago/debug_mode" is "1"
     And I empty cart
-    And I am on page "blue-horizons-bracelets.html"
+    And I am on page "swing-time-earrings.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I am logged in as "test_user_2135227@testuser.com" "magento"
     And I am on page "checkout/cart/"

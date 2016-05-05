@@ -30,7 +30,7 @@ class MercadoPago_Core_Helper_Data
     protected $_statusUpdatedFlag = false;
     protected $_apiInstance;
 
-    private $_website;
+    protected $_website;
 
     public function log($message, $file = "mercadopago.log", $array = null)
     {

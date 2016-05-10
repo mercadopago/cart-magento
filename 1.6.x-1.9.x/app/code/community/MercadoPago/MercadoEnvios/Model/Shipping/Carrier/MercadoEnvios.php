@@ -18,6 +18,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
     protected $_methods;
     protected $_request;
 
+
     /**
      * Collect and get rates
      *
@@ -88,9 +89,9 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 return;
             }
 
-            $client_id = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-            $client_secret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
-            $mp = Mage::helper('mercadopago')->getApiInstance($client_id, $client_secret);
+            $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+            $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+            $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
 
             $params = [
                 "dimensions" => $dimensions,

@@ -48,7 +48,7 @@ class MercadoPago_MercadoEnvios_Helper_CarrierData
     {
         $helper = Mage::helper('mercadopago_mercadoenvios');
         $country = Mage::getStoreConfig('payment/mercadopago/country');
-        if (empty($dimension) || $dimension > $this->_individualDimensions[$type][$country]['max'] || $dimension < $this->_individualDimensions[$type][$country]['min']) {
+        if (empty((int)$dimension) || $dimension > $this->_individualDimensions[$type][$country]['max'] || $dimension < $this->_individualDimensions[$type][$country]['min']) {
             $helper->log('Invalid dimension product: PRODUCT ', $item->getData());
             Mage::throwException('Invalid dimensions product');
         }

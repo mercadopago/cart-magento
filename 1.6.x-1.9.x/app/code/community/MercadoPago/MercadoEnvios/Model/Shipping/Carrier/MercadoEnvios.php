@@ -107,6 +107,9 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 $this->_methods = $response['response']['options'];
             } else {
                 $this->_methods = self::INVALID_METHOD;
+                if (isset($response['response']['message'])) {
+                    Mage::register('mercadoenvios_msg', $response['response']['message']);
+                }
                 Mage::helper('mercadopago_mercadoenvios')->log('Request params: ', $params);
                 Mage::helper('mercadopago_mercadoenvios')->log('Error response API: ', $response);
             }
@@ -159,7 +162,11 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
         $error = Mage::getModel('shipping/rate_result_error');
         $error->setCarrier($this->_code);
         $error->setCarrierTitle($this->getConfigData('title'));
+
         $msg = $this->getConfigData('specificerrmsg');
+        if ($customMsg = Mage::registry('mercadoenvios_msg')) {
+            $msg = $msg . ' - ' . $customMsg;
+        }
         $error->setErrorMessage($msg);
 
         return $error;

@@ -48,7 +48,7 @@ class MercadoPago_MercadoEnvios_Helper_CarrierData
     {
         $helper = Mage::helper('mercadopago_mercadoenvios');
         $country = Mage::getStoreConfig('payment/mercadopago/country');
-        if (empty((int)$dimension) || $dimension > $this->_individualDimensions[$type][$country]['max'] || $dimension < $this->_individualDimensions[$type][$country]['min']) {
+        if (empty($dimension) or (!ceil($dimension) > 0) or ($dimension > $this->_individualDimensions[$type][$country]['max']) or ($dimension < $this->_individualDimensions[$type][$country]['min'])) {
             $helper->log('Invalid dimension product: PRODUCT ', $item->getData());
             Mage::throwException('Invalid dimensions product');
         }
@@ -63,6 +63,7 @@ class MercadoPago_MercadoEnvios_Helper_CarrierData
         $helper = Mage::helper('mercadopago_mercadoenvios');
         if (($height + $width + $length) > $this->_globalMaxDimensions[$country]) {
             $helper->log('Invalid dimensions in cart:', ['width' => $width, 'height' => $height, 'length' => $length, 'weight' => $weight,]);
+            Mage::register('mercadoenvios_msg', $this->__('Package exceed maximum dimensions'));
             Mage::throwException('Invalid dimensions cart');
         }
     }

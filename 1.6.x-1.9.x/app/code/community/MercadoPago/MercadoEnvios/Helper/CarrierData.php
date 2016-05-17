@@ -29,19 +29,20 @@ class MercadoPago_MercadoEnvios_Helper_CarrierData
     public function _getShippingDimension($item, $type)
     {
         $attributeMapped = $this->_getConfigAttributeMapped($type);
-        if (!empty($attributeMapped)) {
-            if (!isset($this->_products[$item->getProductId()])) {
-                $this->_products[$item->getProductId()] = Mage::getModel('catalog/product')->load($item->getProductId());
-            }
-            $product = $this->_products[$item->getProductId()];
-            $result = $product->getData($attributeMapped);
-            $result = $this->getAttributesMappingUnitConversion($type, $result);
-            $this->validateProductDimension($result, $type, $item);
-
-            return $result;
+        if (empty($attributeMapped)) {
+            $helper = Mage::helper('mercadopago_mercadoenvios');
+            $helper->log('Invalid attributes mapping: PRODUCT ', $item->getData());
+            Mage::throwException('Invalid attributes mapping');
         }
+        if (!isset($this->_products[$item->getProductId()])) {
+            $this->_products[$item->getProductId()] = Mage::getModel('catalog/product')->load($item->getProductId());
+        }
+        $product = $this->_products[$item->getProductId()];
+        $result = $product->getData($attributeMapped);
+        $result = $this->getAttributesMappingUnitConversion($type, $result);
+        $this->validateProductDimension($result, $type, $item);
 
-        return 0;
+        return $result;
     }
 
     protected function validateProductDimension($dimension, $type, $item)

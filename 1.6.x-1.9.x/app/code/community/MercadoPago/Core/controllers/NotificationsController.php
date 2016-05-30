@@ -110,48 +110,52 @@ class MercadoPago_Core_NotificationsController
         return $payments[$lastPaymentIndex]['status'];
     }
 
+    protected function _responseLog($helper) {
+        $helper->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
+    }
+
 
     public function standardAction()
     {
         $request = $this->getRequest();
         //notification received
-        Mage::helper('mercadopago')->log("Standard Received notification", self::LOG_FILE, $request->getParams());
-
+        $helper = Mage::helper('mercadopago');
+        $helper->log("Standard Received notification", self::LOG_FILE, $request->getParams());
         $core = Mage::getModel('mercadopago/core');
 
         $id = $request->getParam('id');
         $topic = $request->getParam('topic');
-
         if (!empty($id) && !empty($topic)) {
-
-            if ($topic == 'merchant_order') {
-                $response = $core->getMerchantOrder($id);
-                Mage::helper('mercadopago')->log("Return merchant_order", self::LOG_FILE, $response);
-
-                if ($response['status'] != 200 && $response['status'] != 201) {
-                    Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
+            switch ($topic) {
+                case 'merchant_order':
+                    $response = $core->getMerchantOrder($id);
+                    $helper->log("Return merchant_order", self::LOG_FILE, $response);
+                    if ($response['status'] != 200 && $response['status'] != 201) {
+                        $this->_responseLog($helper);
+                        return;
+                    }
+                    $merchantOrder = $response['response'];
+                    if (count($merchantOrder['payments']) == 0) {
+                        $this->_responseLog($helper);
+                        return;
+                    }
+                    $data = $this->_getDataPayments($merchantOrder);
+                    $statusFinal = $this->getStatusFinal($data['status'], $merchantOrder);
+                    $shipmentData = (isset($merchantOrder['shipments'][0])) ? $merchantOrder['shipments'][0] : [];
+                    break;
+                case 'payment':
+                    $data = $this->_getFormattedPaymentData($id, $core);
+                    $statusFinal = $data['status'];
+                    break;
+                default:
+                    $this->_responseLog($helper);
 
                     return;
-                }
-                $merchantOrder = $response['response'];
-
-                if (count($merchantOrder['payments']) == 0) {
-                    Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
-
-                    return;
-                }
-                $data = $this->_getDataPayments($merchantOrder);
-                $statusFinal = $this->getStatusFinal($data['status'], $merchantOrder);
-                $shipmentData = (isset($merchantOrder['shipments'][0])) ? $merchantOrder['shipments'][0] : [];
-
-            } else {
-                $data = $this->_getFormattedPaymentData($id, $core);
-                $statusFinal = $data['status'];
             }
 
 
-            Mage::helper('mercadopago')->log("Update Order", self::LOG_FILE);
-            Mage::helper('mercadopago')->setStatusUpdated($data);
+            $helper->log("Update Order", self::LOG_FILE);
+            $helper->setStatusUpdated($data);
             $core->updateOrder($data);
             if (!empty($shipmentData) && !empty($merchantOrder)) {
                 Mage::dispatchEvent('mercadopago_standard_notification_before_set_status',
@@ -161,7 +165,7 @@ class MercadoPago_Core_NotificationsController
             }
             if ($statusFinal != false) {
                 $data['status_final'] = $statusFinal;
-                Mage::helper('mercadopago')->log("Received Payment data", self::LOG_FILE, $data);
+                $helper->log("Received Payment data", self::LOG_FILE, $data);
                 $setStatusResponse = $core->setStatusOrder($data);
                 $this->getResponse()->setBody($setStatusResponse['text']);
                 $this->getResponse()->setHttpResponseCode($setStatusResponse['code']);
@@ -178,12 +182,12 @@ class MercadoPago_Core_NotificationsController
             }
 
         } else {
-            Mage::helper('mercadopago')->log("Merchant Order not found", self::LOG_FILE, $request->getParams());
+            $helper->log("Merchant Order not found", self::LOG_FILE, $request->getParams());
             $this->getResponse()->setBody("Merchant Order not found");
             $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
         }
 
-        Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
+        $this->_responseLog($helper);
     }
 
     public function customAction()

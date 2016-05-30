@@ -110,54 +110,74 @@ class MercadoPago_Core_NotificationsController
         return $payments[$lastPaymentIndex]['status'];
     }
 
-    protected function _responseLog($helper) {
+    protected function _responseLog($helper)
+    {
         $helper->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
     }
 
+    protected function _shipmentExists($shipmentData, $merchantOrder)
+    {
+        return (!empty($shipmentData) && !empty($merchantOrder));
+    }
+
+    protected function _getShipmentsArray($merchantOrder)
+    {
+        return (isset($merchantOrder['shipments'][0])) ? $merchantOrder['shipments'][0] : [];
+    }
+
+    protected function _isValidResponse($response)
+    {
+        return ($response['status'] == 200 || $response['status'] == 201);
+    }
+
+    protected function _notEmptyParams($p1, $p2)
+    {
+        return (!empty($p1) && !empty($p2));
+    }
 
     public function standardAction()
     {
         $request = $this->getRequest();
         //notification received
         $helper = Mage::helper('mercadopago');
+        $shipmentData = '';
+        $merchantOrder = '';
         $helper->log("Standard Received notification", self::LOG_FILE, $request->getParams());
         $core = Mage::getModel('mercadopago/core');
 
         $id = $request->getParam('id');
         $topic = $request->getParam('topic');
-        if (!empty($id) && !empty($topic)) {
-            switch ($topic) {
-                case 'merchant_order':
-                    $response = $core->getMerchantOrder($id);
-                    $helper->log("Return merchant_order", self::LOG_FILE, $response);
-                    if ($response['status'] != 200 && $response['status'] != 201) {
-                        $this->_responseLog($helper);
-                        return;
-                    }
-                    $merchantOrder = $response['response'];
-                    if (count($merchantOrder['payments']) == 0) {
-                        $this->_responseLog($helper);
-                        return;
-                    }
-                    $data = $this->_getDataPayments($merchantOrder);
-                    $statusFinal = $this->getStatusFinal($data['status'], $merchantOrder);
-                    $shipmentData = (isset($merchantOrder['shipments'][0])) ? $merchantOrder['shipments'][0] : [];
-                    break;
-                case 'payment':
-                    $data = $this->_getFormattedPaymentData($id, $core);
-                    $statusFinal = $data['status'];
-                    break;
-                default:
+        if ($this->_notEmptyParams($id, $topic)) {
+            if ($topic == 'merchant_order') {
+                $response = $core->getMerchantOrder($id);
+                $helper->log("Return merchant_order", self::LOG_FILE, $response);
+                if ($this->_isValidResponse($response)) {
                     $this->_responseLog($helper);
 
                     return;
-            }
+                }
+                $merchantOrder = $response['response'];
+                if (count($merchantOrder['payments']) == 0) {
+                    $this->_responseLog($helper);
 
+                    return;
+                }
+                $data = $this->_getDataPayments($merchantOrder);
+                $statusFinal = $this->getStatusFinal($data['status'], $merchantOrder);
+                $shipmentData = $this->_getShipmentsArray($merchantOrder);
+            } elseif ($topic == 'payment') {
+                $data = $this->_getFormattedPaymentData($id, $core);
+                $statusFinal = $data['status'];
+            } else {
+                $this->_responseLog($helper);
+
+                return;
+            }
 
             $helper->log("Update Order", self::LOG_FILE);
             $helper->setStatusUpdated($data);
             $core->updateOrder($data);
-            if (!empty($shipmentData) && !empty($merchantOrder)) {
+            if ($this->_shipmentExists($shipmentData, $merchantOrder)) {
                 Mage::dispatchEvent('mercadopago_standard_notification_before_set_status',
                     array('shipmentData' => $shipmentData,
                           'orderId'      => $merchantOrder['external_reference'])
@@ -174,7 +194,7 @@ class MercadoPago_Core_NotificationsController
                 $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_OK);
             }
 
-            if (!empty($shipmentData) && !empty($merchantOrder)) {
+            if ($this->_shipmentExists($shipmentData, $merchantOrder)) {
                 Mage::dispatchEvent('mercadopago_standard_notification_received',
                     array('payment'        => $data,
                           'merchant_order' => $merchantOrder)

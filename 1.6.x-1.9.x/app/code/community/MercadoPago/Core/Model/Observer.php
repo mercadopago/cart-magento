@@ -45,6 +45,7 @@ class MercadoPago_Core_Model_Observer
 
     private $available_transparent_credit_cart = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc'];
     private $available_transparent_ticket = ['mla', 'mlb', 'mlm'];
+    private $_website;
 
     const LOG_FILE = 'mercadopago.log';
 
@@ -55,6 +56,9 @@ class MercadoPago_Core_Model_Observer
      */
     public function checkAndValidData($observer)
     {
+
+        $this->_website = Mage::helper('mercadopago')->getAdminSelectedWebsite();
+
         $this->validateAccessToken();
 
         $this->validateClientCredentials();
@@ -71,41 +75,42 @@ class MercadoPago_Core_Model_Observer
 
     public function availableCheckout()
     {
-        //verifica se o pais selecionado possui integracao para utilizar os checkouts transparents
+        //check if country is available for transparent checkout
+        //and disables method if it is not
 
-        $country = Mage::getStoreConfig('payment/mercadopago/country');
+        $country = $this->_website->getConfig('payment/mercadopago/country');
 
         if (!in_array($country, $this->available_transparent_credit_cart)) {
-            Mage::getConfig()->saveConfig('payment/mercadopago_custom/active', 0);
+            Mage::getConfig()->saveConfig('payment/mercadopago_custom/active', 0, 'websites', $this->_website->getId());
         }
 
         if (!in_array($country, $this->available_transparent_ticket)) {
-            Mage::getConfig()->saveConfig('payment/mercadopago_customticket/active', 0);
+            Mage::getConfig()->saveConfig('payment/mercadopago_customticket/active', 0, 'websites', $this->_website->getId());
         }
     }
 
-    public function checkBanner($type_checkout)
+    public function checkBanner($typeCheckout)
     {
         //get country
-        $country = Mage::getStoreConfig('payment/mercadopago/country');
-        if (!isset($this->banners[$type_checkout][$country])) {
+        $country = $this->_website->getConfig('payment/mercadopago/country');
+        if (!isset($this->banners[$typeCheckout][$country])) {
             return;
         }
-        $default_banner = $this->banners[$type_checkout][$country];
+        $defaultBanner = $this->banners[$typeCheckout][$country];
 
-        $current_banner = Mage::getStoreConfig('payment/' . $type_checkout . '/banner_checkout');
+        $currentBanner = $this->_website->getConfig('payment/' . $typeCheckout . '/banner_checkout');
 
-        Mage::helper('mercadopago')->log("Type Checkout Path: " . $type_checkout, self::LOG_FILE);
-        Mage::helper('mercadopago')->log("Current Banner: " . $current_banner, self::LOG_FILE);
-        Mage::helper('mercadopago')->log("Default Banner: " . $default_banner, self::LOG_FILE);
+        Mage::helper('mercadopago')->log("Type Checkout Path: " . $typeCheckout, self::LOG_FILE);
+        Mage::helper('mercadopago')->log("Current Banner: " . $currentBanner, self::LOG_FILE);
+        Mage::helper('mercadopago')->log("Default Banner: " . $defaultBanner, self::LOG_FILE);
 
-        if (in_array($current_banner, $this->banners[$type_checkout])) {
+        if (in_array($currentBanner, $this->banners[$typeCheckout])) {
             Mage::helper('mercadopago')->log("Banner default need update...", self::LOG_FILE);
 
-            if ($default_banner != $current_banner) {
-                Mage::getConfig()->saveConfig('payment/' . $type_checkout . '/banner_checkout', $default_banner);
+            if ($defaultBanner != $currentBanner) {
+                Mage::getConfig()->saveConfig('payment/' . $typeCheckout . '/banner_checkout', $defaultBanner, 'websites', $this->_website->getId());
 
-                Mage::helper('mercadopago')->log('payment/' . $type_checkout . '/banner_checkout setted ' . $default_banner, self::LOG_FILE);
+                Mage::helper('mercadopago')->log('payment/' . $typeCheckout . '/banner_checkout setted ' . $defaultBanner, self::LOG_FILE);
             }
         }
     }
@@ -113,15 +118,15 @@ class MercadoPago_Core_Model_Observer
 
     public function setSponsor()
     {
-        Mage::helper('mercadopago')->log("Sponsor_id: " . Mage::getStoreConfig('payment/mercadopago/sponsor_id'), self::LOG_FILE);
+        Mage::helper('mercadopago')->log("Sponsor_id: " . $this->_website->getConfig('payment/mercadopago/sponsor_id'), self::LOG_FILE);
 
-        $sponsor_id = "";
+        $sponsorId = "";
         Mage::helper('mercadopago')->log("Valid user test", self::LOG_FILE);
 
-        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
-        Mage::helper('mercadopago')->log("Get access_token: " . $access_token, self::LOG_FILE);
+        $accessToken = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+        Mage::helper('mercadopago')->log("Get access_token: " . $accessToken, self::LOG_FILE);
 
-        $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
+        $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
         $user = $mp->get("/users/me");
         Mage::helper('mercadopago')->log("API Users response", self::LOG_FILE, $user);
 
@@ -129,38 +134,38 @@ class MercadoPago_Core_Model_Observer
 
             switch ($user['response']['site_id']) {
                 case 'MLA':
-                    $sponsor_id = 186172525;
+                    $sponsorId = 186172525;
                     break;
                 case 'MLB':
-                    $sponsor_id = 186175129;
+                    $sponsorId = 186175129;
                     break;
                 case 'MLM':
-                    $sponsor_id = 186175064;
+                    $sponsorId = 186175064;
                     break;
                 case 'MCO':
-                    $sponsor_id = 206959966;
+                    $sponsorId = 206959966;
                     break;
                 case 'MLC':
-                    $sponsor_id = 206959756;
+                    $sponsorId = 206959756;
                     break;
                 case 'MLV':
-                    $sponsor_id = 206960619;
+                    $sponsorId = 206960619;
                     break;
                 default:
-                    $sponsor_id = "";
+                    $sponsorId = "";
                     break;
             }
 
-            Mage::helper('mercadopago')->log("Sponsor id setted", self::LOG_FILE, $sponsor_id);
+            Mage::helper('mercadopago')->log("Sponsor id setted", self::LOG_FILE, $sponsorId);
         }
 
-        Mage::getConfig()->saveConfig('payment/mercadopago/sponsor_id', $sponsor_id);
-        Mage::helper('mercadopago')->log("Sponsor saved", self::LOG_FILE, $sponsor_id);
+        Mage::getConfig()->saveConfig('payment/mercadopago/sponsor_id', $sponsorId, $this->_website->getId());
+        Mage::helper('mercadopago')->log("Sponsor saved", self::LOG_FILE, $sponsorId);
     }
 
     protected function validateAccessToken()
     {
-        $accessToken = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+        $accessToken = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
         if (!empty($accessToken)) {
             if (!Mage::helper('mercadopago')->isValidAccessToken($accessToken)) {
                 Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Custom Checkout: Invalid access token'));
@@ -170,8 +175,8 @@ class MercadoPago_Core_Model_Observer
 
     protected function validateClientCredentials()
     {
-        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        $clientId = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
         if (!empty($clientId) && !empty($clientSecret)) {
             if (!Mage::helper('mercadopago')->isValidClientCredentials($clientId, $clientSecret)) {
                 Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Classic Checkout: Invalid client id or client secret'));

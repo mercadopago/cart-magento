@@ -652,7 +652,7 @@ var MercadoPagoCustom = (function () {
             //hide loading
             hideLoading();
 
-            if (status == http.status.OK) {
+            if (status == http.status.OK && response != undefined) {
                 if (response.length == 1) {
                     var paymentMethodId = response[0].id;
                     TinyJ(self.selectors.paymentMethodId).val(paymentMethodId);
@@ -741,6 +741,7 @@ var MercadoPagoCustom = (function () {
                 TinyJ(self.selectors.issuerMp).removeAttribute(self.constants.style);
                 TinyJ(self.selectors.issuerMpLabel).removeAttribute(self.constants.style);
             } else {
+                TinyJ(self.selectors.issuer).empty();
                 TinyJ(self.selectors.issuer).hide();
                 TinyJ(self.selectors.issuerMp).hide();
                 TinyJ(self.selectors.issuerMpLabel).hide();
@@ -777,7 +778,10 @@ var MercadoPagoCustom = (function () {
             var route = TinyJ(self.selectors.mercadoRoute).val();
             var baseUrl = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.baseUrl).val();
             var discountAmount = parseFloat(TinyJ(self.selectors.customDiscountAmount).val());
-
+            var paymentMethodId = TinyJ(self.selectors.paymentMethodId).val();
+            if (paymentMethodId != '') {
+                options['payment_method_id'] = paymentMethodId;
+            }
             if (route != self.constants.checkout) {
                 showLogMercadoPago(self.messages.usingMagentoCustomCheckout);
 
@@ -900,9 +904,14 @@ var MercadoPagoCustom = (function () {
                 }
             }
 
+            var issuers = TinyJ(self.selectors.issuer);
+            var issuersFlag = (issuers && issuers.getElem() != null && issuers.getElem().length > 0);
+
             var docNumber = TinyJ(self.selectors.docNumber).val();
             if (docNumber != '' && !checkDocNumber(docNumber)) {
-                submit = false;
+                if (!(dataInputs[x] == "#issuer" && !issuersFlag)) {
+                    submit = false;
+                }
             }
 
             if (submit) {

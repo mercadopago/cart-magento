@@ -1039,4 +1039,19 @@ class FeatureContext
             $rule->save();
         }
     }
+
+    /**
+     * @Given I select option field if available :arg1
+     */
+    public function iSelectOptionFieldIfAvailable($arg1)
+    {
+        $page = $this->getSession()->getPage();
+
+        $field = $page->findField($arg1);
+
+        if (null !== $field) {
+            $field->press();
+        }
+
+    }
 }

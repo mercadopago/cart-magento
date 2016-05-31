@@ -233,6 +233,9 @@ class MercadoPago_Core_Helper_Data
     protected function _getMultiCardValue($data, $field)
     {
         $finalValue = 0;
+        if (!isset($data[$field])) {
+            return $finalValue;
+        }
         $amountValues = explode('|', $data[$field]);
         $statusValues = explode('|', $data['status']);
         foreach ($amountValues as $key => $value) {

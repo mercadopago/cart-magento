@@ -304,7 +304,7 @@ class MercadoPago_Core_Model_Core
 
             $couponInfo = $this->getCouponInfo($coupon, $couponCode);
             $preference['coupon_amount'] = $couponInfo['coupon_amount'];
-            $preference['coupon_code'] = $couponInfo['coupon_code'];
+            $preference['coupon_code'] = strtoupper($couponInfo['coupon_code']);
             $preference['campaign_id'] = $couponInfo['campaign_id'];
 
         }

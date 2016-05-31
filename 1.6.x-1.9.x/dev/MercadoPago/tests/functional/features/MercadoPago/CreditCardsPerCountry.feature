@@ -57,7 +57,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I select option field "cardExpirationMonth" with "01"
     And I fill text field "cardholderName" with "APRO"
     And I select option field "paymentMethod" with "visa"
-    And I select option field "docType" with "Otro"
+    And I select option field "docType" with "CC"
     And I fill text field "docNumber" with "<doc_number>"
     And I fill text field "securityCode" with "123"
     And I select option field "cardExpirationYear" with "2017"

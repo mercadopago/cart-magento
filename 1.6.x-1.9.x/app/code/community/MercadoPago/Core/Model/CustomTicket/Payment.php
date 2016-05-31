@@ -51,14 +51,14 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         }
 
         $infoForm = $data->getData();
-        $info_form = $infoForm['mercadopago_customticket'];
+        $infoForm = $infoForm['mercadopago_customticket'];
 
         Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $infoForm);
 
         $info = $this->getInfoInstance();
         $info->setAdditionalInformation('payment_method', $infoForm['payment_method_ticket']);
 
-        if (isset($info_form['coupon_code'])) {
+        if (isset($infoForm['coupon_code'])) {
             $info->setAdditionalInformation('coupon_code', $infoForm['coupon_code']);
         }
 

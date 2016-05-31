@@ -43,7 +43,7 @@ class MercadoPago_Core_Model_Observer
         ]
     ];
 
-    private $available_transparent_credit_cart = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc'];
+    private $available_transparent_credit_cart = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe'];
     private $available_transparent_ticket = ['mla', 'mlb', 'mlm'];
     private $_website;
 

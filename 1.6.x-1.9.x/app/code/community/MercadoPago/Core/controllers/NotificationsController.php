@@ -215,7 +215,7 @@ class MercadoPago_Core_NotificationsController
     public function customAction()
     {
         $request = $this->getRequest();
-        Mage::helper('mercadopago')->log("Custom Received nmotification", self::LOG_FILE, $request->getParams());
+        Mage::helper('mercadopago')->log("Custom Received notification", self::LOG_FILE, $request->getParams());
 
         $core = Mage::getModel('mercadopago/core');
 

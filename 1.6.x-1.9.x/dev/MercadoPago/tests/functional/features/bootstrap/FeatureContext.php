@@ -903,6 +903,12 @@ class FeatureContext
                 'client_secret' => 'bASLUlb5s12QYPAUJwCQUMa21wFzFrzz',
                 'public_key'    => 'TEST-d6e2006f-933f-4dd2-aea4-c3986b30e691',
                 'access_token'  => 'TEST-3688958250893559-030308-19e24cdca75845d460c2935585b1e375__LA_LB__-207596493'
+            ],
+            'mpe' => [
+                'client_id'     => '5847697352593489',
+                'client_secret' => 'CfyPTfwhKBGONTwsY6Rj1syjycAlWFRo',
+                'public_key'    => 'TEST-fd4d6a1e-3d82-498e-83d4-fac20542b990',
+                'access_token'  => 'TEST-5847697352593489-050409-59428dd49c2305dafcaf63cebf53374e__LA_LD__-212919053'
             ]
         ];
         $clientId = $dataCountry[$arg1]['client_id'];
@@ -1054,4 +1060,5 @@ class FeatureContext
         }
 
     }
+
 }

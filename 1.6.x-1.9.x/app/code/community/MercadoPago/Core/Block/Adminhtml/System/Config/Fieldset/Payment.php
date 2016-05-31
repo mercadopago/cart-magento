@@ -13,8 +13,9 @@ class MercadoPago_Core_Block_Adminhtml_System_Config_Fieldset_Payment
      */
     protected function _getHeaderTitleHtml($element)
     {
-        $configData = $this->getData('config_data');
-        $imageUrl = $configData['payment/mercadopago_standard/banner_checkout'];
+        $website = Mage::helper('mercadopago')->getAdminSelectedWebsite();
+
+        $imageUrl = $website->getConfig('payment/mercadopago_standard/banner_checkout');
 
         $html = '<div class="config-heading meli" ><div class="heading"><strong id="meli-logo">' . $element->getLegend();
         $html .= '</strong></div>';

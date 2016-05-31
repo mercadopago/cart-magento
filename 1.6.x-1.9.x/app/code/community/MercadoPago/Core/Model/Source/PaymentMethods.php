@@ -24,12 +24,14 @@ class MercadoPago_Core_Model_Source_PaymentMethods
         $methods = array();
         $helper = Mage::helper('mercadopago');
 
-        //adiciona um valor vazio caso nao queria excluir nada
-        $methods[] = array("value" => "", "label" => "");
+        //empty value, to include all methods
+        $methods[] = ['value' => '', 'label' => ''];
 
-        $accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
-        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        $website = $helper->getAdminSelectedWebsite();
+
+        $accessToken = $website->getConfig(self::XML_PATH_ACCESS_TOKEN);
+        $clientId = $website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = $website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
         if (empty($accessToken) && !$helper->isValidClientCredentials($clientId, $clientSecret)) {
             return $methods;
         }
@@ -39,9 +41,9 @@ class MercadoPago_Core_Model_Source_PaymentMethods
             $accessToken = $helper->getAccessToken();
         }
 
-        $helper->log("Get payment methods by country... ", 'mercadopago.log');
-        $helper->log("API payment methods: " . "/v1/payment_methods?access_token=" . $accessToken, 'mercadopago.log');
-        $response = MercadoPago_Lib_RestClient::get("/v1/payment_methods?access_token=" . $accessToken);
+        $helper->log('Get payment methods by country... ', 'mercadopago.log');
+        $helper->log('API payment methods: ' . '/v1/payment_methods?access_token=' . $accessToken, 'mercadopago.log');
+        $response = MercadoPago_Lib_RestClient::get('/sites/'. strtoupper($website->getConfig('payment/mercadopago/country')) .'/payment_methods?marketplace=NONE');
 
         $helper->log("API payment methods", 'mercadopago.log', $response);
 

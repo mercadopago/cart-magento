@@ -96,12 +96,11 @@ $customer = $this->getCustomerAndCards();
             <li>
                 <ul id="mercadopago_checkout_custom_card">
                     <li id="paymentMethod__mp">
+                        <div><a id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></a></div>
                         <label for="paymentMethod"><?php echo $this->__('Payment Method'); ?></label>
                         <select id="paymentMethod" data-checkout="paymentMethod" name="payment[<?php echo $_code; ?>][paymentMethod]" data-element-id="#paymentMethod__mp" class="validate-select"></select>
                     </li>
                     <li id="cardNumber__mp">
-                        <div><a id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></a></div>
-
                         <label for="cardNumber"><?php echo $this->__('Card Number'); ?></label>
                         <input type="text" id="cardNumber" data-checkout="cardNumber" data-element-id="#cardNumber__mp"/>
 

@@ -480,6 +480,7 @@ class MercadoPago_Core_Model_Core
                 Mage::helper('mercadopago')->setOrderSubtotals($payment, $order);
                 $this->_createInvoice($order, $message);
                 //Associate card to customer
+                $additionalInfo = $order->getPayment()->getAdditionalInformation();
                 if (isset($additionalInfo['token'])) {
                     Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
                 }

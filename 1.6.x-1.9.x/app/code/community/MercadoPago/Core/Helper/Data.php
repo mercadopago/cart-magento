@@ -30,6 +30,8 @@ class MercadoPago_Core_Helper_Data
     protected $_statusUpdatedFlag = false;
     protected $_apiInstance;
 
+    protected $_website;
+
     public function log($message, $file = "mercadopago.log", $array = null)
     {
         $actionLog = Mage::getStoreConfig('payment/mercadopago/logs');
@@ -43,15 +45,17 @@ class MercadoPago_Core_Helper_Data
         }
     }
 
-    public function isStatusUpdated() {
+    public function isStatusUpdated()
+    {
         return $this->_statusUpdatedFlag;
     }
 
-    public function setStatusUpdated ($notificationData) {
+    public function setStatusUpdated($notificationData)
+    {
         $order = Mage::getModel('sales/order')->loadByIncrementId($notificationData["external_reference"]);
         $status = $notificationData['status'];
         $currentStatus = $order->getPayment()->getAdditionalInformation('status');
-        if ($status == $currentStatus && $order->getState()=== Mage_Sales_Model_Order::STATE_COMPLETE) {
+        if ($status == $currentStatus && $order->getState() === Mage_Sales_Model_Order::STATE_COMPLETE) {
             $this->_statusUpdatedFlag = true;
         }
     }
@@ -78,6 +82,7 @@ class MercadoPago_Core_Helper_Data
 
             $this->_apiInstance = $api;
         }
+
         return $this->_apiInstance;
     }
 
@@ -178,12 +183,12 @@ class MercadoPago_Core_Helper_Data
 
     public function setOrderSubtotals($data, $order)
     {
-        if (isset($data['total_paid_amount'])){
-            $balance = $this->_getMultiCardValue($data['total_paid_amount']);
+        if (isset($data['total_paid_amount'])) {
+            $balance = $this->_getMultiCardValue($data, 'total_paid_amount');
         } else {
             $balance = $data['transaction_details']['total_paid_amount'];
         }
-        $shippingCost = $this->_getMultiCardValue($data['shipping_cost']);
+        $shippingCost = $this->_getMultiCardValue($data, 'shipping_cost');
 
         $order->setGrandTotal($balance);
         $order->setBaseGrandTotal($balance);
@@ -192,8 +197,8 @@ class MercadoPago_Core_Helper_Data
             $order->setShippingAmount($shippingCost);
         }
 
-        $couponAmount = $this->_getMultiCardValue($data['coupon_amount']);
-        $transactionAmount = $this->_getMultiCardValue($data['transaction_amount']);
+        $couponAmount = $this->_getMultiCardValue($data, 'coupon_amount');
+        $transactionAmount = $this->_getMultiCardValue($data, 'transaction_amount');
 
         if ($couponAmount) {
             $order->setDiscountCouponAmount($couponAmount * -1);
@@ -203,7 +208,13 @@ class MercadoPago_Core_Helper_Data
             $balance = $balance - $transactionAmount - $shippingCost;
         }
 
-        if (Zend_Locale_Math::round($balance,4) > 0) {
+        if (!Mage::getStoreConfigFlag('payment/mercadopago/financing_cost')) {
+            $order->setGrandTotal($order->getGrandTotal() - $balance);
+            $order->setBaseGrandTotal($order->getBaseGrandTotal() - $balance);
+            return;
+        }
+
+        if (Zend_Locale_Math::round($balance, 4) > 0) {
             $order->setFinanceCostAmount($balance);
             $order->setBaseFinanceCostAmount($balance);
         }
@@ -225,24 +236,55 @@ class MercadoPago_Core_Helper_Data
         return $payment;
     }
 
-    protected function _getMultiCardValue($fullValue) {
+    protected function _getMultiCardValue($data, $field)
+    {
         $finalValue = 0;
-        $values = explode('|', $fullValue);
-        foreach ($values as $value) {
-            $value = (float) str_replace(' ', '', $value);
-            $finalValue = $finalValue + $value;
+        if (!isset($data[$field])) {
+            return $finalValue;
+        }
+        $amountValues = explode('|', $data[$field]);
+        $statusValues = explode('|', $data['status']);
+        foreach ($amountValues as $key => $value) {
+            $value = (float)str_replace(' ', '', $value);
+            if (str_replace(' ', '', $statusValues[$key]) == 'approved') {
+                $finalValue = $finalValue + $value;
+            }
         }
 
         return $finalValue;
     }
 
-    public function getSuccessUrl() {
+    public function getSuccessUrl()
+    {
         if (Mage::getStoreConfig('payment/mercadopago/use_successpage_mp')) {
             $url = 'mercadopago/success';
         } else {
             $url = 'checkout/onepage/success';
         }
+
         return $url;
+    }
+
+    /**
+     * Return the website associated to admin combo select
+     *
+     * @return Mage_Core_Model_Website
+     */
+    public function getAdminSelectedWebsite()
+    {
+        if (isset($this->_website)) {
+            return $this->_website;
+        }
+
+        $websiteId = Mage::getSingleton('adminhtml/config_data')->getWebsite();
+
+        if ($websiteId) {
+            $this->_website = Mage::app()->getWebsite($websiteId);
+        } else {
+            $this->_website = Mage::app()->getWebsite();
+        }
+
+        return $this->_website;
     }
 
 }

@@ -208,6 +208,12 @@ class MercadoPago_Core_Helper_Data
             $balance = $balance - $transactionAmount - $shippingCost;
         }
 
+        if (!Mage::getStoreConfigFlag('payment/mercadopago/financing_cost')) {
+            $order->setGrandTotal($order->getGrandTotal() - $balance);
+            $order->setBaseGrandTotal($order->getBaseGrandTotal() - $balance);
+            return;
+        }
+
         if (Zend_Locale_Math::round($balance, 4) > 0) {
             $order->setFinanceCostAmount($balance);
             $order->setBaseFinanceCostAmount($balance);

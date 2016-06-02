@@ -97,8 +97,6 @@
 
         <fieldsets>
             <sales_convert_quote_address>
-                <finance_cost_amount><to_order>*</to_order></finance_cost_amount>
-                <base_finance_cost_amount><to_order>*</to_order></base_finance_cost_amount>
                 <discount_coupon_amount><to_order>*</to_order></discount_coupon_amount>
                 <base_discount_coupon_amount><to_order>*</to_order></base_discount_coupon_amount>
             </sales_convert_quote_address>

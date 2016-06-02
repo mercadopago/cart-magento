@@ -13,7 +13,7 @@ class MercadoPago_Core_Block_Sales_Order_Totals_Finance_Cost
      */
     public function initTotals()
     {
-        if ((float)$this->getSource()->getFinanceCostAmount() == 0) {
+        if ((float)$this->getSource()->getFinanceCostAmount() == 0 || !Mage::getStoreConfigFlag('payment/mercadopago/financing_cost')) {
             return $this;
         }
         $total = new Varien_Object(array(

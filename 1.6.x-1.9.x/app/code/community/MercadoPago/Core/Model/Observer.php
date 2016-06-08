@@ -159,7 +159,7 @@ class MercadoPago_Core_Model_Observer
             Mage::helper('mercadopago')->log("Sponsor id setted", self::LOG_FILE, $sponsorId);
         }
 
-        Mage::getConfig()->saveConfig('payment/mercadopago/sponsor_id', $sponsorId, $this->_website->getId());
+        Mage::getConfig()->saveConfig('payment/mercadopago/sponsor_id', $sponsorId, 'websites', $this->_website->getId());
         Mage::helper('mercadopago')->log("Sponsor saved", self::LOG_FILE, $sponsorId);
     }
 

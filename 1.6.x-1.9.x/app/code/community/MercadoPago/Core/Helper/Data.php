@@ -167,8 +167,8 @@ class MercadoPago_Core_Helper_Data
         $item = Mage::getResourceModel('sales/order_status_collection')
             ->joinStates()
             ->addFieldToFilter('main_table.status', $status);
-
-        return array_pop($item->getItems())->getState();
+        $items = $item->getItems();
+        return array_pop($items)->getState();
     }
 
     public function getMessage($status, $payment)

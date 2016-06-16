@@ -131,34 +131,23 @@ class MercadoPago_Core_Model_Observer
         Mage::helper('mercadopago')->log("API Users response", self::LOG_FILE, $user);
 
         if ($user['status'] == 200 && !in_array("test_user", $user['response']['tags'])) {
-
-            switch ($user['response']['site_id']) {
-                case 'MLA':
-                    $sponsorId = 186172525;
-                    break;
-                case 'MLB':
-                    $sponsorId = 186175129;
-                    break;
-                case 'MLM':
-                    $sponsorId = 186175064;
-                    break;
-                case 'MCO':
-                    $sponsorId = 206959966;
-                    break;
-                case 'MLC':
-                    $sponsorId = 206959756;
-                    break;
-                case 'MLV':
-                    $sponsorId = 206960619;
-                    break;
-                case 'MPE':
-                    $sponsorId = 217178514;
-                    break;
-                default:
-                    $sponsorId = "";
-                    break;
+            $sponsors = [
+                'MLA' => 186172525,
+                'MLB' => 186175129,
+                'MLM' => 186175064,
+                'MCO' => 206959966,
+                'MLC' => 206959756,
+                'MLV' => 206960619,
+                'MPE' => 217178514,
+            ];
+            $countryCode = $user['response']['site_id'];
+            
+            if (isset($sponsors[$countryCode])) {
+                $sponsorId = $sponsors[$countryCode];
+            } else {
+                $sponsorId = "";
             }
-
+            
             Mage::helper('mercadopago')->log("Sponsor id set", self::LOG_FILE, $sponsorId);
         }
         $this->_saveWebsiteConfig('payment/mercadopago/sponsor_id', $sponsorId);

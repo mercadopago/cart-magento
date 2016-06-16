@@ -47,7 +47,7 @@ class MercadoPago_Core_Model_Source_PaymentMethods
 
         $helper->log("API payment methods", 'mercadopago.log', $response);
 
-        if (isset($response['error'])) {
+        if (isset($response['error']) || !isset($response['response'])) {
             return $methods;
         }
 

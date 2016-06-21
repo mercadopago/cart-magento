@@ -255,7 +255,6 @@ class MercadoPago_Core_Model_Standard_Payment
         if (empty($paramsShipment)) {
             $paramsShipment = $params->getData();
             $paramsShipment['cost'] = (float)$order->getBaseShippingAmount();
-            $paramsShipment['mode'] = 'custom';
         }
         $paramsShipment['receiver_address'] = $this->getReceiverAddress($shippingAddress);
         return $paramsShipment;

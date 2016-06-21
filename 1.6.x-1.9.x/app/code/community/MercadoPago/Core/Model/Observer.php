@@ -24,6 +24,7 @@ class MercadoPago_Core_Model_Observer
             "mlm" => "http://imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG",
             "mlc" => "https://secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "https://imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
+            "mpe" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
         ],
         "mercadopago_customticket" => [
             "mla" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
@@ -32,6 +33,7 @@ class MercadoPago_Core_Model_Observer
             "mlm" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlc" => "https://secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "https://imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
+            "mpe" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
         ],
         "mercadopago_standard"     => [
             "mla" => "http://imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg",
@@ -39,11 +41,12 @@ class MercadoPago_Core_Model_Observer
             "mco" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlc" => "https://secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "https://imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
-            "mlm" => "http://imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG"
+            "mlm" => "http://imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG",
+            "mpe" => "https://a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
         ]
     ];
 
-    private $available_transparent_credit_cart = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc'];
+    private $available_transparent_credit_cart = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe'];
     private $available_transparent_ticket = ['mla', 'mlb', 'mlm'];
     private $_website;
 
@@ -81,11 +84,11 @@ class MercadoPago_Core_Model_Observer
         $country = $this->_website->getConfig('payment/mercadopago/country');
 
         if (!in_array($country, $this->available_transparent_credit_cart)) {
-            Mage::getConfig()->saveConfig('payment/mercadopago_custom/active', 0, 'websites', $this->_website->getId());
+            $this->_saveWebsiteConfig('payment/mercadopago_custom/active', 0);
         }
 
         if (!in_array($country, $this->available_transparent_ticket)) {
-            Mage::getConfig()->saveConfig('payment/mercadopago_customticket/active', 0, 'websites', $this->_website->getId());
+            $this->_saveWebsiteConfig('payment/mercadopago_customticket/active', 0);
         }
     }
 
@@ -108,7 +111,7 @@ class MercadoPago_Core_Model_Observer
             Mage::helper('mercadopago')->log("Banner default need update...", self::LOG_FILE);
 
             if ($defaultBanner != $currentBanner) {
-                Mage::getConfig()->saveConfig('payment/' . $typeCheckout . '/banner_checkout', $defaultBanner, 'websites', $this->_website->getId());
+                $this->_saveWebsiteConfig('payment/' . $typeCheckout . '/banner_checkout', $defaultBanner);
 
                 Mage::helper('mercadopago')->log('payment/' . $typeCheckout . '/banner_checkout setted ' . $defaultBanner, self::LOG_FILE);
             }
@@ -131,35 +134,26 @@ class MercadoPago_Core_Model_Observer
         Mage::helper('mercadopago')->log("API Users response", self::LOG_FILE, $user);
 
         if ($user['status'] == 200 && !in_array("test_user", $user['response']['tags'])) {
-
-            switch ($user['response']['site_id']) {
-                case 'MLA':
-                    $sponsorId = 186172525;
-                    break;
-                case 'MLB':
-                    $sponsorId = 186175129;
-                    break;
-                case 'MLM':
-                    $sponsorId = 186175064;
-                    break;
-                case 'MCO':
-                    $sponsorId = 206959966;
-                    break;
-                case 'MLC':
-                    $sponsorId = 206959756;
-                    break;
-                case 'MLV':
-                    $sponsorId = 206960619;
-                    break;
-                default:
-                    $sponsorId = "";
-                    break;
+            $sponsors = [
+                'MLA' => 186172525,
+                'MLB' => 186175129,
+                'MLM' => 186175064,
+                'MCO' => 206959966,
+                'MLC' => 206959756,
+                'MLV' => 206960619,
+                'MPE' => 217178514,
+            ];
+            $countryCode = $user['response']['site_id'];
+            
+            if (isset($sponsors[$countryCode])) {
+                $sponsorId = $sponsors[$countryCode];
+            } else {
+                $sponsorId = "";
             }
-
-            Mage::helper('mercadopago')->log("Sponsor id setted", self::LOG_FILE, $sponsorId);
+            
+            Mage::helper('mercadopago')->log("Sponsor id set", self::LOG_FILE, $sponsorId);
         }
-
-        Mage::getConfig()->saveConfig('payment/mercadopago/sponsor_id', $sponsorId, $this->_website->getId());
+        $this->_saveWebsiteConfig('payment/mercadopago/sponsor_id', $sponsorId);
         Mage::helper('mercadopago')->log("Sponsor saved", self::LOG_FILE, $sponsorId);
     }
 
@@ -182,5 +176,15 @@ class MercadoPago_Core_Model_Observer
                 Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Classic Checkout: Invalid client id or client secret'));
             }
         }
+    }
+
+    protected function _saveWebsiteConfig($path, $value)
+    {
+        if ($this->_website->getId() == 0) {
+            Mage::getConfig()->saveConfig($path, $value);
+        } else {
+            Mage::getConfig()->saveConfig($path, $value, 'websites', $this->_website->getId());
+        }
+
     }
 }

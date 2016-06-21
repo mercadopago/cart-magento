@@ -57,7 +57,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I select option field "cardExpirationMonth" with "01"
     And I fill text field "cardholderName" with "APRO"
     And I select option field "paymentMethod" with "visa"
-    And I select option field "docType" with "CC"
+    And I select option field "docType" with "<doc_type>"
     And I fill text field "docNumber" with "<doc_number>"
     And I fill text field "securityCode" with "123"
     And I select option field "cardExpirationYear" with "2017"
@@ -72,8 +72,9 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I should see "Payment Detail: accredited"
 
     Examples:
-      | credit_card         | doc_number | country | user                            | pass    |
-      | 4013 5406 8274 6260 | 14978546   | mco     | test_user_17369351@testuser.com | magento |
+      | credit_card         | doc_number | country | user                            | pass    | doc_type |
+      | 4013 5406 8274 6260 | 14978546   | mco     | test_user_17369351@testuser.com | magento |   CC     |
+      | 4009 1753 3280 6176 | 14978546   | mpe     | test_user_5752395@testuser.com  | magento |   DNI    |
 
   @PaymentMethodsSuccessMexico
   Scenario Outline:

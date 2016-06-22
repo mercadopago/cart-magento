@@ -91,7 +91,7 @@ class MercadoPago_Core_NotificationsController
      */
     protected function getStatusFinal($dataStatus, $merchantOrder)
     {
-        if ($merchantOrder['total_amount'] == $merchantOrder['paid_amount']) {
+        if (isset($merchantOrder['paid_amount']) && $merchantOrder['total_amount'] == $merchantOrder['paid_amount']) {
             return 'approved';
         }
         $payments = $merchantOrder['payments'];

@@ -70,6 +70,7 @@ class MercadoPago_Core_SuccessController
         $this->loadLayout(['default', $checkoutTypeHandle]);
 
         $this->_initLayoutMessages('core/session');
+        Mage::dispatchEvent('checkout_onepage_controller_success_action', array('order_ids' => array($this->getOrder()->getId())));
 
         $this->renderLayout();
     }

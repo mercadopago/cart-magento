@@ -1,39 +1,40 @@
 # Magento - MercadoPago Module (v1.4.x to 1.9.x)
----
 
 * [Features](#features)
 * [Requirements](#requirements)
 * [Available versions](#available_versions)
+* [Feedback](#feedback)
 
 <a name="features"></a>
 ##Features##
-**Credit Card Customized Checkout**
 
-This feature will allow merchants to have a customized checkout for credit card
-payment. Thus, it will be possible to customize its look and feel, customers won’t be
-redirected away to complete the payment, and it will also reduce the checkout steps
-improving conversion rates.
+Checkout options right for your business: 
+We offer two checkout methods that make it easy to securely accept payments from anyone, anywhere.
 
-*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+**Custom Checkout**
 
-**Customized Bar Code Payment**
+Offer a checkout fully customized to your brand experience with our simple-to-use payments API.
 
-This feature allows merchants to have a customized bar code payment. It
-reduces the checkout steps improving conversion rates. The bar code payment will
-have merchant's logo.
+* Seamless integration— no coding required, unless you want to.
+* Full control of buying experience.
+* Store buyer’s card for fast checkout.
+* Accept tickets in addition to cards.
+* Accept Mercado Pago's discount coupons.
+* Improve conversion rate.
 
-*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+*Available for Argentina, Brazil, Colombia, Mexico, Peru and Venezuela*
 
 **Standard Checkout**
 
-This feature allows merchants to have a standard checkout. It includes all
-payment methods (i.e. all credit cards, bar code payment, account money) and all
-window types (i.e. redirect, iframe, modal, blank and popup). Customization is not allowed.
+Great for merchants who want to get going quickly and easily.
 
-*Available for Argentina, Brazil, Chile, Colombia, Mexico and Venezuela*
+* Easy website integration— no coding required.
+* Limited control of buying experience— display Checkout window as redirect, modal or iframe.
+* Store buyer’s card for fast checkout.
+* Accept tickets, bank transfer and account money in addition to cards.
+* Accept Mercado Pago's discount coupons.
 
-**OneClick Pay**
-This feature allows to store credit card information for the customer, so that the next time there is no need to enter all the card details. Customers will just need to re-enter the security code of the credit card they want to use.
+*Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru and Venezuela*
 
 **Compatibility with OSC extensions**
 
@@ -46,8 +47,6 @@ This feature allows easy integration with two of the most used One Step Checkout
 This feature allows to setup and integrate with MercadoEnvios shipment method as another shipment option for customers. It includes the possibility to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
 
 *Available for Argentina, Brazil and Mexico only with Standard Checkout*
-
----
 
 <a name="requirements"></a>
 ## Requirements:
@@ -84,8 +83,6 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 It is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
 During the sandbox mode tests, you can operate over HTTP, but for homologation you'll need to acquire the certificate in case you don't have it.
 
----
-
 <a name="available_versions"></a>
 ##Available versions##
 <table>
@@ -111,3 +108,11 @@ During the sandbox mode tests, you can operate over HTTP, but for homologation y
 </table>
 
 *Click on the links above for instructions on installing and configuring the module.*
+
+<a name="Feedback"></a>
+## Feedback ##
+
+We want to know your opinion, please answer the following form.
+
+* [Portuguese](http://goo.gl/forms/2n5jWHaQbfEtdy0E2)
+* [Spanish](http://goo.gl/forms/A9bm8WuqTIZ89MI22)

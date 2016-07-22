@@ -17,116 +17,173 @@
 class MercadoPago_Core_NotificationsController
     extends Mage_Core_Controller_Front_Action
 {
-    protected $_return = null;
-    protected $_order = null;
-    protected $_order_id = null;
-    protected $_mpcartid = null;
-    protected $_sendemail = false;
-    protected $_hash = null;
-    protected $_finalStatus = ['rejected', 'cancelled', 'refunded', 'charge_back'];
-    protected $_notFinalStatus = ['authorized', 'process', 'in_mediation'];
+
+    protected $_requestData = [];
+    protected $_merchantOrder = [];
+    protected $_paymentData = [];
+    protected $_core;
+    protected $_helper;
+    protected $_statusHelper;
+    protected $_order;
+    protected $_shipmentData;
+    protected $_statusFinal;
 
     const LOG_FILE = 'mercadopago-notification.log';
 
-    protected function _getDataPayments($merchantOrder)
+
+    public function standardAction()
     {
-        $core = Mage::getModel('mercadopago/core');
+        $this->_requestData = $this->getRequest()->getParams();
+        //notification received
+        $this->_helper = Mage::helper('mercadopago');
+        $this->_core = Mage::getModel('mercadopago/core');
+        $this->_statusHelper = Mage::helper('mercadopago/statusUpdate');
+        $this->_shipmentData = '';
+
+        $this->_helper->log('Standard Received notification', self::LOG_FILE, $this->_requestData);
+        if ($this->_emptyParams($this->_getRequestData('id'), $this->_getRequestData('topic'))) {
+
+            return;
+        }
+        switch ($this->_getRequestData('topic')) {
+            case 'merchant_order':
+                if (!$this->_handleMerchantOrder()) {
+                    return;
+                }
+                break;
+            case 'payment':
+                $this->_paymentData = $this->_getFormattedPaymentData($this->_getRequestData('id'));
+                $this->_statusFinal = $this->_paymentData['status'];
+                break;
+            default:
+                $this->_responseLog();
+
+                return;
+        }
+        $this->_order = Mage::getModel('sales/order')->loadByIncrementId($this->_paymentData["external_reference"]);
+        if (!$this->_orderExists()) {
+            return;
+        }
+
+        $this->_helper->log('Update Order', self::LOG_FILE);
+        $this->_statusHelper->setStatusUpdated($this->_paymentData, $this->_order);
+        $this->_core->updateOrder($this->_order, $this->_paymentData);
+        $this->_dispatchBeforeSetEvent();
+
+        if ($this->_statusFinal != false) {
+            $this->_paymentData['status_final'] = $this->_statusFinal;
+            $this->_helper->log('Received Payment data', self::LOG_FILE, $this->_paymentData);
+            $setStatusResponse = $this->_statusHelper->setStatusOrder($this->_paymentData);
+            $this->_setResponse($setStatusResponse['body'], $setStatusResponse['code']);
+        } else {
+            $this->_setResponse(MercadoPago_Core_Helper_Response::INFO_STATUS_NOT_FINAL, MercadoPago_Core_Helper_Response::HTTP_OK);
+        }
+
+        $this->_dispatchNotificationEvent();
+        $this->_responseLog();
+    }
+
+    public function customAction()
+    {
+        $request = $this->getRequest();
+        $this->_helper = Mage::helper('mercadopago');
+        $this->_core = Mage::getModel('mercadopago/core');
+        $this->_statusHelper = Mage::helper('mercadopago/statusUpdate');
+        $this->_helper->log('Custom Received notification', self::LOG_FILE, $request->getParams());
+        $dataId = $request->getParam('data_id');
+        $type = $request->getParam('type');
+        if (!empty($dataId) && $type == 'payment') {
+            $response = $this->_core->getPaymentV1($dataId);
+            $this->_helper->log('Return payment', self::LOG_FILE, $response);
+
+            if ($this->_isValidResponse($response)) {
+                $payment = $response['response'];
+
+                $payment = $this->_helper->setPayerInfo($payment);
+                $this->_order = Mage::getModel('sales/order')->loadByIncrementId($payment['external_reference']);
+                if (!$this->_orderExists()) {
+                    return;
+                }
+                $this->_helper->log('Update Order', self::LOG_FILE);
+                $this->_statusHelper->setStatusUpdated($payment, $this->_order);
+                $this->_core->updateOrder($this->_order, $payment);
+                $setStatusResponse = $this->_statusHelper->setStatusOrder($payment);
+                $this->_setResponse($setStatusResponse['body'], $setStatusResponse['code']);
+                $this->_helper->log('Http code', self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
+
+                return;
+            }
+        }
+
+        $this->_helper->log('Payment not found', self::LOG_FILE, $request->getParams());
+        $this->_setResponse('Payment not found', MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
+        $this->_helper->log('Http code', self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
+    }
+
+    protected function _handleMerchantOrder()
+    {
+        $merchantOrder = $this->_core->getMerchantOrder($this->_getRequestData('id'));
+        $this->_helper->log('Return merchant_order', self::LOG_FILE, $merchantOrder);
+        if (!$this->_isValidMerchantOrder($merchantOrder)) {
+            $this->_helper->log(MercadoPago_Core_Helper_Response::INFO_MERCHANT_ORDER_NOT_FOUND, self::LOG_FILE, $this->_requestData);
+            $this->_setResponse(MercadoPago_Core_Helper_Response::INFO_MERCHANT_ORDER_NOT_FOUND, MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
+
+            return false;
+        }
+
+        $this->_paymentData = $this->_getDataPayments();
+        $this->_statusFinal = $this->_statusHelper->getStatusFinal($this->_paymentData['status'], $this->_merchantOrder);
+        $this->_shipmentData = $this->_getShipmentsArray();
+
+        return true;
+    }
+
+    protected function _getDataPayments()
+    {
         $data = array();
-        foreach ($merchantOrder['payments'] as $payment) {
-            $data = $this->_getFormattedPaymentData($payment['id'], $core, $data);
+        foreach ($this->_merchantOrder['payments'] as $payment) {
+            $data = $this->_getFormattedPaymentData($payment['id'], $data);
         }
 
         return $data;
     }
 
-    protected function _getFormattedPaymentData($paymentId, $core, $data = [])
+    protected function _getFormattedPaymentData($paymentId, $data = [])
     {
-        $response = $core->getPayment($paymentId);
+        $response = $this->_core->getPayment($paymentId);
         $payment = $response['response']['collection'];
 
         return $this->formatArrayPayment($data, $payment);
     }
 
-    protected function _dateCompare($a, $b)
+    protected function _responseLog()
     {
-        $t1 = strtotime($a['value']);
-        $t2 = strtotime($b['value']);
-
-        return $t2 - $t1;
+        $this->_helper->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
     }
 
-    /**
-     * @param $payments
-     * @param $status
-     *
-     * @return int
-     */
-    protected function _getLastPaymentIndex($payments, $status)
+    protected function _shipmentExists($shipmentData)
     {
-        $dates = [];
-        foreach ($payments as $key => $payment) {
-            if (in_array($payment['status'], $status)) {
-                $dates[] = ['key' => $key, 'value' => $payment['last_modified']];
-            }
-        }
-        usort($dates, array(get_class($this), "_dateCompare"));
-        if ($dates) {
-            $lastModified = array_pop($dates);
+        return (!empty($shipmentData) && !empty($this->merchantOrder));
+    }
 
-            return $lastModified['key'];
+    protected function _getShipmentsArray()
+    {
+        return (isset($this->_merchantOrder['shipments'][0])) ? $this->_merchantOrder['shipments'][0] : [];
+    }
+
+    protected function _isValidMerchantOrder($merchantOrder)
+    {
+        $this->_merchantOrder = $merchantOrder['response'];
+        if ($this->_isValidResponse($merchantOrder) && count($this->_merchantOrder['payments']) > 0) {
+            $this->_responseLog();
+
+            return true;
         }
 
-        return 0;
+        return false;
     }
 
-    /**
-     * Returns status that must be set to order, if a not final status exists
-     * then the last of this statuses is returned. Else the last of final statuses
-     * is returned
-     *
-     * @param $dataStatus
-     * @param $merchantOrder
-     *
-     * @return string
-     */
-    protected function getStatusFinal($dataStatus, $merchantOrder)
-    {
-        if (isset($merchantOrder['paid_amount']) && $merchantOrder['total_amount'] == $merchantOrder['paid_amount']) {
-            return 'approved';
-        }
-        $payments = $merchantOrder['payments'];
-        $statuses = explode('|', $dataStatus);
-        foreach ($statuses as $status) {
-            $status = str_replace(' ', '', $status);
-            if (in_array($status, $this->_notFinalStatus)) {
-                $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_notFinalStatus);
-
-                return $payments[$lastPaymentIndex]['status'];
-            }
-        }
-
-        $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_finalStatus);
-
-        return $payments[$lastPaymentIndex]['status'];
-    }
-
-    protected function _responseLog($helper)
-    {
-        $helper->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
-    }
-
-    protected function _shipmentExists($shipmentData, $merchantOrder)
-    {
-        return (!empty($shipmentData) && !empty($merchantOrder));
-    }
-
-    protected function _getShipmentsArray($merchantOrder)
-    {
-        return (isset($merchantOrder['shipments'][0])) ? $merchantOrder['shipments'][0] : [];
-    }
-
-    protected function _isValidResponse($response)
-    {
+    protected function _isValidResponse($response) {
         return ($response['status'] == 200 || $response['status'] == 201);
     }
 
@@ -135,124 +192,58 @@ class MercadoPago_Core_NotificationsController
         return (empty($p1) || empty($p2));
     }
 
-    public function standardAction()
+    protected function _orderExists()
     {
-        $request = $this->getRequest();
-        //notification received
-        $helper = Mage::helper('mercadopago');
-        $shipmentData = '';
-        $merchantOrder = '';
-        $helper->log("Standard Received notification", self::LOG_FILE, $request->getParams());
-        $core = Mage::getModel('mercadopago/core');
-
-        $id = $request->getParam('id');
-        $topic = $request->getParam('topic');
-        if ($this->_emptyParams($id, $topic)) {
-            $helper->log("Merchant Order not found", self::LOG_FILE, $request->getParams());
-            $this->getResponse()->setBody("Merchant Order not found");
-            $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
-
-            return;
+        if ($this->_order->getId()) {
+            return true;
         }
+        $this->_helper->log(MercadoPago_Core_Helper_Response::INFO_EXTERNAL_REFERENCE_NOT_FOUND, self::LOG_FILE, $this->_requestData);
+        $this->_setResponse(MercadoPago_Core_Helper_Response::INFO_EXTERNAL_REFERENCE_NOT_FOUND, MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
 
-        if ($topic == 'merchant_order') {
-            $response = $core->getMerchantOrder($id);
-            $helper->log("Return merchant_order", self::LOG_FILE, $response);
-            if (!$this->_isValidResponse($response)) {
-                $this->_responseLog($helper);
+        return false;
+    }
 
-                return;
-            }
-            $merchantOrder = $response['response'];
-            if (count($merchantOrder['payments']) == 0) {
-                $this->_responseLog($helper);
+    protected function _setResponse($body, $code)
+    {
+        $this->getResponse()->setBody($body);
+        $this->getResponse()->setHttpResponseCode($code);
+    }
 
-                return;
-            }
-            $data = $this->_getDataPayments($merchantOrder);
-            $statusFinal = $this->getStatusFinal($data['status'], $merchantOrder);
-            $shipmentData = $this->_getShipmentsArray($merchantOrder);
-        } elseif ($topic == 'payment') {
-            $data = $this->_getFormattedPaymentData($id, $core);
-            $statusFinal = $data['status'];
-        } else {
-            $this->_responseLog($helper);
-
-            return;
-        }
-
-        $helper->log("Update Order", self::LOG_FILE);
-        $helper->setStatusUpdated($data);
-        $core->updateOrder($data);
-        if ($this->_shipmentExists($shipmentData, $merchantOrder)) {
+    protected function _dispatchBeforeSetEvent()
+    {
+        if ($this->_shipmentExists($this->_shipmentData)) {
             Mage::dispatchEvent('mercadopago_standard_notification_before_set_status',
-                array('shipmentData' => $shipmentData,
-                      'orderId'      => $merchantOrder['external_reference'])
+                ['shipmentData' => $this->_shipmentData,
+                 'orderId'      => $this->_merchantOrder['external_reference']]
             );
         }
-        if ($statusFinal != false) {
-            $data['status_final'] = $statusFinal;
-            $helper->log("Received Payment data", self::LOG_FILE, $data);
-            $setStatusResponse = $core->setStatusOrder($data);
-            $this->getResponse()->setBody($setStatusResponse['text']);
-            $this->getResponse()->setHttpResponseCode($setStatusResponse['code']);
-        } else {
-            $this->getResponse()->setBody("Status not final");
-            $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_OK);
-        }
-
-        if ($this->_shipmentExists($shipmentData, $merchantOrder)) {
-            Mage::dispatchEvent('mercadopago_standard_notification_received',
-                array('payment'        => $data,
-                      'merchant_order' => $merchantOrder)
-            );
-        }
-
-
-        $this->_responseLog($helper);
     }
 
-    public function customAction()
+    protected function _dispatchNotificationEvent()
     {
-        $request = $this->getRequest();
-        Mage::helper('mercadopago')->log("Custom Received notification", self::LOG_FILE, $request->getParams());
+        if ($this->_shipmentExists($this->_shipmentData)) {
+            Mage::dispatchEvent('mercadopago_standard_notification_received',
+                ['payment'        => $this->_paymentData,
+                 'merchant_order' => $this->_merchantOrder]
+            );
+        }
+    }
 
-        $core = Mage::getModel('mercadopago/core');
-
-        $dataId = $request->getParam('data_id');
-        $type = $request->getParam('type');
-        if (!empty($dataId) && $type == 'payment') {
-            $response = $core->getPaymentV1($dataId);
-            Mage::helper('mercadopago')->log("Return payment", self::LOG_FILE, $response);
-
-            if ($response['status'] == 200 || $response['status'] == 201) {
-                $payment = $response['response'];
-
-                $payment = Mage::helper('mercadopago')->setPayerInfo($payment);
-
-                Mage::helper('mercadopago')->log("Update Order", self::LOG_FILE);
-                Mage::helper('mercadopago')->setStatusUpdated($payment);
-                $core->updateOrder($payment);
-                $setStatusResponse = $core->setStatusOrder($payment);
-                $this->getResponse()->setBody($setStatusResponse['text']);
-                $this->getResponse()->setHttpResponseCode($setStatusResponse['code']);
-                Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
-
-                return;
-            }
+    protected function _getRequestData($key = null)
+    {
+        if (null === $key) {
+            return $this->_requestData;
         }
 
-        Mage::helper('mercadopago')->log("Payment not found", self::LOG_FILE, $request->getParams());
-        $this->getResponse()->getBody("Payment not found");
-        $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
-        Mage::helper('mercadopago')->log("Http code", self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
+        return isset($this->_requestData[$key]) ? $this->_requestData[$key] : null;
     }
+
 
     public function formatArrayPayment($data, $payment)
     {
         Mage::helper('mercadopago')->log("Format Array", self::LOG_FILE);
 
-        $fields = array(
+        $fields = [
             "status",
             "status_detail",
             "id",
@@ -263,7 +254,7 @@ class MercadoPago_Core_NotificationsController
             "installments",
             "shipping_cost",
             "amount_refunded",
-        );
+        ];
 
         foreach ($fields as $field) {
             if (isset($payment[$field])) {

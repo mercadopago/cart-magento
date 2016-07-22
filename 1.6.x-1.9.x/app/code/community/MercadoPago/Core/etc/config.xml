@@ -52,7 +52,7 @@
             <admin_system_config_changed_section_payment>
                 <observers>
                     <observer>
-                        <class>MercadoPago_Core_Model_Observer</class>
+                        <class>mercadopago/observer</class>
                         <method>checkAndValidData</method>
                     </observer>
                 </observers>

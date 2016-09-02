@@ -7,37 +7,38 @@
 * [Configuration](#configuration)
 * [Upgrade](#upgrade)
 * [MercadoEnvios](#mercadoenvios)
+* [Feedback](#feedback)
 
 <a name="features"></a>
 ## Features:
 
-**Credit Card Customized Checkout**
+Checkout options right for your business: 
+We offer two checkout methods that make it easy to securely accept payments from anyone, anywhere.
 
-This feature will allow merchants to have a customized checkout for credit card
-payment. Thus, it will be possible to customize its look and feel, customers won’t be
-redirected away to complete the payment, and it will also reduce the checkout steps
-improving conversion rates.
+**Custom Checkout**
 
-*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+Offer a checkout fully customized to your brand experience with our simple-to-use payments API.
 
-**Customized Bar Code Payment**
+* Seamless integration— no coding required, unless you want to.
+* Full control of buying experience.
+* Store buyer’s card for fast checkout.
+* Accept tickets in addition to cards.
+* Accept Mercado Pago's discount coupons.
+* Improve conversion rate.
 
-This feature allows merchants to have a customized bar code payment. It
-reduces the checkout steps improving conversion rates. The bar code payment will
-have merchant's logo.
-
-*Available for Argentina, Brazil, Colombia, Mexico and Venezuela*
+*Available for Argentina, Brazil, Colombia, Mexico, Peru and Venezuela*
 
 **Standard Checkout**
 
-This feature allows merchants to have a standard checkout. It includes all
-payment methods (i.e. all credit cards, bar code payment, account money) and all
-window types (i.e. redirect, iframe, modal, blank and popup). Customization is not allowed.
+Great for merchants who want to get going quickly and easily.
 
-*Available for Argentina, Brazil, Chile, Colombia, Mexico and Venezuela*
+* Easy website integration— no coding required.
+* Limited control of buying experience— display Checkout window as redirect, modal or iframe.
+* Store buyer’s card for fast checkout.
+* Accept tickets, bank transfer and account money in addition to cards.
+* Accept Mercado Pago's discount coupons.
 
-**OneClick Pay**
-This feature allows to store credit card information for the customer, so that the next time there is no need to enter all the card details.  Customers will just need to re-enter the security code of the credit card they want to use.
+*Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru and Venezuela*
 
 **Compatibility with OSC extensions**
 
@@ -50,8 +51,6 @@ This feature allows easy integration with two of the most used One Step Checkout
 This feature allows to setup and integrate with MercadoEnvios shipment method as another shipment option for customers. It includes the possibility to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
 
 *Available for Argentina, Brazil and Mexico only with Standard Checkout*
-
----
 
 <a name="installation"></a>
 ## Installation:
@@ -66,7 +65,6 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 
 3. Logout from the admin panel and then login again in order to clear admin acl
 
----
 <a name="configuration"></a>
 ## Configuration
 
@@ -145,7 +143,6 @@ Get them in the following address:
 		*  *Redirect*: Redirects to Mercado Pago URL.
 		*  *Lightbox*: Similar to Iframe option but opens a lightbox instead of an iframe. 
 
----
 <a name="upgrade"></a>
 ## Upgrade MercadoPago Plugin ##
 
@@ -183,9 +180,9 @@ find . -name "mercadopago.csv" -type f -delete
 * [Custom Checkout](#checkout_custom)
 * [Standard Checkout](#checkout_standard)
 
----
 <a name="mercadoenvios">
 ## MercadoEnvios ##
+
 In order to setup MercadoEnvios follow these instructions:<br />
 1. Setup MercadoPago Standard Checkout following [these instructions](#checkout_standard). <br />
 2. Go to **System > Configuration > Sales > Shipping Methods > MercadoEnvios**.<br />
@@ -203,3 +200,11 @@ In order to setup MercadoEnvios follow these instructions:<br />
 * **Displayed Error Message**: Sets up the text to be displayed when the shipping method is not available.
 * **Debug Mode**: If enabled, displays the raw response from the API instead of a friendly message.
 * **Sort order**: Sets up the sort order to be displayed in the shipping step in checkout process.
+
+<a name="Feedback"></a>
+## Feedback ##
+
+We want to know your opinion, please answer the following form.
+
+* [Portuguese](http://goo.gl/forms/2n5jWHaQbfEtdy0E2)
+* [Spanish](http://goo.gl/forms/A9bm8WuqTIZ89MI22)

@@ -57,6 +57,24 @@
                     </observer>
                 </observers>
             </admin_system_config_changed_section_payment>
+
+            <sales_order_creditmemo_save_before>
+                <observers>
+                    <observer>
+                        <class>MercadoPago_Core_Model_Observer</class>
+                        <method>creditMemoRefundBeforeSave</method>
+                    </observer>
+                </observers>
+            </sales_order_creditmemo_save_before>
+
+            <sales_order_creditmemo_save_after>
+                <observers>
+                    <observer>
+                        <class>MercadoPago_Core_Model_Observer</class>
+                        <method>creditMemoRefundAfterSave</method>
+                    </observer>
+                </observers>
+            </sales_order_creditmemo_save_after>
         </events>
         <sales>
             <quote>

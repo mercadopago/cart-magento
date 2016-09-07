@@ -187,4 +187,136 @@ class MercadoPago_Core_Model_Observer
         }
 
     }
+
+    /**
+     * @param Varien_Event_Observer $observer
+     */
+
+    public function creditMemoRefundBeforeSave (Varien_Event_Observer $observer)
+    {
+        $creditMemo = $observer->getData('creditmemo');
+        $order = $creditMemo->getOrder();
+        if ($order->getExternalRequest()) {
+            return; // si la peticion de crear un credit memo viene de mercado pago, no hace falta mandar el request nuevamente
+        }
+        $maxDays = (int) Mage::getStoreConfig('payment/mercadopago/maximum_days_refund');
+        $maxRefunds = (int) Mage::getStoreConfig('payment/mercadopago/maximum_partial_refunds');
+        $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
+        $orderStatus = $order->getData('status');
+        $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
+        $payment = $order->getPayment();
+        $paymentID = $order->getPayment()->getData('additional_information')['id'];
+        $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
+        $orderStatusHistory = $order->getAllStatusHistory();
+        $isCreditCardPayment = ($order->getPayment()->getData('additional_information')['installments'] != null ? true : false);
+
+        $paymentDate = null;
+        foreach ($orderStatusHistory as $status) {
+            if (strpos ($status->getComment(), 'The payment was approved')) {
+                $paymentDate = $status->getCreatedAt();
+                break;
+            }
+        }
+
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+
+        $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
+
+        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
+            $this->_getSession()->addError(__('El pago de la orden no fue realizado mediante MercadoPago. La devolución se hará a traves de Magento.'));
+            return;
+        }
+
+        if (!$refundAvailable) {
+            $this->_getSession()->addError(__('Las devoluciones de MercadoPago están deshabilitadas. La devolución se hará a traves de Magento.'));
+            return;
+        }
+
+        if (!$isCreditCardPayment) {
+            $this->_getSession()->addError(__('Solo se pueden hacer devoluciones sobre ordenes pagadas con tarjeta de credito'));
+            $this->throwRefundException();
+        }
+
+        if (!($orderStatus == 'processing' || $orderStatus == 'completed')) {
+            $this->_getSession()->addError(__('Solo se pueden hacer devoluciones sobre ordenes cuyo estado sea "En proceso" o "Completada"'));
+            $this->throwRefundException();
+        }
+
+        if (!($orderPaymentStatus == 'approved')) {
+            $this->_getSession()->addError(__('Solo se pueden hacer devoluciones sobre ordenes cuyo estado de pago sea "Aprobado"'));
+            $this->throwRefundException();
+        }
+
+        if (!($this->daysSince($paymentDate) < $maxDays)) {
+            $this->_getSession()->addError(__('Las devoluciones son aceptadas hasta ') .
+                $maxDays . __(' días después de aprobado el pago. La orden actual sobrepasa el límite establecido'));
+            $this->throwRefundException();
+        }
+
+        if (!(count($order->getCreditmemosCollection()->getItems()) < $maxRefunds)) {
+            $this->_getSession()->addError(__('Solo se pueden efectuar ' . $maxRefunds . ' devoluciones parciales sobre la misma orden'));
+            $this->throwRefundException();
+        } else {
+            $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+            $response = null;
+            if ($isTotalRefund) {
+                $response = $mp->refund_payment($paymentID);
+                $order->setMercadoPagoRefundType('total');
+            } else {
+                $order->setMercadoPagoRefundType('partial');
+                $access_token = $mp->get_access_token();
+                $amount = $creditMemo->getGrandTotal();
+                $metadata = [
+                    "reason" => '',
+                    "external_reference" => '',
+                ];
+                $params = [
+                    "amount" => $amount,
+                    "metadata" => $metadata,
+                ];
+                $response = $mp->get("/collections/$paymentID/refunds?access_token=$access_token", $params);
+            }
+            if ($response['status'] == 200) {
+                $order->setMercadoPagoRefund(true);
+                $this->_getSession()->addSuccess(__('Devolución efectuada mediante MercadoPago'));
+            } else {
+                $this->_getSession()->addSuccess(__('Error al efectuar la devolución mediante MercadoPago'));
+                $this->throwRefundException();
+            }
+        }
+    }
+
+    protected function throwRefundException () {
+        Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Devolución no efectuada'));
+    }
+
+
+    protected function _getSession()
+    {
+        return Mage::getSingleton('adminhtml/session');
+    }
+
+    private function daysSince($date)
+    {
+        $now = Mage::getModel('core/date')->timestamp(time());
+        $date = strtotime ($date);
+        return (abs($now - $date) / 86400);
+    }
+
+    public function creditMemoRefundAfterSave (Varien_Event_Observer $observer)
+    {
+        $creditMemo = $observer->getData('creditmemo');
+
+        $status = Mage::getStoreConfig('payment/mercadopago/order_status_refunded');
+
+        $order = $creditMemo->getOrder();
+        if ($order->getMercadoPagoRefund() || $order->getExternalRequest()) {
+            if ($order->getMercadoPagoRefundType() == 'partial' || $order->getExternalType() == 'partial') {
+                $order->setState($status, true);
+            } else {
+                $order->setState('completed', true);
+            }
+        }
+    }
 }

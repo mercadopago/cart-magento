@@ -5,6 +5,10 @@ class MercadoPago_Core_Helper_StatusUpdate
 {
 
     protected $_statusUpdatedFlag = false;
+
+    /***
+     * @var Mage_Sales_Model_Order
+     */
     protected $_order = false;
 
     protected $_finalStatus = ['rejected', 'cancelled', 'refunded', 'charge_back'];
@@ -58,14 +62,54 @@ class MercadoPago_Core_Helper_StatusUpdate
 
     protected function _generateCreditMemo($payment)
     {
-        if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0 && $payment['amount_refunded'] == $payment['total_paid_amount']) {
-            $this->_order->getPayment()->registerRefundNotification($payment['amount_refunded']);
-            $creditMemo = array_pop($this->_order->getCreditmemosCollection()->setPageSize(1)->setCurPage(1)->load()->getItems());
-            foreach ($creditMemo->getAllItems() as $creditMemoItem) {
-                $creditMemoItem->setBackToStock(Mage::helper('cataloginventory')->isAutoReturnEnabled());
+        if ($payment['amount_refunded'] == $payment['total_paid_amount']) {
+            $this->_createCreditmemo($this->_order, $payment);
+            $this->_order->setForcedCanCreditmemo(false);
+            $this->_order->setActionFlag('ship', false);
+            $this->_order->save();
+        } else {
+            $this->_createCreditmemo($this->_order, $payment);
+        }
+    }
+
+    protected function _createCreditmemo ($data) {
+        $this->_order->setExternalRequest(true);
+        $serviceModel = Mage::getModel('sales/service_order', $this->_order);
+        $baseGrandTotal = $this->_order->getBaseGrandTotal();
+        $invoice = $this->_order->getInvoiceCollection()->getFirstItem();
+
+        $creditMemos = $this->_order->getCreditmemosCollection()->getItems();
+
+        $previousRefund = 0;
+        foreach ($creditMemos as $creditMemo) {
+            $previousRefund = $previousRefund + $creditMemo->getGrandTotal();
+        }
+
+        $amount = $data['amount_refunded'] - $previousRefund;
+        if ($amount > 0) {
+            if (count($creditMemos) > 0) {
+                $adjustment = array('adjustment_positive' => $amount);
+            } else {
+                $adjustment = array('adjustment_negative' => $baseGrandTotal - $amount);
             }
-            $creditMemo->save();
-            $this->_order->cancel();
+            $creditmemo = $serviceModel->prepareInvoiceCreditmemo($invoice, $adjustment);
+            if ($creditmemo) {
+                $totalRefunded = $invoice->getBaseTotalRefunded() + $creditmemo->getBaseGrandTotal();
+                $this->_order->setShouldCloseParentTransaction($invoice->getBaseGrandTotal() <= $totalRefunded);
+            }
+
+            if ($data['amount_refunded'] == $baseGrandTotal) {
+                $this->_order->setExternalType('total');
+                $this->_order->getPayment()->refund($creditmemo);
+            } else {
+                $this->_order->setExternalType('partial');
+            }
+
+            $creditmemo->refund();
+            Mage::getModel('core/resource_transaction')
+                ->addObject($creditmemo)
+                ->addObject($this->_order)
+                ->save();
         }
     }
 
@@ -81,14 +125,14 @@ class MercadoPago_Core_Helper_StatusUpdate
             if (isset($additionalInfo['token'])) {
                 Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
             }
-
-        } elseif ($status == 'refunded' || $status == 'cancelled') {
-            //generate credit memo and return items to stock according to setting
-            $this->_generateCreditMemo($payment);
         }
-        //if state is not complete updates according to setting
-        $this->_updateStatus($status, $message, $statusDetail);
 
+        if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0) {
+            $this->_generateCreditMemo($payment);
+        } else {
+            //if state is not complete updates according to setting
+            $this->_updateStatus($status, $message, $statusDetail);
+        }
         return $this->_order->save();
     }
 
@@ -98,7 +142,7 @@ class MercadoPago_Core_Helper_StatusUpdate
 
         $status = $this->getStatus($payment);
         $message = $this->getMessage($status, $payment);
-        if ($this->isStatusUpdated()) {
+        if ($this->isStatusUpdated() && !($payment['amount_refunded'] > 0)) {
             return ['body' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
         }
 

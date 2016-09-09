@@ -260,28 +260,41 @@ class MercadoPago_Core_Model_Observer
         } else {
             $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
             $response = null;
-            if ($isTotalRefund) {
-                $response = $mp->refund_payment($paymentID);
-                $order->setMercadoPagoRefundType('total');
+            $amount = $creditMemo->getGrandTotal();
+            $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+            if ($paymentMethod == 'mercadopago_standard') {
+                if ($isTotalRefund) {
+                    $response = $mp->refund_payment($paymentID);
+                    $order->setMercadoPagoRefundType('total');
+                } else {
+                    $order->setMercadoPagoRefundType('partial');
+                    $metadata = [
+                        "reason" => '',
+                        "external_reference" => $order->getIncrementId(),
+                    ];
+                    $params = [
+                        "amount" => $amount,
+                        "metadata" => $metadata,
+                    ];
+                    $response = $mp->post("/collections/$paymentID/refunds?access_token=$access_token", $params);
+                }
             } else {
-                $order->setMercadoPagoRefundType('partial');
-                $access_token = $mp->get_access_token();
-                $amount = $creditMemo->getGrandTotal();
-                $metadata = [
-                    "reason" => '',
-                    "external_reference" => '',
-                ];
-                $params = [
-                    "amount" => $amount,
-                    "metadata" => $metadata,
-                ];
-                $response = $mp->get("/collections/$paymentID/refunds?access_token=$access_token", $params);
+                if ($isTotalRefund) {
+                    $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token");
+                } else {
+                    $params = [
+                        "amount" => $amount,
+                    ];
+                    $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token", $params);
+                }
             }
-            if ($response['status'] == 200) {
+
+            if ($response['status'] == 201) {
                 $order->setMercadoPagoRefund(true);
                 $this->_getSession()->addSuccess(__('Devolución efectuada mediante MercadoPago'));
             } else {
-                $this->_getSession()->addSuccess(__('Error al efectuar la devolución mediante MercadoPago'));
+                $this->_getSession()->addError(__('Error al efectuar la devolución mediante MercadoPago'));
+                $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
                 $this->throwRefundException();
             }
         }
@@ -313,9 +326,9 @@ class MercadoPago_Core_Model_Observer
         $order = $creditMemo->getOrder();
         if ($order->getMercadoPagoRefund() || $order->getExternalRequest()) {
             if ($order->getMercadoPagoRefundType() == 'partial' || $order->getExternalType() == 'partial') {
-                $order->setState($status, true);
-            } else {
-                $order->setState('completed', true);
+                if ($order->getState() != $status) {
+                    $order->setState($status, true);
+                }
             }
         }
     }

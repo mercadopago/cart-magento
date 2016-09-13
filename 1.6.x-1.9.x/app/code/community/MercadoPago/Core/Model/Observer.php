@@ -187,4 +187,100 @@ class MercadoPago_Core_Model_Observer
         }
 
     }
+
+    public function salesOrderBeforeCancel (Varien_Event_Observer $observer) {
+
+        $orderID = (int) $observer->getEvent()->getControllerAction()->getRequest()->getParam('order_id');
+        $order = Mage::getModel('sales/order')->load($orderID);
+        $event = $observer->getEvent();
+        if ($order->getExternalRequest()) {
+            return;
+        }
+
+        $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
+        $orderStatus = $order->getData('status');
+        $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
+
+        $paymentID = $order->getPayment()->getData('additional_information')['id'];
+        $payment = $order->getPayment();
+        $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
+
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+
+        $isCreditCardPayment = ($order->getPayment()->getData('additional_information')['installments'] != null ? true : false);
+
+        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
+            $this->_getSession()->addError(__('El pago de la orden no fue realizado mediante MercadoPago. La cancelación se hará a traves de Magento.'));
+            return;
+        }
+
+        if (!$refundAvailable) {
+            $this->_getSession()->addError(__('Las cancelaciones de MercadoPago están deshabilitadas. La cancelación se hará a traves de Magento.'));
+            return;
+        }
+
+        if (!($orderStatus == 'processing' || $orderStatus == 'pending')) {
+            $this->_getSession()->addError(__('Solo se pueden hacer cancelaciones sobre ordenes cuyo estado sea "En proceso" o "Pendiente"'));
+            $this->throwCancelationException($observer);
+            return;
+        }
+
+        if (!($orderPaymentStatus == 'pending' || $orderPaymentStatus == 'in_process' || $orderPaymentStatus == 'rejected' )) {
+            $this->_getSession()->addError(__('Solo se pueden hacer cancelaciones sobre ordenes cuyo estado de pago sea "Rechazado", "Pendiente" o "En Proceso"'));
+            $this->throwCancelationException();
+            return;
+        }
+
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+        $response = null;
+
+        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+
+        if ($paymentMethod == 'mercadopago_standard') {
+            $response = $mp->cancel_payment($paymentID);
+        } else {
+            $data = [
+                "status" => 'cancelled',
+            ];
+            $response = $mp->put("/v1/payments/$paymentID?access_token=$access_token", $data);
+        }
+
+        if ($response['status'] == 200) {
+            Mage::register('mercadopago_cancellation', true);
+            $this->_getSession()->addSuccess(__('Devolución efectuada mediante MercadoPago'));
+        } else {
+            $this->_getSession()->addError(__('Error al efectuar la cancelación mediante MercadoPago'));
+            $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
+            $this->throwCancelationException();
+        }
+    }
+
+    protected function throwCancelationException () {
+        Mage::register('cancel_exception', true);
+    }
+
+    protected function _getSession()
+    {
+        return Mage::getSingleton('adminhtml/session');
+    }
+
+    public function salesOrderAfterCancel (Varien_Event_Observer $observer) {
+        $mpCancellation = Mage::registry('mercadopago_cancellation');
+        if ($mpCancellation) {
+            $order = $observer->getData('order');
+            Mage::unregister('mercadopago_cancellation');
+            $status = Mage::getStoreConfig('payment/mercadopago/order_status_cancelled');
+            $order->setState($status, true);
+        }
+    }
+
+    public function salesOrderBeforeSave (Varien_Event_Observer $observer) {
+        $cancelException = Mage::registry('cancel_exception');
+        if ($cancelException) {
+            Mage::unregister('cancel_exception');
+            Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Cancelación no efectuada'));
+        }
+    }
+
 }

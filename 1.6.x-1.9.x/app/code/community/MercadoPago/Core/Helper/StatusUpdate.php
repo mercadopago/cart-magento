@@ -129,7 +129,11 @@ class MercadoPago_Core_Helper_StatusUpdate
 
         if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0) {
             $this->_generateCreditMemo($payment);
-        } else {
+        } elseif ($status == 'cancelled') {
+            Mage::register('mercadopago_cancellation', true);
+            $this->_order->cancel();
+        }
+        else {
             //if state is not complete updates according to setting
             $this->_updateStatus($status, $message, $statusDetail);
         }

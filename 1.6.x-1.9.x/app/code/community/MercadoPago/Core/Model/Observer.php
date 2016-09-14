@@ -189,7 +189,6 @@ class MercadoPago_Core_Model_Observer
     }
 
     public function salesOrderBeforeCancel (Varien_Event_Observer $observer) {
-
         $orderID = (int) $observer->getEvent()->getControllerAction()->getRequest()->getParam('order_id');
         $order = Mage::getModel('sales/order')->load($orderID);
         $event = $observer->getEvent();
@@ -202,13 +201,17 @@ class MercadoPago_Core_Model_Observer
         $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
 
         $paymentID = $order->getPayment()->getData('additional_information')['id'];
-        $payment = $order->getPayment();
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
 
         $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
         $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
 
         $isCreditCardPayment = ($order->getPayment()->getData('additional_information')['installments'] != null ? true : false);
+
+        //si todavia no se registró un pago, no tengo que hacer nada de mercadopago
+        if ($paymentID == null) {
+            return;
+        }
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
             $this->_getSession()->addError(__('El pago de la orden no fue realizado mediante MercadoPago. La cancelación se hará a traves de Magento.'));
@@ -248,7 +251,7 @@ class MercadoPago_Core_Model_Observer
 
         if ($response['status'] == 200) {
             Mage::register('mercadopago_cancellation', true);
-            $this->_getSession()->addSuccess(__('Devolución efectuada mediante MercadoPago'));
+            $this->_getSession()->addSuccess(__('Cancelación efectuada mediante MercadoPago'));
         } else {
             $this->_getSession()->addError(__('Error al efectuar la cancelación mediante MercadoPago'));
             $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
@@ -260,8 +263,7 @@ class MercadoPago_Core_Model_Observer
         Mage::register('cancel_exception', true);
     }
 
-    protected function _getSession()
-    {
+    protected function _getSession() {
         return Mage::getSingleton('adminhtml/session');
     }
 

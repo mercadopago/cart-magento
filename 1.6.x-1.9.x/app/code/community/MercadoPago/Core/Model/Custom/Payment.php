@@ -49,6 +49,7 @@ class MercadoPago_Core_Model_Custom_Payment
             //set status
             $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
             $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $payment['id']);
+            $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
             $stateObject->setState(Mage::helper('mercadopago/statusUpdate')->_getAssignedState('pending_payment'));
             $stateObject->setStatus('pending_payment');
             $stateObject->setIsNotified(false);

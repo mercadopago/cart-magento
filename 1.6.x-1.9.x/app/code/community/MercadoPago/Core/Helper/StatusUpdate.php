@@ -76,7 +76,7 @@ class MercadoPago_Core_Helper_StatusUpdate
         $this->_order->setExternalRequest(true);
         $serviceModel = Mage::getModel('sales/service_order', $this->_order);
         $baseGrandTotal = $this->_order->getBaseGrandTotal();
-        $invoice = $this->_order->getInvoiceCollection()->getFirstItem();
+        $invoice = array_pop($this->_order->getInvoiceCollection()->setPageSize(1)->setCurPage(1)->load()->getItems());
 
         $creditMemos = $this->_order->getCreditmemosCollection()->getItems();
 

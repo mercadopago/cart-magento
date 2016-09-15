@@ -191,72 +191,85 @@ class MercadoPago_Core_Model_Observer
     public function salesOrderBeforeCancel (Varien_Event_Observer $observer) {
         $orderID = (int) $observer->getEvent()->getControllerAction()->getRequest()->getParam('order_id');
         $order = Mage::getModel('sales/order')->load($orderID);
-        $event = $observer->getEvent();
         if ($order->getExternalRequest()) {
             return;
         }
-
-        $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
         $orderStatus = $order->getData('status');
         $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
 
         $paymentID = $order->getPayment()->getData('additional_information')['id'];
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
 
-        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        $isValidBasicData = $this->checkCancelationBasicData ($paymentID, $paymentMethod);
+        $isValidaData = $this->checkCancelationData ($orderStatus, $orderPaymentStatus);
 
-        $isCreditCardPayment = ($order->getPayment()->getData('additional_information')['installments'] != null ? true : false);
+        if ($isValidBasicData && $isValidaData) {
+            $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+            $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
 
-        //si todavia no se registró un pago, no tengo que hacer nada de mercadopago
+            $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+            $response = null;
+
+            $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+
+            if ($paymentMethod == 'mercadopago_standard') {
+                $response = $mp->cancel_payment($paymentID);
+            } else {
+                $data = [
+                    "status" => 'cancelled',
+                ];
+                $response = $mp->put("/v1/payments/$paymentID?access_token=$access_token", $data);
+            }
+
+            if ($response['status'] == 200) {
+                Mage::register('mercadopago_cancellation', true);
+                $this->_getSession()->addSuccess(__('Cancelación efectuada mediante MercadoPago'));
+            } else {
+                $this->_getSession()->addError(__('Error al efectuar la cancelación mediante MercadoPago'));
+                $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
+                $this->throwCancelationException();
+            }
+        }
+    }
+
+    protected function checkCancelationBasicData ($paymentID, $paymentMethod) {
+
         if ($paymentID == null) {
-            return;
+            return false;
         }
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
             $this->_getSession()->addError(__('El pago de la orden no fue realizado mediante MercadoPago. La cancelación se hará a traves de Magento.'));
-            return;
+            return false;
         }
 
+        $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
         if (!$refundAvailable) {
             $this->_getSession()->addError(__('Las cancelaciones de MercadoPago están deshabilitadas. La cancelación se hará a traves de Magento.'));
-            return;
+            return false;
         }
+
+        return true;
+    }
+
+    protected function checkCancelationData ($orderStatus, $orderPaymentStatus) {
+        $isValidaData = true;
 
         if (!($orderStatus == 'processing' || $orderStatus == 'pending')) {
             $this->_getSession()->addError(__('Solo se pueden hacer cancelaciones sobre ordenes cuyo estado sea "En proceso" o "Pendiente"'));
-            $this->throwCancelationException($observer);
-            return;
+            $isValidaData = false;
         }
 
         if (!($orderPaymentStatus == 'pending' || $orderPaymentStatus == 'in_process' || $orderPaymentStatus == 'rejected' )) {
             $this->_getSession()->addError(__('Solo se pueden hacer cancelaciones sobre ordenes cuyo estado de pago sea "Rechazado", "Pendiente" o "En Proceso"'));
-            $this->throwCancelationException();
-            return;
+            $isValidaData = false;
         }
 
-        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
-        $response = null;
-
-        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
-
-        if ($paymentMethod == 'mercadopago_standard') {
-            $response = $mp->cancel_payment($paymentID);
-        } else {
-            $data = [
-                "status" => 'cancelled',
-            ];
-            $response = $mp->put("/v1/payments/$paymentID?access_token=$access_token", $data);
-        }
-
-        if ($response['status'] == 200) {
-            Mage::register('mercadopago_cancellation', true);
-            $this->_getSession()->addSuccess(__('Cancelación efectuada mediante MercadoPago'));
-        } else {
-            $this->_getSession()->addError(__('Error al efectuar la cancelación mediante MercadoPago'));
-            $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
+        if (!$isValidaData) {
             $this->throwCancelationException();
         }
+
+        return $isValidaData;
     }
 
     protected function throwCancelationException () {
@@ -277,7 +290,7 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
-    public function salesOrderBeforeSave (Varien_Event_Observer $observer) {
+    public function salesOrderBeforeSave () {
         $cancelException = Mage::registry('cancel_exception');
         if ($cancelException) {
             Mage::unregister('cancel_exception');
@@ -296,9 +309,7 @@ class MercadoPago_Core_Model_Observer
         if ($order->getExternalRequest()) {
             return; // si la peticion de crear un credit memo viene de mercado pago, no hace falta mandar el request nuevamente
         }
-        $maxDays = (int) Mage::getStoreConfig('payment/mercadopago/maximum_days_refund');
-        $maxRefunds = (int) Mage::getStoreConfig('payment/mercadopago/maximum_partial_refunds');
-        $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
+
         $orderStatus = $order->getData('status');
         $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
         $payment = $order->getPayment();
@@ -309,91 +320,131 @@ class MercadoPago_Core_Model_Observer
 
         $paymentDate = null;
         foreach ($orderStatusHistory as $status) {
-            if (strpos ($status->getComment(), 'The payment was approved')) {
+            if (strpos($status->getComment(), 'The payment was approved') === true) {
                 $paymentDate = $status->getCreatedAt();
                 break;
             }
         }
 
-        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
-
         $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
+
+        $isValidBasicData = $this->checkRefundBasicData ($paymentMethod);
+
+        $isValidaData = $this->checkRefundData ($isCreditCardPayment,
+            $orderStatus,
+            $orderPaymentStatus,
+            $paymentDate,
+            $order);
+
+        if ($isValidBasicData && $isValidaData) {
+            $this->sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID);
+        }
+
+    }
+
+    protected function checkRefundBasicData ($paymentMethod) {
+        $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
             $this->_getSession()->addError(__('El pago de la orden no fue realizado mediante MercadoPago. La devolución se hará a traves de Magento.'));
-            return;
+            return false;
         }
 
         if (!$refundAvailable) {
             $this->_getSession()->addError(__('Las devoluciones de MercadoPago están deshabilitadas. La devolución se hará a traves de Magento.'));
-            return;
+            return false;
         }
+
+        return true;
+    }
+
+    protected function checkRefundData ($isCreditCardPayment,
+                                        $orderStatus,
+                                        $orderPaymentStatus,
+                                        $paymentDate,
+                                        $order)
+    {
+
+        $maxDays = (int) Mage::getStoreConfig('payment/mercadopago/maximum_days_refund');
+        $maxRefunds = (int) Mage::getStoreConfig('payment/mercadopago/maximum_partial_refunds');
+
+        $isValidaData = true;
 
         if (!$isCreditCardPayment) {
             $this->_getSession()->addError(__('Solo se pueden hacer devoluciones sobre ordenes pagadas con tarjeta de credito'));
-            $this->throwRefundException();
+            $isValidaData = false;
         }
 
         if (!($orderStatus == 'processing' || $orderStatus == 'completed')) {
             $this->_getSession()->addError(__('Solo se pueden hacer devoluciones sobre ordenes cuyo estado sea "En proceso" o "Completada"'));
-            $this->throwRefundException();
+            $isValidaData = false;
         }
 
         if (!($orderPaymentStatus == 'approved')) {
             $this->_getSession()->addError(__('Solo se pueden hacer devoluciones sobre ordenes cuyo estado de pago sea "Aprobado"'));
-            $this->throwRefundException();
+            $isValidaData = false;
         }
 
         if (!($this->daysSince($paymentDate) < $maxDays)) {
             $this->_getSession()->addError(__('Las devoluciones son aceptadas hasta ') .
                 $maxDays . __(' días después de aprobado el pago. La orden actual sobrepasa el límite establecido'));
-            $this->throwRefundException();
+            $isValidaData = false;
         }
 
         if (!(count($order->getCreditmemosCollection()->getItems()) < $maxRefunds)) {
+            $isValidaData = false;
             $this->_getSession()->addError(__('Solo se pueden efectuar ' . $maxRefunds . ' devoluciones parciales sobre la misma orden'));
-            $this->throwRefundException();
-        } else {
-            $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
-            $response = null;
-            $amount = $creditMemo->getGrandTotal();
-            $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
-            if ($paymentMethod == 'mercadopago_standard') {
-                if ($isTotalRefund) {
-                    $response = $mp->refund_payment($paymentID);
-                    $order->setMercadoPagoRefundType('total');
-                } else {
-                    $order->setMercadoPagoRefundType('partial');
-                    $metadata = [
-                        "reason" => '',
-                        "external_reference" => $order->getIncrementId(),
-                    ];
-                    $params = [
-                        "amount" => $amount,
-                        "metadata" => $metadata,
-                    ];
-                    $response = $mp->post("/collections/$paymentID/refunds?access_token=$access_token", $params);
-                }
-            } else {
-                if ($isTotalRefund) {
-                    $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token");
-                } else {
-                    $params = [
-                        "amount" => $amount,
-                    ];
-                    $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token", $params);
-                }
-            }
+        }
 
-            if ($response['status'] == 201) {
-                $order->setMercadoPagoRefund(true);
-                $this->_getSession()->addSuccess(__('Devolución efectuada mediante MercadoPago'));
+        if (!$isValidaData) {
+            $this->throwRefundException();
+        }
+
+        return $isValidaData;
+    }
+
+    protected function sendRefundRequest ($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID) {
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+        $response = null;
+        $amount = $creditMemo->getGrandTotal();
+        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+        if ($paymentMethod == 'mercadopago_standard') {
+            if ($isTotalRefund) {
+                $response = $mp->refund_payment($paymentID);
+                $order->setMercadoPagoRefundType('total');
             } else {
-                $this->_getSession()->addError(__('Error al efectuar la devolución mediante MercadoPago'));
-                $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
-                $this->throwRefundException();
+                $order->setMercadoPagoRefundType('partial');
+                $metadata = [
+                    "reason" => '',
+                    "external_reference" => $order->getIncrementId(),
+                ];
+                $params = [
+                    "amount" => $amount,
+                    "metadata" => $metadata,
+                ];
+                $response = $mp->post("/collections/$paymentID/refunds?access_token=$access_token", $params);
             }
+        } else {
+            if ($isTotalRefund) {
+                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token");
+            } else {
+                $params = [
+                    "amount" => $amount,
+                ];
+                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token", $params);
+            }
+        }
+
+        if ($response['status'] == 201) {
+            $order->setMercadoPagoRefund(true);
+            $this->_getSession()->addSuccess(__('Devolución efectuada mediante MercadoPago'));
+        } else {
+            $this->_getSession()->addError(__('Error al efectuar la devolución mediante MercadoPago'));
+            $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
+            $this->throwRefundException();
         }
     }
 

@@ -320,7 +320,7 @@ class MercadoPago_Core_Model_Observer
 
         $paymentDate = null;
         foreach ($orderStatusHistory as $status) {
-            if (strpos($status->getComment(), 'The payment was approved') === true) {
+            if (strpos($status->getComment(), 'The payment was approved') !== false) {
                 $paymentDate = $status->getCreatedAt();
                 break;
             }
@@ -438,7 +438,7 @@ class MercadoPago_Core_Model_Observer
             }
         }
 
-        if ($response['status'] == 201) {
+        if ($response['status'] == 201 || $response['status'] == 200) {
             $order->setMercadoPagoRefund(true);
             $this->_getSession()->addSuccess(__('Devolución efectuada mediante MercadoPago'));
         } else {

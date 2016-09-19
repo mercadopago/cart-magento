@@ -13,6 +13,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I press ".add-to-cart-buttons .btn-cart" element
     And I press ".btn-proceed-checkout" element
     And I fill the billing address
+    And I select radio "billing:use_for_shipping_yes"
 
 
   @CheckoutShippingMethods @ShipingMethodsCheckoutAvailability
@@ -24,7 +25,7 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     When I press "#billing-buttons-container .button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should find element "#s_method_mercadoenvios_73328"
-    And I should find element "#s_method_mercadoenvios_73330"
+    # And I should find element "#s_method_mercadoenvios_73330"
 
   @CheckoutShippingMethods @ShipingMethodsBadDimensions
   Scenario: Shipping methods are availables
@@ -96,4 +97,4 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I am logged in MP as "test_user_58666377@testuser.com" "qatest3200"
     Then I should see "Elige la forma de entrega"
     And I should see "Normal a domicilio"
-    And I should see "Prioritario a domicilio"
+    # And I should see "Prioritario a domicilio"

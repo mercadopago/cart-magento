@@ -61,7 +61,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I press "div.buttons-set button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should find element "#s_method_mercadoenvios_73328"
-    And I should find element "#s_method_mercadoenvios_73330"
+    # And I should find element "#s_method_mercadoenvios_73330"
 
   @ShippingCostEstimation @estimatedDays
   Scenario: Show estimated days

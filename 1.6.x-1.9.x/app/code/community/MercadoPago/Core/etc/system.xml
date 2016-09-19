@@ -56,6 +56,25 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </order_status_approved>
+                        <refund_available translate="label">
+                            <label>Refund Available</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>75</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </refund_available>
+                        <maximum_partial_refunds translate="label">
+                            <label>Maximum amount of partial refunds on the same order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>76</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_class>validate-number-range number-range-1-20</frontend_class>
+                            <comment>It must be a number between 1 and 20</comment>
+                        </maximum_partial_refunds>
                         <order_status_refunded translate="label">
                             <label>Choose the status of refunded orders</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
@@ -116,6 +135,16 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </order_status_chargeback>
+                        <order_status_partially_refunded translate="label">
+                            <label>Choose the status when payment was partially refunded</label>
+                            <comment>To manage the status available go to System > Order Statuses</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>mercadopago/source_order_status</source_model>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </order_status_partially_refunded>
                         <use_successpage_mp translate="label comment">
                             <label>Use Mercado Pago success page</label>
                             <frontend_type>select</frontend_type>
@@ -126,6 +155,16 @@
                             <show_in_store>0</show_in_store>
                             <comment>If set this config with NO, magento success page will be used</comment>
                         </use_successpage_mp>
+                        <maximum_days_refund translate="label">
+                            <label>Maximum amount of days until refund is not accepted</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>136</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <frontend_class>validate-number-range number-range-1-90</frontend_class>
+                            <comment>It must be a number between 1 and 90</comment>
+                        </maximum_days_refund>
                         <logs translate="label">
                             <label>Logs</label>
                             <frontend_type>select</frontend_type>
@@ -146,6 +185,16 @@
                             <show_in_store>0</show_in_store>
                             <comment>Enable to display actual error messages to frontend users (not recommended on production environment)</comment>
                         </debug_mode>
+                        <financing_cost translate="label">
+                            <label>Calculate Financing Cost</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment></comment>
+                        </financing_cost>
                     </fields>
                 </mercadopago>
 
@@ -179,6 +228,7 @@
                                 <a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank">Mexico</a>
                                 <a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank">Venezuela</a>
                                 <a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank">Chile</a>
+                                <a href="https://www.mercadopago.com/mpe/account/credentials" target="_blank">Peru</a>
                                 ]]>
                             </comment>
                         </access_token>

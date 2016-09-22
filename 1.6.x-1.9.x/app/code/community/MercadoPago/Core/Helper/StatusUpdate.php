@@ -108,7 +108,6 @@ class MercadoPago_Core_Helper_StatusUpdate
             } else {
                 $this->_order->setExternalType('partial');
             }
-            //$creditmemo->setAdjustment(1);
             $creditmemo->refund();
             Mage::getModel('core/resource_transaction')
                 ->addObject($creditmemo)

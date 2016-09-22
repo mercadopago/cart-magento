@@ -223,9 +223,9 @@ class MercadoPago_Core_Model_Observer
 
             if ($response['status'] == 200) {
                 Mage::register('mercadopago_cancellation', true);
-                $this->_getSession()->addSuccess(__('Cancelación efectuada mediante MercadoPago'));
+                $this->_getSession()->addSuccess(__('Cancellation made by Mercado Pago'));
             } else {
-                $this->_getSession()->addError(__('Error al efectuar la cancelación mediante MercadoPago'));
+                $this->_getSession()->addError(__('Failed to make the cancellation by Mercado Pago'));
                 $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
                 $this->throwCancelationException();
             }
@@ -239,13 +239,13 @@ class MercadoPago_Core_Model_Observer
         }
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-            $this->_getSession()->addError(__('El pago de la orden no fue realizado mediante MercadoPago. La cancelación se hará a traves de Magento.'));
+            $this->_getSession()->addError(__('Order payment wasn\'t made by Mercado Pago. The cancellation will be made through Magento'));
             return false;
         }
 
         $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
         if (!$refundAvailable) {
-            $this->_getSession()->addError(__('Las cancelaciones de MercadoPago están deshabilitadas. La cancelación se hará a traves de Magento.'));
+            $this->_getSession()->addError(__('Mercado Pago cancellations are disabled. The cancellation will be made through Magento'));
             return false;
         }
 
@@ -256,12 +256,12 @@ class MercadoPago_Core_Model_Observer
         $isValidaData = true;
 
         if (!($orderStatus == 'processing' || $orderStatus == 'pending')) {
-            $this->_getSession()->addError(__('Solo se pueden hacer cancelaciones sobre ordenes cuyo estado sea "En proceso" o "Pendiente"'));
+            $this->_getSession()->addError(__('You can only make cancellation on orders whose status is Processing or Pending'));
             $isValidaData = false;
         }
 
         if (!($orderPaymentStatus == 'pending' || $orderPaymentStatus == 'in_process' || $orderPaymentStatus == 'rejected' )) {
-            $this->_getSession()->addError(__('Solo se pueden hacer cancelaciones sobre ordenes cuyo estado de pago sea "Rechazado", "Pendiente" o "En Proceso"'));
+            $this->_getSession()->addError(__('You can only make cancellations on orders whose payment status is Rejected, Pending o In Process'));
             $isValidaData = false;
         }
 
@@ -294,7 +294,7 @@ class MercadoPago_Core_Model_Observer
         $cancelException = Mage::registry('cancel_exception');
         if ($cancelException) {
             Mage::unregister('cancel_exception');
-            Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Cancelación no efectuada'));
+            Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Cancellation not made'));
         }
     }
 
@@ -346,12 +346,12 @@ class MercadoPago_Core_Model_Observer
         $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-            $this->_getSession()->addError(__('El pago de la orden no fue realizado mediante MercadoPago. La devolución se hará a traves de Magento.'));
+            $this->_getSession()->addError(__('El pago de la orden no fue realizado mediante Mercado Pago. La devolución se hará a traves de Magento.'));
             return false;
         }
 
         if (!$refundAvailable) {
-            $this->_getSession()->addError(__('Las devoluciones de MercadoPago están deshabilitadas. La devolución se hará a traves de Magento.'));
+            $this->_getSession()->addError(__('Las devoluciones de Mercado Pago están deshabilitadas. La devolución se hará a traves de Magento.'));
             return false;
         }
 
@@ -371,29 +371,29 @@ class MercadoPago_Core_Model_Observer
         $isValidaData = true;
 
         if (!$isCreditCardPayment) {
-            $this->_getSession()->addError(__('Solo se pueden hacer devoluciones sobre ordenes pagadas con tarjeta de credito'));
+            $this->_getSession()->addError(__('You can only refund orders paid by credit card'));
             $isValidaData = false;
         }
 
         if (!($orderStatus == 'processing' || $orderStatus == 'completed')) {
-            $this->_getSession()->addError(__('Solo se pueden hacer devoluciones sobre ordenes cuyo estado sea "En proceso" o "Completada"'));
+            $this->_getSession()->addError(__('You can only make refunds on orders whose status is Processing or Completed'));
             $isValidaData = false;
         }
 
         if (!($orderPaymentStatus == 'approved')) {
-            $this->_getSession()->addError(__('Solo se pueden hacer devoluciones sobre ordenes cuyo estado de pago sea "Aprobado"'));
+            $this->_getSession()->addError(__('You can only make refunds on orders whose payment status Approved'));
             $isValidaData = false;
         }
 
         if (!($this->daysSince($paymentDate) < $maxDays)) {
-            $this->_getSession()->addError(__('Las devoluciones son aceptadas hasta ') .
-                $maxDays . __(' días después de aprobado el pago. La orden actual sobrepasa el límite establecido'));
+            $this->_getSession()->addError(__('Refunds are accepted up to ') .
+                $maxDays . __(' days after payment approval. The current order exceeds the limit set'));
             $isValidaData = false;
         }
 
         if (!(count($order->getCreditmemosCollection()->getItems()) < $maxRefunds)) {
             $isValidaData = false;
-            $this->_getSession()->addError(__('Solo se pueden efectuar ' . $maxRefunds . ' devoluciones parciales sobre la misma orden'));
+            $this->_getSession()->addError(__('You can only make ' . $maxRefunds . ' partial refunds on the same order'));
         }
 
         if (!$isValidaData) {
@@ -440,16 +440,16 @@ class MercadoPago_Core_Model_Observer
 
         if ($response['status'] == 201 || $response['status'] == 200) {
             $order->setMercadoPagoRefund(true);
-            $this->_getSession()->addSuccess(__('Devolución efectuada mediante MercadoPago'));
+            $this->_getSession()->addSuccess(__('Refund made by Mercado Pago'));
         } else {
-            $this->_getSession()->addError(__('Error al efectuar la devolución mediante MercadoPago'));
+            $this->_getSession()->addError(__('Failed to make the refund by Mercado Pago'));
             $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
             $this->throwRefundException();
         }
     }
 
     protected function throwRefundException () {
-        Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Devolución no efectuada'));
+        Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Refund not made'));
     }
     
     private function daysSince($date)

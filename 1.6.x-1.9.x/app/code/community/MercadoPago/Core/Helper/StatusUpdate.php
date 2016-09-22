@@ -63,16 +63,19 @@ class MercadoPago_Core_Helper_StatusUpdate
     protected function _generateCreditMemo($payment)
     {
         if ($payment['amount_refunded'] == $payment['total_paid_amount']) {
-            $this->_createCreditmemo($this->_order, $payment);
+            $this->_createCreditmemo($payment);
             $this->_order->setForcedCanCreditmemo(false);
             $this->_order->setActionFlag('ship', false);
             $this->_order->save();
         } else {
-            $this->_createCreditmemo($this->_order, $payment);
+            $this->_createCreditmemo($payment);
         }
     }
 
     protected function _createCreditmemo ($data) {
+        /**
+         * @var $creditmemo Mage_Sales_Model_Order_Creditmemo
+         */
         $this->_order->setExternalRequest(true);
         $serviceModel = Mage::getModel('sales/service_order', $this->_order);
         $baseGrandTotal = $this->_order->getBaseGrandTotal();
@@ -87,11 +90,12 @@ class MercadoPago_Core_Helper_StatusUpdate
 
         $amount = $data['amount_refunded'] - $previousRefund;
         if ($amount > 0) {
-            if (count($creditMemos) > 0) {
+            if (count($creditMemos) == 0) {
                 $adjustment = array('adjustment_positive' => $amount);
             } else {
-                $adjustment = array('adjustment_negative' => $baseGrandTotal - $amount);
+                $adjustment = array('adjustment_negative' => 0 - $amount);
             }
+            $adjustment['qtys'] = -1;
             $creditmemo = $serviceModel->prepareInvoiceCreditmemo($invoice, $adjustment);
             if ($creditmemo) {
                 $totalRefunded = $invoice->getBaseTotalRefunded() + $creditmemo->getBaseGrandTotal();
@@ -104,7 +108,7 @@ class MercadoPago_Core_Helper_StatusUpdate
             } else {
                 $this->_order->setExternalType('partial');
             }
-
+            //$creditmemo->setAdjustment(1);
             $creditmemo->refund();
             Mage::getModel('core/resource_transaction')
                 ->addObject($creditmemo)

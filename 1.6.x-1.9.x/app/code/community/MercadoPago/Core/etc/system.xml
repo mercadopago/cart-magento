@@ -65,7 +65,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </refund_available>
-                        <maximum_partial_refunds translate="label">
+                        <maximum_partial_refunds translate="label comment">
                             <label>Maximum amount of partial refunds on the same order</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>76</sort_order>
@@ -155,7 +155,7 @@
                             <show_in_store>0</show_in_store>
                             <comment>If set this config with NO, magento success page will be used</comment>
                         </use_successpage_mp>
-                        <maximum_days_refund translate="label">
+                        <maximum_days_refund translate="label comment">
                             <label>Maximum amount of days until refund is not accepted</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>136</sort_order>

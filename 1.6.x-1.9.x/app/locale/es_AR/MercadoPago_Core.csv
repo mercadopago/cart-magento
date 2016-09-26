@@ -201,3 +201,6 @@
 "Refund made by Mercado Pago","Devolución efectuada mediante Mercado Pago"
 "Failed to make the refund by Mercado Pago","Error al efectuar la devolución mediante Mercado Pago"
 "Mercado Pago - Refund not made","Mercado Pago - Devolución no efectuada"
+"Order payment wasn't made by Mercado Pago. The refund will be made through Magento","El pago de la orden no fue realizado mediante Mercado Pago. La devolución se hará a traves de Magento"
+"Mercado Pago refunds are disabled. The refund will be made through Magento","Las devoluciones de Mercado Pago están deshabilitadas. La devolución se hará a traves de Magento"
+"No payment is recorded. You can't make a refund on a unpaid order","No se registra ningún pago. No se pueden hacer devoluciones en ordenes sin pagar"

@@ -149,7 +149,7 @@ class MercadoPago_Core_Helper_StatusUpdate
 
         $status = $this->getStatus($payment);
         $message = $this->getMessage($status, $payment);
-        if ($this->isStatusUpdated() && !($payment['amount_refunded'] > 0)) {
+        if ($this->isStatusUpdated() && isset ($payment['amount_refunded']) && !($payment['amount_refunded'] > 0)) {
             return ['body' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
         }
 

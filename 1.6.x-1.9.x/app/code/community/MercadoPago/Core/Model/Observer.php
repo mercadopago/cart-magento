@@ -325,33 +325,35 @@ class MercadoPago_Core_Model_Observer
                 break;
             }
         }
-
-        $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
-
-        $isValidBasicData = $this->checkRefundBasicData ($paymentMethod);
-
+        $isValidBasicData = $this->checkRefundBasicData ($paymentMethod, $paymentDate);
         $isValidaData = $this->checkRefundData ($isCreditCardPayment,
             $orderStatus,
             $orderPaymentStatus,
             $paymentDate,
             $order);
 
+        $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
         if ($isValidBasicData && $isValidaData) {
             $this->sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID);
         }
 
     }
 
-    protected function checkRefundBasicData ($paymentMethod) {
+    protected function checkRefundBasicData ($paymentMethod, $paymentDate) {
         $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
 
+        if ($paymentDate == null) {
+            $this->_getSession()->addError(__('No payment is recorded. You can\'t make a refund on a unpaid order'));
+            return false;
+        }
+
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-            $this->_getSession()->addError(__('El pago de la orden no fue realizado mediante Mercado Pago. La devolución se hará a traves de Magento.'));
+            $this->_getSession()->addError(__('Order payment wasn\'t made by Mercado Pago. The refund will be made through Magento'));
             return false;
         }
 
         if (!$refundAvailable) {
-            $this->_getSession()->addError(__('Las devoluciones de Mercado Pago están deshabilitadas. La devolución se hará a traves de Magento.'));
+            $this->_getSession()->addError(__('Mercado Pago refunds are disabled. The refund will be made through Magento'));
             return false;
         }
 

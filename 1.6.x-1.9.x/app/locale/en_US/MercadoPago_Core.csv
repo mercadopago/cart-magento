@@ -195,3 +195,6 @@
 "Refund made by Mercado Pago","Refund made by Mercado Pago"
 "Failed to make the refund by Mercado Pago","Failed to make the refund by Mercado Pago"
 "Mercado Pago - Refund not made","Mercado Pago - Refund not made"
+"Order payment wasn't made by Mercado Pago. The refund will be made through Magento", "Order payment wasn't made by Mercado Pago. The refund will be made through Magento"
+"Mercado Pago refunds are disabled. The refund will be made through Magento","Mercado Pago refunds are disabled. The refund will be made through Magento"
+"No payment is recorded. You can't make a refund on a unpaid order","No payment is recorded. You can't make a refund on a unpaid order"

@@ -246,7 +246,7 @@ class MercadoPago_Core_NotificationsController
         $fields = [
             "status",
             "status_detail",
-            "id",
+            "payment_id_detail",
             "payment_method_id",
             "transaction_amount",
             "total_paid_amount",

@@ -313,7 +313,7 @@ class MercadoPago_Core_Model_Observer
         $orderStatus = $order->getData('status');
         $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
         $payment = $order->getPayment();
-        $paymentID = $order->getPayment()->getData('additional_information')['id'];
+        $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
         $orderStatusHistory = $order->getAllStatusHistory();
         $isCreditCardPayment = ($order->getPayment()->getData('additional_information')['installments'] != null ? true : false);

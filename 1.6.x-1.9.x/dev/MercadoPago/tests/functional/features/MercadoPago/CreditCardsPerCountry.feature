@@ -147,23 +147,12 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I press "#shipping-method-buttons-container .button" element
     And I wait for "5" seconds
     And I select radio "p_method_mercadopago_custom"
-    And I wait for "5" seconds
+    And I wait for "10" seconds
     # And I press "#use_other_card_mp" element
     And I select option field "paymentMethod" with "<payment_method>"
     And I wait for "3" seconds
     And I fill text field "cardNumber" with "<credit_card>"
     And I wait for "5" seconds
-    And I select option field "cardExpirationMonth" with "01"
-    And I wait for "5" seconds
-    And I fill text field "cardholderName" with "APRO"
-    And I wait for "5" seconds
-    And I fill text field "securityCode" with "123"
-    And I wait for "5" seconds
-    And I select option field "cardExpirationYear" with "2017"
-    And I wait for "5" seconds
-    And I select option field "issuer" with "<issuer_id>"
-    And I wait for "5" seconds
-    And I blur field "#issuer"
 
     Then I should see "Card Number is invalid"
 

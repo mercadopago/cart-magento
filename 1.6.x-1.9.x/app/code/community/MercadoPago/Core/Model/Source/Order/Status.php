@@ -15,4 +15,26 @@ class MercadoPago_Core_Model_Source_Order_Status extends Mage_Adminhtml_Model_Sy
         Mage_Sales_Model_Order::STATE_HOLDED,
     );
 
+    public function toOptionArray()
+    {
+        if ($this->_stateStatuses) {
+            $statuses = Mage::getSingleton('sales/order_config')->getStateStatuses($this->_stateStatuses);
+        }
+        else {
+            $statuses = Mage::getSingleton('sales/order_config')->getStatuses();
+        }
+        $options = array();
+        $options[] = array(
+            'value' => '',
+            'label' => Mage::helper('adminhtml')->__('-- No Status Change --')
+        );
+        foreach ($statuses as $code=>$label) {
+            $options[] = array(
+                'value' => $code,
+                'label' => $label
+            );
+        }
+        return $options;
+    }
+
 }

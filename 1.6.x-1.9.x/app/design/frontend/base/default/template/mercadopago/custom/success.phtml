@@ -3,7 +3,6 @@
     $total = $this->getTotal();
     $payment = $this->getPayment();
     
-    //monta link para o pedido
     $link_to_order = $this->__('Your order %s has been successfully generated.', '<a href="'. Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "sales/order/view/order_id/" . $this->getEntityId() . '">' . $order->getIncrementId() .'</a>');
     
     $payment_method = $this->getPaymentMethod();

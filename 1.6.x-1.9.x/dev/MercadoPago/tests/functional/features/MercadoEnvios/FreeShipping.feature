@@ -31,10 +31,10 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     Examples:
       | country | free_method | zip_code | country_code |
       | mla     | 73328       | 7000     | AR           |
-      | mla     | 73330       | 7000     | AR           |
+      # | mla     | 73330       | 7000     | AR           |
       | mlb     | 100009      | 01046925 | BR           |
       | mlb     | 182         | 01046925 | BR           |
-      | mlm     | 501345      | 22615    | MX           |
+   #   | mlm     | 501345      | 22615    | MX           |
 
   @FreeShippingMinimumTotal
   Scenario Outline: FreeShipping configured
@@ -55,13 +55,13 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
       | country | free_method | zip_code | country_code  | amount | price_expected |
       | mla     | 73328       | 7000     | AR            | 100    | $0.00          |
       | mla     | 73328       | 7000     | AR            | 150    | -              |
-      | mla     | 73330       | 7000     | AR            | 100    | $0.00          |
+     # | mla     | 73330       | 7000     | AR            | 100    | $0.00          |
       | mla     | 73330       | 7000     | AR            | 150    | -              |
       | mlb     | 100009      | 01046925 | BR            | 100    | $0.00          |
       | mlb     | 100009      | 01046925 | BR            | 150    | -              |
       | mlb     | 182         | 01046925 | BR            | 100    | $0.00          |
       | mlb     | 182         | 01046925 | BR            | 150    | -              |
-      | mlm     | 501345      | 22615    | MX            | 100    | $0.00          |
+     # | mlm     | 501345      | 22615    | MX            | 100    | $0.00          |
       | mlm     | 501345      | 22615    | MX            | 150    | -              |
 
   @FreeShippingCheckoutStandard
@@ -91,7 +91,7 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I switch to the iframe "checkout_mercadopago"
     Then I should  see "Gratis"
 
-  @FreeShippingCartRule
+
   Scenario: FreeShipping configured
     Given Setting merchant "mla"
     When I enable methods of "mla"
@@ -105,5 +105,5 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I press "div.buttons-set button" element
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     Then I should see element price method "73328"  with text "$0.00"
-    And I should see element price method "73330"  with text "$0.00"
+   # And I should see element price method "73330"  with text "$0.00"
 

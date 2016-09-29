@@ -29,4 +29,11 @@ class MercadoPago_Core_Helper_Response
     const HTTP_METHOD_NOT_ALLOWED = 405;
     const HTTP_NOT_ACCEPTABLE     = 406;
     const HTTP_INTERNAL_ERROR     = 500;
+    
+    
+    const INFO_MERCHANT_ORDER_NOT_FOUND     = 'Merchant Order not found';
+    const INFO_STATUS_NOT_FINAL     = 'Status not final';
+    const INFO_EXTERNAL_REFERENCE_NOT_FOUND     = 'External reference not found';
+
+
 }

@@ -27,10 +27,10 @@ Feature: I want to see the Shipping Methods available depending on my country.
     Examples:
       | country | method      | zip_code | country_code |
       | mla     | Normal      | 7000     | AR           |
-      | mla     | Prioritario | 7000     | AR           |
+      #| mla     | Prioritario | 7000     | AR           |
       | mlb     | Normal      | 01046925 | BR           |
       | mlb     | Expresso    | 01046925 | BR           |
-      | mlm     | DHL Express | 22615    | MX           |
+      #| mlm     | DHL Express | 22615    | MX           |
 
 
   @MethodsPerCountry @CartMethods
@@ -52,10 +52,10 @@ Feature: I want to see the Shipping Methods available depending on my country.
     Examples:
       | country | method      | zip_code | country_code |
       | mla     | Normal      | 7000     | AR           |
-      | mla     | Prioritario | 7000     | AR           |
+     # | mla     | Prioritario | 7000     | AR           |
       | mlb     | Normal      | 01046925 | BR           |
       | mlb     | Expresso    | 01046925 | BR           |
-      | mlm     | DHL Express | 22615    | MX           |
+    #  | mlm     | DHL Express | 22615    | MX           |
 
   @MethodsPerCountry @SettingMethods
   Scenario Outline: As a customer I want to configure shipping methods for mercado envios in settings depending on Country

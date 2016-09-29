@@ -16,7 +16,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
     And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
 
-  @applyDiscount @customFormDiscount
+  @applyDiscount @customFormDiscount @skip
   Scenario: Apply a valid coupon
     And I select radio "p_method_mercadopago_custom"
     And I select option field "cardId" with "144422268"
@@ -27,7 +27,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
     And I wait for "7" seconds
     Then I should see "You save"
 
-  @applyDiscount @customFormDiscountReview
+  @applyDiscount @customFormDiscountReview @skip
   Scenario: Seeing subtotal discount in review with custom checkout
     And I select radio "p_method_mercadopago_custom"
     And I select option field "cardId" with "144422268"
@@ -42,7 +42,7 @@ Feature: A customer should be able to do a checkout with MercadoPago applying a 
 
     Then I should see "Discount Mercado Pago"
 
-  @applyDiscount @customTicketFormDiscountReview
+  @applyDiscount @customTicketFormDiscountReview @skip
   Scenario: Seeing subtotal discount in review with custom ticket checkout
     And I select radio "p_method_mercadopago_customticket"
     And I fill text field "#input-coupon-discount" in form "#payment_form_mercadopago_customticket" with "TESTEMP"

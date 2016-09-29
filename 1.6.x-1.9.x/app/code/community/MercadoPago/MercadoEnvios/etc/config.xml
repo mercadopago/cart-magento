@@ -2,7 +2,7 @@
 <config>
     <modules>
         <MercadoPago_MercadoEnvios>
-            <version>2.3.0</version>
+            <version>2.4.0</version>
         </MercadoPago_MercadoEnvios>
     </modules>
     <frontend>
@@ -75,7 +75,7 @@
                 <observers>
                     <paymentfilter_payment_method_is_active>
                         <type>singleton</type>
-                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <class>mercadopago_mercadoenvios/observer</class>
                         <method>filterActivePaymentMethods</method>
                     </paymentfilter_payment_method_is_active>
                 </observers>
@@ -83,11 +83,11 @@
             <admin_system_config_changed_section_payment>
                 <observers>
                     <payment_section_observer>
-                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <class>mercadopago_mercadoenvios/observer</class>
                         <method>checkAndValidateData</method>
                     </payment_section_observer>
                     <payment_section_observer_shipping_method>
-                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <class>mercadopago_mercadoenvios/observer</class>
                         <method>validateShippingMethod</method>
                     </payment_section_observer_shipping_method>
                 </observers>
@@ -95,7 +95,7 @@
             <admin_system_config_changed_section_carriers>
                 <observers>
                     <payment_section_observer_shipping_method>
-                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <class>mercadopago_mercadoenvios/observer</class>
                         <method>validateShippingMethod</method>
                     </payment_section_observer_shipping_method>
                 </observers>
@@ -110,12 +110,11 @@
                 <observers>
                     <mercadopago_mercadoenvios>
                         <type>singleton</type>
-                        <class>MercadoPago_MercadoEnvios_Model_Observer</class>
+                        <class>mercadopago_mercadoenvios/observer</class>
                         <method>addPrintButton</method>
                     </mercadopago_mercadoenvios>
                 </observers>
             </adminhtml_widget_container_html_before>
-
         </events>
     </adminhtml>
 
@@ -126,7 +125,7 @@
                 <title>MercadoEnvíos</title>
                 <model>MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios</model>
                 <sort_order>10</sort_order>
-                <sallowspecific>1</sallowspecific>
+                <sallowspecific>0</sallowspecific>
                 <name>MercadoEnvios</name>
                 <specificerrmsg>This shipping method is currently unavailable.</specificerrmsg>
             </mercadoenvios>

@@ -39,12 +39,17 @@ class MercadoPago_MercadoEnvios_Model_Observer
     public function addPrintButton($observer)
     {
         $block = $observer->getBlock();
-
         if ($block instanceof Mage_Adminhtml_Block_Sales_Order_Shipment_View) {
-            $shipmentId = Mage::app()->getRequest()->getParam('shipment_id');
+            $helper = Mage::helper('mercadopago_mercadoenvios');
+            $shipment = Mage::registry('current_shipment');
+            $shippingCode = Mage::getModel('sales/order')->load($shipment->getOrderId())->getShippingMethod();
+            if (!$helper->isMercadoEnviosMethod($shippingCode)) {
+                return;
+            }
+            $shipmentId = $shipment->getId();
             $block->addButton('print_shipment_label', array(
                 'label'   => 'Print shipping label',
-                'onclick' => 'window.open(\' ' . Mage::helper('mercadopago_mercadoenvios')->getTrackingPrintUrl($shipmentId) . '\')',
+                'onclick' => 'window.open(\' ' . $helper->getTrackingPrintUrl($shipmentId) . '\')',
                 'class'   => 'go'
             ));
         }

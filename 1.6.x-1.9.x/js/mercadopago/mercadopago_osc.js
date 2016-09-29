@@ -350,7 +350,7 @@ var MercadoPagoCustom = (function () {
                 registerAjaxObervers();
             }
 
-            returnListCard.show();
+            returnListCard.hide();
         }
 
         function setTotalAmount() {
@@ -523,10 +523,12 @@ var MercadoPagoCustom = (function () {
                 TinyJ(self.selectors.oneClickPayment).val(0);
                 TinyJ(self.selectors.cardId).disable();
                 setRequiredFields(true);
+                TinyJ(self.selectors.returnToCardList).show();
             } else {
                 TinyJ(self.selectors.oneClickPayment).val(1);
                 TinyJ(self.selectors.cardId).enable();
                 setRequiredFields(false);
+                TinyJ(self.selectors.returnToCardList).hide();
             }
 
             defineInputs();

@@ -101,7 +101,8 @@ class MercadoPago_Core_Model_Core
             ["field" => "payment_id", "title" => "Payment id (MercadoPago): %s"],
             ["field" => "status", "title" => "Payment Status: %s"],
             ["field" => "status_detail", "title" => "Payment Detail: %s"],
-            ["field" => "activation_uri", "title" => "Generate Ticket"]
+            ["field" => "activation_uri", "title" => "Generate Ticket"],
+            ["field" => "payment_id_detail", "title" => "Mercado Pago Payment Id: %s"],
         ];
 
         foreach ($fields as $field) {
@@ -446,133 +447,72 @@ class MercadoPago_Core_Model_Core
         return $details_discount;
     }
 
-    protected function _createInvoice($order, $message)
-    {
-        if (!$order->hasInvoices()) {
-            $invoice = $order->prepareInvoice();
-            $invoice->register();
-            $invoice->pay();
-            Mage::getModel('core/resource_transaction')
-                ->addObject($invoice)
-                ->addObject($invoice->getOrder())
-                ->save();
-
-            $invoice->sendEmail(true, $message);
-        }
-    }
-
-    public function setStatusOrder($payment)
+    public function updateOrder($order = null, $data)
     {
         $helper = Mage::helper('mercadopago');
-        $order = Mage::getModel('sales/order')->loadByIncrementId($payment["external_reference"]);
-        $status = $payment['status'];
+        $statusHelper = Mage::helper('mercadopago/statusUpdate');
+        $helper->log('Update Order', 'mercadopago-notification.log');
 
-        if (isset($payment['status_final'])) {
-            $status = $payment['status_final'];
-        }
-        $message = $helper->getMessage($status, $payment);
-        if (Mage::helper('mercadopago')->isStatusUpdated()) {
-            return ['text' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
+        if (!isset($data['external_reference'])) {
+            return;
         }
 
+        if (!$order) {
+            $order = Mage::getModel('sales/order')->loadByIncrementId($data['external_reference']);
+        }
+        $paymentOrder = $order->getPayment();
+        $this->_saveTransaction($data, $paymentOrder);
+
+        if ($statusHelper->isStatusUpdated()) {
+            return;
+        }
         try {
-            if ($status == 'approved') {
-                Mage::helper('mercadopago')->setOrderSubtotals($payment, $order);
-                $this->_createInvoice($order, $message);
-                //Associate card to customer
-                $additionalInfo = $order->getPayment()->getAdditionalInformation();
-                if (isset($additionalInfo['token'])) {
-                    Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
-                }
+            $additionalFields = [
+                'status',
+                'status_detail',
+                'payment_id',
+                'transaction_amount',
+                'cardholderName',
+                'installments',
+                'statement_descriptor',
+                'trunc_card',
+                'id'
+            ];
 
-            } elseif ($status == 'refunded' || $status == 'cancelled') {
-                //generate credit memo and return items to stock according to setting
-                $this->_generateCreditMemo($order, $payment);
+            foreach ($additionalFields as $field) {
+                if (isset($data[$field])) {
+                    $paymentOrder->setAdditionalInformation($field, $data[$field]);
+                }
             }
-            //if state is not complete updates according to setting
-            $this->_updateStatus($order, $helper, $status, $message);
+
+            if (isset($data['payment_method_id'])) {
+                $paymentOrder->setAdditionalInformation('payment_method', $data['payment_method_id']);
+            }
+
+            $paymentStatus = $paymentOrder->save();
+            $helper->log('Update Payment', 'mercadopago.log', $paymentStatus->getData());
 
             $statusSave = $order->save();
-            $helper->log("Update order", 'mercadopago.log', $statusSave->getData());
-            $helper->log($message, 'mercadopago.log');
-
-            return ['text' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
+            $helper->log('Update order', 'mercadopago.log', $statusSave->getData());
         } catch (Exception $e) {
-            $helper->log("error in set order status: " . $e, 'mercadopago.log');
+            $helper->log('Error in update order status: ' . $e, 'mercadopago.log');
+            $this->getResponse()->setBody($e);
 
-            return ['text' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST];
+            $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
         }
     }
 
-    protected function _updateStatus($order, $helper, $status, $message)
+    protected function _saveTransaction($data, $paymentOrder)
     {
-        if ($order->getState() !== Mage_Sales_Model_Order::STATE_COMPLETE) {
-            $statusOrder = $helper->getStatusOrder($status);
-
-
-            $order->setState($helper->_getAssignedState($statusOrder));
-            $order->addStatusToHistory($statusOrder, $message, true);
-            $order->sendOrderUpdateEmail(true, $message);
-        }
-    }
-
-    protected function _generateCreditMemo($order, $payment)
-    {
-        if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0 && $payment['amount_refunded'] == $payment['total_paid_amount']) {
-            $order->getPayment()->registerRefundNotification($payment['amount_refunded']);
-            $creditMemo = array_pop($order->getCreditmemosCollection()->setPageSize(1)->setCurPage(1)->load()->getItems());
-            foreach ($creditMemo->getAllItems() as $creditMemoItem) {
-                $creditMemoItem->setBackToStock(Mage::helper('cataloginventory')->isAutoReturnEnabled());
-            }
-            $creditMemo->save();
-            $order->cancel();
-        }
-
-    }
-
-    public function updateOrder($data)
-    {
-        Mage::helper('mercadopago')->log("Update Order", 'mercadopago-notification.log');
-        if (!Mage::helper('mercadopago')->isStatusUpdated()) {
-
-            try {
-                $order = Mage::getModel('sales/order')->loadByIncrementId($data["external_reference"]);
-
-                $paymentOrder = $order->getPayment();
-
-                $additionalFields = [
-                    'status',
-                    'status_detail',
-                    'payment_id',
-                    'transaction_amount',
-                    'cardholderName',
-                    'installments',
-                    'statement_descriptor',
-                    'trunc_card',
-                    'id'
-                ];
-
-                foreach ($additionalFields as $field) {
-                    if (isset($data[$field])) {
-                        $paymentOrder->setAdditionalInformation($field, $data[$field]);
-                    }
-                }
-
-                if (isset($data['payment_method_id'])) {
-                    $paymentOrder->setAdditionalInformation('payment_method', $data['payment_method_id']);
-                }
-
-                $paymentStatus = $paymentOrder->save();
-                Mage::helper('mercadopago')->log("Update Payment", 'mercadopago.log', $paymentStatus->getData());
-
-                $statusSave = $order->save();
-                Mage::helper('mercadopago')->log("Update order", 'mercadopago.log', $statusSave->getData());
-            } catch (Exception $e) {
-                Mage::helper('mercadopago')->log("error in update order status: " . $e, 'mercadopago.log');
-                $this->getResponse()->setBody($e);
-
-                $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
-            }
+        try {
+            $paymentOrder->setTransactionId($data['id']);
+            $paymentOrder->setParentTransactionId($paymentOrder->getTransactionId());
+            $transaction = $paymentOrder->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_PAYMENT, null, true, "");
+            $transaction->setAdditionalInformation('raw_details_info', $data);
+            $transaction->setIsClosed(true);
+            $transaction->save();
+        } catch (Exception $e) {
+            Mage::helper('mercadopago')->log('error in update order status: ' . $e, 'mercadopago.log');
         }
     }
 

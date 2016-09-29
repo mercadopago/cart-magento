@@ -47,7 +47,7 @@ class MercadoPago_Core_Model_Observer
     ];
 
     private $available_transparent_credit_cart = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe'];
-    private $available_transparent_ticket = ['mla', 'mlb', 'mlm'];
+    private $available_transparent_ticket = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe'];
     private $_website;
 
     const LOG_FILE = 'mercadopago.log';
@@ -186,5 +186,294 @@ class MercadoPago_Core_Model_Observer
             Mage::getConfig()->saveConfig($path, $value, 'websites', $this->_website->getId());
         }
 
+    }
+
+    public function salesOrderBeforeCancel (Varien_Event_Observer $observer) {
+        $orderID = (int) $observer->getEvent()->getControllerAction()->getRequest()->getParam('order_id');
+        $order = Mage::getModel('sales/order')->load($orderID);
+        if ($order->getExternalRequest()) {
+            return;
+        }
+        $orderStatus = $order->getData('status');
+        $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
+
+        $paymentID = $order->getPayment()->getData('additional_information')['id'];
+        $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
+
+        $isValidBasicData = $this->checkCancelationBasicData ($paymentID, $paymentMethod);
+        $isValidaData = $this->checkCancelationData ($orderStatus, $orderPaymentStatus);
+
+        if ($isValidBasicData && $isValidaData) {
+            $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+            $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+
+            $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+            $response = null;
+
+            $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+
+            if ($paymentMethod == 'mercadopago_standard') {
+                $response = $mp->cancel_payment($paymentID);
+            } else {
+                $data = [
+                    "status" => 'cancelled',
+                ];
+                $response = $mp->put("/v1/payments/$paymentID?access_token=$access_token", $data);
+            }
+
+            if ($response['status'] == 200) {
+                Mage::register('mercadopago_cancellation', true);
+                $this->_getSession()->addSuccess(__('Cancellation made by Mercado Pago'));
+            } else {
+                $this->_getSession()->addError(__('Failed to make the cancellation by Mercado Pago'));
+                $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
+                $this->throwCancelationException();
+            }
+        }
+    }
+
+    protected function checkCancelationBasicData ($paymentID, $paymentMethod) {
+
+        if ($paymentID == null) {
+            return false;
+        }
+
+        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
+            $this->_getSession()->addError(__('Order payment wasn\'t made by Mercado Pago. The cancellation will be made through Magento'));
+            return false;
+        }
+
+        $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
+        if (!$refundAvailable) {
+            $this->_getSession()->addError(__('Mercado Pago cancellations are disabled. The cancellation will be made through Magento'));
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function checkCancelationData ($orderStatus, $orderPaymentStatus) {
+        $isValidaData = true;
+
+        if (!($orderStatus == 'processing' || $orderStatus == 'pending')) {
+            $this->_getSession()->addError(__('You can only make cancellation on orders whose status is Processing or Pending'));
+            $isValidaData = false;
+        }
+
+        if (!($orderPaymentStatus == 'pending' || $orderPaymentStatus == 'in_process' || $orderPaymentStatus == 'rejected' )) {
+            $this->_getSession()->addError(__('You can only make cancellations on orders whose payment status is Rejected, Pending o In Process'));
+            $isValidaData = false;
+        }
+
+        if (!$isValidaData) {
+            $this->throwCancelationException();
+        }
+
+        return $isValidaData;
+    }
+
+    protected function throwCancelationException () {
+        Mage::register('cancel_exception', true);
+    }
+
+    protected function _getSession() {
+        return Mage::getSingleton('adminhtml/session');
+    }
+
+    public function salesOrderAfterCancel (Varien_Event_Observer $observer) {
+        $mpCancellation = Mage::registry('mercadopago_cancellation');
+        if ($mpCancellation) {
+            $order = $observer->getData('order');
+            Mage::unregister('mercadopago_cancellation');
+            $status = Mage::getStoreConfig('payment/mercadopago/order_status_cancelled');
+            $order->setState($status, true);
+        }
+    }
+
+    public function salesOrderBeforeSave () {
+        $cancelException = Mage::registry('cancel_exception');
+        if ($cancelException) {
+            Mage::unregister('cancel_exception');
+            Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Cancellation not made'));
+        }
+    }
+
+    /**
+     * @param Varien_Event_Observer $observer
+     */
+
+    public function creditMemoRefundBeforeSave (Varien_Event_Observer $observer)
+    {
+        $creditMemo = $observer->getData('creditmemo');
+        $order = $creditMemo->getOrder();
+        if ($order->getExternalRequest()) {
+            return; // si la peticion de crear un credit memo viene de mercado pago, no hace falta mandar el request nuevamente
+        }
+
+        $orderStatus = $order->getData('status');
+        $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
+        $payment = $order->getPayment();
+        $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
+        $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
+        $orderStatusHistory = $order->getAllStatusHistory();
+        $isCreditCardPayment = ($order->getPayment()->getData('additional_information')['installments'] != null ? true : false);
+
+        $paymentDate = null;
+        foreach ($orderStatusHistory as $status) {
+            if (strpos($status->getComment(), 'The payment was approved') !== false) {
+                $paymentDate = $status->getCreatedAt();
+                break;
+            }
+        }
+        $isValidBasicData = $this->checkRefundBasicData ($paymentMethod, $paymentDate);
+        $isValidaData = $this->checkRefundData ($isCreditCardPayment,
+            $orderStatus,
+            $orderPaymentStatus,
+            $paymentDate,
+            $order);
+
+        $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
+        if ($isValidBasicData && $isValidaData) {
+            $this->sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID);
+        }
+
+    }
+
+    protected function checkRefundBasicData ($paymentMethod, $paymentDate) {
+        $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
+
+        if ($paymentDate == null) {
+            $this->_getSession()->addError(__('No payment is recorded. You can\'t make a refund on a unpaid order'));
+            return false;
+        }
+
+        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
+            $this->_getSession()->addError(__('Order payment wasn\'t made by Mercado Pago. The refund will be made through Magento'));
+            return false;
+        }
+
+        if (!$refundAvailable) {
+            $this->_getSession()->addError(__('Mercado Pago refunds are disabled. The refund will be made through Magento'));
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function checkRefundData ($isCreditCardPayment,
+                                        $orderStatus,
+                                        $orderPaymentStatus,
+                                        $paymentDate,
+                                        $order)
+    {
+
+        $maxDays = (int) Mage::getStoreConfig('payment/mercadopago/maximum_days_refund');
+        $maxRefunds = (int) Mage::getStoreConfig('payment/mercadopago/maximum_partial_refunds');
+
+        $isValidaData = true;
+
+        if (!$isCreditCardPayment) {
+            $this->_getSession()->addError(__('You can only refund orders paid by credit card'));
+            $isValidaData = false;
+        }
+
+        if (!($orderStatus == 'processing' || $orderStatus == 'completed')) {
+            $this->_getSession()->addError(__('You can only make refunds on orders whose status is Processing or Completed'));
+            $isValidaData = false;
+        }
+
+        if (!($orderPaymentStatus == 'approved')) {
+            $this->_getSession()->addError(__('You can only make refunds on orders whose payment status Approved'));
+            $isValidaData = false;
+        }
+
+        if (!($this->daysSince($paymentDate) < $maxDays)) {
+            $this->_getSession()->addError(__('Refunds are accepted up to ') .
+                $maxDays . __(' days after payment approval. The current order exceeds the limit set'));
+            $isValidaData = false;
+        }
+
+        if (!(count($order->getCreditmemosCollection()->getItems()) < $maxRefunds)) {
+            $isValidaData = false;
+            $this->_getSession()->addError(__('You can only make ' . $maxRefunds . ' partial refunds on the same order'));
+        }
+
+        if (!$isValidaData) {
+            $this->throwRefundException();
+        }
+
+        return $isValidaData;
+    }
+
+    protected function sendRefundRequest ($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID) {
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+        $response = null;
+        $amount = $creditMemo->getGrandTotal();
+        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+        if ($paymentMethod == 'mercadopago_standard') {
+            if ($isTotalRefund) {
+                $response = $mp->refund_payment($paymentID);
+                $order->setMercadoPagoRefundType('total');
+            } else {
+                $order->setMercadoPagoRefundType('partial');
+                $metadata = [
+                    "reason" => '',
+                    "external_reference" => $order->getIncrementId(),
+                ];
+                $params = [
+                    "amount" => $amount,
+                    "metadata" => $metadata,
+                ];
+                $response = $mp->post("/collections/$paymentID/refunds?access_token=$access_token", $params);
+            }
+        } else {
+            if ($isTotalRefund) {
+                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token");
+            } else {
+                $params = [
+                    "amount" => $amount,
+                ];
+                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token", $params);
+            }
+        }
+
+        if ($response['status'] == 201 || $response['status'] == 200) {
+            $order->setMercadoPagoRefund(true);
+            $this->_getSession()->addSuccess(__('Refund made by Mercado Pago'));
+        } else {
+            $this->_getSession()->addError(__('Failed to make the refund by Mercado Pago'));
+            $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
+            $this->throwRefundException();
+        }
+    }
+
+    protected function throwRefundException () {
+        Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Refund not made'));
+    }
+    
+    private function daysSince($date)
+    {
+        $now = Mage::getModel('core/date')->timestamp(time());
+        $date = strtotime ($date);
+        return (abs($now - $date) / 86400);
+    }
+
+    public function creditMemoRefundAfterSave (Varien_Event_Observer $observer)
+    {
+        $creditMemo = $observer->getData('creditmemo');
+
+        $status = Mage::getStoreConfig('payment/mercadopago/order_status_refunded');
+
+        $order = $creditMemo->getOrder();
+        if ($order->getMercadoPagoRefund() || $order->getExternalRequest()) {
+            if ($order->getMercadoPagoRefundType() == 'partial' || $order->getExternalType() == 'partial') {
+                if ($order->getState() != $status) {
+                    $order->setState($status, true);
+                }
+            }
+        }
     }
 }

@@ -239,6 +239,15 @@
     background-color: #F0F0F0;
     float: left;
 }
+
+.communication {
+    padding: 10px;
+    border: 1px solid #cecece;
+    background-color: #F0F0F0;
+    float: left;
+    width: 63%;
+}
+
 .error-installment-not-work{
     cursor: pointer;
 }

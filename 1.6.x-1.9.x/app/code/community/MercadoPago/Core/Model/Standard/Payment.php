@@ -218,7 +218,8 @@ class MercadoPago_Core_Model_Standard_Payment
             "failure" => Mage::getUrl('checkout/onepage/failure')
         ];
 
-        $arr['notification_url'] = Mage::getUrl('mercadopago/notifications/standard');
+        $isSecure = ['_secure' => Mage::app()->getStore()->isCurrentlySecure()];
+        $arr['notification_url'] = Mage::getUrl('mercadopago/notifications/standard', $isSecure);
 
         $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods();
         $installments = $this->getConfigData('installments');

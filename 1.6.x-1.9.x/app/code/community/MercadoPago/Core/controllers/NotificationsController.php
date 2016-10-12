@@ -294,4 +294,39 @@ class MercadoPago_Core_NotificationsController
         return $data;
     }
 
+    /**
+     * @var $profile Mage_Sales_Model_Recurring_Profile
+     */
+    public function recurringAction()
+    {
+        $preapprovalId = $_REQUEST['preapproval_id'];
+        $this->_core = Mage::getModel('mercadopago/core');
+        $response = $this->_core->getRecurringPayment($preapprovalId);
+
+        $profileId = $response ['response']['external_reference'];
+        $newState = $response ['response']['status'];
+        $newAmount = $response ['response']['auto_recurring']['transaction_amount'];
+
+        $profile = Mage::getModel('sales/recurring_profile')->load($profileId);
+        $actualState = $profile->getState();
+        $actualAmount = $profile->getBillingAmount() + $profile->getShippingAmount();
+
+        if ($actualState != $newState) {
+            $state = null;
+            switch ($newState) {
+                case 'cancelled' : $state = Mage_Sales_Model_Recurring_Profile::STATE_CANCELED; break;
+                case 'paused' : $state = Mage_Sales_Model_Recurring_Profile::STATE_SUSPENDED; break;
+                case 'authorized' : $state = Mage_Sales_Model_Recurring_Profile::STATE_ACTIVE; break;
+            }
+            $profile->setState($state);
+            $profile->save();
+        }
+
+        if ($actualAmount != $newAmount) {
+            $billingAmount = $newAmount - $profile->getShippingAmount();
+            $profile->setBillingAmount($billingAmount);
+            $profile->save();
+        }
+    }
+
 }

@@ -204,3 +204,8 @@
 "Order payment wasn't made by Mercado Pago. The refund will be made through Magento","El pago de la orden no fue realizado mediante Mercado Pago. La devolución se hará a traves de Magento"
 "Mercado Pago refunds are disabled. The refund will be made through Magento","Las devoluciones de Mercado Pago están deshabilitadas. La devolución se hará a traves de Magento"
 "No payment is recorded. You can't make a refund on a unpaid order","No se registra ningún pago. No se pueden hacer devoluciones en ordenes sin pagar"
+"Mercado Pago - Recurring Profile not created","Mercado Pago - Perfíl Recurrente no creado"
+"Failed to update the recurring profile by Mercado Pago","Error al actualizar el Perfil Recurrente mediante Mercado Pago"
+"Recurring Profile updated by Mercado Pago","Perfil Recurrente actualizado mediante Mercado Pago"
+"Mercado Pago - Recurring Payment Checkout: Invalid client id or client secret","Mercado Pago - Recurring Payment Checkout: El id de cliente o la clave secreta, son inválidas"
+"This payment method is used only for recurring profiles.","Este método de pago es usado solo para perfiles recurrentes"

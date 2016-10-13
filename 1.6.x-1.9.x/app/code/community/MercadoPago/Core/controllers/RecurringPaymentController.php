@@ -6,15 +6,15 @@ class MercadoPago_Core_RecurringPaymentController
 {
     public function indexAction()
     {
-        $standard = Mage::getModel('mercadopago/recurring_payment');
+        $recurring = Mage::getModel('mercadopago/recurring_payment');
 
-        $array_assign = $standard->getRecurringPaymentData();
+        $arrayAssign = $recurring->getRecurringPaymentData();
 
         $this->loadLayout();
 
         $block = Mage::app()->getLayout()->createBlock('mercadopago/recurring_pay');
 
-        $block->assign($array_assign);
+        $block->assign($arrayAssign);
 
         $this->getLayout()->getBlock('content')->append($block);
         $this->_initLayoutMessages('core/session');

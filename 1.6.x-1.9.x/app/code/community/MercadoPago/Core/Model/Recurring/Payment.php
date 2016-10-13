@@ -21,6 +21,11 @@ class MercadoPago_Core_Model_Recurring_Payment
     protected $_canCreateBillingAgreement = true;
     protected $_canReviewPayment = true;
 
+    protected $_periodFrequency;
+    protected $_periodUnit;
+    protected $_startDate;
+    protected $_endDate;
+
     const LOG_FILE = 'mercadopago-recurring.log';
 
     public function isAvailable($quote = null)
@@ -52,7 +57,55 @@ class MercadoPago_Core_Model_Recurring_Payment
 
     public function validateRecurringProfile(Mage_Payment_Model_Recurring_Profile $profile)
     {
+        $core = Mage::getModel('mercadopago/core');
+        $response = $core->getRecurringPayment($profile->getReferenceId());
+        if ($response['status'] == 201 || $response['status'] == 200) {
+            return true;
+        }
+        return false;
+    }
 
+
+    protected function calculateEndDate ($profile) {
+        $date = new DateTime($profile->getStartDatetime());
+        $date->modify('+3 minute');
+        $this->_startDate = $date->format("Y-m-d\TH:i:s.mO");
+
+        $daysModifier = 1;
+        $endDate = null;
+        switch ($profile->getPeriodUnit()) {
+            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_DAY:
+                $this->_periodUnit = 'days';
+                $this->_periodFrequency = $profile->getPeriodFrequency();
+                break;
+            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_WEEK:
+                $this->_periodUnit = 'days';
+                $this->_periodFrequency = $profile->getPeriodFrequency() * 7;
+                $daysModifier = 7;
+                break;
+            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_SEMI_MONTH:
+                $this->_periodUnit = 'days';
+                $this->_periodFrequency = $profile->getPeriodFrequency() * 14;
+                $daysModifier = 14;
+                break;
+            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_MONTH:
+                $this->_periodUnit = 'months';
+                $this->_periodFrequency = $profile->getPeriodFrequency();
+                $endDate = $date->modify('+' . $profile->getPeriodMaxCycles() . ' ' . $this->_periodUnit);
+                break;
+            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_YEAR:
+                $this->_periodUnit = 'days';
+                $this->_periodFrequency = $profile->getPeriodFrequency() * 365;
+                $daysModifier = 365;
+                break;
+        }
+
+        if (!isset($endDate)) {
+            $endDate = $date->modify('+' . $profile->getPeriodMaxCycles() * $daysModifier . ' ' . $this->_periodUnit);
+        }
+
+        $endDate->modify('-3 minutes');
+        $this->_endDate = $endDate->format("Y-m-d\TH:i:s.mO");
     }
 
     /**
@@ -73,46 +126,7 @@ class MercadoPago_Core_Model_Recurring_Payment
             $mp->sandbox_mode(true);
         }
 
-        $date = new DateTime($profile->getStartDatetime());
-        $date->modify('+3 minute');
-        $startDate = $date->format("Y-m-d\TH:i:s.mO");
-
-        $periodUnit = null;
-        $periodFrequency = null;
-        $daysModifier = 1;
-        $endDate = null;
-        switch ($profile->getPeriodUnit()) {
-            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_DAY:
-                $periodUnit = 'days';
-                $periodFrequency = $profile->getPeriodFrequency();
-                break;
-            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_WEEK:
-                $periodUnit = 'days';
-                $periodFrequency = $profile->getPeriodFrequency() * 7;
-                $daysModifier = 7;
-                break;
-            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_SEMI_MONTH:
-                $periodUnit = 'days';
-                $periodFrequency = $profile->getPeriodFrequency() * 14;
-                $daysModifier = 14;
-                break;
-            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_MONTH:
-                $periodUnit = 'months';
-                $periodFrequency = $profile->getPeriodFrequency();
-                $endDate = $date->modify('+' . $profile->getPeriodMaxCycles() . ' ' . $periodUnit);
-                break;
-            case Mage_Payment_Model_Recurring_Profile::PERIOD_UNIT_YEAR:
-                $periodUnit = 'days';
-                $periodFrequency = $profile->getPeriodFrequency() * 365;
-                $daysModifier = 365;
-                break;
-        }
-
-        if (!isset($endDate)) {
-            $endDate = $date->modify('+' . $profile->getPeriodMaxCycles() * $daysModifier . ' ' . $periodUnit);
-        }
-
-        $endDate->modify('-3 minutes');
+        $this->calculateEndDate($profile);
 
         $backUrl = Mage::getStoreConfig('payment/mercadopago_recurring/back_url');
 
@@ -122,12 +136,12 @@ class MercadoPago_Core_Model_Recurring_Payment
             "reason" => $profile->getScheduleDescription(),
             "external_reference" => $profile->getId(),
             "auto_recurring" => array(
-                "frequency" => $periodFrequency,
-                "frequency_type" => $periodUnit,
+                "frequency" => $this->_periodFrequency,
+                "frequency_type" => $this->_periodUnit,
                 "transaction_amount" => $profile->getBillingAmount() + $profile->getShippingAmount(),
                 "currency_id" => $profile->getCurrencyCode(),
-                "start_date" => $startDate,
-                "end_date" => $endDate->format("Y-m-d\TH:i:s.mO")
+                "start_date" => $this->_startDate,
+                "end_date" => $this->_endDate
             )
         );
 
@@ -191,19 +205,23 @@ class MercadoPago_Core_Model_Recurring_Payment
 
         $isAdmin = Mage::app()->getStore()->isAdmin();
         if ($isAdmin) {
-            $localAmount = $product->getPrice() + $profile->getShippingAmount();
-            if ($localAmount != $newAmount) {
-                $clientId = Mage::getStoreConfig('payment/mercadopago_recurring/client_id');
-                $clientSecret = Mage::getStoreConfig('payment/mercadopago_recurring/client_secret');
-                $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
-                $response = $mp->update_preapproval_payment($referenceId, ["auto_recurring" => ["transaction_amount" => $localAmount]]);
-                if ($response['status'] == 201 || $response['status'] == 200) {
-                    $profile->setBillingAmount($localAmount);
-                    $this->_getSession()->addSuccess(__('Recurring Profile updated by Mercado Pago'));
-                } else {
-                    $this->_getSession()->addError(__('Failed to update the recurring profile by Mercado Pago'));
-                    $this->_getSession()->addError($response['response']['message']);
-                }
+            $this->getUpdateFromAdmin($product, $profile, $newAmount, $referenceId);
+        }
+    }
+
+    protected function getUpdateFromAdmin ($product, $profile, $newAmount, $referenceId) {
+        $localAmount = $product->getPrice() + $profile->getShippingAmount();
+        if ($localAmount != $newAmount) {
+            $clientId = Mage::getStoreConfig('payment/mercadopago_recurring/client_id');
+            $clientSecret = Mage::getStoreConfig('payment/mercadopago_recurring/client_secret');
+            $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+            $response = $mp->update_preapproval_payment($referenceId, ["auto_recurring" => ["transaction_amount" => $localAmount]]);
+            if ($response['status'] == 201 || $response['status'] == 200) {
+                $profile->setBillingAmount($localAmount);
+                $this->_getSession()->addSuccess(__('Recurring Profile updated by Mercado Pago'));
+            } else {
+                $this->_getSession()->addError(__('Failed to update the recurring profile by Mercado Pago'));
+                $this->_getSession()->addError($response['response']['message']);
             }
         }
     }

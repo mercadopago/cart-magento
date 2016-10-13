@@ -299,7 +299,7 @@ class MercadoPago_Core_NotificationsController
      */
     public function recurringAction()
     {
-        $preapprovalId = $_REQUEST['preapproval_id'];
+        $preapprovalId = $this->getRequest()->getParams()['preapproval_id'];
         $this->_core = Mage::getModel('mercadopago/core');
         $response = $this->_core->getRecurringPayment($preapprovalId);
 

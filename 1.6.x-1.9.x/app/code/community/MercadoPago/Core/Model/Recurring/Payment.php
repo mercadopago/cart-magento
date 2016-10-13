@@ -234,7 +234,7 @@ class MercadoPago_Core_Model_Recurring_Payment
         $id = $profile->getData('schedule_description');
         $response = $mp->update_preapproval_payment($id, ["auto_recurring" => ["transaction_amount" => $newAmount]]);
         if ($response['status'] == 201 || $response['status'] == 200) {
-            
+            $this->_getSession()->addSuccess(__('Recurring Profile updated by Mercado Pago'));
         } else {
             Mage::throwException(Mage::helper('mercadopago')->__('Failed to update the recurring profile by Mercado Pago'));
         }

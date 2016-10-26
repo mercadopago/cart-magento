@@ -247,6 +247,7 @@ class MercadoPago_Core_NotificationsController
             "status",
             "status_detail",
             "payment_id_detail",
+            "id",
             "payment_method_id",
             "transaction_amount",
             "total_paid_amount",

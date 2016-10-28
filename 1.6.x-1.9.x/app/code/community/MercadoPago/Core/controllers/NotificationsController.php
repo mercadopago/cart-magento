@@ -50,23 +50,28 @@ class MercadoPago_Core_NotificationsController
                 if (!$this->_handleMerchantOrder()) {
                     return;
                 }
+                $this->_order = Mage::getModel('sales/order')->loadByIncrementId($this->_paymentData["external_reference"]);
+                $this->_statusHelper->setStatusUpdated($this->_paymentData, $this->_order);
                 break;
             case 'payment':
                 $this->_paymentData = $this->_getFormattedPaymentData($this->_getRequestData('id'));
+                if (empty($this->_paymentData)) {
+                    return;
+                }
                 $this->_statusFinal = $this->_paymentData['status'];
+                $this->_order = Mage::getModel('sales/order')->loadByIncrementId($this->_paymentData["external_reference"]);
+                $this->_statusHelper->setStatusUpdated($this->_paymentData, $this->_order, true);
                 break;
             default:
                 $this->_responseLog();
 
                 return;
         }
-        $this->_order = Mage::getModel('sales/order')->loadByIncrementId($this->_paymentData["external_reference"]);
         if (!$this->_orderExists()) {
             return;
         }
 
         $this->_helper->log('Update Order', self::LOG_FILE);
-        $this->_statusHelper->setStatusUpdated($this->_paymentData, $this->_order);
         $this->_core->updateOrder($this->_order, $this->_paymentData);
         $this->_dispatchBeforeSetEvent();
 
@@ -151,6 +156,9 @@ class MercadoPago_Core_NotificationsController
     protected function _getFormattedPaymentData($paymentId, $data = [])
     {
         $response = $this->_core->getPayment($paymentId);
+        if (!$this->_isValidResponse($response)) {
+            return [];
+        }
         $payment = $response['response']['collection'];
 
         return $this->formatArrayPayment($data, $payment);
@@ -183,7 +191,8 @@ class MercadoPago_Core_NotificationsController
         return false;
     }
 
-    protected function _isValidResponse($response) {
+    protected function _isValidResponse($response)
+    {
         return ($response['status'] == 200 || $response['status'] == 201);
     }
 

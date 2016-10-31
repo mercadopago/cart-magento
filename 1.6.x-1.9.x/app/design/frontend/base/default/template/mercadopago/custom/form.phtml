@@ -32,7 +32,10 @@ $customer = $this->getCustomerAndCards();
                 <?php
             endif;
             ?>
-
+            <li id="first_card_amount_fields" class="show_second_card">
+                <label for="firstCard"><?php echo $this->__('Amount'); ?></label>
+                <input type="text" id="first_card_amount" class="required-entry" max="<?php echo $grant_total; ?>" />
+            </li>
             <?php if ($customer !== false && isset($customer['cards']) && count($customer['cards']) > 0): ?>
                 <li>
                     <ul id="mercadopago_checkout_custom_ocp">
@@ -160,6 +163,12 @@ $customer = $this->getCustomerAndCards();
                 <p class="message-error error-other validation-advice"><?php echo $this->__('Please validate your data.'); ?></p>
 
             </li>
+            
+            <div><a id="show_second_card" class="action_ocp" ><?php echo $this->__('Use 2 Cards'); ?></a></div>
+            <?php
+                echo $this->setTemplate('mercadopago/custom/secondCard.phtml')->toHtml();
+            ?>
+
             <li>
                 <div id="mercadopago-loading">
                     <img src="<?php echo $this->getSkinUrl('mercadopago/images/loading.gif'); ?>" alt="loading"/>

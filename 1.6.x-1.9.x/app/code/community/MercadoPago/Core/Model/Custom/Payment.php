@@ -42,23 +42,76 @@ class MercadoPago_Core_Model_Custom_Payment
             Mage::throwException(Mage::helper('mercadopago')->__('Verify the form data or wait until the validation of the payment data'));
         }
 
-        $response = $this->preparePostPayment();
+        $useTwoCards = $this->getInfoInstance()->getAdditionalInformation('is_second_card_used');
 
-        if ($response) {
-            $payment = $response['response'];
-            //set status
-            $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
-            $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $payment['id']);
-            $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
-            $stateObject->setState(Mage::helper('mercadopago/statusUpdate')->_getAssignedState('pending_payment'));
-            $stateObject->setStatus('pending_payment');
-            $stateObject->setIsNotified(false);
+        if ($useTwoCards === "true") {
+            $usingSecondCardInfo['first_card']['amount'] = $this->getInfoInstance()->getAdditionalInformation('first_card_amount');
+            $usingSecondCardInfo['first_card']['installments'] = $this->getInfoInstance()->getAdditionalInformation('installments');
+            $usingSecondCardInfo['first_card']['payment_method_id'] = $this->getInfoInstance()->getAdditionalInformation('payment_method');
+            $usingSecondCardInfo['first_card']['token'] = $this->getInfoInstance()->getAdditionalInformation('token');
 
-            return true;
+            $usingSecondCardInfo['second_card']['amount'] = $this->getInfoInstance()->getAdditionalInformation('second_card_amount');
+            $usingSecondCardInfo['second_card']['installments'] = $this->getInfoInstance()->getAdditionalInformation('second_card_installments');
+            $usingSecondCardInfo['second_card']['payment_method_id'] = $this->getInfoInstance()->getAdditionalInformation('second_card_payment_method_id');
+            $usingSecondCardInfo['second_card']['token'] = $this->getInfoInstance()->getAdditionalInformation('second_card_token');
+
+            $responseFirstCard = $this->preparePostPayment($usingSecondCardInfo['first_card']);
+            if ($responseFirstCard) {
+                $payment = $responseFirstCard['response'];
+                $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
+                $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $payment['id']);
+                $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
+                $responseSecondCard = $this->preparePostPayment($usingSecondCardInfo['second_card']);
+
+                if ($responseSecondCard) {
+                    $payment = $responseSecondCard['response'];
+                    $this->getInfoInstance()->setAdditionalInformation('status_second_card', $payment['status']);
+                    $this->getInfoInstance()->setAdditionalInformation('payment_id_detail_second_card', $payment['id']);
+                    $this->getInfoInstance()->setAdditionalInformation('status_detail_second_card', $payment['status_detail']);
+                    $stateObject->setState(Mage::helper('mercadopago/statusUpdate')->_getAssignedState('pending_payment'));
+                    $stateObject->setStatus('pending_payment');
+                    $stateObject->setIsNotified(false);
+                    $this->saveOrder();
+                    return true;
+                } else {
+                    //devolucion de la primer tarjeta
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
+
+        } else {
+
+            $response = $this->preparePostPayment();
+
+            if ($response) {
+                $payment = $response['response'];
+                //set status
+                $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
+                $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $payment['id']);
+                $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
+                $stateObject->setState(Mage::helper('mercadopago/statusUpdate')->_getAssignedState('pending_payment'));
+                $stateObject->setStatus('pending_payment');
+                $stateObject->setIsNotified(false);
+
+                $this->saveOrder();
+
+                return true;
+            }
         }
 
         return false;
     }
+
+    protected function saveOrder() {
+        $quote = $this->_getQuote();
+        $order_id = $quote->getReservedOrderId();
+        $order = $this->_getOrder($order_id);
+        $order->save();
+    }
+
 
     protected function cleanFieldsOcp($info)
     {
@@ -131,7 +184,7 @@ class MercadoPago_Core_Model_Custom_Payment
         return $payment_info;
     }
 
-    public function preparePostPayment()
+    public function preparePostPayment($usingSecondCardInfo = null)
     {
         Mage::helper('mercadopago')->log("Credit Card -> init prepare post payment", self::LOG_FILE);
         $core = Mage::getModel('mercadopago/core');
@@ -142,11 +195,22 @@ class MercadoPago_Core_Model_Custom_Payment
         $payment = $order->getPayment();
         $payment_info = $this->getPaymentInfo($payment);
 
+        if (isset($usingSecondCardInfo)) {
+            $payment_info['transaction_amount'] = $usingSecondCardInfo ['amount'];
+        }
+
         $preference = $core->makeDefaultPreferencePaymentV1($payment_info);
 
-        $preference['installments'] = (int)$payment->getAdditionalInformation("installments");
-        $preference['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
-        $preference['token'] = $payment->getAdditionalInformation("token");
+        if (isset($usingSecondCardInfo)) {
+            $preference['installments'] = (int)$usingSecondCardInfo['installments'];
+            $preference['payment_method_id'] = $usingSecondCardInfo['payment_method'];
+            $preference['token'] = $usingSecondCardInfo['token'];
+        } else {
+            $preference['installments'] = (int)$payment->getAdditionalInformation("installments");
+            $preference['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
+            $preference['token'] = $payment->getAdditionalInformation("token");
+        }
+
 
         if ($payment->getAdditionalInformation("issuer_id") != "") {
             $preference['issuer_id'] = (int)$payment->getAdditionalInformation("issuer_id");
@@ -163,8 +227,6 @@ class MercadoPago_Core_Model_Custom_Payment
 
         /* POST /v1/payments */
         $response = $core->postPaymentV1($preference);
-
-        $order->save();
 
         return $response;
     }

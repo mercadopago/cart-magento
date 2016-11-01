@@ -156,7 +156,7 @@ class MercadoPago_Core_Helper_StatusUpdate
     {
         $statusDetail = $payment['status_detail'];
         $status = $payment['status'];
-        if ($status == 'approved') {
+        if ($this->_getMulticardLastValue($status) == 'approved') {
             Mage::helper('mercadopago')->setOrderSubtotals($payment, $this->_order);
             $this->_createInvoice($this->_order, $message);
             //Associate card to customer
@@ -205,7 +205,7 @@ class MercadoPago_Core_Helper_StatusUpdate
 
     public function getStatusOrder($status, $statusDetail)
     {
-        switch ($status) {
+        switch ($this->_getMulticardLastValue($status)) {
             case 'approved': {
                 $status = Mage::getStoreConfig('payment/mercadopago/order_status_approved');
 

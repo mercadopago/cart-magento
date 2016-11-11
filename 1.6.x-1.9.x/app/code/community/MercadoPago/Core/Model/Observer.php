@@ -194,7 +194,7 @@ class MercadoPago_Core_Model_Observer
         
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
 
-        if ($order->getExternalRequest() || $this->_isMercadoPago($paymentMethod)) {
+        if ($order->getExternalRequest() || !$this->_isMercadoPago($paymentMethod)) {
             return;
         }
         $orderStatus = $order->getData('status');
@@ -311,7 +311,7 @@ class MercadoPago_Core_Model_Observer
 
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
 
-        if ($order->getExternalRequest() || $this->_isMercadoPago($paymentMethod)) {
+        if ($order->getExternalRequest() || !$this->_isMercadoPago($paymentMethod)) {
             return; // si la peticion de crear un credit memo viene de mercado pago, no hace falta mandar el request nuevamente
         }
 

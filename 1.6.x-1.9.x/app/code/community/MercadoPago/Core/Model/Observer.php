@@ -484,10 +484,6 @@ class MercadoPago_Core_Model_Observer
 
     protected function _isMercadoPago($paymentMethod)
     {
-        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-
-            return;
-        }
-
+        return ($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom');
     }
 }

@@ -144,13 +144,13 @@ class MercadoPago_Core_Model_Observer
                 'MPE' => 217178514,
             ];
             $countryCode = $user['response']['site_id'];
-            
+
             if (isset($sponsors[$countryCode])) {
                 $sponsorId = $sponsors[$countryCode];
             } else {
                 $sponsorId = "";
             }
-            
+
             Mage::helper('mercadopago')->log("Sponsor id set", self::LOG_FILE, $sponsorId);
         }
         $this->_saveWebsiteConfig('payment/mercadopago/sponsor_id', $sponsorId);
@@ -191,6 +191,13 @@ class MercadoPago_Core_Model_Observer
     public function salesOrderBeforeCancel (Varien_Event_Observer $observer) {
         $orderID = (int) $observer->getEvent()->getControllerAction()->getRequest()->getParam('order_id');
         $order = Mage::getModel('sales/order')->load($orderID);
+        
+        $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
+        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
+
+            return;
+        }
+        
         if ($order->getExternalRequest()) {
             return;
         }
@@ -198,7 +205,6 @@ class MercadoPago_Core_Model_Observer
         $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
 
         $paymentID = $order->getPayment()->getData('additional_information')['id'];
-        $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
 
         $isValidBasicData = $this->checkCancelationBasicData ($paymentID, $paymentMethod);
         $isValidaData = $this->checkCancelationData ($orderStatus, $orderPaymentStatus);
@@ -306,6 +312,13 @@ class MercadoPago_Core_Model_Observer
     {
         $creditMemo = $observer->getData('creditmemo');
         $order = $creditMemo->getOrder();
+
+        $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
+        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
+
+             return;
+        }
+
         if ($order->getExternalRequest()) {
             return; // si la peticion de crear un credit memo viene de mercado pago, no hace falta mandar el request nuevamente
         }
@@ -314,7 +327,7 @@ class MercadoPago_Core_Model_Observer
         $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
         $payment = $order->getPayment();
         $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
-        $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
+
         $orderStatusHistory = $order->getAllStatusHistory();
         $isCreditCardPayment = ($order->getPayment()->getData('additional_information')['installments'] != null ? true : false);
 
@@ -453,7 +466,7 @@ class MercadoPago_Core_Model_Observer
     protected function throwRefundException () {
         Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Refund not made'));
     }
-    
+
     private function daysSince($date)
     {
         $now = Mage::getModel('core/date')->timestamp(time());

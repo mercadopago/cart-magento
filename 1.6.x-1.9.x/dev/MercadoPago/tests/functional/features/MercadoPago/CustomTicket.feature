@@ -33,4 +33,4 @@ Feature: Validation of custom checkout form
       | country |  user                              |
       | mla     |  test_user_58666377@testuser.com   |
       | mlb     |  test_user_98856744@testuser.com   |
-      | mlm     |  test_user_96604781@testuser.com   |
+      | mlm     |  test_user_22658191@testuser.com   |

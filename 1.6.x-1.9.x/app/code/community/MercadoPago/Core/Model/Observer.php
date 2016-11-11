@@ -193,12 +193,8 @@ class MercadoPago_Core_Model_Observer
         $order = Mage::getModel('sales/order')->load($orderID);
         
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
-        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
 
-            return;
-        }
-        
-        if ($order->getExternalRequest()) {
+        if ($order->getExternalRequest() || $this->_isMercadoPago($paymentMethod)) {
             return;
         }
         $orderStatus = $order->getData('status');
@@ -314,12 +310,8 @@ class MercadoPago_Core_Model_Observer
         $order = $creditMemo->getOrder();
 
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
-        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
 
-             return;
-        }
-
-        if ($order->getExternalRequest()) {
+        if ($order->getExternalRequest() || $this->_isMercadoPago($paymentMethod)) {
             return; // si la peticion de crear un credit memo viene de mercado pago, no hace falta mandar el request nuevamente
         }
 
@@ -488,5 +480,14 @@ class MercadoPago_Core_Model_Observer
                 }
             }
         }
+    }
+
+    protected function _isMercadoPago($paymentMethod)
+    {
+        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
+
+            return;
+        }
+
     }
 }

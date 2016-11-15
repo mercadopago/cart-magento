@@ -194,13 +194,16 @@ class MercadoPago_Core_Model_Observer
         
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
 
+        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
+            return;
+        }
         if ($order->getExternalRequest() || !$this->_isMercadoPago($paymentMethod)) {
             return;
         }
         $orderStatus = $order->getData('status');
         $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
 
-        $paymentID = $order->getPayment()->getData('additional_information')['id'];
+        $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
 
         $isValidBasicData = $this->checkCancelationBasicData ($paymentID, $paymentMethod);
         $isValidaData = $this->checkCancelationData ($orderStatus, $orderPaymentStatus);
@@ -275,7 +278,9 @@ class MercadoPago_Core_Model_Observer
     }
 
     protected function throwCancelationException () {
-        Mage::register('cancel_exception', true);
+        if (Mage::registry('cancel_exception') != null) {
+            Mage::register('cancel_exception', true);
+        }
     }
 
     protected function _getSession() {

@@ -205,6 +205,10 @@ class MercadoPago_Core_Model_Observer
 
         $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
 
+        if ($orderPaymentStatus == null || $paymentID == null) {
+            return;
+        }
+
         $isValidBasicData = $this->checkCancelationBasicData ($paymentID, $paymentMethod);
         $isValidaData = $this->checkCancelationData ($orderStatus, $orderPaymentStatus);
 

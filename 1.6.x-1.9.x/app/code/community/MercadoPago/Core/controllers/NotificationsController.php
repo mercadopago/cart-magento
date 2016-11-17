@@ -51,6 +51,9 @@ class MercadoPago_Core_NotificationsController
                     return;
                 }
                 $this->_order = Mage::getModel('sales/order')->loadByIncrementId($this->_paymentData["external_reference"]);
+                if ($this->_order->getStatus() == 'canceled') {
+                    return;
+                }
                 $this->_statusHelper->setStatusUpdated($this->_paymentData, $this->_order);
                 break;
             case 'payment':
@@ -60,6 +63,9 @@ class MercadoPago_Core_NotificationsController
                 }
                 $this->_statusFinal = $this->_paymentData['status'];
                 $this->_order = Mage::getModel('sales/order')->loadByIncrementId($this->_paymentData["external_reference"]);
+                if ($this->_order->getStatus() == 'cancelled') {
+                    return;
+                }
                 $this->_statusHelper->setStatusUpdated($this->_paymentData, $this->_order, true);
                 break;
             default:
@@ -106,7 +112,7 @@ class MercadoPago_Core_NotificationsController
 
                 $payment = $this->_helper->setPayerInfo($payment);
                 $this->_order = Mage::getModel('sales/order')->loadByIncrementId($payment['external_reference']);
-                if (!$this->_orderExists()) {
+                if (!$this->_orderExists() || $this->_order->getStatus() == 'canceled') {
                     return;
                 }
                 $this->_helper->log('Update Order', self::LOG_FILE);

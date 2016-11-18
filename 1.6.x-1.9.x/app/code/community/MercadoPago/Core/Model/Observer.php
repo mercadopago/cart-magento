@@ -213,31 +213,35 @@ class MercadoPago_Core_Model_Observer
         $isValidaData = $this->checkCancelationData ($orderStatus, $orderPaymentStatus);
 
         if ($isValidBasicData && $isValidaData) {
-            $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-            $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+            $this->_sendCancellationRequest ($paymentMethod, $paymentID);
+        }
+    }
 
-            $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
-            $response = null;
+    protected function _sendCancellationRequest ($paymentMethod, $paymentID) {
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
 
-            $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+        $response = null;
 
-            if ($paymentMethod == 'mercadopago_standard') {
-                $response = $mp->cancel_payment($paymentID);
-            } else {
-                $data = [
-                    "status" => 'cancelled',
-                ];
-                $response = $mp->put("/v1/payments/$paymentID?access_token=$access_token", $data);
-            }
+        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
 
-            if ($response['status'] == 200) {
-                Mage::register('mercadopago_cancellation', true);
-                $this->_getSession()->addSuccess(__('Cancellation made by Mercado Pago'));
-            } else {
-                $this->_getSession()->addError(__('Failed to make the cancellation by Mercado Pago'));
-                $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
-                $this->throwCancelationException();
-            }
+        if ($paymentMethod == 'mercadopago_standard') {
+            $response = $mp->cancel_payment($paymentID);
+        } else {
+            $data = [
+                "status" => 'cancelled',
+            ];
+            $response = $mp->put("/v1/payments/$paymentID?access_token=$access_token", $data);
+        }
+
+        if ($response['status'] == 200) {
+            Mage::register('mercadopago_cancellation', true);
+            $this->_getSession()->addSuccess(__('Cancellation made by Mercado Pago'));
+        } else {
+            $this->_getSession()->addError(__('Failed to make the cancellation by Mercado Pago'));
+            $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
+            $this->throwCancelationException();
         }
     }
 

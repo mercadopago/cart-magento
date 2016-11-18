@@ -80,6 +80,10 @@ class MercadoPago_Core_NotificationsController
             return;
         }
 
+        $this->_postStandardAction();
+    }
+
+    protected function _postStandardAction () {
         $this->_helper->log('Update Order', self::LOG_FILE);
         $this->_core->updateOrder($this->_order, $this->_paymentData);
         $this->_dispatchBeforeSetEvent();

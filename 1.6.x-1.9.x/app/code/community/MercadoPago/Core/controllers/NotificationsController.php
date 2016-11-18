@@ -71,7 +71,7 @@ class MercadoPago_Core_NotificationsController
         $this->_order = Mage::getModel('sales/order')->loadByIncrementId($this->_paymentData["external_reference"]);
         if ($this->_order->getStatus() == 'canceled') {
             $this->_helper->log(MercadoPago_Core_Helper_Response::INFO_ORDER_CANCELED, self::LOG_FILE, $this->_requestData);
-            $this->_setResponse(MercadoPago_Core_Helper_Response::INFO_ORDER_CANCELED, MercadoPago_Core_Helper_Response::HTTP_FORBIDDEN);
+            $this->_setResponse(MercadoPago_Core_Helper_Response::INFO_ORDER_CANCELED, MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
             
             return;
         }

@@ -33,8 +33,10 @@ $customer = $this->getCustomerAndCards();
             endif;
             ?>
             <li id="first_card_amount_fields" class="show_second_card">
-                <label for="firstCard"><?php echo $this->__('Amount'); ?></label>
-                <input type="text" id="first_card_amount" class="required-entry" max="<?php echo $grant_total; ?>" />
+                <div>
+                    <label for="firstCard"><?php echo $this->__('Amount'); ?></label>
+                    <input type="text" id="first_card_amount" class="required-entry" max="<?php echo $grant_total; ?>" />
+                </div>
             </li>
             <?php if ($customer !== false && isset($customer['cards']) && count($customer['cards']) > 0): ?>
                 <li>
@@ -42,26 +44,26 @@ $customer = $this->getCustomerAndCards();
                         <li id="cardId__mp">
 
                             <div><a id="use_other_card_mp" class="action_ocp"><?php echo $this->__('Use other card'); ?></a></div>
+                                <label id="payment_label" for="cardNumber"><?php echo $this->__('Payment Method: '); ?></label>
+                                <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp">
+                                    <?php foreach ($customer['cards'] as $card) { ?>
+                                        <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>" secure_thumb="<?php echo $card["payment_method"]["secure_thumbnail"]; ?>" payment_method_id="<?php echo $card["payment_method"]["id"]; ?>">
 
-                            <label for="cardNumber"><?php echo $this->__('Payment Method'); ?></label>
-                            <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp">
-                                <?php foreach ($customer['cards'] as $card) { ?>
-                                    <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>" secure_thumb="<?php echo $card["payment_method"]["secure_thumbnail"]; ?>" payment_method_id="<?php echo $card["payment_method"]["id"]; ?>">
+                                            <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
 
-                                        <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-
-                            <input type="hidden" name="payment[<?php echo $_code; ?>][customer_id]" value="<?php echo $customer['id']; ?>">
+                                <input type="hidden" name="payment[<?php echo $_code; ?>][customer_id]" value="<?php echo $customer['id']; ?>">
 
                         </li>
 
                         <li id="securityCodeOCP__mp">
-                            <label for="securityCode"><?php echo $this->__('CVV'); ?></label>
+                            <label id="security_label" for="securityCode"><?php echo $this->__('CVV'); ?></label>
                             <input type="text" id="securityCodeOCP" class="required-entry" data-checkout="securityCode" maxlength="4" data-element-id="#securityCodeOCP__mp"/>
 
                             <p class="message-error error-E302 error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
+                            <span class="ch-form-hint" id="helpSecurityCode">Últimos 3 números que están al dorso.</span>
                         </li>
                     </ul>
                 </li>
@@ -99,7 +101,7 @@ $customer = $this->getCustomerAndCards();
 
                     <li id="expiration_date__mp">
                         <div id="box_month">
-                            <label for="cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
+                            <label id="cardExpirationMonthLabel" for="cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
                             <select id="cardExpirationMonth" data-checkout="cardExpirationMonth" class="mp-validate-cc-exp" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#expiration_date__mp">
                                 <?php foreach ($this->getCcMonths() as $m => $v): ?>
                                     <option value="<?php echo $m ? $m : ''; ?>"><?php echo $v; ?></option>
@@ -110,7 +112,7 @@ $customer = $this->getCustomerAndCards();
                         </div>
 
                         <div id="box_year">
-                            <label for="cardExpirationYear"><?php echo $this->__('Year'); ?></label>
+                            <label id="cardExpirationYearLabel" for="cardExpirationYear"><?php echo $this->__('Year'); ?></label>
                             <select id="cardExpirationYear" data-checkout="cardExpirationYear" name="payment[<?php echo $_code; ?>][card_expiration_year]" data-element-id="#expiration_date__mp">
                                 <?php foreach ($this->getCcYears() as $y => $v): ?>
                                     <option value="<?php echo $y ? $y : ''; ?>"><?php echo $v; ?></option>
@@ -163,7 +165,12 @@ $customer = $this->getCustomerAndCards();
                 <p class="message-error error-other validation-advice"><?php echo $this->__('Please validate your data.'); ?></p>
 
             </li>
-            
+
+            <li class="total_buy">
+                <label> <?php echo $this->__('Total amount: '); ?> </label>
+                <span class="total_buy_price"> $<?php echo $grant_total; ?>.-</span>
+            </li>
+
             <div><a id="show_second_card" class="action_ocp" ><?php echo $this->__('Use 2 Cards'); ?></a></div>
             <?php
                 echo $this->setTemplate('mercadopago/custom/secondCard.phtml')->toHtml();

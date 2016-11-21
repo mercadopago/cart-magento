@@ -13,14 +13,15 @@ $customer = $this->getCustomerAndCards();
 <fieldset id="second_card_fieldset">
     <div id="mercadopago_checkout_custom_second_card">
     <ul id="second_card_payment_form_<?php echo $_code ?>" class="show_second_card">
-        <div><a id="hide_second_card" class="action_ocp" ><?php echo $this->__('Back to only one card'); ?></a></div>
+        <div><a data-toggle="tooltip" title="Back to only one card" id="hide_second_card" class="action_ocp" >X</a></div>
         <li id="secondCardAmount">
             <label for="secondCard"><?php echo $this->__('Amount'); ?></label>
-            <input type="text" id="second_card_amount" class="required-entry" readonly/>
+            <span id="second_card_amount_holder">$<input type="text" id="second_card_amount" class="required-entry" readonly/></span>
+
         </li>
 
         <?php if ($customer !== false && isset($customer['cards']) && count($customer['cards']) > 0): ?>
-            <li>
+            <li id="second_card_payment">
                 <ul id="second_card_mercadopago_checkout_custom_ocp">
                     <li id="second_card_cardId__mp">
 
@@ -45,6 +46,7 @@ $customer = $this->getCustomerAndCards();
                         <input type="text" id="second_card_securityCodeOCP" class="required-entry" data-checkout="securityCode" maxlength="4" data-element-id="#second_card_securityCodeOCP__mp"/>
 
                         <p class="message-error error-E302 error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
+                        <span class="ch-form-hint" id="helpSecurityCode">Últimos 3 números que están al dorso.</span>
                     </li>
                 </ul>
             </li>
@@ -81,7 +83,7 @@ $customer = $this->getCustomerAndCards();
 
                 <li id="second_card_expiration_date__mp">
                 <div id="second_card_box_month">
-                    <label for="second_card_cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
+                    <label id="second_card_cardExpirationMonthLabel" for="second_card_cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
                     <select id="second_card_cardExpirationMonth" data-checkout-second-card="second_card_cardExpirationMonth" class="mp-validate-cc-exp" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#second_card_expiration_date__mp">
                         <?php foreach ($this->getCcMonths() as $m => $v): ?>
                             <option value="<?php echo $m ? $m : ''; ?>"><?php echo $v; ?></option>
@@ -115,6 +117,7 @@ $customer = $this->getCustomerAndCards();
                     <input type="text" id="second_card_securityCode" data-checkout-second-card="second_card_securityCode" maxlength="4" data-element-id="#second_card_securityCode__mp" class="required-entry"/>
 
                     <p class="message-error second_card_error-E302 second_card_error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
+                    <span class="ch-form-hint" id="helpSecurityCode">Últimos 3 números que están al dorso.</span>
                 </li>
 
                 <li id="second_card_doc_type__mp">
@@ -144,6 +147,11 @@ $customer = $this->getCustomerAndCards();
                 <p class="message-error second_card_error-other validation-advice"><?php echo $this->__('Please validate your data.'); ?></p>
 
             </li>
+
+        <li class="second_card_total_buy">
+            <label> <?php echo $this->__('Total amount: '); ?> </label>
+            <span class="second_card_total_buy_price"> $<?php echo $grant_total; ?>.-</span>
+        </li>
 
         <input type="hidden" class="second_card_mercadopago-text-installment" value="<?php echo $this->__('Enter the card number'); ?>">
         <input type="hidden" id="second_card_one_click_pay_mp" name="payment[<?php echo $_code; ?>][one_click_pay]" value="<?php echo count($customer['cards']) > 0 ? 1 : 0; ?>">

@@ -103,11 +103,6 @@ class MercadoPago_Core_Model_Core
             ["field" => "status_detail", "title" => "Payment Detail: %s"],
             ["field" => "activation_uri", "title" => "Generate Ticket"],
             ["field" => "payment_id_detail", "title" => "Mercado Pago Payment Id: %s"],
-            ["field" => "second_card_payment_method_id", "title" => "Second Card Payment Method: %s"],
-            ["field" => "second_card_installments", "title" => "Second Card Installments: %s"],
-            ["field" => "status_second_card", "title" => "Second Card Payment Status: %s"],
-            ["field" => "status_detail_second_card", "title" => "Second Card Payment Detail: %s"],
-            ["field" => "payment_id_detail_second_card", "title" => "Second Card Mercado Pago Payment Id: %s"],
 
         ];
 

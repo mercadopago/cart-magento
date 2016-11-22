@@ -57,17 +57,22 @@ class MercadoPago_Core_Model_Custom_Payment
 
             $responseFirstCard = $this->preparePostPayment($usingSecondCardInfo['first_card']);
             if ($responseFirstCard) {
-                $payment = $responseFirstCard['response'];
-                $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
-                $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $payment['id']);
-                $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
+                $paymentFirstCard = $responseFirstCard['response'];
                 $responseSecondCard = $this->preparePostPayment($usingSecondCardInfo['second_card']);
 
                 if ($responseSecondCard) {
-                    $payment = $responseSecondCard['response'];
-                    $this->getInfoInstance()->setAdditionalInformation('status_second_card', $payment['status']);
-                    $this->getInfoInstance()->setAdditionalInformation('payment_id_detail_second_card', $payment['id']);
-                    $this->getInfoInstance()->setAdditionalInformation('status_detail_second_card', $payment['status_detail']);
+                    $paymentSecondCard = $responseSecondCard['response'];
+                    $this->getInfoInstance()->setAdditionalInformation('status', $paymentFirstCard['status'] . ' | ' . $paymentSecondCard['status']);
+                    $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $paymentFirstCard['id']  . ' | ' . $paymentSecondCard['id']);
+                    $this->getInfoInstance()->setAdditionalInformation('status_detail', $paymentFirstCard['status_detail'] . ' | ' . $paymentSecondCard['status_detail']);
+                    $this->getInfoInstance()->setAdditionalInformation('installments', $paymentFirstCard['installments'] . ' | ' . $paymentSecondCard['installments']);
+                    $this->getInfoInstance()->setAdditionalInformation('payment_method', $paymentFirstCard['payment_method_id'] . ' | ' . $paymentSecondCard['payment_method_id']);
+                    $this->getInfoInstance()->setAdditionalInformation('first_payment_id', $paymentFirstCard['id']);
+                    $this->getInfoInstance()->setAdditionalInformation('first_payment_status', $paymentFirstCard['status']);
+                    $this->getInfoInstance()->setAdditionalInformation('first_payment_status_detail', $paymentFirstCard['status_detail']);
+                    $this->getInfoInstance()->setAdditionalInformation('second_payment_id', $paymentSecondCard['id']);
+                    $this->getInfoInstance()->setAdditionalInformation('second_payment_status', $paymentSecondCard['status']);
+                    $this->getInfoInstance()->setAdditionalInformation('second_payment_status_detail', $paymentSecondCard['status_detail']);
                     $stateObject->setState(Mage::helper('mercadopago/statusUpdate')->_getAssignedState('pending_payment'));
                     $stateObject->setStatus('pending_payment');
                     $stateObject->setIsNotified(false);

@@ -56,11 +56,11 @@ class MercadoPago_Core_Model_Custom_Payment
             $usingSecondCardInfo['second_card']['token'] = $this->getInfoInstance()->getAdditionalInformation('second_card_token');
 
             $responseFirstCard = $this->preparePostPayment($usingSecondCardInfo['first_card']);
-            if ($responseFirstCard) {
+            if (isset($responseFirstCard) && ($responseFirstCard['response']['status'] == 'approved') ) {
                 $paymentFirstCard = $responseFirstCard['response'];
                 $responseSecondCard = $this->preparePostPayment($usingSecondCardInfo['second_card']);
 
-                if ($responseSecondCard) {
+                if (isset($responseSecondCard) && ($responseSecondCard['response']['status'] == 'approved') ) {
                     $paymentSecondCard = $responseSecondCard['response'];
                     $this->getInfoInstance()->setAdditionalInformation('status', $paymentFirstCard['status'] . ' | ' . $paymentSecondCard['status']);
                     $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $paymentFirstCard['id']  . ' | ' . $paymentSecondCard['id']);
@@ -79,7 +79,14 @@ class MercadoPago_Core_Model_Custom_Payment
                     $this->saveOrder();
                     return true;
                 } else {
-                    //devolucion de la primer tarjeta
+                    //second card payment failed, refund for first card
+                    $accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+                    $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
+                    $id = $paymentFirstCard['id'];
+                    $refundResponse = $mp->post("/v1/payments/$id/refunds?access_token=$accessToken");
+                    if ($refundResponse['status'] == 200 || $refundResponse['status'] == 201) {
+
+                    }
                     return false;
                 }
             } else {

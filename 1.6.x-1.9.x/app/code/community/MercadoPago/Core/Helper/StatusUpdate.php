@@ -46,10 +46,11 @@ class MercadoPago_Core_Helper_StatusUpdate
 
     protected function _updateStatus($status, $message, $statusDetail)
     {
-        if ($this->_order->getState() !== Mage_Sales_Model_Order::STATE_COMPLETE) {
+        if ($this->_order->getState() !== Mage_Sales_Model_Order::STATE_COMPLETE
+           ) {
             $statusOrder = $this->getStatusOrder($status, $statusDetail);
 
-            if (isset($statusOrder)) {
+            if (isset($statusOrder)  &&  ($this->_order->getStatus() !== $statusOrder)) {
                 $this->_order->setState($this->_getAssignedState($statusOrder));
                 $this->_order->addStatusToHistory($statusOrder, $message, true);
                 $this->_order->sendOrderUpdateEmail(true, $message);
@@ -151,48 +152,12 @@ class MercadoPago_Core_Helper_StatusUpdate
             return ['body' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST];
         }
     }
-
-    protected function _addPaymentToAdditionalInformation($payment) {
-        $orderPayment = $this->_order->getPayment();
-
-        $orderPayment->setAdditionalInformation('status',  $orderPayment->getAdditionalInformation('status') .  ' | ' . $payment['status']);
-        $orderPayment->setAdditionalInformation('payment_id_detail',  $orderPayment->getAdditionalInformation('payment_id_detail') .  ' | ' . $payment['id']);
-        $orderPayment->setAdditionalInformation('status_detail',  $orderPayment->getAdditionalInformation('status_detail') .  ' | ' . $payment['status_detail']);
-        $orderPayment->setAdditionalInformation('installments',  $orderPayment->getAdditionalInformation('installments') .  ' | ' . $payment['installments']);
-        $orderPayment->setAdditionalInformation('payment_method',  $orderPayment->getAdditionalInformation('payment_method') .  ' | ' . $payment['payment_method_id']);
-    }
-
-    protected function _updatePaymentStatus ($card, $status, $statusDetail) {
-        $orderPayment = $this->_order->getPayment();
-        $orderPayment->setAdditionalInformation($card . 'status', $status);
-        $orderPayment->setAdditionalInformation($card . 'status_detail', $statusDetail);
-    }
     
     public function update($payment, $message)
     {
         $statusDetail = $payment['status_detail'];
         $status = $payment['status'];
         $info_payments = $this->_order->getPayment()->getAdditionalInformation();
-        // if this happens, you have a custom checkout generated order payed with two cards
-        if (isset($info_payments['first_payment_id'])) {
-            if ($info_payments['first_payment_id'] == $payment ['id']) {
-                if ($info_payments['first_payment_status'] != $status) {
-                    $this->_updatePaymentStatus ('first_card_', $status, $statusDetail);
-                    $this->_addPaymentToAdditionalInformation($payment);
-                }
-            } elseif ($info_payments['second_payment_id'] == $payment ['id']) {
-                if ($info_payments['second_payment_status'] != $status) {
-                    $this->_updatePaymentStatus ('second_card_', $status, $statusDetail);
-                    $this->_addPaymentToAdditionalInformation($payment);
-                }
-            }
-
-            if (!($info_payments['first_payment_status'] == 'approved'
-                && $info_payments['second_payment_status'] == 'approved')) {
-                return $this->_order;
-            }
-        }
-
         if ($this->_getMulticardLastValue($status) == 'approved') {
             Mage::helper('mercadopago')->setOrderSubtotals($payment, $this->_order);
             $this->_createInvoice($this->_order, $message);
@@ -201,6 +166,11 @@ class MercadoPago_Core_Helper_StatusUpdate
             if (isset($additionalInfo['token'])) {
                 Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
             }
+        }
+
+        if (isset($info_payments['first_payment_id']) &&
+            !($info_payments['first_payment_status'] == 'approved' && $info_payments['second_payment_status'] == 'approved')) {
+            return $this->_order->save();
         }
 
         if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0) {

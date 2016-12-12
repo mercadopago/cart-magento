@@ -483,17 +483,19 @@ class MercadoPago_Core_Model_Core
                 'trunc_card',
                 'id'
             ];
+            
+            $info_payments = $paymentOrder->getAdditionalInformation();
+            if (!isset($info_payments['first_payment_id'])) {
+                foreach ($additionalFields as $field) {
+                    if (isset($data[$field])) {
+                        $paymentOrder->setAdditionalInformation($field, $data[$field]);
+                    }
+                }
 
-            foreach ($additionalFields as $field) {
-                if (isset($data[$field])) {
-                    $paymentOrder->setAdditionalInformation($field, $data[$field]);
+                if (isset($data['payment_method_id'])) {
+                    $paymentOrder->setAdditionalInformation('payment_method', $data['payment_method_id']);
                 }
             }
-
-            if (isset($data['payment_method_id'])) {
-                $paymentOrder->setAdditionalInformation('payment_method', $data['payment_method_id']);
-            }
-
             $paymentStatus = $paymentOrder->save();
             $helper->log('Update Payment', 'mercadopago.log', $paymentStatus->getData());
 

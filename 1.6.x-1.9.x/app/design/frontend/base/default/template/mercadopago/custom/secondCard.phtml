@@ -26,16 +26,15 @@ $customer = $this->getCustomerAndCards();
                     <li id="second_card_cardId__mp">
 
                         <div><a id="second_card_use_other_card_mp" class="action_ocp"><?php echo $this->__('Use other card'); ?></a></div>
+                            <label for="second_card_cardNumber"><?php echo $this->__('Payment Method'); ?></label>
+                            <select id="second_card_cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#second_card_cardId__mp">
+                                <?php foreach ($customer['cards'] as $card) { ?>
+                                    <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>" secure_thumb="<?php echo $card["payment_method"]["secure_thumbnail"]; ?>" payment_method_id="<?php echo $card["payment_method"]["id"]; ?>">
 
-                        <label for="second_card_cardNumber"><?php echo $this->__('Payment Method'); ?></label>
-                        <select id="second_card_cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#second_card_cardId__mp">
-                            <?php foreach ($customer['cards'] as $card) { ?>
-                                <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>" secure_thumb="<?php echo $card["payment_method"]["secure_thumbnail"]; ?>" payment_method_id="<?php echo $card["payment_method"]["id"]; ?>">
-
-                                    <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
-                                </option>
-                            <?php } ?>
-                        </select>
+                                        <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
 
                         <input type="hidden" name="payment[<?php echo $_code; ?>][customer_id]" value="<?php echo $customer['id']; ?>">
 
@@ -84,7 +83,7 @@ $customer = $this->getCustomerAndCards();
                 <li id="second_card_expiration_date__mp">
                 <div id="second_card_box_month">
                     <label id="second_card_cardExpirationMonthLabel" for="second_card_cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
-                    <select id="second_card_cardExpirationMonth" data-checkout-second-card="second_card_cardExpirationMonth" class="mp-validate-cc-exp" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#second_card_expiration_date__mp">
+                    <select id="second_card_cardExpirationMonth" data-checkout="cardExpirationMonth" class="mp-validate-cc-exp" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#second_card_expiration_date__mp">
                         <?php foreach ($this->getCcMonths() as $m => $v): ?>
                             <option value="<?php echo $m ? $m : ''; ?>"><?php echo $v; ?></option>
                         <?php endforeach ?>
@@ -95,7 +94,7 @@ $customer = $this->getCustomerAndCards();
 
                 <div id="second_card_box_year">
                     <label for="second_card_cardExpirationYear"><?php echo $this->__('Year'); ?></label>
-                    <select id="second_card_cardExpirationYear" data-checkout-second-card="second_card_cardExpirationYear" name="payment[<?php echo $_code; ?>][card_expiration_year]" data-element-id="#second_card_expiration_date__mp">
+                    <select id="second_card_cardExpirationYear" data-checkout="cardExpirationYear" name="payment[<?php echo $_code; ?>][card_expiration_year]" data-element-id="#second_card_expiration_date__mp">
                         <?php foreach ($this->getCcYears() as $y => $v): ?>
                             <option value="<?php echo $y ? $y : ''; ?>"><?php echo $v; ?></option>
                         <?php endforeach ?>
@@ -107,14 +106,14 @@ $customer = $this->getCustomerAndCards();
 
                 <li id="second_card_cardholderName__mp">
                     <label for="second_card_cardholderName"><?php echo $this->__('Card Holder Name'); ?></label>
-                    <input type="text" id="second_card_cardholderName" data-checkout-second-card="second_card_cardholderName" name="payment[<?php echo $_code; ?>][card_holder_name]" data-element-id="#second_card_cardholderName__mp"/>
+                    <input type="text" id="second_card_cardholderName" data-checkout="cardholderName" name="payment[<?php echo $_code; ?>][card_holder_name]" data-element-id="#second_card_cardholderName__mp"/>
 
                     <p class="message-error error-316 validation-advice"><?php echo $this->__('Card Holder Name is invalid.'); ?></p>
                 </li>
 
                 <li id="second_card_securityCode__mp">
                     <label for="second_card_securityCode"><?php echo $this->__('CVV'); ?></label>
-                    <input type="text" id="second_card_securityCode" data-checkout-second-card="second_card_securityCode" maxlength="4" data-element-id="#second_card_securityCode__mp" class="required-entry"/>
+                    <input type="text" id="second_card_securityCode" data-checkout="securityCode" maxlength="4" data-element-id="#second_card_securityCode__mp" class="required-entry"/>
 
                     <p class="message-error second_card_error-E302 second_card_error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
                     <span class="ch-form-hint" id="helpSecurityCode">Últimos 3 números que están al dorso.</span>
@@ -122,14 +121,14 @@ $customer = $this->getCustomerAndCards();
 
                 <li id="second_card_doc_type__mp">
                     <label for="second_card_docType"><?php echo $this->__('Document Type'); ?></label>
-                    <select id="second_card_docType" data-checkout-second-card="second_card_docType" data-element-id="#second_card_doc_type__mp" name="payment[<?php echo $_code; ?>][doc_type]"></select>
+                    <select id="second_card_docType" data-checkout="docType" data-element-id="#second_card_doc_type__mp" name="payment[<?php echo $_code; ?>][doc_type]"></select>
 
                     <p class="message-error error-322 error-212 validation-advice"><?php echo $this->__('Document Type is invalid.'); ?></p>
                 </li>
 
                 <li id="second_card_doc_number__mp">
                     <label for="second_card_docNumber"><?php echo $this->__('Document Number'); ?></label>
-                    <input type="text" id="second_card_docNumber" class="mp-validate-docnumber" data-checkout-second-card="second_card_docNumber" name="payment[<?php echo $_code; ?>][doc_number]" data-element-id="#second_card_doc_number__mp"/>
+                    <input type="text" id="second_card_docNumber" class="mp-validate-docnumber" data-checkout="docNumber" name="payment[<?php echo $_code; ?>][doc_number]" data-element-id="#second_card_doc_number__mp"/>
 
                     <p class="message-error error-324 error-213 error-214 validation-advice"><?php echo $this->__('Document Number is invalid.'); ?></p>
                 </li>

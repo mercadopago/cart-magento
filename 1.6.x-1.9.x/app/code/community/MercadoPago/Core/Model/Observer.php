@@ -210,10 +210,12 @@ class MercadoPago_Core_Model_Observer
         }
 
         $isValidBasicData = $this->checkCancelationBasicData ($paymentID, $paymentMethod);
-        $isValidaData = $this->checkCancelationData ($orderStatus, $orderPaymentStatus);
+        if ($isValidBasicData) {
+            $isValidaData = $this->checkCancelationData ($orderStatus, $orderPaymentStatus);
 
-        if ($isValidBasicData && $isValidaData) {
-            $this->_sendCancellationRequest ($paymentMethod, $paymentID);
+            if ($isValidBasicData && $isValidaData) {
+                $this->_sendCancellationRequest ($paymentMethod, $paymentID);
+            }
         }
     }
 
@@ -252,13 +254,13 @@ class MercadoPago_Core_Model_Observer
         }
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-            $this->_getSession()->addError(__('Order payment wasn\'t made by Mercado Pago. The cancellation will be made through Magento'));
+            $this->_getSession()->addWarning(__('Order payment wasn\'t made by Mercado Pago. The cancellation will be made through Magento'));
             return false;
         }
 
         $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
         if (!$refundAvailable) {
-            $this->_getSession()->addError(__('Mercado Pago cancellations are disabled. The cancellation will be made through Magento'));
+            $this->_getSession()->addWarning(__('Mercado Pago cancellations are disabled. The cancellation will be made through Magento'));
             return false;
         }
 
@@ -344,17 +346,18 @@ class MercadoPago_Core_Model_Observer
             }
         }
         $isValidBasicData = $this->checkRefundBasicData ($paymentMethod, $paymentDate);
-        $isValidaData = $this->checkRefundData ($isCreditCardPayment,
-            $orderStatus,
-            $orderPaymentStatus,
-            $paymentDate,
-            $order);
+        if ($isValidBasicData) {
+            $isValidaData = $this->checkRefundData ($isCreditCardPayment,
+                $orderStatus,
+                $orderPaymentStatus,
+                $paymentDate,
+                $order);
 
-        $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
-        if ($isValidBasicData && $isValidaData) {
-            $this->sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID);
+            $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
+            if ($isValidBasicData && $isValidaData) {
+                $this->sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID);
+            }
         }
-
     }
 
     protected function checkRefundBasicData ($paymentMethod, $paymentDate) {
@@ -366,12 +369,12 @@ class MercadoPago_Core_Model_Observer
         }
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-            $this->_getSession()->addError(__('Order payment wasn\'t made by Mercado Pago. The refund will be made through Magento'));
+            $this->_getSession()->addWarning(__('Order payment wasn\'t made by Mercado Pago. The refund will be made through Magento'));
             return false;
         }
 
         if (!$refundAvailable) {
-            $this->_getSession()->addError(__('Mercado Pago refunds are disabled. The refund will be made through Magento'));
+            $this->_getSession()->addWarning(__('Mercado Pago refunds are disabled. The refund will be made through Magento'));
             return false;
         }
 

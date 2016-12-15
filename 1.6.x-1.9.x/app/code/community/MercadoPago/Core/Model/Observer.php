@@ -66,6 +66,8 @@ class MercadoPago_Core_Model_Observer
 
         $this->validateClientCredentials();
 
+        $this->validateRecurringClientCredentials();
+
         $this->setSponsor();
 
         $this->availableCheckout();
@@ -495,8 +497,28 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
+    public function checkoutSubmitAllAfter (Varien_Event_Observer $observer) {
+        $recurringProfiles = $observer->getRecurringProfiles();
+        if (isset($recurringProfiles) && count($recurringProfiles) > 0) {
+            $checkoutSession = Mage::getSingleton('checkout/session');
+            $checkoutSession->setRedirectUrl(Mage::getUrl('mercadopago/recurringPayment'));
+        }
+    }
+
+    protected function validateRecurringClientCredentials()
+    {
+        $clientId = Mage::getStoreConfig('payment/mercadopago_recurring/client_id');
+        $clientSecret = Mage::getStoreConfig('payment/mercadopago_recurring/client_secret');
+        if (!empty($clientId) && !empty($clientSecret)) {
+            if (!Mage::helper('mercadopago')->isValidClientCredentials($clientId, $clientSecret)) {
+                Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Recurring Payment Checkout: Invalid client id or client secret'));
+            }
+        }
+    }
+
     protected function _isMercadoPago($paymentMethod)
     {
         return ($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom');
     }
+  
 }

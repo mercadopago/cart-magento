@@ -516,4 +516,15 @@ class MercadoPago_Core_Model_Core
         }
     }
 
+    public function getRecurringPayment($id)
+    {
+        if (!$this->_clientId || !$this->_clientSecret) {
+            $this->_clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+            $this->_clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        }
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->_clientId, $this->_clientSecret);
+
+        return $mp->get_preapproval_payment($id);
+    }
+
 }

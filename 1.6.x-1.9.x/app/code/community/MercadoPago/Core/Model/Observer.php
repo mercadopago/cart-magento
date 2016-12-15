@@ -193,10 +193,7 @@ class MercadoPago_Core_Model_Observer
         $order = Mage::getModel('sales/order')->load($orderID);
         
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
-
-        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-            return;
-        }
+        
         if ($order->getExternalRequest() || !$this->_isMercadoPago($paymentMethod)) {
             return;
         }

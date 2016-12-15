@@ -34,6 +34,7 @@
 "Month","Mes"
 "Year","Año"
 "Card Holder Name","Titular de la Tarjeta"
+"Document Type", "Tipo de documento"
 "Document Number","Número de Documento"
 "CVV","Código de Seguridad"
 "Installments","Cuotas"
@@ -60,19 +61,40 @@
 "Statement Descriptor: %s","Identificación en la Factura de la Tarjeta de Crédito: %s"
 "Payment Id (Mercado Pago): %s","Número de Pago (Mercado Pago): %s"
 "Payment Status: %s (%s)","Estado del Pago: %s (%s)"
+"Payment Status: ","Estado del Pago: "
+"Payment Detail: ","Detalle del Pago: "
+"Mercado Pago Payment Id: %s","Id transacción Mercado Pago: %s"
+
+
+"Mercado Pago Payment Id: %s","Id transacción Mercado Pago: %s"
+"Payment Status: approved","Estado del Pago: Aprobado"
+"Payment Detail: accredited","Detalle del Pago: acreditado"
+"Payment Detail: pending_contingency","Detalle del Pago: pendiente"
+"Payment Detail: cc_rejected_call_for_authorize","Detalle del Pago: Tarjeta de crédito rechazada. Llamar para autorizar."
+"Payment Detail: cc_rejected_insufficient_amount","Detalle del Pago: Tarjeta de crédito rechazada por monto insuficiente."
+"Payment Detail: cc_rejected_bad_filled_security_code","Detalle del Pago: Tarjeta de crédito rechazada por código de seguridad."
+"Payment Detail: cc_rejected_bad_filled_other","Detalle del Pago: Tarjeta de crédito rechazada por error en formulario."
+"Payment Detail: cc_rejected_other_reason","Detalle del Pago: Rechazo general"
+"Payment Detail: cc_rejected_bad_filled_date","Detalle del Pago: Tarjeta de crédito rechazada por fecha de expiración."
+
+
+"Payment Status: in_process", "Estado del Pago: en proceso"
+"Payment Status: rejected", "Estado del Pago: rechazado"
+
+
 
 "Click on the link to generate the ticket","Clique en el link para mostrar el ticket de pago"
 "Generate Ticket","Generar ticket de pago"
 
 "Payment Method","Medio de pago"
 
-"Generate the ticket and pay it wherever you want.","Genere el ticket de pago y pague"
-"Will be approved within 2 business days.","Será aprobado en hasta 2 días hábiles"
+"Generate the ticket and pay it wherever you want.","Genere el ticket de pago y pague."
+"Will be approved within 2 business days.","Se aprobará dentro de 2 días hábiles."
 
 
 
 "Thank you for your purchase!","Gracias por su compra!"
-"Your order %s has been successfully generated.","Su pedido con el numero %s fué generado con éxito."
+"Your order %s has been successfully generated.","Su pedido con el número %s fue generado con éxito."
 "Done, your payment was accredited!","¡Listo, se acreditó tu pago!"
 "We are processing the payment.","Estamos procesando el pago."
 "In less than 2 business days we will tell you by e-mail if it is accredited or if we need more information.","Estamos procesando el pago. En menos de 2 días hábiles te avisaremos por e-mail si se acreditó o si necesitamos más información."
@@ -84,7 +106,7 @@
 "Check the security code.","Revisa el código de seguridad."
 "We could not process your payment.","No pudimos procesar tu pago."
 
-"You must authorize to %s the payment of $ %s to Mercado Pago.","Debes llamar y autorizar ante %s el pago de $ %s a Mercado Pago"
+"You must authorize to %s the payment of $ %s to Mercado Pago.","Debes llamar y autorizar ante %s el pago de $ %s a Mercado Pago."
 "Call %s to activate your card.<br/>The phone is on the back of your card.","Llama a %s para que active tu tarjeta.<br/>El teléfono está al dorso de tu tarjeta."
 "We could not process your payment.","No pudimos procesar tu pago."
 "You already made a payment by that value.<br/>If you need to repay, use another card or other payment method.","Ya hiciste un pago por ese valor.<br/>Si necesitas volver a pagar usa otra tarjeta u otro medio de pago."
@@ -209,3 +231,4 @@
 "Recurring Profile updated by Mercado Pago","Perfil Recurrente actualizado mediante Mercado Pago"
 "Mercado Pago - Recurring Payment Checkout: Invalid client id or client secret","Mercado Pago - Recurring Payment Checkout: El id de cliente o la clave secreta, son inválidas"
 "This payment method is used only for recurring profiles.","Este método de pago es usado solo para perfiles recurrentes"
+"Payment information", "Información de pago"

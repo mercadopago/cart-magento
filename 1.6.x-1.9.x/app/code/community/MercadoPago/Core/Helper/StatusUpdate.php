@@ -21,16 +21,27 @@ class MercadoPago_Core_Helper_StatusUpdate
         return $this->_statusUpdatedFlag;
     }
 
-    public function setStatusUpdated($notificationData, $order)
+    public function setStatusUpdated($notificationData, $order, $isPayment = false)
     {
         $this->_order = $order;
         $status = $notificationData['status'];
         $statusDetail = $notificationData['status_detail'];
         $currentStatus = $this->_order->getPayment()->getAdditionalInformation('status');
         $currentStatusDetail = $this->_order->getPayment()->getAdditionalInformation('status_detail');
+        if ($isPayment) {
+            $currentStatus = $this->_getMulticardLastValue($currentStatus);
+            $currentStatusDetail = $this->_getMulticardLastValue($currentStatusDetail);
+        }
         if ($status == $currentStatus && $statusDetail == $currentStatusDetail) {
             $this->_statusUpdatedFlag = true;
         }
+    }
+
+    protected function _getMulticardLastValue($value)
+    {
+        $statuses = explode('|', $value);
+
+        return str_replace(' ', '', array_pop($statuses));
     }
 
     protected function _updateStatus($status, $message, $statusDetail)
@@ -72,7 +83,8 @@ class MercadoPago_Core_Helper_StatusUpdate
         }
     }
 
-    protected function _createCreditmemo ($data) {
+    protected function _createCreditmemo($data)
+    {
         /**
          * @var $creditmemo Mage_Sales_Model_Order_Creditmemo
          */
@@ -116,38 +128,11 @@ class MercadoPago_Core_Helper_StatusUpdate
         }
     }
 
-    public function update($payment, $message) {
-        $status = $payment['status'];
-        $statusDetail = $payment['status_detail'];
-
-        if ($status == 'approved') {
-            Mage::helper('mercadopago')->setOrderSubtotals($payment, $this->_order);
-            $this->_createInvoice($this->_order, $message);
-            //Associate card to customer
-            $additionalInfo = $this->_order->getPayment()->getAdditionalInformation();
-            if (isset($additionalInfo['token'])) {
-                Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
-            }
-        }
-
-        if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0) {
-            $this->_generateCreditMemo($payment);
-        } elseif ($status == 'cancelled') {
-            Mage::register('mercadopago_cancellation', true);
-            $this->_order->cancel();
-        }
-        else {
-            //if state is not complete updates according to setting
-            $this->_updateStatus($status, $message, $statusDetail);
-        }
-        return $this->_order->save();
-    }
-
     public function setStatusOrder($payment)
     {
         $helper = Mage::helper('mercadopago');
-
         $status = $this->getStatus($payment);
+        
         $message = $this->getMessage($status, $payment);
         if ($this->isStatusUpdated() && isset ($payment['amount_refunded']) && !($payment['amount_refunded'] > 0)) {
             return ['body' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
@@ -165,6 +150,33 @@ class MercadoPago_Core_Helper_StatusUpdate
 
             return ['body' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST];
         }
+    }
+
+    public function update($payment, $message)
+    {
+        $statusDetail = $payment['status_detail'];
+        $status = $payment['status'];
+        if ($this->_getMulticardLastValue($status) == 'approved') {
+            Mage::helper('mercadopago')->setOrderSubtotals($payment, $this->_order);
+            $this->_createInvoice($this->_order, $message);
+            //Associate card to customer
+            $additionalInfo = $this->_order->getPayment()->getAdditionalInformation();
+            if (isset($additionalInfo['token'])) {
+                Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
+            }
+        }
+
+        if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0) {
+            $this->_generateCreditMemo($payment);
+        } elseif ($status == 'cancelled') {
+            Mage::register('mercadopago_cancellation', true);
+            $this->_order->cancel();
+        } else {
+            //if state is not complete updates according to setting
+            $this->_updateStatus($status, $message, $statusDetail);
+        }
+
+        return $this->_order->save();
     }
 
     public function getMessage($status, $payment)
@@ -193,7 +205,7 @@ class MercadoPago_Core_Helper_StatusUpdate
 
     public function getStatusOrder($status, $statusDetail)
     {
-        switch ($status) {
+        switch ($this->_getMulticardLastValue($status)) {
             case 'approved': {
                 $status = Mage::getStoreConfig('payment/mercadopago/order_status_approved');
 

@@ -258,6 +258,8 @@ var MercadoPagoCustom = (function () {
             //Show site
             showLogMercadoPago(String.format(self.messages.siteId, siteId));
 
+            TinyJ(self.selectors.docType).on('DOMNodeInserted', addOptionsToSecondCardDocType);
+
             if (siteId != self.constants.mexico) {
                 TinyJ(self.selectors.docType).show();
                 Mercadopago.getIdentificationTypes();
@@ -382,7 +384,6 @@ var MercadoPagoCustom = (function () {
         function initMercadoPagoOCP() {
             showLogMercadoPago(self.messages.initOCP);
             TinyJ(self.selectors.cardId).change(cardsHandler);
-            TinyJ(self.selectors.docType).on('DOMNodeInserted', addOptionsToSecondCardDocType);
             var returnListCard = TinyJ(self.selectors.returnToCardList);
             var secondCardReturnListCard = TinyJ(self.selectors.secondCardReturnToCardList);
             var showSecondCard = TinyJ(self.selectors.showSecondCard);

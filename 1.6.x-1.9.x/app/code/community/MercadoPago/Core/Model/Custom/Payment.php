@@ -215,7 +215,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
         if (isset($usingSecondCardInfo)) {
             $preference['installments'] = (int)$usingSecondCardInfo['installments'];
-            $preference['payment_method_id'] = $usingSecondCardInfo['payment_method'];
+            $preference['payment_method_id'] = $usingSecondCardInfo['payment_method_id'];
             $preference['token'] = $usingSecondCardInfo['token'];
         } else {
             $preference['installments'] = (int)$payment->getAdditionalInformation("installments");

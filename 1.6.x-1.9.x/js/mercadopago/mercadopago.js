@@ -311,6 +311,7 @@ var MercadoPagoCustom = (function () {
             defineInputsSecondCard();
             TinyJ(self.selectors.cardNumberInputSecondCard).keyup(guessingPaymentMethodSecondCard);
             TinyJ(self.selectors.secondCardCardId).change(cardsHandlerSecondCard());
+            TinyJ(self.selectors.secondCardInstallments).change(setTotalAmount);
         }
 
         function setPaymentMethodId(event) {
@@ -419,7 +420,13 @@ var MercadoPagoCustom = (function () {
         }
 
         function setTotalAmount() {
-            TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val(TinyJ(this).getSelectedOption().attribute(self.constants.cost));
+            var value = 0;
+            if (isSecondCardUsed) {
+                value = TinyJ(self.selectors.secondCardInstallments).getSelectedOption().attribute(self.constants.cost);
+
+            }
+            value = Number(value) + Number(TinyJ(self.selectors.installments).getSelectedOption().attribute(self.constants.cost));
+            TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val(value);
         }
 
         function defineInputs() {
@@ -737,6 +744,7 @@ var MercadoPagoCustom = (function () {
                 var event = {};
             }
             guessingPaymentMethod(event.type = self.constants.keyup);
+            initSecondCard();
         }
         
         function actionHideSecondCard() {

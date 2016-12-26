@@ -743,7 +743,7 @@ var MercadoPagoCustom = (function () {
         function changeAmountHandler() {
 
             var $formPayment = TinyJ(self.selectors.checkoutCustom);
-            var amount = $formPayment.getElem(self.selectors.totalAmount).val();
+            var amount = $formPayment.getElem(self.selectors.amount).val();
 
             var firstCardAmount = TinyJ(self.selectors.firstCardAmount).val();
 

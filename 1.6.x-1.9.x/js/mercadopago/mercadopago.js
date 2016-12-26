@@ -673,6 +673,9 @@ var MercadoPagoCustom = (function () {
             checkCreateCardToken();
 
             //update payment_id
+            if (typeof event == 'undefined'){
+                var event = {};
+            }
             guessingPaymentMethod(event.type = self.constants.keyup);
 
 
@@ -706,14 +709,17 @@ var MercadoPagoCustom = (function () {
             defineInputsSecondCard();
             clearOptionsSecondCard();
             Mercadopago.clearSession();
-
             hideMessageError();
 
             checkCreateCardTokenSecondCard();
 
             //update payment_id
-            guessingPaymentMethodSecondCard(event.type = self.constants.keyup);
 
+            if (typeof event == 'undefined'){
+                var event = {};
+            }
+            guessingPaymentMethod(event.type = self.constants.keyup);
+            guessingPaymentMethodSecondCard(event.type = self.constants.keyup);
 
         }
 
@@ -727,6 +733,10 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.secondCardTotalBuy).show();
             cardsHandler();
             cardsHandlerSecondCard();
+            if (typeof event == 'undefined'){
+                var event = {};
+            }
+            guessingPaymentMethod(event.type = self.constants.keyup);
         }
         
         function actionHideSecondCard() {

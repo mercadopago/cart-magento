@@ -83,7 +83,7 @@ var MercadoPagoCustom = (function () {
             checkoutCustom: '#mercadopago_checkout_custom',
             checkoutTicket: '#mercadopago_checkout_custom_ticket',
             siteId: '#mercadopago_checkout_custom .site_id',
-            cardNumberInput: 'input[data-checkout="cardNumber"]',
+            cardNumberInput: '#cardNumber__mp input[data-checkout="cardNumber"]',
             installmentsDontWork: '.error-installment-not-work',
             mercadopagoCustomOpt: '#p_method_mercadopago_custom',
             cardExpYear: '#cardExpirationYear',
@@ -161,13 +161,13 @@ var MercadoPagoCustom = (function () {
             securityCodeSecondCard: '#second_card_securityCode',
             paymentMethodSecondCard: '#second_card_paymentMethod',
             issuerSecondCard: '#second_card_issuer',
-            cardNumberInputSecondCard: 'input[data-checkout-second-card="second_card_cardNumber"]',
+            cardNumberInputSecondCard: '#second_card_cardNumber__mp input[data-checkout="cardNumber"]',
             issuerMpSecondCard: '#second_card_issuer__mp',
             issuerMpLabelSecondCard: '#second_card_issuer__mp label',
             secondCardInstallmentText: '.second_card_mercadopago-text-installment',
             secondCardInstallments: '#second_card_installments',
             ocpSecondCard: '#second_card_mercadopago_checkout_custom_ocp',
-            dataCheckoutSecondCard: '[data-checkout-second-card]',
+            dataCheckoutSecondCard: '[data-checkout]',
             tokenSecondCard: '#mercadopago_checkout_custom_second_card .second_card_token',
             paymentMethodIdSecondCard: '.second_card_payment_method_id',
             isSecondCardUsed: ".is_second_card_used",
@@ -259,6 +259,7 @@ var MercadoPagoCustom = (function () {
             showLogMercadoPago(String.format(self.messages.siteId, siteId));
 
             if (siteId != self.constants.mexico) {
+                TinyJ(self.selectors.docType).show();
                 Mercadopago.getIdentificationTypes();
             } else {
                 setTimeout(function () {
@@ -267,13 +268,13 @@ var MercadoPagoCustom = (function () {
             }
 
             defineInputs();
-            defineInputsSecondCard();
 
             TinyJ(self.selectors.cardNumberInput).keyup(guessingPaymentMethod);
-            TinyJ(self.selectors.cardNumberInputSecondCard).keyup(guessingPaymentMethodSecondCard);
+
             TinyJ(self.selectors.cardNumberInput).keyup(clearOptions);
             TinyJ(self.selectors.cardNumberInput).change(guessingPaymentMethod);
             TinyJ(self.selectors.installmentsDontWork).click(guessingPaymentMethod);
+
             TinyJ(self.selectors.installments).change(setTotalAmount);
 
             releaseEventCreateCardToken();
@@ -298,12 +299,16 @@ var MercadoPagoCustom = (function () {
                 var currentTime = new Date();
                 var currentMonth = currentTime.getMonth() + 1;
                 var currentYear = currentTime.getFullYear();
-                if (ccExpMonth < currentMonth && ccExpYear == currentYear) {
-                    return false;
-                }
-                return true;
+                return !(ccExpMonth < currentMonth && ccExpYear == currentYear);
             });
 
+            actionHideSecondCard();
+        }
+
+        function initSecondCard() {
+            defineInputsSecondCard();
+            TinyJ(self.selectors.cardNumberInputSecondCard).keyup(guessingPaymentMethodSecondCard);
+            TinyJ(self.selectors.secondCardCardId).change(cardsHandlerSecondCard());
         }
 
         function setPaymentMethodId(event) {
@@ -492,7 +497,8 @@ var MercadoPagoCustom = (function () {
 
             var siteId = TinyJ(self.selectors.siteId).val();
             var oneClickPay = TinyJ(self.selectors.secondCardOneClickPayment).val();
-            var dataCheckout = TinyJ(self.selectors.dataCheckoutSecondCard);
+            //var dataCheckout = TinyJ(self.selectors.dataCheckout);
+            var dataCheckout = TinyJ(self.selectors.dataCheckout);
             var excludeInputs = [self.selectors.secondCardCardId, self.selectors.securityCodeOCPSecondCard, self.selectors.paymentMethodSecondCard];
             var dataInputs = [];
             var disabledInputs = [];
@@ -531,6 +537,9 @@ var MercadoPagoCustom = (function () {
             }
 
             for (var x = 0; x < dataCheckout.length; x++) {
+                if (!(dataCheckout[x].getElem().id).includes("second")) {
+                    continue;
+                }
                 var $id = "#" + dataCheckout[x].id();
 
                 var elPai = dataCheckout[x].attribute(self.constants.dataElementId);
@@ -549,7 +558,7 @@ var MercadoPagoCustom = (function () {
 
 
             //Show inputs
-            //showLogMercadoPago(dataInputs);
+            showLogMercadoPago(dataInputs);
 
             return dataInputs;
 
@@ -671,6 +680,8 @@ var MercadoPagoCustom = (function () {
         function actionUseOneClickPayOrNoSecondCard() {
             //showLogMercadoPago(self.messages.ocpUser);
 
+            initSecondCard();
+
             var ocp = TinyJ(self.selectors.secondCardOneClickPayment).val();
             console.log(ocp);
 
@@ -726,7 +737,7 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.secondCardTotalBuy).hide();
             TinyJ(self.selectors.firstCardTotalBuy).show();
             cardsHandler();
-            cardsHandlerSecondCard();
+            //cardsHandlerSecondCard();
         }
 
         function changeAmountHandler() {
@@ -928,9 +939,9 @@ var MercadoPagoCustom = (function () {
 
             var bin = getBinSecondCard();
             try {
-                var amount = TinyJ(self.selectors.checkoutCustomSecondCard).getElem(self.selectors.amount).val();
+                var amount = TinyJ(self.selectors.checkoutCustomSecondCard).getElem(self.selectors.secondCardAmount).val();
             } catch (e) {
-                var amount = TinyJ(self.selectors.checkoutTicket).getElem(self.selectors.amount).val();
+                var amount = TinyJ(self.selectors.checkoutTicket).getElem(self.selectors.secondCardAmount).val();
             }
 
             if (event.type == self.constants.keyup) {
@@ -1272,7 +1283,7 @@ var MercadoPagoCustom = (function () {
             var route = TinyJ(self.selectors.mercadoRoute).val();
             var baseUrl = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.baseUrl).val();
             var discountAmount = parseFloat(TinyJ(self.selectors.customDiscountAmount).val());
-            var paymentMethodId = TinyJ(self.selectors.paymentMethodId).val();
+            var paymentMethodId = TinyJ(self.selectors.paymentMethodIdSecondCard).val();
             if (paymentMethodId != '') {
                 options['payment_method_id'] = paymentMethodId;
             }
@@ -1403,12 +1414,12 @@ var MercadoPagoCustom = (function () {
 
             if (Array.isArray(dataCheckoutSecondCard)) {
                 for (var y = 0; y < dataCheckoutSecondCard.length; y++) {
-                    dataCheckoutSecondCard[y].focusout(checkCreateCardTokenSecondCard);
-                    dataCheckoutSecondCard[y].change(checkCreateCardTokenSecondCard);
+                    //dataCheckoutSecondCard[y].focusout(checkCreateCardTokenSecondCard);
+                    //dataCheckoutSecondCard[y].change(checkCreateCardTokenSecondCard);
                 }
             } else {
-                dataCheckoutSecondCard.focusout(checkCreateCardTokenSecondCard);
-                dataCheckoutSecondCard.change(checkCreateCardTokenSecondCard);
+                //dataCheckoutSecondCard.focusout(checkCreateCardTokenSecondCard);
+                //dataCheckoutSecondCard.change(checkCreateCardTokenSecondCard);
             }
 
         }

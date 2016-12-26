@@ -56,14 +56,14 @@ $customer = $this->getCustomerAndCards();
                 <div><a id="second_card_return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></a></div>
                 <li id="second_card_paymentMethod__mp">
                     <label for="second_card_paymentMethod"><?php echo $this->__('Payment Method'); ?></label>
-                    <select id="second_card_paymentMethod" data-checkout-second-card="second_card_paymentMethod" name="payment[<?php echo $_code; ?>][second_card_paymentMethod]" data-element-id="#second_card_paymentMethod__mp" class="validate-select"></select>
+                    <select id="second_card_paymentMethod" data-checkout="paymentMethod" name="payment[<?php echo $_code; ?>][second_card_paymentMethod]" data-element-id="#second_card_paymentMethod__mp" class="validate-select"></select>
                 </li>
 
 
 
                 <li id="second_card_cardNumber__mp">
                     <label for="second_card_cardNumber"><?php echo $this->__('Card Number'); ?></label>
-                    <input type="text" id="second_card_cardNumber" data-checkout-second-card="second_card_cardNumber" data-element-id="#second_card_cardNumber__mp"/>
+                    <input type="text" id="second_card_cardNumber" data-checkout="cardNumber" data-element-id="#second_card_cardNumber__mp"/>
 
                     <p class="message-error second_card_error-payment-method-not-found error-E301 error-205 validation-advice"><?php echo $this->__('Card number is invalid.'); ?></p>
 
@@ -73,7 +73,7 @@ $customer = $this->getCustomerAndCards();
 
                 <li id="second_card_issuer__mp">
                     <label for="second_card_issuer"><?php echo $this->__('Banks'); ?></label>
-                    <select id="second_card_issuer" name="payment[<?php echo $_code; ?>][issuer_id]" data-checkout-second-card="second_card_issuer" data-element-id="#second_card_issuer__mp">
+                    <select id="second_card_issuer" name="payment[<?php echo $_code; ?>][issuer_id]" data-checkout="issuer" data-element-id="#second_card_issuer__mp">
 
                     </select>
 

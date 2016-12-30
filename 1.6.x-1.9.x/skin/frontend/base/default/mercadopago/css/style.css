@@ -97,7 +97,7 @@
     padding-left: 0;
     font-size: 14px;
     /* padding-top: 6px; */
-     color: #900;
+    color: #900;
 }
 
 #second_card_amount_holder{
@@ -169,6 +169,44 @@
 .action_ocp{
     cursor: pointer;
     width: 160px;
+}
+#use_other_card_mp, #show_second_card, #return_list_card_mp, #show_second_card, #return_list_card_mp, #second_card_use_other_card_mp, #hide_second_card, #second_card_return_list_card_mp {
+    background: #3399cc;
+    color: #fff;
+    display: inline-block !important;
+    font-family: "Raleway", "Helvetica Neue", Verdana, Arial, sans-serif;
+    font-size: 13px;
+    margin: 1px 0;
+    padding: 2px 6px;
+    text-align: center;
+    width: auto;
+}
+#use_other_card_mp:hover, #show_second_card:hover, #return_list_card_mp:hover, #show_second_card:hover, #return_list_card_mp:hover, #second_card_use_other_card_mp:hover, #second_card_return_list_card_mp:hover {
+    text-decoration: none;
+}
+
+#show_second_card {
+    margin-bottom: 15px;
+}
+
+.second_card_total_buy_price, .total_buy_price {
+    padding: 3px 10px;
+    font-weight: 600;
+    text-decoration: underline;
+    vertical-align: middle;
+}
+
+.second_card_total_buy label {
+    font-weight: bold;
+}
+
+#hide_second_card {
+    padding: 3px 6px;
+    line-height: 1;
+}
+
+#hide_second_card:hover {
+    text-decoration: none;
 }
 
 #return_list_card_mp{

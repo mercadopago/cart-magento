@@ -484,8 +484,8 @@ class MercadoPago_Core_Model_Core
                 'id'
             ];
             
-            $info_payments = $paymentOrder->getAdditionalInformation();
-            if (!isset($info_payments['first_payment_id'])) {
+            $infoPayments = $paymentOrder->getAdditionalInformation();
+            if (!isset($infoPayments['first_payment_id'])) {
                 foreach ($additionalFields as $field) {
                     if (isset($data[$field])) {
                         $paymentOrder->setAdditionalInformation($field, $data[$field]);
@@ -495,6 +495,8 @@ class MercadoPago_Core_Model_Core
                 if (isset($data['payment_method_id'])) {
                     $paymentOrder->setAdditionalInformation('payment_method', $data['payment_method_id']);
                 }
+            } else {
+                $paymentOrder->setAdditionalInformation('total_paid_amount', $data['transaction_details']['total_paid_amount'] . '|');
             }
             $paymentStatus = $paymentOrder->save();
             $helper->log('Update Payment', 'mercadopago.log', $paymentStatus->getData());

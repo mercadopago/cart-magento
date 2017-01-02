@@ -73,6 +73,7 @@ class MercadoPago_Core_Model_Custom_Payment
                     $this->getInfoInstance()->setAdditionalInformation('second_payment_id', $paymentSecondCard['id']);
                     $this->getInfoInstance()->setAdditionalInformation('second_payment_status', $paymentSecondCard['status']);
                     $this->getInfoInstance()->setAdditionalInformation('second_payment_status_detail', $paymentSecondCard['status_detail']);
+                    $this->getInfoInstance()->setAdditionalInformation('total_paid_amount', $paymentFirstCard['transaction_details']['total_paid_amount'] . '|' . $paymentSecondCard['transaction_details']['total_paid_amount']);
                     $stateObject->setState(Mage::helper('mercadopago/statusUpdate')->_getAssignedState('pending_payment'));
                     $stateObject->setStatus('pending_payment');
                     $stateObject->setIsNotified(false);

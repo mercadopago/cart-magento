@@ -123,7 +123,8 @@ var MercadoPagoCustom = (function () {
             customDiscountAmount: '#mercadopago_checkout_custom .mercadopago-discount-amount',
             discountAmount: '.mercadopago-discount-amount',
             token: '#mercadopago_checkout_custom .token',
-            errorFormat: '.error-{0}',
+            errorFormat: '#mercadopago_checkout_custom_ocp .error-{0}',
+            errorFormatSecondCard: '#second_card_mercadopago_checkout_custom_ocp .error-{0}',
             couponActionApply: '.mercadopago-coupon-action-apply',
             couponActionRemove: '.mercadopago-coupon-action-remove',
             ticketActionApply: '#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-apply',
@@ -729,7 +730,7 @@ var MercadoPagoCustom = (function () {
             }
             guessingPaymentMethod(event.type = self.constants.keyup);
             guessingPaymentMethodSecondCard(event.type = self.constants.keyup);
-
+            cardsHandlerSecondCard();
         }
 
         function actionShowSecondCard() {
@@ -758,7 +759,7 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.secondCardTotalBuy).hide();
             TinyJ(self.selectors.firstCardTotalBuy).show();
             cardsHandler();
-            //cardsHandlerSecondCard();
+
         }
 
         function changeAmountHandler() {
@@ -1548,7 +1549,7 @@ var MercadoPagoCustom = (function () {
 
                 for (var x = 0; x < Object.keys(response.cause).length; x++) {
                     var error = response.cause[x];
-                    showMessageErrorForm(String.format(self.selectors.errorFormat, error.code));
+                    showMessageErrorForm(String.format(self.selectors.errorFormatSecondCard, error.code));
                 }
 
             }
@@ -1567,17 +1568,17 @@ var MercadoPagoCustom = (function () {
             }
         }
 
-        function showMessageErrorForm(elError) {
+        function showMessageErrorForm(error) {
             showLogMercadoPago(self.messages.showingError);
-            showLogMercadoPago(elError);
+            showLogMercadoPago(error);
 
-            var elMessage = TinyJ(elError);
-            if (Array.isArray(elMessage)) {
-                for (var x = 0; x < elMessage.length; x++) {
-                    elMessage[x].show();
+            var messageText = TinyJ(error);
+            if (Array.isArray(messageText)) {
+                for (var x = 0; x < messageText.length; x++) {
+                    messageText[x].show();
                 }
             } else {
-                elMessage.show();
+                messageText.show();
             }
 
         }

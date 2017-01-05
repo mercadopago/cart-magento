@@ -34,6 +34,7 @@ class MercadoPago_Core_Helper_Response
     const INFO_MERCHANT_ORDER_NOT_FOUND     = 'Merchant Order not found';
     const INFO_STATUS_NOT_FINAL     = 'Status not final';
     const INFO_EXTERNAL_REFERENCE_NOT_FOUND     = 'External reference not found';
+    const INFO_ORDER_CANCELED = 'The order is canceled';
 
 
 }

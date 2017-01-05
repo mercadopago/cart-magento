@@ -198,3 +198,8 @@
 "Order payment wasn't made by Mercado Pago. The refund will be made through Magento", "Order payment wasn't made by Mercado Pago. The refund will be made through Magento"
 "Mercado Pago refunds are disabled. The refund will be made through Magento","Mercado Pago refunds are disabled. The refund will be made through Magento"
 "No payment is recorded. You can't make a refund on a unpaid order","No payment is recorded. You can't make a refund on a unpaid order"
+"Mercado Pago - Recurring Profile not created","Mercado Pago - Recurring Profile not created"
+"Failed to update the recurring profile by Mercado Pago","Failed to update the recurring profile by Mercado Pago"
+"Recurring Profile updated by Mercado Pago","Recurring Profile updated by Mercado Pago"
+"Mercado Pago - Recurring Payment Checkout: Invalid client id or client secret","Mercado Pago - Recurring Payment Checkout: Invalid client id or client secret"
+"This payment method is used only for recurring profiles.","This payment method is used only for recurring profiles."

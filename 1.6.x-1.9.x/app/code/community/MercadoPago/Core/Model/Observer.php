@@ -66,6 +66,8 @@ class MercadoPago_Core_Model_Observer
 
         $this->validateClientCredentials();
 
+        $this->validateRecurringClientCredentials();
+
         $this->setSponsor();
 
         $this->availableCheckout();
@@ -193,10 +195,7 @@ class MercadoPago_Core_Model_Observer
         $order = Mage::getModel('sales/order')->load($orderID);
         
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
-
-        if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-            return;
-        }
+        
         if ($order->getExternalRequest() || !$this->_isMercadoPago($paymentMethod)) {
             return;
         }
@@ -205,35 +204,44 @@ class MercadoPago_Core_Model_Observer
 
         $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
 
-        $isValidBasicData = $this->checkCancelationBasicData ($paymentID, $paymentMethod);
-        $isValidaData = $this->checkCancelationData ($orderStatus, $orderPaymentStatus);
+        if (!($orderPaymentStatus == null || $paymentID == null)) {
 
-        if ($isValidBasicData && $isValidaData) {
-            $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-            $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+            $isValidBasicData = $this->checkCancelationBasicData($paymentID, $paymentMethod);
+            if ($isValidBasicData) {
+                $isValidaData = $this->checkCancelationData($orderStatus, $orderPaymentStatus);
 
-            $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
-            $response = null;
-
-            $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
-
-            if ($paymentMethod == 'mercadopago_standard') {
-                $response = $mp->cancel_payment($paymentID);
-            } else {
-                $data = [
-                    "status" => 'cancelled',
-                ];
-                $response = $mp->put("/v1/payments/$paymentID?access_token=$access_token", $data);
+                if ($isValidBasicData && $isValidaData) {
+                    $this->_sendCancellationRequest($paymentMethod, $paymentID);
+                }
             }
+        }
+    }
 
-            if ($response['status'] == 200) {
-                Mage::register('mercadopago_cancellation', true);
-                $this->_getSession()->addSuccess(__('Cancellation made by Mercado Pago'));
-            } else {
-                $this->_getSession()->addError(__('Failed to make the cancellation by Mercado Pago'));
-                $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
-                $this->throwCancelationException();
-            }
+    protected function _sendCancellationRequest ($paymentMethod, $paymentID) {
+        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+
+        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
+        $response = null;
+
+        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+
+        if ($paymentMethod == 'mercadopago_standard') {
+            $response = $mp->cancel_payment($paymentID);
+        } else {
+            $data = [
+                "status" => 'cancelled',
+            ];
+            $response = $mp->put("/v1/payments/$paymentID?access_token=$access_token", $data);
+        }
+
+        if ($response['status'] == 200) {
+            Mage::register('mercadopago_cancellation', true);
+            $this->_getSession()->addSuccess(__('Cancellation made by Mercado Pago'));
+        } else {
+            $this->_getSession()->addError(__('Failed to make the cancellation by Mercado Pago'));
+            $this->_getSession()->addError($response['status'] . ' ' . $response['response']['message']);
+            $this->throwCancelationException();
         }
     }
 
@@ -244,13 +252,13 @@ class MercadoPago_Core_Model_Observer
         }
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-            $this->_getSession()->addError(__('Order payment wasn\'t made by Mercado Pago. The cancellation will be made through Magento'));
+            $this->_getSession()->addWarning(__('Order payment wasn\'t made by Mercado Pago. The cancellation will be made through Magento'));
             return false;
         }
 
         $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
         if (!$refundAvailable) {
-            $this->_getSession()->addError(__('Mercado Pago cancellations are disabled. The cancellation will be made through Magento'));
+            $this->_getSession()->addWarning(__('Mercado Pago cancellations are disabled. The cancellation will be made through Magento'));
             return false;
         }
 
@@ -336,17 +344,18 @@ class MercadoPago_Core_Model_Observer
             }
         }
         $isValidBasicData = $this->checkRefundBasicData ($paymentMethod, $paymentDate);
-        $isValidaData = $this->checkRefundData ($isCreditCardPayment,
-            $orderStatus,
-            $orderPaymentStatus,
-            $paymentDate,
-            $order);
+        if ($isValidBasicData) {
+            $isValidaData = $this->checkRefundData ($isCreditCardPayment,
+                $orderStatus,
+                $orderPaymentStatus,
+                $paymentDate,
+                $order);
 
-        $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
-        if ($isValidBasicData && $isValidaData) {
-            $this->sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID);
+            $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
+            if ($isValidBasicData && $isValidaData) {
+                $this->sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID);
+            }
         }
-
     }
 
     protected function checkRefundBasicData ($paymentMethod, $paymentDate) {
@@ -358,12 +367,12 @@ class MercadoPago_Core_Model_Observer
         }
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
-            $this->_getSession()->addError(__('Order payment wasn\'t made by Mercado Pago. The refund will be made through Magento'));
+            $this->_getSession()->addWarning(__('Order payment wasn\'t made by Mercado Pago. The refund will be made through Magento'));
             return false;
         }
 
         if (!$refundAvailable) {
-            $this->_getSession()->addError(__('Mercado Pago refunds are disabled. The refund will be made through Magento'));
+            $this->_getSession()->addWarning(__('Mercado Pago refunds are disabled. The refund will be made through Magento'));
             return false;
         }
 
@@ -487,8 +496,28 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
+    public function checkoutSubmitAllAfter (Varien_Event_Observer $observer) {
+        $recurringProfiles = $observer->getRecurringProfiles();
+        if (isset($recurringProfiles) && count($recurringProfiles) > 0) {
+            $checkoutSession = Mage::getSingleton('checkout/session');
+            $checkoutSession->setRedirectUrl(Mage::getUrl('mercadopago/recurringPayment'));
+        }
+    }
+
+    protected function validateRecurringClientCredentials()
+    {
+        $clientId = Mage::getStoreConfig('payment/mercadopago_recurring/client_id');
+        $clientSecret = Mage::getStoreConfig('payment/mercadopago_recurring/client_secret');
+        if (!empty($clientId) && !empty($clientSecret)) {
+            if (!Mage::helper('mercadopago')->isValidClientCredentials($clientId, $clientSecret)) {
+                Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Recurring Payment Checkout: Invalid client id or client secret'));
+            }
+        }
+    }
+
     protected function _isMercadoPago($paymentMethod)
     {
         return ($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom');
     }
+  
 }

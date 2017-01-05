@@ -312,6 +312,7 @@ var MercadoPagoCustom = (function () {
         function initSecondCard() {
             defineInputsSecondCard();
             TinyJ(self.selectors.cardNumberInputSecondCard).keyup(guessingPaymentMethodSecondCard);
+            TinyJ(self.selectors.amountFirstCard).focusout(guessingPaymentMethodSecondCard);
             TinyJ(self.selectors.secondCardCardId).change(cardsHandlerSecondCard);
             TinyJ(self.selectors.secondCardInstallments).change(setTotalAmount);
 
@@ -856,6 +857,8 @@ var MercadoPagoCustom = (function () {
                     Mercadopago.getPaymentMethod({"bin": _bin}, setPaymentMethodInfo);
                     TinyJ(self.selectors.issuer).val('');
                 }
+            }  else {
+                 guessingPaymentMethod(event.type = self.constants.keyup);
             }
         }
 
@@ -878,6 +881,8 @@ var MercadoPagoCustom = (function () {
                     Mercadopago.getPaymentMethod({"bin": _bin}, setPaymentMethodInfoSecondCard);
                     TinyJ(self.selectors.issuerSecondCard).val('');
                 }
+            } else {
+                guessingPaymentMethodSecondCard(event.type = self.constants.keyup);
             }
         }
 
@@ -949,7 +954,7 @@ var MercadoPagoCustom = (function () {
                             "amount": amount
                         }, setPaymentMethodInfo);
                     }
-                }, 100);
+                }, 1000);
             }
         };
 
@@ -979,9 +984,9 @@ var MercadoPagoCustom = (function () {
                         Mercadopago.getPaymentMethod({
                             "bin": bin,
                             "amount": amount
-                        }, setPaymentMethodInfoSecondCard());
+                        }, setPaymentMethodInfoSecondCard);
                     }
-                }, 100);
+                }, 3000);
             }
         };
 

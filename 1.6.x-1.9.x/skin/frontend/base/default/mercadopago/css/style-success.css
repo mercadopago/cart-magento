@@ -1,4 +1,9 @@
 /* Styles for success page */
+#box-mercadopago, #logo-mercadopago{
+    padding: 0;
+    text-align: center;
+}
+
 
 .mercadopago-title{
     margin: 0 0 10px 0;
@@ -46,11 +51,30 @@
 
 #logo-mercadopago{
     width: 100px;
+    /*
     margin: 20px 0;
-    float: left;
+    */
+    /*float: left;*/
+    margin: 20px auto;
+}
+#logo-mercadopago img{
+    /*    float: left;*/
+    width: 100%;
 }
 
-#logo-mercadopago img{
-    float: left;
-    width: 100%;
+
+#payment-info-text p{
+    text-transform: capitalize;
+    line-height: 22px;
+}
+
+p + #btn-boleto-mercadopago{
+    margin-top: 15px;
+}
+
+#logo-mercadopago + .buttons-set{
+    text-align: center!important;
+}
+.button-success > button{
+    float: none!important;
 }

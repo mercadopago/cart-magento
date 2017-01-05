@@ -407,7 +407,7 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.amountFirstCard).val(halfAmount);
             TinyJ(self.selectors.amountSecondCard).val(halfAmount);
 
-            firstCardAmount.keyup(changeAmountHandler);
+            firstCardAmount.focusout(changeAmountHandler);
             TinyJ(self.selectors.installments).change(setTotalAmount);
 
             secondCardReturnListCard.hide();

@@ -175,10 +175,10 @@
     display: inline-block;
     margin-left: 4px;
 }
-#use_other_card_mp, #show_second_card, #show_second_card, #second_card_use_other_card_mp, #hide_second_card, #return_list_card_mp{
+#use_other_card_mp, #show_second_card, #show_second_card, #second_card_use_other_card_mp, #hide_second_card {
     background: #3399cc;
     color: #fff;
-    display: inline-block;
+    display: inline-block !important;
     font-family: "Raleway", "Helvetica Neue", Verdana, Arial, sans-serif;
     font-size: 13px;
     margin: 1px 0;
@@ -187,8 +187,23 @@
     text-align: center;
     width: auto;
 }
+
 #use_other_card_mp:hover, #show_second_card:hover, #show_second_card:hover, #second_card_use_other_card_mp:hover {
     text-decoration: none;
+}
+
+#return_list_card_mp {
+    display: none;
+    background: #3399cc;
+    color: #fff;
+    display: none;
+    font-family: "Raleway", "Helvetica Neue", Verdana, Arial, sans-serif;
+    font-size: 13px;
+    margin: 1px 0;
+    max-width: 130px;
+    padding: 2px 6px;
+    text-align: center;
+    width: auto;
 }
 
 #show_second_card {
@@ -414,4 +429,16 @@
 
 .show_second_card {
     display: none;
+}
+
+#installments__mp {
+    float: none;
+}
+
+#installments__mp label {
+    margin: 0;
+}
+
+#installments__mp select {
+    margin-left: 100px;
 }

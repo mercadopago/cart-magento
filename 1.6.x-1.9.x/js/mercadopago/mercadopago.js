@@ -1225,7 +1225,13 @@ var MercadoPagoCustom = (function () {
             showLogMercadoPago(self.messages.setInstallment);
 
             var issuerId = TinyJ(self.selectors.issuer).val();
-            var amount = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.amount).val();
+            //var amount = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.amount).val();
+
+            if (isSecondCardUsed) {
+                var amount = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.firstCardAmount).val();
+            } else {
+                var amount = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.amount).val();
+            }
 
             if (issuerId === '-1') {
                 return;

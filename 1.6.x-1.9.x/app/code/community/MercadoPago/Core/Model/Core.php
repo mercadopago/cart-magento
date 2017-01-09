@@ -495,9 +495,8 @@ class MercadoPago_Core_Model_Core
                 if (isset($data['payment_method_id'])) {
                     $paymentOrder->setAdditionalInformation('payment_method', $data['payment_method_id']);
                 }
-            } else {
-                $paymentOrder->setAdditionalInformation('total_paid_amount', $data['transaction_details']['total_paid_amount'] . '|');
             }
+
             $paymentStatus = $paymentOrder->save();
             $helper->log('Update Payment', 'mercadopago.log', $paymentStatus->getData());
 

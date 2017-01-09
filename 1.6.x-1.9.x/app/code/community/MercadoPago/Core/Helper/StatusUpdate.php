@@ -173,6 +173,7 @@ class MercadoPago_Core_Helper_StatusUpdate
         if ($this->_getMulticardLastValue($status) == 'approved') {
             if ($infoPayments['is_second_card_used']) {
                 $payment['total_paid_amount'] = $infoPayments['total_paid_amount'];
+                $payment['transaction_amount'] = $infoPayments['transaction_amount'];
                 $payment['status'] = $infoPayments['status'];
             }
             Mage::helper('mercadopago')->setOrderSubtotals($payment, $this->_order);

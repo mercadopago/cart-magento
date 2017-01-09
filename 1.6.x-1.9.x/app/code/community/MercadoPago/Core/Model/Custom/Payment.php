@@ -86,9 +86,7 @@ class MercadoPago_Core_Model_Custom_Payment
                     $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
                     $id = $paymentFirstCard['id'];
                     $refundResponse = $mp->post("/v1/payments/$id/refunds?access_token=$accessToken");
-                    if ($refundResponse['status'] == 200 || $refundResponse['status'] == 201) {
-
-                    }
+                    Mage::helper('mercadopago')->log("info form", self::LOG_FILE, $refundResponse);
                     return false;
                 }
             } else {

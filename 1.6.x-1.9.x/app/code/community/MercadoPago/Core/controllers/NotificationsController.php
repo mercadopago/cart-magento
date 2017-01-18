@@ -386,8 +386,7 @@ class MercadoPago_Core_NotificationsController
             $profile->save();
         }
 
-        $this->_redirect();
-        return;
+        return $this->_redirect();
 
     }
 
@@ -396,15 +395,28 @@ class MercadoPago_Core_NotificationsController
         if (!isset($params['id'])) {
             return;
         }
-        $this->_paymentData = $this->_getFormattedPaymentData($params['id']);
-        if (empty($this->_paymentData)) {
+        $paymentData = $this->getCore()->getPayment($params['id']);
+        if (empty($paymentData) || ($paymentData['status'] != 200 && $paymentData['status'] != 201)) {
             return;
         }
-        if (!$this->_handleMerchantOrder($this->_paymentData['merchant_order_id'])) {
-            return;
+        Mage::helper('mercadopago')->log('Recurring PaymentAction Data', self::LOG_FILE, $paymentData);
+        $paymentData=$paymentData['response']['collection'];
+        if ($paymentData['operation_type'] == 'recurring_payment'/* && $paymentData['status'] == 'approved'*/) {
+            $profile = Mage::getModel('sales/recurring_profile')->load($paymentData['external_reference']);
+            if ($profile->getId()) {
+                $item = new Varien_Object();
+                $item->setData($profile->getOrderItemInfo());
+                $item->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_REGULAR);
+                $order = $profile->createOrder($item)->save();
+                $statusHelper = Mage::helper('mercadopago/statusUpdate');
+                if ($order->getId()) {
+                    $paymentData = Mage::helper('mercadopago')->setPayerInfo($paymentData);
+                    $statusHelper->setStatusUpdated($paymentData, $order);
+                    $this->getCore()->updateOrder($order, $paymentData);
+                    Mage::helper('mercadopago/statusUpdate')->setStatusOrder($paymentData);
+                }
+            }
         }
-        Mage::helper('mercadopago')->log('Recurring Payment Data', self::LOG_FILE, $this->_paymentData);
-
     }
 
 }

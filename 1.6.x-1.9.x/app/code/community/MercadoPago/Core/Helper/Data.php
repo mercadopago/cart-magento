@@ -152,11 +152,11 @@ class MercadoPago_Core_Helper_Data
      */
     public function setPayerInfo(&$payment)
     {
-        $payment["trunc_card"] = "xxxx xxxx xxxx " . $payment['card']["last_four_digits"];
-        $payment["cardholder_name"] = $payment['card']["cardholder"]["name"];
-        $payment['payer_first_name'] = $payment['payer']['first_name'];
-        $payment['payer_last_name'] = $payment['payer']['last_name'];
-        $payment['payer_email'] = $payment['payer']['email'];
+        $payment["trunc_card"] = (isset($payment['card']["last_four_digits"]))?"xxxx xxxx xxxx " . $payment['card']["last_four_digits"]:'';
+        $payment["cardholder_name"] = (isset($payment['card']["cardholder"]["name"]))?$payment['card']["cardholder"]["name"]:'';
+        $payment['payer_first_name'] = (isset($payment['payer']['first_name']))?$payment['payer']['first_name']:'';
+        $payment['payer_last_name'] = (isset($payment['payer']['last_name']))?$payment['payer']['last_name']:'';
+        $payment['payer_email'] = (isset($payment['payer']['email']))?$payment['payer']['email']:'';
 
         return $payment;
     }

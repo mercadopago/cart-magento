@@ -401,7 +401,7 @@ class MercadoPago_Core_NotificationsController
         }
         Mage::helper('mercadopago')->log('Recurring PaymentAction Data', self::LOG_FILE, $paymentData);
         $paymentData=$paymentData['response']['collection'];
-        if ($paymentData['operation_type'] == 'recurring_payment'/* && $paymentData['status'] == 'approved'*/) {
+        if ($paymentData['operation_type'] == 'recurring_payment' && $paymentData['status'] == 'approved') {
             $profile = Mage::getModel('sales/recurring_profile')->load($paymentData['external_reference']);
             if ($profile->getId()) {
                 $item = new Varien_Object();
@@ -414,6 +414,7 @@ class MercadoPago_Core_NotificationsController
                     $statusHelper->setStatusUpdated($paymentData, $order);
                     $this->getCore()->updateOrder($order, $paymentData);
                     Mage::helper('mercadopago/statusUpdate')->setStatusOrder($paymentData);
+                    $profile->addOrderRelation($order->getId());
                 }
             }
         }

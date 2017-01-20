@@ -108,7 +108,7 @@ var MercadoPagoCustom = (function () {
             oneClickPayment: '#mercadopago_checkout_custom #one_click_pay_mp',
             installmentText: '#mercadopago_checkout_custom .mercadopago-text-installment',
             paymentMethod: '#paymentMethod',
-            paymentMethodSelect: 'select[data-checkout="paymentMethod"]',
+            paymentMethodSelect: '#mercadopago_checkout_custom #paymentMethod',
             paymentMethodId: '#mercadopago_checkout_custom .payment_method_id',
             paymenMethodNotFound: '.error-payment-method-not-found',
             mercadoPagoTextChoice: '#mercadopago_checkout_custom .mercadopago-text-choice',

@@ -477,7 +477,7 @@ var MercadoPagoCustom = (function () {
             }
 
             for (var x = 0; x < dataCheckout.length; x++) {
-                if ((dataCheckout[x].getElem().id).includes("second")) {
+                if ((dataCheckout[x].getElem().id).indexOf("second") >= 0) {
                     continue;
                 }
                 var $id = "#" + dataCheckout[x].id();
@@ -549,7 +549,7 @@ var MercadoPagoCustom = (function () {
             }
 
             for (var x = 0; x < dataCheckout.length; x++) {
-                if (!(dataCheckout[x].getElem().id).includes("second")) {
+                if (!(dataCheckout[x].getElem().id).indexOf("second") >= 0) {
                     continue;
                 }
                 var $id = "#" + dataCheckout[x].id();
@@ -674,8 +674,8 @@ var MercadoPagoCustom = (function () {
                 setRequiredFields(false);
                 TinyJ(self.selectors.returnToCardList).hide();
             }
-
             defineInputs();
+
             clearOptions();
             Mercadopago.clearSession();
 
@@ -1432,7 +1432,7 @@ var MercadoPagoCustom = (function () {
 
             if (Array.isArray(dataCheckout)) {
                 for (var x = 0; x < dataCheckout.length; x++) {
-                    if ((dataCheckout[x].getElem().id).includes("second")) {
+                    if ((dataCheckout[x].getElem().id).indexOf("second") >= 0) {
                         dataCheckout[x].focusout(checkCreateCardTokenSecondCard);
                         dataCheckout[x].change(checkCreateCardTokenSecondCard);
                     } else {

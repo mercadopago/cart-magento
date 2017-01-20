@@ -17,6 +17,7 @@ env:
    - BEHAT_TAG=@MercadoPago
 
 addons:
+  firefox: "40.0"
   hosts:
     - mercadopago.local
 

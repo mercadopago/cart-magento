@@ -25,7 +25,7 @@ Feature: Validation of custom checkout form
     And I fill text field "cardholderName" with "APRO"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2016"
+    And I select option field "cardExpirationYear" with "2017"
     And I select installment "1"
 
     Then I should see "Month is invalid."

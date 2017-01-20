@@ -171,11 +171,8 @@ class MercadoPago_Core_Helper_StatusUpdate
         $status = $payment['status'];
         $infoPayments = $this->_order->getPayment()->getAdditionalInformation();
         if ($this->_getMulticardLastValue($status) == 'approved') {
-            if ($infoPayments['is_second_card_used']) {
-                $payment['total_paid_amount'] = $infoPayments['total_paid_amount'];
-                $payment['transaction_amount'] = $infoPayments['transaction_amount'];
-                $payment['status'] = $infoPayments['status'];
-            }
+            $this->_handleTwoCards($payment, $infoPayments);
+
             Mage::helper('mercadopago')->setOrderSubtotals($payment, $this->_order);
             $this->_createInvoice($this->_order, $message);
             //Associate card to customer
@@ -202,6 +199,15 @@ class MercadoPago_Core_Helper_StatusUpdate
         }
 
         return $this->_order->save();
+    }
+
+    protected function _handleTwoCards($payment, $infoPayments)
+    {
+        if ($infoPayments['is_second_card_used']) {
+            $payment['total_paid_amount'] = $infoPayments['total_paid_amount'];
+            $payment['transaction_amount'] = $infoPayments['transaction_amount'];
+            $payment['status'] = $infoPayments['status'];
+        }
     }
 
     public function getMessage($status, $payment)

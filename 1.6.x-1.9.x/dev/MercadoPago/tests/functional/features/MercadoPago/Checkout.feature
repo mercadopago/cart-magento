@@ -5,6 +5,7 @@ Feature: A customer should be able to do a checkout with MercadoPago
   Scenario: Validate financing cost detail
     Given User "test_user_2135227@testuser.com" "magento" exists
     And Setting Config "payment/mercadopago/debug_mode" is "1"
+    When I wait for "5" seconds
     And I am logged in as "test_user_2135227@testuser.com" "magento"
     And I empty cart
     And I am on page "blue-horizons-bracelets.html"
@@ -15,6 +16,7 @@ Feature: A customer should be able to do a checkout with MercadoPago
     And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
     And I select radio "p_method_mercadopago_custom"
+    When I wait for "5" seconds
     And I fill text field "securityCodeOCP" with "123"
     And I blur field "#securityCodeOCP"
     And I select option field "cardId" with "144422268"

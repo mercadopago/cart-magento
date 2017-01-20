@@ -5,6 +5,7 @@ $_code = $this->getMethodCode();
 $grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
 $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
 $logEnabled= Mage::getStoreConfigFlag('payment/mercadopago/logs');
+$twoCardsEnabled = Mage::getStoreConfigFlag('payment/mercadopago_custom/allow_2_cards_payment');
 $route = $this->getRequest()->getRequestedRouteName();
 $customer = $this->getCustomerAndCards();
 ?>
@@ -19,8 +20,6 @@ $customer = $this->getCustomerAndCards();
 <fieldset>
     <div id="mercadopago_checkout_custom">
         <ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;">
-
-
             <?php
             if ($coupon_mercadopago):
                 $block = $this->getLayout()->createBlock('mercadopago/discount')->setCode($_code);
@@ -171,7 +170,7 @@ $customer = $this->getCustomerAndCards();
                 <span class="total_buy_price"> $<?php echo $grant_total; ?>.-</span>
             </li>
 
-            <div><a id="show_second_card" class="action_ocp" ><?php echo $this->__('Use 2 Cards'); ?></a></div>
+            <div><a id="show_second_card" class="action_ocp <?php if (!$twoCardsEnabled): echo "show_second_card"?><?php endif;?>"><?php echo $this->__('Use 2 Cards'); ?></a></div>
             <?php
                 echo $this->setTemplate('mercadopago/custom/secondCard.phtml')->toHtml();
             ?>
@@ -182,7 +181,7 @@ $customer = $this->getCustomerAndCards();
                 </div>
             </li>
 
-            <li>
+            <li class="banner_custom">
                 <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
                     <p class="communication"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
                 <?php endif; ?>

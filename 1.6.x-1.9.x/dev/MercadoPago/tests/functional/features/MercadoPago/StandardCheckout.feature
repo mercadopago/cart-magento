@@ -19,7 +19,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     And I press "#payment-buttons-container .button" element
     When I press "#review-buttons-container .button" element
 
-  @STANDARD
+  @STANDARD @skip
   Scenario: Generate order with standard checkout
     Given I switch to the iframe "checkout_mercadopago"
     And I fill the iframe fields

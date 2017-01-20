@@ -220,7 +220,7 @@
 }
 
 #show_second_card {
-    bottom: -18px;
+    bottom: -25px;
     left: 20px;
     position: absolute;
 }
@@ -438,12 +438,13 @@
 }
 
 .banner_checkout_mp {
+    margin: 21px 0 -8px;
     max-width:100%;
     max-height:100%;
 }
 
 .show_second_card {
-    display: none;
+    display: none !important;
 }
 
 #installments__mp {

@@ -15,10 +15,11 @@ Feature: Validation of custom checkout form
     And I press "#billing-buttons-container .button" element
     And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
+    And I wait for 5 seconds
     And I select radio "p_method_mercadopago_custom"
     And I press "#use_other_card_mp" element
 
-  @CheckoutCustomForm @CardED
+  @CheckoutCustomForm @CardED @skip
   Scenario: Validate card expiration date
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "1"
@@ -28,8 +29,7 @@ Feature: Validation of custom checkout form
     And I select option field "cardExpirationYear" with "2017"
     And I select installment "1"
 
-    Then I should see "Month is invalid."
-    And I should see "Year is invalid."
+    And I should see "Incorrect credit card expiration date."
 
   @CheckoutCustomForm @CardHN
   Scenario: Validate cardholder name

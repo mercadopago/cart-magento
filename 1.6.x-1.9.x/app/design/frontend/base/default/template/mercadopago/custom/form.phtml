@@ -5,6 +5,7 @@ $_code = $this->getMethodCode();
 $grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
 $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
 $logEnabled= Mage::getStoreConfigFlag('payment/mercadopago/logs');
+$twoCardsEnabled = Mage::getStoreConfigFlag('payment/mercadopago_custom/allow_2_cards_payment');
 $route = $this->getRequest()->getRequestedRouteName();
 $customer = $this->getCustomerAndCards();
 ?>
@@ -19,8 +20,6 @@ $customer = $this->getCustomerAndCards();
 <fieldset>
     <div id="mercadopago_checkout_custom">
         <ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;">
-
-
             <?php
             if ($coupon_mercadopago):
                 $block = $this->getLayout()->createBlock('mercadopago/discount')->setCode($_code);
@@ -32,33 +31,38 @@ $customer = $this->getCustomerAndCards();
                 <?php
             endif;
             ?>
-
+            <li id="first_card_amount_fields" class="show_second_card">
+                <div>
+                    <label for="firstCard"><?php echo $this->__('Amount'); ?></label>
+                    <input type="text" id="first_card_amount" class="required-entry" max="<?php echo $grant_total; ?>" />
+                </div>
+            </li>
             <?php if ($customer !== false && isset($customer['cards']) && count($customer['cards']) > 0): ?>
                 <li>
                     <ul id="mercadopago_checkout_custom_ocp">
                         <li id="cardId__mp">
 
                             <div><a id="use_other_card_mp" class="action_ocp"><?php echo $this->__('Use other card'); ?></a></div>
+                                <label id="payment_label" for="cardNumber"><?php echo $this->__('Payment Method: '); ?></label>
+                                <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp">
+                                    <?php foreach ($customer['cards'] as $card) { ?>
+                                        <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>" secure_thumb="<?php echo $card["payment_method"]["secure_thumbnail"]; ?>" payment_method_id="<?php echo $card["payment_method"]["id"]; ?>">
 
-                            <label for="cardNumber"><?php echo $this->__('Payment Method'); ?></label>
-                            <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp">
-                                <?php foreach ($customer['cards'] as $card) { ?>
-                                    <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>" secure_thumb="<?php echo $card["payment_method"]["secure_thumbnail"]; ?>" payment_method_id="<?php echo $card["payment_method"]["id"]; ?>">
+                                            <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
 
-                                        <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-
-                            <input type="hidden" name="payment[<?php echo $_code; ?>][customer_id]" value="<?php echo $customer['id']; ?>">
+                                <input type="hidden" name="payment[<?php echo $_code; ?>][customer_id]" value="<?php echo $customer['id']; ?>">
 
                         </li>
 
                         <li id="securityCodeOCP__mp">
-                            <label for="securityCode"><?php echo $this->__('CVV'); ?></label>
+                            <label id="security_label" for="securityCode"><?php echo $this->__('CVV'); ?></label>
                             <input type="text" id="securityCodeOCP" class="required-entry" data-checkout="securityCode" maxlength="4" data-element-id="#securityCodeOCP__mp"/>
 
                             <p class="message-error error-E302 error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
+                            <span class="ch-form-hint" id="helpSecurityCode">Últimos 3 números que están al dorso.</span>
                         </li>
                     </ul>
                 </li>
@@ -70,7 +74,7 @@ $customer = $this->getCustomerAndCards();
 
             <li>
                 <ul id="mercadopago_checkout_custom_card">
-                    <div><a id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></a></div>
+                    <div class="hide"><a id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></a></div>
                     <li id="paymentMethod__mp">
                         <label for="paymentMethod"><?php echo $this->__('Payment Method'); ?></label>
                         <select id="paymentMethod" data-checkout="paymentMethod" name="payment[<?php echo $_code; ?>][paymentMethod]" data-element-id="#paymentMethod__mp" class="validate-select"></select>
@@ -96,7 +100,7 @@ $customer = $this->getCustomerAndCards();
 
                     <li id="expiration_date__mp">
                         <div id="box_month">
-                            <label for="cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
+                            <label id="cardExpirationMonthLabel" for="cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
                             <select id="cardExpirationMonth" data-checkout="cardExpirationMonth" class="mp-validate-cc-exp" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#expiration_date__mp">
                                 <?php foreach ($this->getCcMonths() as $m => $v): ?>
                                     <option value="<?php echo $m ? $m : ''; ?>"><?php echo $v; ?></option>
@@ -107,7 +111,7 @@ $customer = $this->getCustomerAndCards();
                         </div>
 
                         <div id="box_year">
-                            <label for="cardExpirationYear"><?php echo $this->__('Year'); ?></label>
+                            <label id="cardExpirationYearLabel" for="cardExpirationYear"><?php echo $this->__('Year'); ?></label>
                             <select id="cardExpirationYear" data-checkout="cardExpirationYear" name="payment[<?php echo $_code; ?>][card_expiration_year]" data-element-id="#expiration_date__mp">
                                 <?php foreach ($this->getCcYears() as $y => $v): ?>
                                     <option value="<?php echo $y ? $y : ''; ?>"><?php echo $v; ?></option>
@@ -160,13 +164,24 @@ $customer = $this->getCustomerAndCards();
                 <p class="message-error error-other validation-advice"><?php echo $this->__('Please validate your data.'); ?></p>
 
             </li>
+
+            <li class="total_buy">
+                <label> <?php echo $this->__('Total amount: '); ?> </label>
+                <span class="total_buy_price"> $<?php echo $grant_total; ?>.-</span>
+            </li>
+
+            <div><a id="show_second_card" class="action_ocp <?php if (!$twoCardsEnabled): echo "show_second_card"?><?php endif;?>"><?php echo $this->__('Use 2 Cards'); ?></a></div>
+            <?php
+                echo $this->setTemplate('mercadopago/custom/secondCard.phtml')->toHtml();
+            ?>
+
             <li>
                 <div id="mercadopago-loading">
                     <img src="<?php echo $this->getSkinUrl('mercadopago/images/loading.gif'); ?>" alt="loading"/>
                 </div>
             </li>
 
-            <li>
+            <li class="banner_custom">
                 <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
                     <p class="communication"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
                 <?php endif; ?>

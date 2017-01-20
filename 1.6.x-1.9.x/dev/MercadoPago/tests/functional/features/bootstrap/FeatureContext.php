@@ -2,7 +2,8 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode;
+use Behat\Behat\Hook\Scope\AfterStepScope;
+use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Behat\Tester\Exception\PendingException;
@@ -331,8 +332,7 @@ class FeatureContext
             $login->setValue($email);
             $pwd->setValue($password);
             $submit->click();
-            $this->findElement('div.welcome-msg');
-
+#            $this->findElement('div.welcome-msg');
         }
     }
 
@@ -1059,6 +1059,49 @@ class FeatureContext
             $field->press();
         }
 
+    }
+
+    /**
+     * Grab the JavaScript errors from the session. Only works in companion
+     * with a global window variable `errors` that contains the JavaScript
+     * and/or XHR errors.
+     *
+     * @AfterStep
+     */
+    public function takeJSErrorsAfterFailedStep(AfterStepScope $event)
+    {
+        $code = $event->getTestResult()->getResultCode();
+        $driver = $this->getSession()->getDriver();
+
+        if ($driver instanceof Selenium2Driver && $code === 99) {
+            // Fetch errors from window variable.
+            try {
+                $json = $this->getSession()->evaluateScript("return JSON.stringify(window.errors);");
+            } catch (\Exception $e) {
+                // Ignore this exception, because this may be caused by the
+                // driver and/or JavaScript.
+                return;
+            }
+
+            // Unserialize the errors.
+            $errors = json_decode($json);
+            if (empty($errors)) {
+                return;
+            }
+            if (json_last_error() == JSON_ERROR_NONE) {
+                $messages = [];
+
+                foreach ($errors as $error) {
+                    if ($error->type == "javascript") {
+                        $messages[] = "- {$error->message} ({$error->location})";
+                    } elseif ($error->type == "xhr") {
+                        $messages[] = "- {$error->message} ({$error->method} {$error->url}): {$error->statusCode} {$error->response}";
+                    }
+                }
+
+                printf("JavaScript errors:\n\n" . implode("\n", $messages));
+            }
+        }
     }
 
 }

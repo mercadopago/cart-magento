@@ -444,6 +444,10 @@
 }
 
 .show_second_card {
+    display: none;
+}
+
+.show_second_card_button {
     display: none !important;
 }
 

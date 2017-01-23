@@ -201,7 +201,7 @@ class MercadoPago_Core_Helper_StatusUpdate
         return $this->_order->save();
     }
 
-    protected function _handleTwoCards($payment, $infoPayments)
+    protected function _handleTwoCards(&$payment, $infoPayments)
     {
         if ($infoPayments['is_second_card_used']) {
             $payment['total_paid_amount'] = $infoPayments['total_paid_amount'];

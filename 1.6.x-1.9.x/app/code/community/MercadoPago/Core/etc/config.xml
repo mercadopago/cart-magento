@@ -278,6 +278,9 @@
                 <sandbox_mode>0</sandbox_mode>
             </mercadopago_recurring>
 
+            <mercadopago_calculator>
+                <calculalator_available>0</calculalator_available>
+            </mercadopago_calculator>
         </payment>
     </default>
 

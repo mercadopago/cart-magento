@@ -27,6 +27,10 @@ class MercadoPago_Core_Helper_Data
     const PLATFORM_DESKTOP = 'Desktop';
     const TYPE = 'magento';
 
+//    calculator
+    const XML_PATH_CALCULATOR_AVAILABLE = 'payment/mercadopago_calculator/calculalator_available';
+    const XML_PATH_CALCULATOR_PAGES = 'payment/mercadopago_calculator/show_in_pages';
+
     protected $_apiInstance;
 
     protected $_website;
@@ -210,6 +214,22 @@ class MercadoPago_Core_Helper_Data
         }
 
         return $this->_website;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isAvailableCalculator(){
+        return Mage::getStoreConfig(self::XML_PATH_CALCULATOR_AVAILABLE);
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPagesToShow(){
+        return Mage::getStoreConfig(self::XML_PATH_CALCULATOR_PAGES);
     }
 
 }

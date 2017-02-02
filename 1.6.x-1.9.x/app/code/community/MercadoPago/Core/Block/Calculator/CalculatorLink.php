@@ -22,23 +22,26 @@ class MercadoPago_Core_Block_Calculator_CalculatorLink
     /**
      * @var $helperData MercadoPago_Core_Helper_Data
      */
-    protected $helperData;
+    protected $_helperData;
 
     protected function _construct()
     {
         parent::_construct();
 //        $this->setTemplate('mercadopago/calculator/calculatorLink.phtml');
-        $this->helperData = Mage::helper('mercadopago/data');
+        $this->_helperData = Mage::helper('mercadopago/data');
     }
 
 
     /**
-     *
+     * Check if the access token is valid, if the API is not down and if the configuration is enabled
      *
      * @return bool
      */
     protected function isAvailableCalculator(){
-        return $this->helperData->isAvailableCalculator();
+
+        return  ($this->_helperData->isValidAccessToken(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN))
+        & $this->_helperData->isAvailableCalculator());
+
     }
 
     /**
@@ -47,9 +50,10 @@ class MercadoPago_Core_Block_Calculator_CalculatorLink
      */
     protected function isPageToShow($nameLayoutConteiner){
 
-        $valueConfig = $this->helperData->getPagesToShow();
+        $valueConfig = $this->_helperData->getPagesToShow();
         $pages = explode(',', $valueConfig);
 
         return in_array($nameLayoutConteiner, $pages);
     }
+
 }

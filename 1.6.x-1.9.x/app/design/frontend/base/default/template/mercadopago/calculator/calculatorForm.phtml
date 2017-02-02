@@ -1,0 +1,53 @@
+<?php
+
+$link_to_calculator = "lick to popUp?";
+
+$arr = [ 'uno', 'dos', 'tres'];
+
+?>
+<!--<script type="text/javascript" src="http://mercadopago.local/js/lib/jquery/jquery-1.10.2.min.js"></script>-->
+<!--<script type="text/javascript" src="http://mercadopago.local/js/lib/jquery/noconflict.js"></script>-->
+<script type="text/javascript">
+    var PublicKeyMercadoPagoCustom = "<?php echo $this->getPublicKey(); ?>";
+</script>
+<script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+<script type="text/javascript" src= <?php  echo $this->getCalculatorJs(); ?>> </script>
+<script type="text/javascript" src= <?php  echo $this->getTinyJUrl(); ?>> </script>
+
+
+
+
+<div id="mercadopago_calculator_link" class="">
+    <h2> <?php echo $this->__('AAAAAAAAAAA')?> </h2>
+    <div>
+        <input type="radio" name="rGroup" value="1" id="r1"/>
+        <label class="radio" for="r1">radio1</label>
+        <input type="radio" name="rGroup" value="1" id="r2"/>
+        <label class="radio" for="r2">radio2</label>
+        <input type="radio" name="rGroup" value="1" id="r3"/>
+        <label class="radio" for="r3">radio3</label>
+<!--        --><?php //foreach ($this->getCards as $card) { ?>
+<!--            <input type="radio" name="rGroup" value="1" id="r1"/>-->
+<!--            <label class="radio" for="r1"></label>-->
+<!---->
+<!---->
+<!--            <option value="--><?php //echo $card["id"]; ?><!--" first_six_digits="--><?php //echo $card["first_six_digits"]; ?><!--" security_code_length="--><?php //echo $card["security_code"]["length"]; ?><!--" secure_thumb="--><?php //echo $card["payment_method"]["secure_thumbnail"]; ?><!--" payment_method_id="--><?php //echo $card["payment_method"]["id"]; ?><!--">-->
+<!---->
+<!--                --><?php //echo $card["payment_method"]["name"].' '; ?><!----><?php //echo $this->__('ended in'); ?><!----><?php //echo ' '.$card["last_four_digits"]; ?>
+<!--            </option>-->
+<!--        --><?php //} ?>
+    </div>
+    <label> texto texto texto </label>
+    <select id="idSelect" name="nameSelect">
+        <?php foreach ($arr as $i) { ?>
+            <option value="<?php echo $i ?>" >
+                <?php echo $i ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
+
+<script>
+        MercadoPagoCustom.getInstance();
+        MercadoPagoCustom.initPaymentMethods();
+</script>

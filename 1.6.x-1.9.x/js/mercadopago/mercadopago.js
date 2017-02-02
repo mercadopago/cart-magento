@@ -427,10 +427,13 @@ var MercadoPagoCustom = (function () {
             var value = 0;
             if (isSecondCardUsed) {
                 value = TinyJ(self.selectors.secondCardInstallments).getSelectedOption().attribute(self.constants.cost);
-
+                TinyJ('.tea-info-second-card').html(TinyJ(self.selectors.secondCardInstallments).getSelectedOption().attribute('tea'));
+                TinyJ('.cft-info-second-card').html(TinyJ(self.selectors.secondCardInstallments).getSelectedOption().attribute('cft'));
             }
             value = Number(value) + Number(TinyJ(self.selectors.installments).getSelectedOption().attribute(self.constants.cost));
             TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val(value);
+            TinyJ('.tea-info-first-card').html(TinyJ(self.selectors.installments).getSelectedOption().attribute('tea'));
+            TinyJ('.cft-info-first-card').html(TinyJ(self.selectors.installments).getSelectedOption().attribute('cft'));
         }
 
         function defineInputs() {
@@ -1388,6 +1391,9 @@ var MercadoPagoCustom = (function () {
                     option = new Option(payerCosts[i].recommended_message || payerCosts[i].installments, payerCosts[i].installments);
                     selectorInstallments.appendChild(option);
                     TinyJ(option).attribute(self.constants.cost, payerCosts[i].total_amount);
+                    var finance = payerCosts[i]['labels'][0].split('|');
+                    TinyJ(option).attribute('cft', finance[0].replace('_', ': '));
+                    TinyJ(option).attribute('tea', finance[1].replace('_', ': '));
                 }
                 selectorInstallments.enable();
             } else {
@@ -1416,6 +1422,9 @@ var MercadoPagoCustom = (function () {
                     option = new Option(payerCosts[i].recommended_message || payerCosts[i].installments, payerCosts[i].installments);
                     selectorInstallments.appendChild(option);
                     TinyJ(option).attribute(self.constants.cost, payerCosts[i].total_amount);
+                    var finance = payerCosts[i]['labels'][0].split('|');
+                    TinyJ(option).attribute('cft', finance[0].replace('_', ': '));
+                    TinyJ(option).attribute('tea', finance[1].replace('_', ': '));
                 }
                 selectorInstallments.enable();
             } else {

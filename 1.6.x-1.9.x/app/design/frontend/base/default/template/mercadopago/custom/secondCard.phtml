@@ -152,6 +152,13 @@ $customer = $this->getCustomerAndCards();
             <span class="second_card_total_buy_price"> $<?php echo $grant_total; ?>.-</span>
         </li>
 
+        <li>
+            <div class="legal-info">
+                <p class="tea-info tea-info-second-card">TEA: 0,00%</p>
+                <p class="cft-info cft-info-second-card">CFT: 0,00%</p>
+            </div>
+        </li>
+
         <input type="hidden" class="second_card_mercadopago-text-installment" value="<?php echo $this->__('Enter the card number'); ?>">
         <input type="hidden" id="second_card_one_click_pay_mp" name="payment[<?php echo $_code; ?>][one_click_pay]" value="<?php echo count($customer['cards']) > 0 ? 1 : 0; ?>">
         <input type="hidden" name="payment[<?php echo $_code; ?>][second_card_token]" type="text" value="" class="second_card_token"/>

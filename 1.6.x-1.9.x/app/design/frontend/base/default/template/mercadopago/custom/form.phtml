@@ -169,6 +169,13 @@ $customer = $this->getCustomerAndCards();
                 <label> <?php echo $this->__('Total amount: '); ?> </label>
                 <span class="total_buy_price"> $<?php echo $grant_total; ?>.-</span>
             </li>
+            <li>
+                <div class="legal-info">
+                    <p class="tea-info tea-info-first-card">TEA: 0,00%</p>
+                    <p class="cft-info cft-info-first-card">CFT: 0,00%</p>
+                </div>
+
+            </li>
 
             <div><a id="show_second_card" class="action_ocp <?php if (!$twoCardsEnabled): echo "show_second_card_button"?><?php endif;?>"><?php echo $this->__('Use 2 Cards'); ?></a></div>
             <?php

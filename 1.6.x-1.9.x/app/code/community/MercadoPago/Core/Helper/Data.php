@@ -232,4 +232,11 @@ class MercadoPago_Core_Helper_Data
         return Mage::getStoreConfig(self::XML_PATH_CALCULATOR_PAGES);
     }
 
+    public function getPaymentMethods($accessToken)
+    {
+        $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
+        $response = $mp->get("/v1/payment_methods");
+        return $response;
+    }
+
 }

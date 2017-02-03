@@ -30,7 +30,7 @@ class MercadoPago_Core_Block_Calculator_CalculatorForm
     {
         parent::_construct();
         $this->setTemplate('mercadopago/calculator/calculatorForm.phtml');
-//        $this->_helperData = Mage::helper('mercadopago/data');
+        $this->_helperData = Mage::helper('mercadopago/data');
     }
 
     protected function getCalculatorJs(){
@@ -46,5 +46,17 @@ class MercadoPago_Core_Block_Calculator_CalculatorForm
 
     protected function getPublicKey(){
         return Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_PUBLIC_KEY);
+    }
+
+
+    /**
+     * Check if the access token is valid, if the API is not down and if the configuration is enabled
+     *
+     * @return bool
+     */
+    protected function getPaymentMethods(){
+
+        return  $this->_helperData->getPaymentMethods(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN));
+
     }
 }

@@ -1,8 +1,13 @@
 <?php
 
-$link_to_calculator = "lick to popUp?";
+const STATUS_ACTIVE = 'active';
+const PAYMENT_TYPE_CREDIT_CARD = 'credit_card';
+
+$result = $this->getPaymentMethods();
+$list = $result['response'];
 
 $arr = [ 'uno', 'dos', 'tres'];
+
 
 ?>
 <!--<script type="text/javascript" src="http://mercadopago.local/js/lib/jquery/jquery-1.10.2.min.js"></script>-->
@@ -20,12 +25,27 @@ $arr = [ 'uno', 'dos', 'tres'];
 <div id="mercadopago_calculator_link" class="">
     <h2> <?php echo $this->__('AAAAAAAAAAA')?> </h2>
     <div>
-        <input type="radio" name="rGroup" value="1" id="r1"/>
-        <label class="radio" for="r1">radio1</label>
-        <input type="radio" name="rGroup" value="1" id="r2"/>
-        <label class="radio" for="r2">radio2</label>
-        <input type="radio" name="rGroup" value="1" id="r3"/>
-        <label class="radio" for="r3">radio3</label>
+        <?php foreach ($list as $i) { ?>
+            <?php if ($i['status'] === STATUS_ACTIVE & $i['payment_type_id'] === PAYMENT_TYPE_CREDIT_CARD) : ?>
+                <div class="creditCartInformation">
+                    <input type="radio" name="rGroup" value="<?php echo $i['name']; ?>" id="<?php echo $i['id']; ?>"/>
+                    <label class="radio" for="<?php echo $i['id']; ?>">
+                        <img src="<?php echo $i['thumbnail']; ?>"/>
+                    </label>
+                    <label> texto texto texto </label>
+                    <select id="idSelect" name="nameSelect">
+                        <?php foreach ($arr as $i) { ?>
+                            <option value="<?php echo $i ?>" >
+                                <?php echo $i ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+            <?php endif; ?>
+
+        <?php } ?>
+
 <!--        --><?php //foreach ($this->getCards as $card) { ?>
 <!--            <input type="radio" name="rGroup" value="1" id="r1"/>-->
 <!--            <label class="radio" for="r1"></label>-->
@@ -37,14 +57,6 @@ $arr = [ 'uno', 'dos', 'tres'];
 <!--            </option>-->
 <!--        --><?php //} ?>
     </div>
-    <label> texto texto texto </label>
-    <select id="idSelect" name="nameSelect">
-        <?php foreach ($arr as $i) { ?>
-            <option value="<?php echo $i ?>" >
-                <?php echo $i ?>
-            </option>
-        <?php } ?>
-    </select>
 </div>
 
 <script>

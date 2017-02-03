@@ -3,63 +3,150 @@
 const STATUS_ACTIVE = 'active';
 const PAYMENT_TYPE_CREDIT_CARD = 'credit_card';
 
-$result = $this->getPaymentMethods();
-$list = $result['response'];
+$list = $this->getPaymentMethods();
 
-$arr = [ 'uno', 'dos', 'tres'];
-
+$importe = 1000;
+//$var = $this->getPaymentMethodsComplete($importe);
 
 ?>
-<!--<script type="text/javascript" src="http://mercadopago.local/js/lib/jquery/jquery-1.10.2.min.js"></script>-->
-<!--<script type="text/javascript" src="http://mercadopago.local/js/lib/jquery/noconflict.js"></script>-->
+
+
+
+<main role="main">
+    <?php if (!empty($list)) : ?>
+    <section class="order-profile-app-wrapper" data-component="paymentCalculator">
+        <div class="op-section-payment">
+            <h2 class="title-border-line"><?php echo $this->__('Pagar con Mercado Pago')?></h2>
+
+            <div class="op-section-payment-box">
+                <p class="op-method-name">
+                    <?php echo $this->__('Tarjeta de crédito')?>
+                </p>
+                <ul class="ch-box-list op-payment-cards-list">
+                    <?php foreach ($list as $i) { ?>
+                        <?php if ($i['status'] === STATUS_ACTIVE & $i['payment_type_id'] === PAYMENT_TYPE_CREDIT_CARD): ?>
+                        <li data-js="paymentMethodItem" class="selected">
+                            <input id="<?php echo $i['id']; ?>" name="paymentMethods" type="radio" data-method-type="credit_card" checked=""/>
+                            <label for="<?php echo $i['id']; ?>" title="<?php echo $i['id']; ?>">
+                                <img  src="<?php echo $i['thumbnail']; ?>" alt="<?php echo $i['id']; ?>"/>
+                            </label>
+
+                        </li>
+                            <select id="select_<?php echo $i['id']; ?>" name="<?php echo $i['id']; ?>">
+                                    <option value="" ></option>
+                            </select>
+                        <?php endif; ?>
+                    <?php } ?>
+                </ul>
+                <label> --><?php //echo $this->__('Banck')?><!--: </label>-->
+                    <!--                    <select id="select_--><?php //echo $i['id']; ?><!--" name="--><?php //echo $i['id']; ?><!--">-->
+                    <!--                        --><?php //foreach ($i['card_issuers'] as $op) { ?>
+                    <!--                            <option value="--><?php //echo $op['id'] ?><!--" >-->
+                    <!--                                --><?php //echo $op['id'] ?>
+                    <!--                            </option>-->
+                    <!--                        --><?php //} ?>
+                    <!--                    </select>-->
+<!--                <div class="op-bank-selector">-->
+<!--                    <div class="op-bank-select">-->
+<!--                        <span>Banco:</span>-->
+<!--                        <select id="issuerSelect"><option value="">Elegir</option><optgroup label="Hasta 6 cuotas sin interés" data-is-interest-free="true"><option data-max-installments="6" data-default="false" value="1005">Provencred</option><option data-max-installments="6" data-default="false" value="1049">Banco de La Pampa</option><option data-max-installments="6" data-default="false" value="2035">Banco de Chaco</option></optgroup><optgroup label="Hasta 3 cuotas sin interés" data-is-interest-free="true"><option data-max-installments="3" data-default="false" value="288">Tarjeta Shopping</option><option data-max-installments="3" data-default="false" value="286">Banco San Juan</option><option data-max-installments="3" data-default="false" value="333">Nuevo Banco de Santa Fe</option><option data-max-installments="3" data-default="false" value="303">Banco Patagonia</option><option data-max-installments="3" data-default="false" value="338">ICBC</option><option data-max-installments="3" data-default="false" value="294">Banco Hipotecario</option><option data-max-installments="3" data-default="false" value="331">Nuevo Banco de Entre Rios</option><option data-max-installments="3" data-default="false" value="326">HSBC</option><option data-max-installments="3" data-default="false" value="313">Banco Supervielle</option><option data-max-installments="3" data-default="false" value="287">Banco Santa Cruz</option><option data-max-installments="3" data-default="false" value="272">Banco Comafi</option><option data-max-installments="3" data-default="false" value="282">Banco Nacion</option><option data-max-installments="3" data-default="false" value="1044">Banco Provincia</option><option data-max-installments="3" data-default="false" value="2033">Banco Bica</option></optgroup><optgroup label="Otros bancos" data-is-interest-free="false"><option data-max-installments="12" data-default="false" value="310">Banco Santander Rio S.A.</option><option data-max-installments="12" data-default="false" value="296">Itau</option><option data-max-installments="12" data-default="false" value="1026">Banco Industrial</option><option data-max-installments="12" data-default="false" value="319">Citi</option><option data-max-installments="12" data-default="false" value="297">Macro</option><option data-max-installments="12" data-default="false" value="1043">Tucuman</option><option data-max-installments="12" data-default="null" value="316">Banco Francés</option><option data-max-installments="12" data-default="null" value="279">Banco Galicia</option><option data-max-installments="12" data-default="true" value="1">Otro</option></optgroup></select>-->
+<!--                    </div>-->
+<!---->
+<!--                    <strong id="issuerInstallmentsText" class="op-bank-installments" data-state="invisible">-->
+<!--                        ¡<span id="issuerMaxInstallments">6</span> cuotas sin interés!-->
+<!---->
+<!--                        <a id="linkCondicionesBancos" href="http://www.mercadolibre.com.ar/gz/condiciones-bancos" target="_blank">Ver condiciones</a>-->
+<!--                    </strong>-->
+<!--                </div>-->
+            </div>
+
+        </div>
+        <div id="paymentCost" class="op-section-actions price-conditions ">
+
+            <div class="op-installments" id="finalPrice" data-state="visible">
+                <span><?php echo $this->__('Pagas')?>:</span>
+
+                <select name="installmentSelect" class="installmentSelect" id="installmentSelect"><option data-price="$ 2.459<sup>90</sup>" data-is-interest-free="false" data-installment-cft="0,00%" data-installment-ptf="$ 2.459,90" data-installment-tea="0,00%">1</option><option data-price="$ 909<sup>92</sup>" data-is-interest-free="false" data-installment-cft="89,43%" data-installment-ptf="$ 2.729,76" data-installment-tea="70,21%">3</option><option data-price="$ 489<sup>93</sup>" data-is-interest-free="false" data-installment-cft="88,33%" data-installment-ptf="$ 2.939,58" data-installment-tea="69,73%">6</option><option data-price="$ 351<sup>98</sup>" data-is-interest-free="false" data-installment-cft="89,23%" data-installment-ptf="$ 3.167,82" data-installment-tea="70,74%" selected="">9</option><option data-price="$ 283<sup>67</sup>" data-is-interest-free="false" data-installment-cft="89,38%" data-installment-ptf="$ 3.404,04" data-installment-tea="71,14%">12</option></select>
+
+                <span id="installmentX">x </span>
+                <span id="installmentsPrice" class="op-price ch-price">$ 351<sup>98</sup></span>
+                <strong id="installmentsInterestFreeText" class="op-installments-free-text stand-out" data-state="invisible">Sin Interés</strong>
+
+                <div id="costTransparentPrices" data-state="visible">
+                    <span class="op-installments-price__one-payment">PRECIO EN 1 PAGO: $ 2.459,90</span>
+                    <div class="op-installments-secondary-options">
+                        <span class="op-installments-title">PTF:</span>
+                        <span id="installmentPTF">$ 3.167,82</span>
+
+                        <span class="op-installments-title">TEA:</span>
+                        <span id="installmentTEA">70,74%</span>
+                    </div>
+
+                    <div class="op-installments-primary-options">
+                        <span class="op-installments-title">CFT:</span>
+                        <span id="installmentCFT">89,23%</span>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <p class="op-submit">
+                <input id="selectPayment" type="button" class="ch-btn ch-btn-small" value="Aceptar">
+            </p>
+        </div>
+    </section>
+    <?php else : ?>
+        <h2> <?php echo $this->__('XXXXXXXX')?> </h2>
+    <?php endif; ?>
+</main>
+
+<!---->
+<!--<div id="mercadopago_calculator_link" class="">-->
+<!--    <div>-->
+<!--    --><?php //if (!empty($list)) : ?>
+<!--    <h2> --><?php //echo $this->__('AAAAAAAAAAA')?><!-- </h2>-->
+<!--        --><?php //foreach ($list as $i) { ?>
+<!--            --><?php //if ($i['status'] === STATUS_ACTIVE & $i['payment_type_id'] === PAYMENT_TYPE_CREDIT_CARD)
+////                        & !empty($i['card_issuers']['response']) )
+//                    : ?>
+<!--                <div class="creditCartInformation">-->
+<!--                    <input type="radio" name="rGroup" value="--><?php //echo $i['name']; ?><!--" id="radio_--><?php //echo $i['id']; ?><!--"/>-->
+<!--                    <label class="radio" for="--><?php //echo $i['id']; ?><!--">-->
+<!--                        <img src="--><?php //echo $i['thumbnail']; ?><!--"/>-->
+<!--                    </label>-->
+<!--                    <label> --><?php //echo $this->__('Banck')?><!--: </label>-->
+<!--                    <select id="select_--><?php //echo $i['id']; ?><!--" name="--><?php //echo $i['id']; ?><!--">-->
+<!--                        --><?php //foreach ($i['card_issuers'] as $op) { ?>
+<!--                            <option value="--><?php //echo $op['id'] ?><!--" >-->
+<!--                                --><?php //echo $op['id'] ?>
+<!--                            </option>-->
+<!--                        --><?php //} ?>
+<!--                    </select>-->
+<!--                </div>-->
+<!--            --><?php //endif; ?>
+<!--        --><?php //} ?>
+<!--    <div id="financing">-->
+<!--        <h2> --><?php //echo $this->__('RESULTADO')?><!-- </h2>-->
+<!--    </div>-->
+<!--    --><?php //else : ?>
+<!--        <h2> --><?php //echo $this->__('XXXXXXXX')?><!-- </h2>-->
+<!--    --><?php //endif; ?>
+<!--    </div>-->
+<!--</div>-->
+
 <script type="text/javascript">
     var PublicKeyMercadoPagoCustom = "<?php echo $this->getPublicKey(); ?>";
+    var AllPaymentMethods = '<?php echo json_encode($list); ?>';
 </script>
-<script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
 <script type="text/javascript" src= <?php  echo $this->getCalculatorJs(); ?>> </script>
 <script type="text/javascript" src= <?php  echo $this->getTinyJUrl(); ?>> </script>
 
-
-
-
-<div id="mercadopago_calculator_link" class="">
-    <h2> <?php echo $this->__('AAAAAAAAAAA')?> </h2>
-    <div>
-        <?php foreach ($list as $i) { ?>
-            <?php if ($i['status'] === STATUS_ACTIVE & $i['payment_type_id'] === PAYMENT_TYPE_CREDIT_CARD) : ?>
-                <div class="creditCartInformation">
-                    <input type="radio" name="rGroup" value="<?php echo $i['name']; ?>" id="<?php echo $i['id']; ?>"/>
-                    <label class="radio" for="<?php echo $i['id']; ?>">
-                        <img src="<?php echo $i['thumbnail']; ?>"/>
-                    </label>
-                    <label> texto texto texto </label>
-                    <select id="idSelect" name="nameSelect">
-                        <?php foreach ($arr as $i) { ?>
-                            <option value="<?php echo $i ?>" >
-                                <?php echo $i ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
-
-            <?php endif; ?>
-
-        <?php } ?>
-
-<!--        --><?php //foreach ($this->getCards as $card) { ?>
-<!--            <input type="radio" name="rGroup" value="1" id="r1"/>-->
-<!--            <label class="radio" for="r1"></label>-->
-<!---->
-<!---->
-<!--            <option value="--><?php //echo $card["id"]; ?><!--" first_six_digits="--><?php //echo $card["first_six_digits"]; ?><!--" security_code_length="--><?php //echo $card["security_code"]["length"]; ?><!--" secure_thumb="--><?php //echo $card["payment_method"]["secure_thumbnail"]; ?><!--" payment_method_id="--><?php //echo $card["payment_method"]["id"]; ?><!--">-->
-<!---->
-<!--                --><?php //echo $card["payment_method"]["name"].' '; ?><!----><?php //echo $this->__('ended in'); ?><!----><?php //echo ' '.$card["last_four_digits"]; ?>
-<!--            </option>-->
-<!--        --><?php //} ?>
-    </div>
-</div>
-
+<script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+<script type="text/javascript" src= <?php  echo $this->getTinyUrl(); ?>> </script>
 <script>
-        MercadoPagoCustom.getInstance();
-        MercadoPagoCustom.initPaymentMethods();
+    MercadoPagoCustom.getInstance();
+    MercadoPagoCustom.initPaymentMethods();
 </script>
+
+

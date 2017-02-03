@@ -48,9 +48,7 @@ class MercadoPago_Core_Block_Calculator_CalculatorForm
         return Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_PUBLIC_KEY);
     }
 
-
     /**
-     * Check if the access token is valid, if the API is not down and if the configuration is enabled
      *
      * @return bool
      */
@@ -59,4 +57,17 @@ class MercadoPago_Core_Block_Calculator_CalculatorForm
         return  $this->_helperData->getPaymentMethods(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN));
 
     }
+
+//    /**
+//     *
+//     * @return bool
+//     */
+//    protected function getPaymentMethodsComplete($price){
+//
+//        return  $this->_helperData->getPaymentMethodsComplete(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN), $price);
+//
+//    }
+
+
+
 }

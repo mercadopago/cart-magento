@@ -31,6 +31,11 @@ class MercadoPago_Core_Helper_Data
     const XML_PATH_CALCULATOR_AVAILABLE = 'payment/mercadopago_calculator/calculalator_available';
     const XML_PATH_CALCULATOR_PAGES = 'payment/mercadopago_calculator/show_in_pages';
 
+    const STATUS_ACTIVE = 'active';
+    const PAYMENT_TYPE_CREDIT_CARD = 'credit_card';
+
+
+
     protected $_apiInstance;
 
     protected $_website;
@@ -232,11 +237,95 @@ class MercadoPago_Core_Helper_Data
         return Mage::getStoreConfig(self::XML_PATH_CALCULATOR_PAGES);
     }
 
+    /**
+     * return the list of payment methods or null
+     *
+     * @param mixed|null $accessToken
+     * @return mixed
+     */
     public function getPaymentMethods($accessToken)
     {
         $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
         $response = $mp->get("/v1/payment_methods");
-        return $response;
+        if ($response['status'] == 401 || $response['status'] == 400) {
+            return false;
+        }
+        return $response['response'];
     }
+
+//    /**
+//     * return the list of payment methods with te options or null
+//     *
+//     * @param mixed|null $accessToken
+//     * @return mixed
+//     */
+//    public function getPaymentMethodsComplete($accessToken, $price)
+//    {
+//        $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
+//        $responseCreditCart = $mp->get("/v1/payment_methods");
+//        if ($responseCreditCart['status'] == 401 || $responseCreditCart['status'] == 400) {
+//            return false;
+//        }
+//        $paymentMethodsComplete = [];
+//        $paymentMethods = $responseCreditCart['response'];
+//        foreach ($paymentMethods as $item) {
+//            if ($item['status'] === STATUS_ACTIVE & $item['payment_type_id'] === PAYMENT_TYPE_CREDIT_CARD) {
+//                $responseBanck = $mp->get("/v1/payment_methods/installments?payment_method_id=" . $item['id'] . "&amount=" . $price);
+//                if ($responseBanck['status'] == 401 || $responseBanck['status'] == 400) {
+//                    $banks = null;
+//                } else {
+//                    $banks = $responseBanck['response'];
+//                }
+//                $item['card_issuers'] = $banks;
+//                $paymentMethodsComplete[] = $item;
+//            }
+//        }
+//        return $paymentMethodsComplete;
+//    }
+
+    //------------ INUSABLE ----------------------------
+//    /**
+//     * return the list of payment methods with the or null
+//     *
+//     * @param mixed|null $accessToken
+//     * @return mixed
+//     */
+//    public function getPaymentMethodsWithCardIssuers($accessToken)
+//    {
+//        $precio = 1000;
+//        $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
+//        $responseCreditCart = $mp->get("/v1/payment_methods");
+//        if ($responseCreditCart['status'] == 401 || $responseCreditCart['status'] == 400) {
+//            return false;
+//        } else{
+//            $paymentMethodsWithCardIssuers = [];
+//            $paymentMethods = $responseCreditCart['response'];
+//            foreach ($paymentMethods as $item){
+//                if ($item['status'] === STATUS_ACTIVE & $item['payment_type_id'] === PAYMENT_TYPE_CREDIT_CARD){
+//                    $responseBanck = $mp->get("/v1/payment_methods/card_issuers?payment_method_id=". $item['id']);
+//                    if ($responseBanck['status'] == 401 || $responseBanck['status'] == 400) {
+//                        $banks = null;
+//                    } else {
+//                        $banks = $responseBanck['response'];
+//                        $payments = [];
+//                        foreach ($banks as $bank){
+//                            $response = $mp->get("/v1/payment_methods/installments?payment_method_id=". $item['id'] ."&amount=". $precio ."&issuer.id=".$bank['id']);
+//                            if ($response['status'] == 401 || $response['status'] == 400) {
+//                                $payments = null;
+//                            }else {
+//                                $payments = $response['response'];
+//                                $bank['pauments'] = $payments;
+//                            }
+//                        }
+//                    }
+//                    $item['card_issuers'] = $banks;
+//                    $paymentMethodsWithCardIssuers[]= $item;
+//                }
+//            }
+//
+//
+//        }
+//        return $paymentMethodsWithCardIssuers;
+//    }
 
 }

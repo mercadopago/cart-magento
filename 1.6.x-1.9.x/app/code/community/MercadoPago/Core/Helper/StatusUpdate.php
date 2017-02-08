@@ -203,7 +203,7 @@ class MercadoPago_Core_Helper_StatusUpdate
 
     protected function _handleTwoCards(&$payment, $infoPayments)
     {
-        if ($infoPayments['is_second_card_used']) {
+        if (isset($infoPayments['is_second_card_used']) && $infoPayments['is_second_card_used']) {
             $payment['total_paid_amount'] = $infoPayments['total_paid_amount'];
             $payment['transaction_amount'] = $infoPayments['transaction_amount'];
             $payment['status'] = $infoPayments['status'];

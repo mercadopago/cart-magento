@@ -47,6 +47,15 @@ class FeatureContext
     }
 
     /**
+     * @Given I press :cssClass iframe element
+     */
+    public function iPressIframeElement($cssClass)
+    {
+        $button = $this->findElement($cssClass);
+        $button->press();
+    }
+
+    /**
      * @Given I press :cssClass input element
      */
     public function iPressInputElement($cssClass)

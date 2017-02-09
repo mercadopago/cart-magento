@@ -102,25 +102,15 @@
 
 
     <checkout_cart_index>
-        <!--<reference name="head">-->
-            <!--<action method="addJs"><script>mage/translate.js</script></action>-->
-        <!--</reference>-->
-
         <reference name="checkout.cart.methods">
             <block type="mercadopago/calculator_calculatorLink" name="checkout.cart.calculator" as="calculator" template="mercadopago/calculator/calculatorLink.phtml"/>
         </reference>
     </checkout_cart_index>
 
     <catalog_product_view>
-        <!--<reference name="head">-->
-            <!--<action method="addJs"><script>mage/translate.js</script></action>-->
-        <!--</reference>-->
         <reference name="product.info.extrahint">
-            <block type="mercadopago/calculator_calculatorLink" name="product.info.calculator" as="calculator" template="mercadopago/calculator/calculatorLink.phtml">
-                <action method="addJs"><script>mage/translate.js</script></action>
-            </block>
+            <block type="mercadopago/calculator_calculatorLink" name="product.info.calculator" as="calculator" template="mercadopago/calculator/calculatorLink.phtml"/>
         </reference>
-
     </catalog_product_view>
 
 

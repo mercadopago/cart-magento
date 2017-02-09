@@ -463,7 +463,7 @@ class FeatureContext
         $this->getSession()->wait(3000);
         $page->selectFieldOption('creditCardIssuerOption', '1');
         $page->selectFieldOption('cardExpirationMonth', '01');
-        $page->selectFieldOption('cardExpirationYear', '2017');
+        $page->selectFieldOption('cardExpirationYear', '2018');
         $page->fillField('securityCode', '123');
         $page->fillField('cardholderName', 'Name');
         $page->selectFieldOption('docType', 'DNI');

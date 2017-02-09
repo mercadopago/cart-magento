@@ -11,6 +11,7 @@ var MercadoPagoCustom = (function () {
         constants: {
             undefined: 'undefined',
             codeCft: 'CFT',
+            codeRecommended: 'recommended',
             loading: 'loading',
             atributeInstallments: 'installments',
             atributeDataRate: 'data-installment-rate',
@@ -74,6 +75,7 @@ var MercadoPagoCustom = (function () {
     }
 
     function getPaymentMethods( creditCardId ) {
+
         if ((methodsConsulted.hasOwnProperty(creditCardId))){
             paymentMethodList = methodsConsulted[creditCardId];
             sortPaymentMethods();
@@ -110,7 +112,9 @@ var MercadoPagoCustom = (function () {
             //serch in all installments
             while ( payerCost >= 0 && !end){
 
-                if (paymentMethodList[bank].payer_costs[payerCost].installment_rate == '0'){
+                //serch the first elment with installment rate in 0
+                // or is the last element
+                if ((paymentMethodList[bank].payer_costs[payerCost].installment_rate == '0') || (payerCost == 0) ){
                     end = true;
                     var installments = paymentMethodList[bank].payer_costs[payerCost].installments;
                     if (paymentMethodOrded[installments]){
@@ -173,19 +177,6 @@ var MercadoPagoCustom = (function () {
         for (var i=0; i < paymentOptions.length; i++){
             var option = new Option(paymentOptions[i].installments, i);
 
-
-            var labels = paymentOptions[i].labels;
-            //split information from cft and ptf field.
-            var finance = [];
-            for (var j=0; j<labels.length; j++) {
-                if (labels[j].match(self.constants.codeCft))
-                    finance = labels[j].split('|');
-            }
-
-            if(labels.length > 1){
-                TinyJ(option).attribute(self.constants.atributeSelected,  '');
-            }
-
             //split information fron price
             var value = paymentOptions[i].installment_amount;
             var price = value.toString().split('.');
@@ -197,10 +188,23 @@ var MercadoPagoCustom = (function () {
             }
 
             TinyJ(option).attribute(self.constants.atributeDataRate, paymentOptions[i].installment_rate);
-            TinyJ(option).attribute(self.constants.atributeDataCft, finance[0].replace('_', ': '));
-            TinyJ(option).attribute(self.constants.atributeDataTea, finance[1].replace('_', ': '));
             TinyJ(option).attribute(self.constants.atributeDataPtf, paymentOptions[i].total_amount);
 
+            var labels = paymentOptions[i].labels;
+            //split information from cft and ptf field.
+            var finance = [];
+            for (var j=0; j<labels.length; j++) {
+                if (labels[j].match(self.constants.codeCft)){
+                    finance = labels[j].split('|');
+                    //in this case, i need to show de CFT and TEA number
+                    TinyJ(option).attribute(self.constants.atributeDataCft, finance[0].replace('_', ': '));
+                    TinyJ(option).attribute(self.constants.atributeDataTea, finance[1].replace('_', ': '));
+
+                } else if (labels[j].match(self.constants.codeRecommended)){
+                    //in this case, this is an option recomended.
+                    TinyJ(option).attribute(self.constants.atributeSelected,  '');
+                }
+            }
             selectorPaymentOptions.appendChild(option);
             setInformationCost();
         }

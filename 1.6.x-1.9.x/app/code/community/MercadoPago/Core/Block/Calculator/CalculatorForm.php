@@ -1,19 +1,4 @@
 <?php
-/**
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL).
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * @category       Payment Gateway
- * @package        MercadoPago
- * @author         Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
- * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
- * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
-
 
 class MercadoPago_Core_Block_Calculator_CalculatorForm
     extends Mage_Core_Block_Template
@@ -49,13 +34,21 @@ class MercadoPago_Core_Block_Calculator_CalculatorForm
     }
 
     /**
+     * return the Payment methods token configured
      *
      * @return bool
      */
     protected function getPaymentMethods(){
-
         return  $this->_helperData->getPaymentMethods(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN));
+    }
 
+    /**
+     * return the current value of amount
+     *
+     * @return bool
+     */
+    protected function getAmount(){
+        return $this->getRequest()->getParam('currentAmount');
     }
 
 //    /**

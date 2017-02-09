@@ -1,23 +1,11 @@
 <?php
-/**
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL).
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * @category       Payment Gateway
- * @package        MercadoPago
- * @author         Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
- * @copyright      Copyright (c) MercadoPago [http://www.mercadopago.com]
- * @license        http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
-
 
 class MercadoPago_Core_Block_Calculator_CalculatorLink
     extends Mage_Core_Block_Template
 {
+
+    const PAGE_PDP = 'product.info.calculator';
+    const PAGE_CART = 'checkout.cart.calculator';
 
     /**
      * @var $helperData MercadoPago_Core_Helper_Data
@@ -27,7 +15,6 @@ class MercadoPago_Core_Block_Calculator_CalculatorLink
     protected function _construct()
     {
         parent::_construct();
-//        $this->setTemplate('mercadopago/calculator/calculatorLink.phtml');
         $this->_helperData = Mage::helper('mercadopago/data');
     }
 
@@ -54,6 +41,24 @@ class MercadoPago_Core_Block_Calculator_CalculatorLink
         $pages = explode(',', $valueConfig);
 
         return in_array($nameLayoutConteiner, $pages);
+    }
+
+    /**
+     * @param $nameLayoutConteiner string
+     * @return bool
+     */
+    protected function inPagePDP($nameLayoutConteiner){
+
+        return $nameLayoutConteiner === self::PAGE_PDP;
+    }
+
+    /**
+     * @param $nameLayoutConteiner string
+     * @return bool
+     */
+    protected function inPageCheckoutCart($nameLayoutConteiner){
+
+        return $nameLayoutConteiner === self::PAGE_CART;
     }
 
 }

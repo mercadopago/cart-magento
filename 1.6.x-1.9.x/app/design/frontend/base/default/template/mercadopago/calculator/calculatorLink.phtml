@@ -1,31 +1,21 @@
 <?php
 
     $link_to_calculator = Mage::getBaseUrl().'mercadopago/calculatorPayment';
-
-?>
-
-<?php if( $this->isAvailableCalculator()
+    if( $this->isAvailableCalculator()
             & $this->isPageToShow($this->getNameInLayout())
-): ?>
-    <div id="mercadopago_calculator_link" class="">
-        <label>
-            <a href="#" onclick="popWin('<?php echo $link_to_calculator ?>','trackorder','width=800,height=300,resizable=yes,scrollbars=yes')"><?php echo $this->__('Calculate your payments ')?></a>
-        <label> with</label> <strong id="meli-logo"> MercadoPago</strong>
-
-        <!--        <h2>--><?php //echo $this->__('ACAAAAAAAAAAAAAAAAAAAAAA') ?><!--</h2>-->
-        <!--        <div class="discount-form">-->
-        <!--            <label for="coupon_code">--><?php //echo $this->__('XXXXXXXX   XXXXXX') ?><!--</label>-->
-        <!--            <input type="hidden" name="remove" id="remove-coupone" value="0" />-->
-        <div class="field-wrapper">
-            <!--                <input class="input-text" type="text" id="coupon_code" name="coupon_code" value="--><?php //echo $this->escapeHtml($this->getCouponCode()) ?><!--" />-->
-            <!--                <div class="button-wrapper">-->
-            <!--                    <button type="button" title="--><?php //echo Mage::helper('core')->quoteEscape($this->__('Apply')) ?><!--" class="button2" onclick="discountForm.submit(false)" value="--><?php //echo $this->__('Apply') ?><!--"><span><span>--><?php //echo $this->__('Apply') ?><!--</span></span></button>-->
-            <!--                    --><?php //if(strlen($this->getCouponCode())): ?>
-            <!--                        <button type="button" title="--><?php //echo Mage::helper('core')->quoteEscape($this->__('Cancel')) ?><!--" class="button2 cancel-coupon" onclick="discountForm.submit(true)" value="--><?php //echo $this->__('Cancel') ?><!--"><span><span>--><?php //echo $this->__('Cancel') ?><!--</span></span>-->
-            <!--                        </button>-->
-            <!--                    --><?php //endif;?>
-            <!--                </div>-->
-            <!--            </div>-->
+    ):
+        // get the current amount.
+        if ( $this->inPagePDP($this->getNameInLayout())):{
+            $currentAmount = Mage::registry('current_product')->getPrice();
+        } elseif( $this->inPageCheckoutCart($this->getNameInLayout())):{
+            $currentAmount = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
+        }
+        endif;
+        ?>
+        <div id="mercadopago_calculator_link" class="">
+            <label>
+                <a href="#" onclick="popWin('<?php echo $link_to_calculator . '?currentAmount=' . $currentAmount?>','trackorder','width=800,height=300,resizable=yes,scrollbars=yes')">
+                    <?php echo $this->__('Calculate your payments ')?></a>
+            <label> <?php echo $this->__('with ')?></label> <strong id="meli-logo"> MercadoPago</strong>
         </div>
-    </div>
-<?php endif; ?>
+    <?php endif; ?>

@@ -102,7 +102,6 @@ $list = $this->getPaymentMethods();
     var AllPaymentMethods = '<?php echo json_encode($list); ?>';
     var Amount = '<?php echo $this->getAmount(); ?>';
 </script>
-<!--<script type="text/javascript"  src=--><?php // echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true).'mage/translate.js'; ?><!--> </script>-->
 <script type="text/javascript" src= <?php  echo $this->getCalculatorJs(); ?>> </script>
 <script type="text/javascript" src= <?php  echo $this->getTinyJUrl(); ?>> </script>
 

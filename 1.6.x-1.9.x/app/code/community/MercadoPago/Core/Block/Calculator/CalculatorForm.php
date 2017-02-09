@@ -18,49 +18,44 @@ class MercadoPago_Core_Block_Calculator_CalculatorForm
         $this->_helperData = Mage::helper('mercadopago/data');
     }
 
-    protected function getCalculatorJs(){
+    protected function getCalculatorJs()
+    {
         return (Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . self::CALCULATOR_JS);
     }
 
-    protected function getTinyUrl(){
+    protected function getTinyUrl()
+    {
         return Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/tiny.min.js';
     }
-    protected function getTinyJUrl(){
+
+    protected function getTinyJUrl()
+    {
         return Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/tinyJ.js';
     }
 
-    protected function getPublicKey(){
+    protected function getPublicKey()
+    {
         return Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_PUBLIC_KEY);
     }
 
     /**
      * return the Payment methods token configured
      *
-     * @return bool
+     * @return string
      */
-    protected function getPaymentMethods(){
-        return  $this->_helperData->getPaymentMethods(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN));
+    protected function getPaymentMethods()
+    {
+        return $this->_helperData->getPaymentMethods(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN));
     }
 
     /**
      * return the current value of amount
      *
-     * @return bool
+     * @return mixed|bool
      */
-    protected function getAmount(){
+    protected function getAmount()
+    {
         return $this->getRequest()->getParam('currentAmount');
     }
-
-//    /**
-//     *
-//     * @return bool
-//     */
-//    protected function getPaymentMethodsComplete($price){
-//
-//        return  $this->_helperData->getPaymentMethodsComplete(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN), $price);
-//
-//    }
-
-
 
 }

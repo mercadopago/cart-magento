@@ -9,3 +9,14 @@ Feature: configuration admin section
   @MercadoPagoConfig @CheckVenezuelaOption
   Scenario: check Venezuela exists
     Then I select option field "payment_mercadopago_country" with "mlv"
+
+  # -------------------------------------------
+  # Payments Options Calculator Configuration:
+  # -------------------------------------------
+#
+#  @MercadoPagoConfig @PaymentsOptionsCalculator @CheckCalculatorOptionCart
+#  Scenario: check payments options calculator exists in cart
+#    When Setting Config "payment/mercadopago/calculalator_available" is "1"
+#
+#    Then I select option field "payment/mercadopago_calculator/show_in_pages" with "checkout.cart.calculator"
+

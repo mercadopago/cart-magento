@@ -232,3 +232,18 @@
 "Mercado Pago - Recurring Payment Checkout: Invalid client id or client secret","Mercado Pago - Recurring Payment Checkout: El id de cliente o la clave secreta, son inválidas"
 "This payment method is used only for recurring profiles.","Este método de pago es usado solo para perfiles recurrentes"
 "Payment information", "Información de pago"
+
+"Calculate your payments ", "Calculá tus Cuotas"
+"with", "con"
+"my string.", "Elige una opción"
+"Pay with MercadoPago", "Pagar con MercadoPago"
+"Choose an option", "Eligir una opcion"
+"Other banks","Otros bancos"
+"Until ", "Hasta "
+" payments without interest"," cuotas sin interés"
+"Interest-free", "Sin Interés"
+"Pay", "Pagas"
+"Banck", "Banco"
+"Pay with MercadoPago","Pagar con Mercado Pago"
+"Payment cards", "Tarjeta de crédito"
+

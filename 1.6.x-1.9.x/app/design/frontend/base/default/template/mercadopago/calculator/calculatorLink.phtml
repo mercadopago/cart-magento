@@ -1,0 +1,21 @@
+<?php
+
+    $link_to_calculator = Mage::getBaseUrl().'mercadopago/calculatorPayment';
+    if( $this->isAvailableCalculator()
+            & $this->isPageToShow($this->getNameInLayout())
+    ):
+        // get the current amount.
+        if ( $this->inPagePDP($this->getNameInLayout())):{
+            $currentAmount = Mage::registry('current_product')->getPrice();
+        } elseif( $this->inPageCheckoutCart($this->getNameInLayout())):{
+            $currentAmount = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
+        }
+        endif;
+        ?>
+        <div id="mercadopago_calculator_link" class="">
+            <label>
+                <a href="#" onclick="popWin('<?php echo $link_to_calculator . '?currentAmount=' . $currentAmount?>','trackorder','width=800,height=300,resizable=yes,scrollbars=yes')">
+                    <?php echo $this->__('Calculate your payments ')?></a>
+            <label> <?php echo $this->__('with ')?></label> <strong id="meli-logo"> MercadoPago</strong>
+        </div>
+    <?php endif; ?>

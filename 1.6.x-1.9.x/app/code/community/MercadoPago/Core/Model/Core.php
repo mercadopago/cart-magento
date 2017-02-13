@@ -103,6 +103,7 @@ class MercadoPago_Core_Model_Core
             ["field" => "status_detail", "title" => "Payment Detail: %s"],
             ["field" => "activation_uri", "title" => "Generate Ticket"],
             ["field" => "payment_id_detail", "title" => "Mercado Pago Payment Id: %s"],
+            ["field" => "id", "title" => "Collection Id: %s"],
 
         ];
 

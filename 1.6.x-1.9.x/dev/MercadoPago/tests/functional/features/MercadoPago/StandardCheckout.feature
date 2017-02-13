@@ -32,4 +32,4 @@ Feature: Payment results in MercadoPago Standard Checkout
   Scenario: Check total displayed in iframe
     Given I switch to the iframe "checkout_mercadopago"
 
-    Then I should see html "$ 75"
+    Then I should see html "75"

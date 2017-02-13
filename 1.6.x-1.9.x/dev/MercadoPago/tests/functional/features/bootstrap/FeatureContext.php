@@ -47,6 +47,15 @@ class FeatureContext
     }
 
     /**
+     * @Given I press :cssClass iframe element
+     */
+    public function iPressIframeElement($cssClass)
+    {
+        $button = $this->findElement($cssClass);
+        $button->press();
+    }
+
+    /**
      * @Given I press :cssClass input element
      */
     public function iPressInputElement($cssClass)
@@ -463,7 +472,7 @@ class FeatureContext
         $this->getSession()->wait(3000);
         $page->selectFieldOption('creditCardIssuerOption', '1');
         $page->selectFieldOption('cardExpirationMonth', '01');
-        $page->selectFieldOption('cardExpirationYear', '2017');
+        $page->selectFieldOption('cardExpirationYear', '2018');
         $page->fillField('securityCode', '123');
         $page->fillField('cardholderName', 'Name');
         $page->selectFieldOption('docType', 'DNI');

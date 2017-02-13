@@ -246,7 +246,7 @@ class MercadoPago_Core_Helper_Data
      *
      * @return mixed
      */
-    public function getPaymentMethods($accessToken)
+    public function getCustomPaymentMethods($accessToken)
     {
         $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
         $response = $mp->get("/v1/payment_methods");

@@ -38,7 +38,7 @@ Feature: Validation of custom checkout form
     And I fill text field "cardholderName" with "!@#APRO123"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
@@ -52,7 +52,7 @@ Feature: Validation of custom checkout form
     And I fill text field "cardholderName" with "APRO"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "12345"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     Then I should see "CVV is invalid"
@@ -64,7 +64,7 @@ Feature: Validation of custom checkout form
     And I fill text field "cardholderName" with "APRO"
     And I fill text field "docNumber" with "1234"
     And I fill text field "securityCode" with "12345"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
@@ -77,7 +77,7 @@ Feature: Validation of custom checkout form
     And I select option field "cardExpirationMonth" with "10"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
@@ -90,7 +90,7 @@ Feature: Validation of custom checkout form
     And I select option field "cardExpirationMonth" with "10"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "cardholderName" with "test"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
@@ -103,7 +103,7 @@ Feature: Validation of custom checkout form
     And I select option field "cardExpirationMonth" with "10"
     And I fill text field "cardholderName" with "test"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element

@@ -95,6 +95,6 @@ Feature: As a customer I want to choose shipping method MercadoEnvios
     And I wait for "10" seconds
     And I switch to the iframe "checkout_mercadopago"
     And I am logged in MP as "test_user_58666377@testuser.com" "qatest3200"
-    Then I should see "Elige la forma de entrega"
-    And I should see "Normal a domicilio"
+    And I press "#addressId" iframe element
+    Then I should see "Normal a domicilio"
     # And I should see "Prioritario a domicilio"

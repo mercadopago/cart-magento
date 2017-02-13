@@ -450,7 +450,7 @@ class MercadoPago_Core_Model_Observer
             }
         } else {
             if ($isTotalRefund) {
-                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token");
+                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token", []);
             } else {
                 $params = [
                     "amount" => $amount,

@@ -19,12 +19,7 @@ Feature: Payment results in MercadoPago Standard Checkout
     And Setting Config "payment/mercadopago_standard/sandbox_mode" is "0"
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
-    And I am logged in MP as "test_user_58787749@testuser.com" "qatest850"
-    And I fill the iframe fields country <country>
-    And I press "#next" input element
-    And I switch to the site
-    And I wait for "12" seconds
-    Then I should be on "/mercadopago/success"
+    Then I should see html "75"
 
     Examples:
       | country | user                            | pass    |

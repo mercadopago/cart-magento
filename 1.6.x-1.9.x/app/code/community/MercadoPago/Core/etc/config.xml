@@ -173,7 +173,7 @@
             <modules>
                 <mercadopago_core>
                     <files>
-                        <default>MercadoPago_Core.csv</default>
+                        <default>git </default>
                     </files>
                 </mercadopago_core>
             </modules>
@@ -221,6 +221,7 @@
                 <use_successpage_mp>1</use_successpage_mp>
                 <logs>0</logs>
                 <debug_mode>0</debug_mode>
+                <calculalator_available>0</calculalator_available>
             </mercadopago>
 
             <mercadopago_custom>
@@ -278,9 +279,6 @@
                 <sandbox_mode>0</sandbox_mode>
             </mercadopago_recurring>
 
-            <mercadopago_calculator>
-                <calculalator_available>0</calculalator_available>
-            </mercadopago_calculator>
         </payment>
     </default>
 

@@ -18,5 +18,5 @@ Feature: configuration admin section
 #  Scenario: check payments options calculator exists in cart
 #    When Setting Config "payment/mercadopago/calculalator_available" is "1"
 #
-#    Then I select option field "payment/mercadopago_calculator/show_in_pages" with "checkout.cart.calculator"
+#    Then I select option field "payment/mercadopago/show_in_pages" with "checkout.cart.calculator"
 

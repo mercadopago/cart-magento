@@ -28,8 +28,8 @@ class MercadoPago_Core_Helper_Data
     const TYPE = 'magento';
 
     //calculator
-    const XML_PATH_CALCULATOR_AVAILABLE = 'payment/mercadopago_calculator/calculalator_available';
-    const XML_PATH_CALCULATOR_PAGES = 'payment/mercadopago_calculator/show_in_pages';
+    const XML_PATH_CALCULATOR_AVAILABLE = 'payment/mercadopago/calculalator_available';
+    const XML_PATH_CALCULATOR_PAGES = 'payment/mercadopago/show_in_pages';
 
     const STATUS_ACTIVE = 'active';
     const PAYMENT_TYPE_CREDIT_CARD = 'credit_card';
@@ -246,7 +246,7 @@ class MercadoPago_Core_Helper_Data
      *
      * @return mixed
      */
-    public function getCustomPaymentMethods($accessToken)
+    public function getMercadoPagoPaymentMethods($accessToken)
     {
         $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
         $response = $mp->get("/v1/payment_methods");

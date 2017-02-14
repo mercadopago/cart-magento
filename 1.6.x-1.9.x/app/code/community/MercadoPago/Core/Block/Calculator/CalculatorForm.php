@@ -45,7 +45,7 @@ class MercadoPago_Core_Block_Calculator_CalculatorForm
      */
     protected function getPaymentMethods()
     {
-        return $this->_helperData->getCustomPaymentMethods(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN));
+        return $this->_helperData->getMercadoPagoPaymentMethods(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN));
     }
 
     /**

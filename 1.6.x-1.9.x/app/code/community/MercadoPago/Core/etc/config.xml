@@ -173,7 +173,7 @@
             <modules>
                 <mercadopago_core>
                     <files>
-                        <default>git </default>
+                        <default>MercadoPago_Core.csv</default>
                     </files>
                 </mercadopago_core>
             </modules>

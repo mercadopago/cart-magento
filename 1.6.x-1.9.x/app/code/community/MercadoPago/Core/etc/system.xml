@@ -56,6 +56,7 @@
                             <show_in_store>0</show_in_store>
                             <comment>If set this config with NO, magento success page will be used</comment>
                         </use_successpage_mp>
+                        <!-- OneStepcheckout Active configuration - sort_order=65 -->
                         <financing_cost translate="label">
                             <label>Calculate Financing Cost</label>
                             <frontend_type>select</frontend_type>

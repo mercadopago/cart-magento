@@ -81,12 +81,15 @@ class MercadoPago_Core_Helper_Data
     public function isValidAccessToken($accessToken)
     {
         $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
-        $response = $mp->get("/v1/payment_methods");
-        if ($response['status'] == 401 || $response['status'] == 400) {
+        try{
+            $response = $mp->get("/v1/payment_methods");
+            if ($response['status'] == 401 || $response['status'] == 400) {
+                return false;
+            }
+            return true;
+        } catch (\Exception $e){
             return false;
         }
-
-        return true;
     }
 
     public function isValidClientCredentials($clientId, $clientSecret)

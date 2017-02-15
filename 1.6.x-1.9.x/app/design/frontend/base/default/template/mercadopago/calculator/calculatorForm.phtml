@@ -4,6 +4,7 @@ const STATUS_ACTIVE = 'active';
 const PAYMENT_TYPE_CREDIT_CARD = 'credit_card';
 
 $list = $this->getPaymentMethods();
+$pk = $this->getPublicKey();
 
 ?>
 
@@ -26,7 +27,7 @@ $list = $this->getPaymentMethods();
         }
     </style>
 
-    <?php if (!empty($list)) : ?>
+    <?php if (!empty($list) & !empty($pk)) : ?>
     <section id="id-order-profile-app-wrapper" class="order-profile-app-wrapper" data-component="paymentCalculator">
         <div class="loading-overlay"> </div>
         <div class="op-section-payment">
@@ -98,7 +99,7 @@ $list = $this->getPaymentMethods();
 </main>
 
 <script type="text/javascript">
-    var PublicKeyMercadoPagoCustom = '<?php echo $this->getPublicKey(); ?>';
+    var PublicKeyMercadoPagoCustom = '<?php echo $pk; ?>';
     var AllPaymentMethods = '<?php echo json_encode($list); ?>';
     var Amount = '<?php echo $this->getAmount(); ?>';
 </script>

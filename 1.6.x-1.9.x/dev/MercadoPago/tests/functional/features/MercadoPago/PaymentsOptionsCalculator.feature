@@ -11,14 +11,14 @@ Feature: Validation of payments options calculator
   @frontend  @Availability @PdpDisable
   Scenario: See MercadoPago option calculator in PDP
     Given I am on page "blue-horizons-bracelets.html"
-    And Setting Config "payment/mercadopago_calculator/calculalator_available" is "0"
+    And Setting Config "payment/mercadopago/calculalator_available" is "0"
     And I reset the session
 
     Then I should not see "Calculate your payments"
 
   @frontend  @Availability @CartDisable
   Scenario: See MercadoPago option calculator in Cart
-    Given Setting Config "payment/mercadopago_calculator/calculalator_available" is "0"
+    Given Setting Config "payment/mercadopago/calculalator_available" is "0"
     And I am on page "blue-horizons-bracelets.html"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I reset the session
@@ -28,8 +28,8 @@ Feature: Validation of payments options calculator
   @frontend  @Availability @PdpActive
   Scenario: See MercadoPago option calculator in PDP
     Given I am on page "blue-horizons-bracelets.html"
-    And Setting Config "payment/mercadopago_calculator/calculalator_available" is "1"
-    And Setting Config "payment/mercadopago_calculator/show_in_pages" is "product.info.calculator"
+    And Setting Config "payment/mercadopago/calculalator_available" is "1"
+    And Setting Config "payment/mercadopago/show_in_pages" is "product.info.calculator"
     And I reset the session
 
     Then I should see "Calculate your payments"
@@ -37,8 +37,8 @@ Feature: Validation of payments options calculator
   @frontend  @Availability @CartActive
   Scenario: See MercadoPago option calculator in Cart
     Given I am on page "blue-horizons-bracelets.html"
-    And Setting Config "payment/mercadopago_calculator/calculalator_available" is "1"
-    And Setting Config "payment/mercadopago_calculator/show_in_pages" is "checkout.cart.calculator"
+    And Setting Config "payment/mercadopago/calculalator_available" is "1"
+    And Setting Config "payment/mercadopago/show_in_pages" is "checkout.cart.calculator"
     And I press ".add-to-cart-buttons .btn-cart" element
     And I reset the session
 
@@ -54,8 +54,8 @@ Feature: Validation of payments options calculator
   @frontend  @Availability @PdpAndCartActive
   Scenario: See MercadoPago option calculator in PDP
     Given I am on page "blue-horizons-bracelets.html"
-    And Setting Config "payment/mercadopago_calculator/calculalator_available" is "1"
-    And Setting Config "payment/mercadopago_calculator/show_in_pages" is "product.info.calculator,checkout.cart.calculator"
+    And Setting Config "payment/mercadopago/calculalator_available" is "1"
+    And Setting Config "payment/mercadopago/show_in_pages" is "product.info.calculator,checkout.cart.calculator"
     And I reset the session
 
     Then I should see "Calculate your payments"

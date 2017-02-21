@@ -306,6 +306,19 @@ var MercadoPagoCustom = (function () {
                 return !(ccExpMonth < currentMonth && ccExpYear == currentYear);
             });
 
+            ////Second card
+            var showSecondCard = TinyJ(self.selectors.showSecondCard);
+            showSecondCard.click(actionShowSecondCard);
+            var hideSecondCard = TinyJ(self.selectors.hideSecondCard);
+            hideSecondCard.click(actionHideSecondCard);
+
+            var halfAmount = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val()/2;
+            TinyJ(self.selectors.firstCardAmount).val(halfAmount);
+            TinyJ(self.selectors.secondCardAmount).val(halfAmount);
+            TinyJ(self.selectors.amountFirstCard).val(halfAmount);
+            TinyJ(self.selectors.amountSecondCard).val(halfAmount);
+
+            TinyJ(self.selectors.firstCardAmount).focusout(changeAmountHandler);
             actionHideSecondCard();
         }
 
@@ -313,9 +326,7 @@ var MercadoPagoCustom = (function () {
             defineInputsSecondCard();
             TinyJ(self.selectors.cardNumberInputSecondCard).keyup(guessingPaymentMethodSecondCard);
             TinyJ(self.selectors.amountFirstCard).focusout(guessingPaymentMethodSecondCard);
-            TinyJ(self.selectors.secondCardCardId).change(cardsHandlerSecondCard);
             TinyJ(self.selectors.secondCardInstallments).change(setTotalAmount);
-
         }
 
         function setPaymentMethodId(event) {
@@ -393,24 +404,15 @@ var MercadoPagoCustom = (function () {
             var secondCardReturnListCard = TinyJ(self.selectors.secondCardReturnToCardList);
             var showSecondCard = TinyJ(self.selectors.showSecondCard);
             var hideSecondCard = TinyJ(self.selectors.hideSecondCard);
-            var firstCardAmount = TinyJ(self.selectors.firstCardAmount);
-            var secondCardCustomCard = TinyJ(self.selectors.secondCardCustomCard);
+
+
             TinyJ(self.selectors.useOtherCard).click(actionUseOneClickPayOrNo);
             TinyJ(self.selectors.secondCardUseOtherCard).click(actionUseOneClickPayOrNoSecondCard);
             returnListCard.click(actionUseOneClickPayOrNo);
             secondCardReturnListCard.click(actionUseOneClickPayOrNoSecondCard);
-            showSecondCard.click(actionShowSecondCard);
-            hideSecondCard.click(actionHideSecondCard);
-
-            var halfAmount = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val()/2;
-            TinyJ(self.selectors.firstCardAmount).val(halfAmount);
-            TinyJ(self.selectors.secondCardAmount).val(halfAmount);
-            TinyJ(self.selectors.amountFirstCard).val(halfAmount);
-            TinyJ(self.selectors.amountSecondCard).val(halfAmount);
-
-            firstCardAmount.focusout(changeAmountHandler);
             TinyJ(self.selectors.installments).change(setTotalAmount);
 
+            TinyJ(self.selectors.secondCardCardId).change(cardsHandlerSecondCard);
             secondCardReturnListCard.hide();
             //secondCardCustomCard.hide();
             returnListCard.hide();

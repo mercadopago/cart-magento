@@ -70,10 +70,10 @@ $customer = $this->getCustomerAndCards();
                     <script>
                         MercadoPagoCustom.getInstance().initOCP();
                     </script>
+                    <div class="hide"><a id="return_list_card_mp" class="action_ocp button"><?php echo $this->__('Return to cards list'); ?></a></div>
                 <?php endif; ?>
 
                 <ul id="mercadopago_checkout_custom_card">
-                    <div class="hide"><a id="return_list_card_mp" class="action_ocp button"><?php echo $this->__('Return to cards list'); ?></a></div>
 
                     <li id="paymentMethod__mp">
                         <label for="paymentMethod"><?php echo $this->__('Payment Method'); ?></label>
@@ -181,7 +181,7 @@ $customer = $this->getCustomerAndCards();
                 <input type="hidden" class="mercadopago-text-currency" value="<?php echo $this->__('$'); ?>">
                 <input type="hidden" class="mercadopago-text-choice" value="<?php echo $this->__('Choice'); ?>">
                 <input type="hidden" class="mercadopago-text-default-issuer" value="<?php echo $this->__('Default issuer'); ?>">
-                <input type="hidden" class="mercadopago-text-installment" value="<?php echo $this->__('Enter the card number'); ?>">
+                <input type="hidden" class="mercadopago-text-installment" value="<?php echo $this->__('Select Installments'); ?>">
                 <input type="hidden" class="mercado_base_url" value="<?php echo $base_url; ?>">
                 <input type="hidden" class="mercado_route" value="<?php echo $route; ?>">
                 <input type="hidden" name="payment[<?php echo $_code; ?>][token]" type="text" value="" class="token"/>

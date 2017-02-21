@@ -135,7 +135,7 @@ class MercadoPago_Core_Model_Observer
         $user = $mp->get("/users/me");
         Mage::helper('mercadopago')->log("API Users response", self::LOG_FILE, $user);
 
-        if ($user['status'] == 200 && !in_array("test_user", $user['response']['tags'])) {
+        if ($user['status'] == 200 && !in_array("test_user", $user['response']['tags']) && strpos($accessToken, 'TEST') === FALSE) {
             $sponsors = [
                 'MLA' => 186172525,
                 'MLB' => 186175129,

@@ -19,11 +19,13 @@ var MercadoPagoCustom = (function () {
             atributeDataCft: 'data-installment-cft',
             atributeDataTea: 'data-installment-tea',
             atributeDataPtf: 'data-installment-ptf',
-            atributeSelected: 'selected'
+            atributeSelected: 'selected',
         },
         selectors: {
+            popup: '#mercadopago-popup',
             sectionPaymentCalculator: '#id-order-profile-app-wrapper',
             paymentCardsList: '#op-payment-cards-list',
+            paymentCardLi: '#op-payment-cards-list li',
             paymentCardSelected: '#op-payment-cards-list input:checked',
             opBankSelect: '#op-bank-select',
             issuerSelect: "#issuerSelect",
@@ -47,6 +49,14 @@ var MercadoPagoCustom = (function () {
         return instance;
     }
 
+    function showPopup() {
+        TinyJ(self.selectors.popup).show();
+    }
+
+    function hidePopup() {
+        TinyJ(self.selectors.popup).hide();
+    }
+
     function Initializelibrary() {
         if (typeof PublicKeyMercadoPagoCustom != self.constants.undefined) {
             Mercadopago.setPublishableKey(PublicKeyMercadoPagoCustom);
@@ -63,11 +73,16 @@ var MercadoPagoCustom = (function () {
         // add class loading
         TinyJ(self.selectors.sectionPaymentCalculator).addClass(self.constants.loading);
 
+        // add class to <li>
+        TinyJ(self.selectors.paymentCardLi).each(function(obj, key) {
+            obj.removeClass('selected');
+        });
+        var liId = TinyJ(self.selectors.paymentCardSelected).val();
+        TinyJ('#'+liId+'-li').addClass('selected'); // <li class="selected">
+
         //show options
         var paymentCardSelected = getSelectedRadio();
         getPaymentMethods(paymentCardSelected);
-
-
     }
 
     function getSelectedRadio() {
@@ -75,11 +90,10 @@ var MercadoPagoCustom = (function () {
     }
 
     function getPaymentMethods( creditCardId ) {
-
-        if ((methodsConsulted.hasOwnProperty(creditCardId))){
+        if ((methodsConsulted.hasOwnProperty(creditCardId))) {
             paymentMethodList = methodsConsulted[creditCardId];
             sortPaymentMethods();
-        }else{
+        } else {
             Mercadopago.getInstallments({'payment_method_id': creditCardId, 'amount': Amount},responseHandler);
         }
     }
@@ -181,14 +195,23 @@ var MercadoPagoCustom = (function () {
             var value = paymentOptions[i].installment_amount;
             var price = value.toString().split('.');
             if (price.length > 1){
-                TinyJ(option).attribute(self.constants.atributeDataPrice, "$ " + price[0] + "<sup>" + price[1] + "</sup>");
+                if (price[1].length == 1) { // ie: 10.5 to 10.50
+                    price[1] += '0';
+                }
+                TinyJ(option).attribute(self.constants.atributeDataPrice, "$" + price[0] + "<sup>" + price[1] + "</sup>");
             }
             else {
-                TinyJ(option).attribute(self.constants.atributeDataPrice, "$ " + price[0]);
+                TinyJ(option).attribute(self.constants.atributeDataPrice, "$" + price[0]);
             }
 
             TinyJ(option).attribute(self.constants.atributeDataRate, paymentOptions[i].installment_rate);
-            TinyJ(option).attribute(self.constants.atributeDataPtf, paymentOptions[i].total_amount);
+
+            var totalAmount = paymentOptions[i].total_amount.toString(),
+                totalAmountSplit =totalAmount.split('.');
+            if ((totalAmountSplit.length > 1) && (totalAmountSplit[1].length == 1)) { // ie: 10.5 to 10.50
+                totalAmount += '0';
+            }
+            TinyJ(option).attribute(self.constants.atributeDataPtf, totalAmount);
 
             var labels = paymentOptions[i].labels;
             //split information from cft and ptf field.
@@ -224,7 +247,7 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.installmentsInterestFreeText).show();
         }
 
-        TinyJ(self.selectors.installmentPTF).html(selectorPaymentOptions.attribute(self.constants.atributeDataPtf));
+        TinyJ(self.selectors.installmentPTF).html("$"+selectorPaymentOptions.attribute(self.constants.atributeDataPtf));
     }
 
     // Get all methods pre
@@ -248,6 +271,8 @@ var MercadoPagoCustom = (function () {
     // }
 
     return {
-        getInstance: getInstance
+        getInstance: getInstance,
+        showPopup: showPopup,
+        hidePopup: hidePopup
     };
 })();

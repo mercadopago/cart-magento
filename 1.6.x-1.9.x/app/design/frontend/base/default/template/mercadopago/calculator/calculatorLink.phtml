@@ -1,21 +1,12 @@
 <?php
-
-    $link_to_calculator = Mage::getBaseUrl().'mercadopago/calculatorPayment';
-    if( $this->isAvailableCalculator()
-            & $this->isPageToShow($this->getNameInLayout())
-    ):
-        // get the current amount.
-        if ( $this->inPagePDP($this->getNameInLayout())):{
-            $currentAmount = Mage::registry('current_product')->getPrice();
-        } elseif( $this->inPageCheckoutCart($this->getNameInLayout())):{
-            $currentAmount = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
-        }
-        endif;
-        ?>
-        <div id="mercadopago_calculator_link" class="">
-            <label>
-                <a href="#" onclick="popWin('<?php echo $link_to_calculator . '?currentAmount=' . $currentAmount?>','trackorder','width=800,height=300,resizable=yes,scrollbars=yes')">
-                    <?php echo $this->__('Calculate your payments ')?></a>
-            <label> <?php echo $this->__('with ')?></label> <strong id="meli-logo"> MercadoPago</strong>
-        </div>
-    <?php endif; ?>
+$link_to_calculator = Mage::getBaseUrl().'mercadopago/calculatorPayment';
+if( $this->isAvailableCalculator() & $this->isPageToShow($this->getNameInLayout()) ): ?>
+    <div id="mercadopago_calculator_link">
+        <a href="javascript:void(0)" onclick="MercadoPagoCustom.showPopup()">
+            <?php echo $this->__('Calculate your payments ')?>
+        </a>
+        <p><?php echo $this->__('with ')?></p>
+        <img id="meli-logo" src="<?php echo $this->getSkinUrl('mercadopago/images/logo.png') ?>" alt="MercadoPago"/>
+    </div>
+    <?php echo $this->getChildHtml('mercadopago_calculator_form') ?>
+<?php endif; ?>

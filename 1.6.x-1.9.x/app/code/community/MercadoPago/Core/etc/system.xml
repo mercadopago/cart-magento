@@ -266,7 +266,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </public_key>
-                        <access_token translate="label">
+                        <access_token translate="label comment">
                             <label>Access Token</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>10</sort_order>
@@ -302,11 +302,12 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>0</show_in_store>
-                                    <comment>
-                                        <![CDATA[It is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
+                                    <comment><![CDATA[
+                                        It is a requirement that you have a SSL certificate, and the payment form to be provided under an HTTPS page.
                                         During the sandbox mode tests, you can operate over HTTP,
                                         but for homologation you'll need to acquire the certificate in case you don't have it.
-                                        <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Learn More</a>]]>
+                                        <a href="https://www.mercadopago.com.ar/developers/solutions/payments/custom-checkout/appliance-requirements/" target="_blank">Learn More</a>
+                                        ]]>
                                     </comment>
                                 </active>
                                 <allow_2_cards_payment translate="label">
@@ -326,7 +327,7 @@
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>0</show_in_store>
                                 </title>
-                                <statement_descriptor translate="label">
+                                <statement_descriptor translate="label comment">
                                     <label>Statement Descriptor</label>
                                     <frontend_type>text</frontend_type>
                                     <sort_order>40</sort_order>
@@ -399,7 +400,7 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>0</show_in_store>
-                                    <comment>For the operation of the Checkout Custom Ticket is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'</comment>
+                                    <comment>It is necessary to configure the Public Key and Access Token for its proper functioning</comment>
                                 </active>
                                 <title translate="label">
                                     <label>Payment Title</label>
@@ -466,7 +467,7 @@
                             <show_in_store>1</show_in_store>
                             <sort_order>20</sort_order>
                             <fields>
-                                <active translate="label">
+                                <active translate="label comment">
                                     <label>Enabled</label>
                                     <frontend_type>select</frontend_type>
                                     <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -474,7 +475,7 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>0</show_in_store>
-                                    <comment>For the operation of the Checkout Standard is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'</comment>
+                                    <comment>It is necessary to configure necessary the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in this section for its proper functioning</comment>
                                 </active>
                                 <client_id translate="label">
                                     <label>Client Id</label>
@@ -574,7 +575,7 @@
                                     <show_in_store>0</show_in_store>
                                     <frontend_class>validate-number</frontend_class>
                                 </iframe_height>
-                                <sandbox_mode translate="label">
+                                <sandbox_mode translate="label comment">
                                     <label>Sandbox Mode</label>
                                     <frontend_type>select</frontend_type>
                                     <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -584,7 +585,7 @@
                                     <show_in_store>0</show_in_store>
                                     <comment>Enable to test checkout with real credit cards. For further information check this link: <![CDATA[<a href="https://www.mercadopago.com.ar/developers/en/solutions/payments/basic-checkout/test/basic-sandbox/" target="_blank">Basic Checkout Sandbox</a>]]></comment>
                                 </sandbox_mode>
-                                <communication translate="label">
+                                <communication translate="label comment">
                                     <label>Custom Message</label>
                                     <frontend_type>textarea</frontend_type>
                                     <sort_order>170</sort_order>
@@ -622,7 +623,7 @@
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>1</show_in_store>
-                                <comment>For the operation of the Checkout Recurring Payments is necessary to configure the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in 'Mercado Pago - Configuration'</comment>
+                                <comment>"It is necessary to configure necessary the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in this section for its proper functioning</comment>
                             </active>
                             <client_id translate="label">
                                 <label>Client Id</label>
@@ -701,7 +702,7 @@
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>1</show_in_store>
-                                <comment>Enable to test checkout with real credit cards.</comment>
+                                <comment>Enable to test checkout with real credit cards</comment>
                             </sandbox_mode>
                             <iframe_width translate="label">
                                 <label>Width Checkout Iframe</label>

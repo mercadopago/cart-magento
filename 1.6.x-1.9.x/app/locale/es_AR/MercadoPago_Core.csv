@@ -18,6 +18,13 @@
 "Shipping label download option","Opción para la descarga de las etiquetas de envío"
 "Enabled","Habilitado"
 
+"Product Attribute","Atributo de los Productos"
+"Attribute Unit","Unidad del Atributo"
+"Length","Largo"
+"Width","Ancho"
+"Height","Alto"
+"Weight","Ancho"
+
 
 "//XXXXXXX MercadoPago XXXXXXX","//XXXXXXX MercadoPago XXXXXXX"
 
@@ -335,7 +342,7 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 "Show Calculator on selected pages", "Mostrar calculadora en las siguientes páginas seleccionadas"
 
 "Calculate your payments ", "Calculá tus Cuotas"
-"with", "con"
+"with ", "con "
 "my string.", "Elige una opción"
 "Pay with MercadoPago", "Pagar con MercadoPago"
 "Choose an option", "Eligir una opcion"
@@ -367,3 +374,6 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 "Select issuer","Seleccionar emisor"
 "Default issuer","Emisor predeterminado"
 "Continue Shopping","Seguir comprando"
+"Use 2 Cards","Utilizar 2 Tarjetas"
+"Close","Cerrar"
+"Configure","Configurar"

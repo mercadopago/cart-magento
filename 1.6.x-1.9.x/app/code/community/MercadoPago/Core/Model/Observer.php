@@ -331,7 +331,6 @@ class MercadoPago_Core_Model_Observer
         $orderStatus = $order->getData('status');
         $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
         $payment = $order->getPayment();
-        $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
 
         $orderStatusHistory = $order->getAllStatusHistory();
         $isCreditCardPayment = ($order->getPayment()->getData('additional_information')['installments'] != null ? true : false);
@@ -353,7 +352,7 @@ class MercadoPago_Core_Model_Observer
 
             $isTotalRefund = $payment->getAmountPaid() == $payment->getAmountRefunded();
             if ($isValidBasicData && $isValidaData) {
-                $this->sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID);
+                $this->sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund);
             }
         }
     }
@@ -424,15 +423,15 @@ class MercadoPago_Core_Model_Observer
         return $isValidaData;
     }
 
-    protected function sendRefundRequest ($order, $creditMemo, $paymentMethod, $isTotalRefund, $paymentID) {
-        $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-        $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+    protected function sendRefundRequest ($order, $creditMemo, $paymentMethod, $isTotalRefund) {
 
-        $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
         $response = null;
         $amount = $creditMemo->getGrandTotal();
-        $access_token = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
         if ($paymentMethod == 'mercadopago_standard') {
+            $paymentID = $order->getPayment()->getData('additional_information')['id'];
+            $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+            $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+            $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
             if ($isTotalRefund) {
                 $response = $mp->refund_payment($paymentID);
                 $order->setMercadoPagoRefundType('total');
@@ -446,16 +445,19 @@ class MercadoPago_Core_Model_Observer
                     "amount" => $amount,
                     "metadata" => $metadata,
                 ];
-                $response = $mp->post("/collections/$paymentID/refunds?access_token=$access_token", $params);
+                $response = $mp->post('/collections/' . $paymentID . '/refunds?access_token=' . $mp->get_access_token(), $params);
             }
         } else {
+            $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
+            $accessToken = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+            $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
             if ($isTotalRefund) {
-                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token", []);
+                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$accessToken", []);
             } else {
                 $params = [
                     "amount" => $amount,
                 ];
-                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$access_token", $params);
+                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$accessToken", $params);
             }
         }
 

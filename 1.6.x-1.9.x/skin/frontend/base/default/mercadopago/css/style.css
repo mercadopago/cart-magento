@@ -493,3 +493,15 @@
 .onstepcheckout-mercadopago #payment_form_mercadopago_custom > li {
     margin: 0;
 }
+
+#mercadopago_calculator_link {
+    display: block;
+    margin: 5px 0 15px;
+}
+
+#mercadopago_calculator_link a,
+#mercadopago_calculator_link p,
+#mercadopago_calculator_link img {
+    display: inline-block;
+    vertical-align: middle;
+}

@@ -11,7 +11,7 @@ var MercadoPagoCustom = (function () {
         constants: {
             undefined: 'undefined',
             codeCft: 'CFT',
-            codeRecommended: 'recommended',
+            codeRecommended: 'recommended_installment',
             loading: 'loading',
             atributeInstallments: 'installments',
             atributeDataRate: 'data-installment-rate',
@@ -82,6 +82,11 @@ var MercadoPagoCustom = (function () {
 
         //show options
         var paymentCardSelected = getSelectedRadio();
+        // begin clear price and installment select
+        TinyJ(self.selectors.installmentSelect).empty();
+        TinyJ(self.selectors.installmentsPrice).empty();
+        // end clear price and installment select
+
         getPaymentMethods(paymentCardSelected);
     }
 
@@ -249,26 +254,6 @@ var MercadoPagoCustom = (function () {
 
         TinyJ(self.selectors.installmentPTF).html("$"+selectorPaymentOptions.attribute(self.constants.atributeDataPtf));
     }
-
-    // Get all methods pre
-    // function getAllPaymentMethods() {
-    //     var allMethods = JSON.parse(AllPaymentMethods);
-    //     // var allowedMethods = {};
-    //     for (var key in allMethods) {
-    //         var method = allMethods[key];
-    //         var typeId = method.payment_type_id;
-    //         var status = method.status;
-    //         if (typeId == 'credit_card' && status == 'active') {
-    //             Mercadopago.getInstallments({'payment_method_id':method.id, 'amount': Amount}, responseAllHandler);
-    //
-    //         }
-    //     }
-    //     // return allowedMethods;
-    // }
-    //
-    // function responseAllHandler(status, response) {
-    //     allowedMethods[response[0].payment_method_id] = response;
-    // }
 
     return {
         getInstance: getInstance,

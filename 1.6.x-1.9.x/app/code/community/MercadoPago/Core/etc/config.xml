@@ -282,4 +282,18 @@
         </payment>
     </default>
 
+    <crontab>
+        <jobs>
+            <order_status_inspector>
+                <schedule>
+                    <!--<cron_expr>*/5 * * * *</cron_expr>-->
+                    <config_path>mercadopago/configuration/time_between_verifications</config_path>
+                </schedule>
+                <run>
+                    <model>mercadopago/cron_order::updateOrderStatus</model>
+                </run>
+            </order_status_inspector>
+        </jobs>
+    </crontab>
+
 </config>

@@ -496,6 +496,10 @@ class MercadoPago_Core_Model_Core
                 if (isset($data['payment_method_id'])) {
                     $paymentOrder->setAdditionalInformation('payment_method', $data['payment_method_id']);
                 }
+
+                if (isset($data['merchant_order_id'])) {
+                    $paymentOrder->setAdditionalInformation('merchant_order_id', $data['merchant_order_id']);
+                }
             }
 
             $paymentStatus = $paymentOrder->save();

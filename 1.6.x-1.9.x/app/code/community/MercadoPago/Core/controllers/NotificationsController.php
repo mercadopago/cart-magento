@@ -300,7 +300,7 @@ class MercadoPago_Core_NotificationsController
             "installments",
             "shipping_cost",
             "amount_refunded",
-            "merchant_order_id",
+//            "merchant_order_id",
         ];
 
         foreach ($fields as $field) {
@@ -331,6 +331,10 @@ class MercadoPago_Core_NotificationsController
 
         if (isset($payment['statement_descriptor'])) {
             $data['statement_descriptor'] = $payment['statement_descriptor'];
+        }
+
+        if (isset($payment['merchant_order_id'])) {
+            $data['merchant_order_id'] = $payment['merchant_order_id'];
         }
 
         $data['external_reference'] = $payment['external_reference'];

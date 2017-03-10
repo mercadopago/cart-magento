@@ -36,7 +36,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
         if ($response !== false) {
             $this->getInfoInstance()->setAdditionalInformation('activation_uri', $response['response']['transaction_details']['external_resource_url']);
-
+            $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $response['response']['id']);
             return true;
         }
 
@@ -57,6 +57,8 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
         $info = $this->getInfoInstance();
         $info->setAdditionalInformation('payment_method', $infoForm['payment_method_ticket']);
+
+
 
         if (isset($infoForm['coupon_code'])) {
             $info->setAdditionalInformation('coupon_code', $infoForm['coupon_code']);

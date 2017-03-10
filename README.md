@@ -48,6 +48,11 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 
 *Available for Argentina, Brazil and Mexico only with Standard Checkout*
 
+
+**Recurring Payments**
+
+Plugin integrates with Magento recurring payments functionality
+
 <a name="requirements"></a>
 ## Requirements:
 

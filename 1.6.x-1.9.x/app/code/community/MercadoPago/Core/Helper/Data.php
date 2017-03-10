@@ -27,6 +27,14 @@ class MercadoPago_Core_Helper_Data
     const PLATFORM_DESKTOP = 'Desktop';
     const TYPE = 'magento';
 
+    //calculator
+    const XML_PATH_CALCULATOR_AVAILABLE = 'payment/mercadopago/calculalator_available';
+    const XML_PATH_CALCULATOR_PAGES = 'payment/mercadopago/show_in_pages';
+
+    const STATUS_ACTIVE = 'active';
+    const PAYMENT_TYPE_CREDIT_CARD = 'credit_card';
+
+
     protected $_apiInstance;
 
     protected $_website;
@@ -73,12 +81,15 @@ class MercadoPago_Core_Helper_Data
     public function isValidAccessToken($accessToken)
     {
         $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
-        $response = $mp->get("/v1/payment_methods");
-        if ($response['status'] == 401 || $response['status'] == 400) {
+        try{
+            $response = $mp->get("/v1/payment_methods");
+            if ($response['status'] == 401 || $response['status'] == 400) {
+                return false;
+            }
+            return true;
+        } catch (\Exception $e){
             return false;
         }
-
-        return true;
     }
 
     public function isValidClientCredentials($clientId, $clientSecret)
@@ -136,6 +147,7 @@ class MercadoPago_Core_Helper_Data
         if (!Mage::getStoreConfigFlag('payment/mercadopago/financing_cost')) {
             $order->setGrandTotal($order->getGrandTotal() - $balance);
             $order->setBaseGrandTotal($order->getBaseGrandTotal() - $balance);
+
             return;
         }
 
@@ -152,11 +164,11 @@ class MercadoPago_Core_Helper_Data
      */
     public function setPayerInfo(&$payment)
     {
-        $payment["trunc_card"] = "xxxx xxxx xxxx " . $payment['card']["last_four_digits"];
-        $payment["cardholder_name"] = $payment['card']["cardholder"]["name"];
-        $payment['payer_first_name'] = $payment['payer']['first_name'];
-        $payment['payer_last_name'] = $payment['payer']['last_name'];
-        $payment['payer_email'] = $payment['payer']['email'];
+        $payment["trunc_card"] = (isset($payment['card']["last_four_digits"])) ? "xxxx xxxx xxxx " . $payment['card']["last_four_digits"] : '';
+        $payment["cardholder_name"] = (isset($payment['card']["cardholder"]["name"])) ? $payment['card']["cardholder"]["name"] : '';
+        $payment['payer_first_name'] = (isset($payment['payer']['first_name'])) ? $payment['payer']['first_name'] : '';
+        $payment['payer_last_name'] = (isset($payment['payer']['last_name'])) ? $payment['payer']['last_name'] : '';
+        $payment['payer_email'] = (isset($payment['payer']['email'])) ? $payment['payer']['email'] : '';
 
         return $payment;
     }
@@ -210,6 +222,42 @@ class MercadoPago_Core_Helper_Data
         }
 
         return $this->_website;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function isAvailableCalculator()
+    {
+        return Mage::getStoreConfig(self::XML_PATH_CALCULATOR_AVAILABLE);
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPagesToShow()
+    {
+        return Mage::getStoreConfig(self::XML_PATH_CALCULATOR_PAGES);
+    }
+
+    /**
+     * return the list of payment methods or null
+     *
+     * @param mixed|null $accessToken
+     *
+     * @return mixed
+     */
+    public function getMercadoPagoPaymentMethods($accessToken)
+    {
+        $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
+        $response = $mp->get("/v1/payment_methods");
+        if ($response['status'] == 401 || $response['status'] == 400) {
+            return false;
+        }
+
+        return $response['response'];
     }
 
 }

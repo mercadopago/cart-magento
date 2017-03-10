@@ -30,13 +30,36 @@ class MercadoPago_Core_NotificationsController
 
     const LOG_FILE = 'mercadopago-notification.log';
 
+    protected function getCore() {
+        if (empty($this->_core)) {
+            $this->_core = Mage::getModel('mercadopago/core');
+        }
+        return $this->_core;
+    }
+
+    public function indexAction()
+    {
+        $params = $this->getRequest()->getParams();
+        Mage::helper('mercadopago')->log('Received notification', self::LOG_FILE, $params);
+        if (isset($params['topic'])) {
+            switch($params['topic']) {
+                case MercadoPago_Core_Helper_Response::TOPIC_RECURRING_PAYMENT: {
+                    $this->_forward('recurring');
+                    break;
+                }
+                case MercadoPago_Core_Helper_Response::TOPIC_PAYMENT: {
+                    $this->_forward('recurringPayment');
+                    break;
+                }
+            }
+        }
+    }
 
     public function standardAction()
     {
         $this->_requestData = $this->getRequest()->getParams();
         //notification received
         $this->_helper = Mage::helper('mercadopago');
-        $this->_core = Mage::getModel('mercadopago/core');
         $this->_statusHelper = Mage::helper('mercadopago/statusUpdate');
         $this->_shipmentData = '';
 
@@ -58,7 +81,7 @@ class MercadoPago_Core_NotificationsController
                     return;
                 }
                 if (!$this->_handleMerchantOrder($this->_paymentData['merchant_order_id'])) {
-                    
+
                     return;
                 }
                 break;
@@ -72,7 +95,7 @@ class MercadoPago_Core_NotificationsController
         if ($this->_order->getStatus() == 'canceled') {
             $this->_helper->log(MercadoPago_Core_Helper_Response::INFO_ORDER_CANCELED, self::LOG_FILE, $this->_requestData);
             $this->_setResponse(MercadoPago_Core_Helper_Response::INFO_ORDER_CANCELED, MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
-            
+
             return;
         }
         $this->_statusHelper->setStatusUpdated($this->_paymentData, $this->_order);
@@ -83,9 +106,10 @@ class MercadoPago_Core_NotificationsController
         $this->_postStandardAction();
     }
 
-    protected function _postStandardAction () {
+    protected function _postStandardAction()
+    {
         $this->_helper->log('Update Order', self::LOG_FILE);
-        $this->_core->updateOrder($this->_order, $this->_paymentData);
+        $this->getCore()->updateOrder($this->_order, $this->_paymentData);
         $this->_dispatchBeforeSetEvent();
 
         if ($this->_statusFinal != false) {
@@ -105,13 +129,12 @@ class MercadoPago_Core_NotificationsController
     {
         $request = $this->getRequest();
         $this->_helper = Mage::helper('mercadopago');
-        $this->_core = Mage::getModel('mercadopago/core');
         $this->_statusHelper = Mage::helper('mercadopago/statusUpdate');
         $this->_helper->log('Custom Received notification', self::LOG_FILE, $request->getParams());
         $dataId = $request->getParam('data_id');
         $type = $request->getParam('type');
         if (!empty($dataId) && $type == 'payment') {
-            $response = $this->_core->getPaymentV1($dataId);
+            $response = $this->getCore()->getPaymentV1($dataId);
             $this->_helper->log('Return payment', self::LOG_FILE, $response);
 
             if ($this->_isValidResponse($response)) {
@@ -124,7 +147,7 @@ class MercadoPago_Core_NotificationsController
                 }
                 $this->_helper->log('Update Order', self::LOG_FILE);
                 $this->_statusHelper->setStatusUpdated($payment, $this->_order);
-                $this->_core->updateOrder($this->_order, $payment);
+                $this->getCore()->updateOrder($this->_order, $payment);
                 $setStatusResponse = $this->_statusHelper->setStatusOrder($payment);
                 $this->_setResponse($setStatusResponse['body'], $setStatusResponse['code']);
                 $this->_helper->log('Http code', self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
@@ -140,7 +163,7 @@ class MercadoPago_Core_NotificationsController
 
     protected function _handleMerchantOrder($id)
     {
-        $merchantOrder = $this->_core->getMerchantOrder($id);
+        $merchantOrder = $this->getCore()->getMerchantOrder($id);
         $this->_helper->log('Return merchant_order', self::LOG_FILE, $merchantOrder);
         if (!$this->_isValidMerchantOrder($merchantOrder)) {
             $this->_helper->log(MercadoPago_Core_Helper_Response::INFO_MERCHANT_ORDER_NOT_FOUND, self::LOG_FILE, $this->_requestData);
@@ -168,7 +191,7 @@ class MercadoPago_Core_NotificationsController
 
     protected function _getFormattedPaymentData($paymentId, $data = [])
     {
-        $response = $this->_core->getPayment($paymentId);
+        $response = $this->getCore()->getPayment($paymentId);
         if (!$this->_isValidResponse($response)) {
             return [];
         }
@@ -323,9 +346,14 @@ class MercadoPago_Core_NotificationsController
      */
     public function recurringAction()
     {
-        $preapprovalId = $this->getRequest()->getParams()['preapproval_id'];
-        $this->_core = Mage::getModel('mercadopago/core');
-        $response = $this->_core->getRecurringPayment($preapprovalId);
+        $params = $this->getRequest()->getParams();
+        if (isset($params['preapproval_id'])) {
+            $preapprovalId = $params['preapproval_id'];
+        } elseif (isset($params['id'])) {
+            $preapprovalId = $params['id'];
+        }
+
+        $response = $this->getCore()->getRecurringPayment($preapprovalId);
 
         $profileId = $response ['response']['external_reference'];
         $newState = $response ['response']['status'];
@@ -338,9 +366,15 @@ class MercadoPago_Core_NotificationsController
         if ($actualState != $newState) {
             $state = null;
             switch ($newState) {
-                case 'cancelled' : $state = Mage_Sales_Model_Recurring_Profile::STATE_CANCELED; break;
-                case 'paused' : $state = Mage_Sales_Model_Recurring_Profile::STATE_SUSPENDED; break;
-                case 'authorized' : $state = Mage_Sales_Model_Recurring_Profile::STATE_ACTIVE; break;
+                case 'cancelled' :
+                    $state = Mage_Sales_Model_Recurring_Profile::STATE_CANCELED;
+                    break;
+                case 'paused' :
+                    $state = Mage_Sales_Model_Recurring_Profile::STATE_SUSPENDED;
+                    break;
+                case 'authorized' :
+                    $state = Mage_Sales_Model_Recurring_Profile::STATE_ACTIVE;
+                    break;
             }
             $profile->setState($state);
             $profile->save();
@@ -350,6 +384,39 @@ class MercadoPago_Core_NotificationsController
             $billingAmount = $newAmount - $profile->getShippingAmount();
             $profile->setBillingAmount($billingAmount);
             $profile->save();
+        }
+
+        return $this->_redirect();
+
+    }
+
+    public function recurringPaymentAction() {
+        $params = $this->getRequest()->getParams();
+        if (!isset($params['id'])) {
+            return;
+        }
+        $paymentData = $this->getCore()->getPayment($params['id']);
+        if (empty($paymentData) || ($paymentData['status'] != 200 && $paymentData['status'] != 201)) {
+            return;
+        }
+        Mage::helper('mercadopago')->log('Recurring PaymentAction Data', self::LOG_FILE, $paymentData);
+        $paymentData=$paymentData['response']['collection'];
+        if ($paymentData['operation_type'] == 'recurring_payment' && $paymentData['status'] == 'approved') {
+            $profile = Mage::getModel('sales/recurring_profile')->load($paymentData['external_reference']);
+            if ($profile->getId()) {
+                $item = new Varien_Object();
+                $item->setData($profile->getOrderItemInfo());
+                $item->setPaymentType(Mage_Sales_Model_Recurring_Profile::PAYMENT_TYPE_REGULAR);
+                $order = $profile->createOrder($item)->save();
+                $statusHelper = Mage::helper('mercadopago/statusUpdate');
+                if ($order->getId()) {
+                    $paymentData = Mage::helper('mercadopago')->setPayerInfo($paymentData);
+                    $statusHelper->setStatusUpdated($paymentData, $order);
+                    $this->getCore()->updateOrder($order, $paymentData);
+                    Mage::helper('mercadopago/statusUpdate')->setStatusOrder($paymentData);
+                    $profile->addOrderRelation($order->getId());
+                }
+            }
         }
     }
 

@@ -15,21 +15,21 @@ Feature: Validation of custom checkout form
     And I press "#billing-buttons-container .button" element
     And I select shipping method "s_method_flatrate_flatrate"
     And I press "#shipping-method-buttons-container .button" element
+    And I wait for 5 seconds
     And I select radio "p_method_mercadopago_custom"
     And I press "#use_other_card_mp" element
 
-  @CheckoutCustomForm @CardED
+  @CheckoutCustomForm @CardED @skip
   Scenario: Validate card expiration date
     Given I fill text field "cardNumber" with "4509 9535 6623 3704"
     And I select option field "cardExpirationMonth" with "1"
     And I fill text field "cardholderName" with "APRO"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2016"
+    And I select option field "cardExpirationYear" with "2017"
     And I select installment "1"
 
-    Then I should see "Month is invalid."
-    And I should see "Year is invalid."
+    And I should see "Incorrect credit card expiration date."
 
   @CheckoutCustomForm @CardHN
   Scenario: Validate cardholder name
@@ -38,7 +38,7 @@ Feature: Validation of custom checkout form
     And I fill text field "cardholderName" with "!@#APRO123"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
@@ -52,7 +52,7 @@ Feature: Validation of custom checkout form
     And I fill text field "cardholderName" with "APRO"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "12345"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     Then I should see "CVV is invalid"
@@ -64,7 +64,7 @@ Feature: Validation of custom checkout form
     And I fill text field "cardholderName" with "APRO"
     And I fill text field "docNumber" with "1234"
     And I fill text field "securityCode" with "12345"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
@@ -77,7 +77,7 @@ Feature: Validation of custom checkout form
     And I select option field "cardExpirationMonth" with "10"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
@@ -90,7 +90,7 @@ Feature: Validation of custom checkout form
     And I select option field "cardExpirationMonth" with "10"
     And I fill text field "docNumber" with "12345678"
     And I fill text field "cardholderName" with "test"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element
@@ -103,7 +103,7 @@ Feature: Validation of custom checkout form
     And I select option field "cardExpirationMonth" with "10"
     And I fill text field "cardholderName" with "test"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
 
     And I press "#payment-buttons-container .button" element

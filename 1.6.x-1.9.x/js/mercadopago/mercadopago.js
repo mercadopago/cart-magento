@@ -1385,8 +1385,13 @@ var MercadoPagoCustom = (function () {
             if (response.length > 0) {
                 var messageChoose = TinyJ(self.selectors.mercadoPagoTextChoice).val();
 
-                var option = new Option(messageChoose + "... ", ''),
-                    payerCosts = response[0].payer_costs;
+                var option = new Option(messageChoose + "... ", '');
+                payerCosts = response[0].payer_costs;
+                var hasCftInfo = payerCosts[0]['labels'].length > 0;
+                if (!hasCftInfo) {
+                    TinyJ('.tea-info-first-card').hide();
+                    TinyJ('.cft-info-first-card').hide();
+                }
 
                 selectorInstallments.appendChild(option);
 
@@ -1394,15 +1399,16 @@ var MercadoPagoCustom = (function () {
                     option = new Option(payerCosts[i].recommended_message || payerCosts[i].installments, payerCosts[i].installments);
                     selectorInstallments.appendChild(option);
                     TinyJ(option).attribute(self.constants.cost, payerCosts[i].total_amount);
-
-                    var financeValues = payerCosts[i]['labels'].find(
-                        function(str) {
-                            return str.indexOf('CFT') > -1;
-                        }
-                    );
-                    var finance = financeValues.split('|');
-                    TinyJ(option).attribute('cft', finance[0].replace('_', ': '));
-                    TinyJ(option).attribute('tea', finance[1].replace('_', ': '));
+                    if (hasCftInfo) {
+                        var financeValues = payerCosts[i]['labels'].find(
+                            function(str) {
+                                return str.indexOf('CFT') > -1;
+                            }
+                        );
+                        var finance = financeValues.split('|');
+                        TinyJ(option).attribute('cft', finance[0].replace('_', ': '));
+                        TinyJ(option).attribute('tea', finance[1].replace('_', ': '));
+                    }
                 }
                 selectorInstallments.enable();
             } else {

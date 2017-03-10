@@ -53,6 +53,14 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 
 Plugin integrates with Magento recurring payments functionality
 
+**Installments calculator**
+
+This feature adds a intallment calculator inside Magento Product Page and Cart. It can be enabled/disabled from plugin configuration.
+
+**Two card payments**
+
+This feature allows customer to split Custom Checkout payments between two cards. This functionality can also be enabled/disabled from plugin configuration.
+
 <a name="requirements"></a>
 ## Requirements:
 

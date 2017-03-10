@@ -23,7 +23,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I fill text field "cardholderName" with "APRO"
     And I fill text field "docNumber" with "<doc_number>"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
     And I press "#payment-buttons-container .button" element
 
@@ -37,7 +37,7 @@ Feature: Payment results in MercadoPago Custom Checkout
       | credit_card         | doc_number | country | user                            | pass    |
       | 4966 3823 3110 9310 | 14978546   | mlv     | test_user_58787749@testuser.com | magento |
 
-  @CustomCheckoutPerCountryWithDocType
+  @CustomCheckoutPerCountryWithDocType @skip
   Scenario Outline:
     Given Setting merchant <country>
     And User "<user>" "<pass>" exists
@@ -60,7 +60,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I select option field "docType" with "<doc_type>"
     And I fill text field "docNumber" with "<doc_number>"
     And I fill text field "securityCode" with "123"
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
     And I wait for "3" seconds
     And I press "#payment-buttons-container .button" element
@@ -107,7 +107,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I wait for "5" seconds
     And I fill text field "securityCode" with "123"
     And I wait for "5" seconds
-    And I select option field "cardExpirationYear" with "2017"
+    And I select option field "cardExpirationYear" with "2018"
     And I wait for "5" seconds
     And I select option field "issuer" with "<issuer_id>"
     And I wait for "5" seconds

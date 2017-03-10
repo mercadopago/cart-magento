@@ -18,7 +18,7 @@
 <config>
     <modules>
         <MercadoPago_Core>
-            <version>2.4.3</version>
+            <version>2.5.3</version>
         </MercadoPago_Core>
     </modules>
 
@@ -102,6 +102,15 @@
                     </observer>
                 </observers>
             </sales_order_creditmemo_save_after>
+
+            <checkout_submit_all_after>
+                <observers>
+                    <observer>
+                        <class>MercadoPago_Core_Model_Observer</class>
+                        <method>checkoutSubmitAllAfter</method>
+                    </observer>
+                </observers>
+            </checkout_submit_all_after>
         </events>
         <sales>
             <quote>
@@ -212,6 +221,7 @@
                 <use_successpage_mp>1</use_successpage_mp>
                 <logs>0</logs>
                 <debug_mode>0</debug_mode>
+                <calculalator_available>0</calculalator_available>
             </mercadopago>
 
             <mercadopago_custom>
@@ -254,6 +264,20 @@
                 <iframe_height>700</iframe_height>
                 <sandbox_mode>0</sandbox_mode>
             </mercadopago_standard>
+
+            <mercadopago_recurring>
+                <active>0</active>
+                <model>mercadopago/recurring_payment</model>
+                <title>Mercado Pago - Recurring Payments Checkout</title>
+                <allowspecific>0</allowspecific>
+                <banner_checkout>http://imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg</banner_checkout>
+                <sort_order>-1</sort_order>
+                <type_checkout>iframe</type_checkout>
+                <auto_return>1</auto_return>
+                <iframe_width>900</iframe_width>
+                <iframe_height>700</iframe_height>
+                <sandbox_mode>0</sandbox_mode>
+            </mercadopago_recurring>
 
         </payment>
     </default>

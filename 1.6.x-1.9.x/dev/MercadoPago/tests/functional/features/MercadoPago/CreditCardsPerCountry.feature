@@ -37,7 +37,7 @@ Feature: Payment results in MercadoPago Custom Checkout
       | credit_card         | doc_number | country | user                            | pass    |
       | 4966 3823 3110 9310 | 14978546   | mlv     | test_user_58787749@testuser.com | magento |
 
-  @CustomCheckoutPerCountryWithDocType
+  @CustomCheckoutPerCountryWithDocType @skip
   Scenario Outline:
     Given Setting merchant <country>
     And User "<user>" "<pass>" exists

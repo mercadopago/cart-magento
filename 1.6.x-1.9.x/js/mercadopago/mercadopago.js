@@ -306,6 +306,19 @@ var MercadoPagoCustom = (function () {
                 return !(ccExpMonth < currentMonth && ccExpYear == currentYear);
             });
 
+            ////Second card
+            var showSecondCard = TinyJ(self.selectors.showSecondCard);
+            showSecondCard.click(actionShowSecondCard);
+            var hideSecondCard = TinyJ(self.selectors.hideSecondCard);
+            hideSecondCard.click(actionHideSecondCard);
+
+            var halfAmount = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val()/2;
+            TinyJ(self.selectors.firstCardAmount).val(halfAmount);
+            TinyJ(self.selectors.secondCardAmount).val(halfAmount);
+            TinyJ(self.selectors.amountFirstCard).val(halfAmount);
+            TinyJ(self.selectors.amountSecondCard).val(halfAmount);
+
+            TinyJ(self.selectors.firstCardAmount).focusout(changeAmountHandler);
             actionHideSecondCard();
         }
 
@@ -313,9 +326,7 @@ var MercadoPagoCustom = (function () {
             defineInputsSecondCard();
             TinyJ(self.selectors.cardNumberInputSecondCard).keyup(guessingPaymentMethodSecondCard);
             TinyJ(self.selectors.amountFirstCard).focusout(guessingPaymentMethodSecondCard);
-            TinyJ(self.selectors.secondCardCardId).change(cardsHandlerSecondCard);
             TinyJ(self.selectors.secondCardInstallments).change(setTotalAmount);
-
         }
 
         function setPaymentMethodId(event) {
@@ -393,24 +404,15 @@ var MercadoPagoCustom = (function () {
             var secondCardReturnListCard = TinyJ(self.selectors.secondCardReturnToCardList);
             var showSecondCard = TinyJ(self.selectors.showSecondCard);
             var hideSecondCard = TinyJ(self.selectors.hideSecondCard);
-            var firstCardAmount = TinyJ(self.selectors.firstCardAmount);
-            var secondCardCustomCard = TinyJ(self.selectors.secondCardCustomCard);
+
+
             TinyJ(self.selectors.useOtherCard).click(actionUseOneClickPayOrNo);
             TinyJ(self.selectors.secondCardUseOtherCard).click(actionUseOneClickPayOrNoSecondCard);
             returnListCard.click(actionUseOneClickPayOrNo);
             secondCardReturnListCard.click(actionUseOneClickPayOrNoSecondCard);
-            showSecondCard.click(actionShowSecondCard);
-            hideSecondCard.click(actionHideSecondCard);
-
-            var halfAmount = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val()/2;
-            TinyJ(self.selectors.firstCardAmount).val(halfAmount);
-            TinyJ(self.selectors.secondCardAmount).val(halfAmount);
-            TinyJ(self.selectors.amountFirstCard).val(halfAmount);
-            TinyJ(self.selectors.amountSecondCard).val(halfAmount);
-
-            firstCardAmount.focusout(changeAmountHandler);
             TinyJ(self.selectors.installments).change(setTotalAmount);
 
+            TinyJ(self.selectors.secondCardCardId).change(cardsHandlerSecondCard);
             secondCardReturnListCard.hide();
             //secondCardCustomCard.hide();
             returnListCard.hide();
@@ -1387,20 +1389,20 @@ var MercadoPagoCustom = (function () {
                     payerCosts = response[0].payer_costs;
 
                 selectorInstallments.appendChild(option);
-                var hasCftInfo = payerCosts[0]['labels'].length > 0;
-                if (!hasCftInfo) {
-                    TinyJ('.tea-info-first-card').hide();
-                    TinyJ('.cft-info-first-card').hide();
-                }
+
                 for (var i = 0; i < payerCosts.length; i++) {
                     option = new Option(payerCosts[i].recommended_message || payerCosts[i].installments, payerCosts[i].installments);
                     selectorInstallments.appendChild(option);
                     TinyJ(option).attribute(self.constants.cost, payerCosts[i].total_amount);
-                    if (hasCftInfo) {
-                        var finance = payerCosts[i]['labels'][0].split('|');
-                        TinyJ(option).attribute('cft', finance[0].replace('_', ': '));
-                        TinyJ(option).attribute('tea', finance[1].replace('_', ': '));
-                    }
+
+                    var financeValues = payerCosts[i]['labels'].find(
+                        function(str) {
+                            return str.indexOf('CFT') > -1;
+                        }
+                    );
+                    var finance = financeValues.split('|');
+                    TinyJ(option).attribute('cft', finance[0].replace('_', ': '));
+                    TinyJ(option).attribute('tea', finance[1].replace('_', ': '));
                 }
                 selectorInstallments.enable();
             } else {

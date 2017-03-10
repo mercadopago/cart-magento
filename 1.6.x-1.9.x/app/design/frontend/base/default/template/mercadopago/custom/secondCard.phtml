@@ -46,10 +46,10 @@ $customer = $this->getCustomerAndCards();
                         </li>
                     </ul>
                 </li>
+                <a id="second_card_return_list_card_mp" class="action_ocp button"><?php echo $this->__('Return to cards list'); ?></a>
             <?php endif; ?>
 
             <ul id="second_card_mercadopago_checkout_custom_card">
-                <a id="second_card_return_list_card_mp" class="action_ocp button"><?php echo $this->__('Return to cards list'); ?></a>
 
                 <li id="second_card_paymentMethod__mp">
                     <label for="second_card_paymentMethod"><?php echo $this->__('Payment Method'); ?></label>
@@ -130,7 +130,7 @@ $customer = $this->getCustomerAndCards();
                 <p class="cft-info cft-info-second-card">CFT: 0,00%</p>
             </div>
 
-            <input type="hidden" class="second_card_mercadopago-text-installment" value="<?php echo $this->__('Enter the card number'); ?>">
+            <input type="hidden" class="second_card_mercadopago-text-installment" value="<?php echo $this->__('Select Installments'); ?>">
             <input type="hidden" id="second_card_one_click_pay_mp" name="payment[<?php echo $_code; ?>][one_click_pay]" value="<?php echo count($customer['cards']) > 0 ? 1 : 0; ?>">
             <input type="hidden" name="payment[<?php echo $_code; ?>][second_card_token]" type="text" value="" class="second_card_token"/>
             <input type="hidden" name="payment[<?php echo $_code; ?>][second_card_payment_method_id]" type="text" value="" class="second_card_payment_method_id"/>

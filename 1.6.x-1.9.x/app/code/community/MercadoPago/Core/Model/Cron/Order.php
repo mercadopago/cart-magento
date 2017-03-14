@@ -1,6 +1,5 @@
 <?php
 
-
 class MercadoPago_Core_Model_Cron_Order
 {
 
@@ -27,42 +26,8 @@ class MercadoPago_Core_Model_Cron_Order
                     'complete'))
             )->addFieldToFilter('created_at', array('from'=>$fromDate, 'to'=>$toDate))
         ;
-//        $collection2 = Mage::getModel('sales/order')->getCollection()
-//            ->addFieldToSelect('*')
-//            ->addFieldToFilter('payment.method',array('in' => array(
-//                'mercadopago_custom',
-//                'mercadopago_customticket',
-//                'mercadopago_standard')))
 
-//
-//        //Verificar que los elementos tengan el metodo de pago MP...
-//        $order_collection = Mage::getModel('sales/order')->getCollection()
-////                                                            ->addFieldToFilter('status', array('nin' => array('canceled','complete')))
-//        ;
-
-        //otra alternativa (por si no muestra el codigo laversion anterior
-//        $order = Mage::getModel("sales/order")->getCollection()
-//                                                ->addAttributeToSelect('*')
-//                                                ->addAttributeToFilter('status', array('nin' => array('canceled','complete')))
-////                                                ->addAttributeToFilter('status', array('nin' => array('canceled','complete')))
-//                                                ;
-
-        /*
-         * For OrderCollection.
-         *      get code
-         *      setea el status desde la config
-         *      guarda la orden modificada
-         *
-         * */
-
-//        $ordersByPaymentMP = Mage::getResourceModel('sales/order_payment_collection')
-//            ->addFieldToSelect('*')
-//            ->addFieldToFilter('method',array('in' => array(
-//                                                            'mercadopago_custom',
-//                                                            'mercadopago_customticket',
-//                                                            'mercadopago_standard')))
-//            ;
-
+        // For all Orders to analyze
         foreach($collection as $orderByPayment){
             $order = $orderByPayment;
             $paymentOrder = $order->getPayment();

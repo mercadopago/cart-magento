@@ -300,7 +300,6 @@ class MercadoPago_Core_NotificationsController
             "installments",
             "shipping_cost",
             "amount_refunded",
-//            "merchant_order_id",
         ];
 
         foreach ($fields as $field) {
@@ -312,7 +311,17 @@ class MercadoPago_Core_NotificationsController
                 }
             }
         }
+        $data = $this->_updateAtributesData($data, $payment);
+        
+        $data['external_reference'] = $payment['external_reference'];
+        $data['payer_first_name'] = $payment['payer']['first_name'];
+        $data['payer_last_name'] = $payment['payer']['last_name'];
+        $data['payer_email'] = $payment['payer']['email'];
 
+        return $data;
+    }
+
+    protected function _updateAtributesData($data, $payment){
         if (isset($payment["last_four_digits"])) {
             if (isset($data["trunc_card"])) {
                 $data["trunc_card"] .= " | " . "xxxx xxxx xxxx " . $payment["last_four_digits"];
@@ -336,11 +345,6 @@ class MercadoPago_Core_NotificationsController
         if (isset($payment['merchant_order_id'])) {
             $data['merchant_order_id'] = $payment['merchant_order_id'];
         }
-
-        $data['external_reference'] = $payment['external_reference'];
-        $data['payer_first_name'] = $payment['payer']['first_name'];
-        $data['payer_last_name'] = $payment['payer']['last_name'];
-        $data['payer_email'] = $payment['payer']['email'];
 
         return $data;
     }

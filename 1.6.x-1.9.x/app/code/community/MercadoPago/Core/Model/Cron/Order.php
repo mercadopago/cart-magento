@@ -2,9 +2,10 @@
 
 class MercadoPago_Core_Model_Cron_Order
 {
+    protected $_statusHelper;
 
     public function updateOrderStatus(){
-        $statusHelper = Mage::helper('mercadopago/statusUpdate');
+        $this->_statusHelper = Mage::helper('mercadopago/statusUpdate');
         $helper = Mage::helper('mercadopago');
         $hours = Mage::getStoreConfig('payment/mercadopago/number_of_hours');
 
@@ -43,21 +44,26 @@ class MercadoPago_Core_Model_Cron_Order
                     $merchantOrderData = $response['response'];
 
                     $paymentData = $this->getDataPayments($merchantOrderData);
-                    $statusFinal = $statusHelper->getStatusFinal($paymentData['status'], $merchantOrderData);
+                    $statusFinal = $this->_statusHelper->getStatusFinal($paymentData['status'], $merchantOrderData);
                     $statusDetail = $infoPayments['status_detail'];
 
-                    $statusOrder = $statusHelper->getStatusOrder($statusFinal, $statusDetail);
+                    $statusOrder = $this->_statusHelper->getStatusOrder($statusFinal, $statusDetail);
                     if (isset($statusOrder) && ($order->getStatus() !== $statusOrder)) {
-                        $order->setState($statusHelper->_getAssignedState($statusOrder));
-                        $order->addStatusToHistory($statusOrder, $statusHelper->getMessage($statusOrder, $paymentOrder), true);
-                        $order->sendOrderUpdateEmail(true, $statusHelper->getMessage($statusOrder, $paymentOrder));
-                        $order->save();
+                        $this->_updateOrder($order, $statusOrder, $paymentOrder);
+
                     }
                 } else{
                     $helper->log('Error updating status order using cron whit the merchantOrder num: '. $merchantOrderId .'mercadopago.log');
                 }
             }
         }
+    }
+
+    protected function _updateOrder($order, $statusOrder, $paymentOrder){
+        $order->setState($this->_statusHelper->_getAssignedState($statusOrder));
+        $order->addStatusToHistory($statusOrder, $this->_statusHelper->getMessage($statusOrder, $statusOrder), true);
+        $order->sendOrderUpdateEmail(true, $this->_statusHelper->getMessage($statusOrder, $paymentOrder));
+        $order->save();
     }
 
     protected function getDataPayments($merchantOrderData)

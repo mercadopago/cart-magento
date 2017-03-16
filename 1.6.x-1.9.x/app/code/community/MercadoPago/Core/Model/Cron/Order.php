@@ -2,7 +2,12 @@
 
 class MercadoPago_Core_Model_Cron_Order
 {
+    /**
+     * @var $_statusHelper MercadoPago_Core_Helper_StatusUpdate
+     */
     protected $_statusHelper;
+
+    const LOG_FILE = 'mercadopago-order-synchronized.log';
 
     public function updateOrderStatus(){
         $this->_statusHelper = Mage::helper('mercadopago/statusUpdate');
@@ -86,61 +91,7 @@ class MercadoPago_Core_Model_Cron_Order
         }
         $payment = $response['response']['collection'];
 
-        return $this->formatArrayPayment($data, $payment);
+        return $this->_statusHelper->formatArrayPayment($data, $payment, self::LOG_FILE);
     }
 
-    public function formatArrayPayment($data, $payment)
-    {
-
-        $fields = [
-            "status",
-            "status_detail",
-            "payment_id_detail",
-            "id",
-            "payment_method_id",
-            "transaction_amount",
-            "total_paid_amount",
-            "coupon_amount",
-            "installments",
-            "shipping_cost",
-            "amount_refunded"
-        ];
-
-        foreach ($fields as $field) {
-            if (isset($payment[$field])) {
-                if (isset($data[$field])) {
-                    $data[$field] .= " | " . $payment[$field];
-                } else {
-                    $data[$field] = $payment[$field];
-                }
-            }
-        }
-
-        if (isset($payment["last_four_digits"])) {
-            if (isset($data["trunc_card"])) {
-                $data["trunc_card"] .= " | " . "xxxx xxxx xxxx " . $payment["last_four_digits"];
-            } else {
-                $data["trunc_card"] = "xxxx xxxx xxxx " . $payment["last_four_digits"];
-            }
-        }
-
-        if (isset($payment['cardholder']['name'])) {
-            if (isset($data["cardholder_name"])) {
-                $data["cardholder_name"] .= " | " . $payment["cardholder"]["name"];
-            } else {
-                $data["cardholder_name"] = $payment["cardholder"]["name"];
-            }
-        }
-
-        if (isset($payment['statement_descriptor'])) {
-            $data['statement_descriptor'] = $payment['statement_descriptor'];
-        }
-
-        $data['external_reference'] = $payment['external_reference'];
-        $data['payer_first_name'] = $payment['payer']['first_name'];
-        $data['payer_last_name'] = $payment['payer']['last_name'];
-        $data['payer_email'] = $payment['payer']['email'];
-
-        return $data;
-    }
 }

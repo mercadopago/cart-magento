@@ -197,7 +197,7 @@ class MercadoPago_Core_NotificationsController
         }
         $payment = $response['response']['collection'];
 
-        return $this->formatArrayPayment($data, $payment);
+        return $this->_statusHelper->formatArrayPayment($data, $payment, self::LOG_FILE);
     }
 
     protected function _responseLog()
@@ -281,72 +281,6 @@ class MercadoPago_Core_NotificationsController
         }
 
         return isset($this->_requestData[$key]) ? $this->_requestData[$key] : null;
-    }
-
-
-    public function formatArrayPayment($data, $payment)
-    {
-        Mage::helper('mercadopago')->log("Format Array", self::LOG_FILE);
-
-        $fields = [
-            "status",
-            "status_detail",
-            "payment_id_detail",
-            "id",
-            "payment_method_id",
-            "transaction_amount",
-            "total_paid_amount",
-            "coupon_amount",
-            "installments",
-            "shipping_cost",
-            "amount_refunded",
-        ];
-
-        foreach ($fields as $field) {
-            if (isset($payment[$field])) {
-                if (isset($data[$field])) {
-                    $data[$field] .= " | " . $payment[$field];
-                } else {
-                    $data[$field] = $payment[$field];
-                }
-            }
-        }
-        $data = $this->_updateAtributesData($data, $payment);
-        
-        $data['external_reference'] = $payment['external_reference'];
-        $data['payer_first_name'] = $payment['payer']['first_name'];
-        $data['payer_last_name'] = $payment['payer']['last_name'];
-        $data['payer_email'] = $payment['payer']['email'];
-
-        return $data;
-    }
-
-    protected function _updateAtributesData($data, $payment){
-        if (isset($payment["last_four_digits"])) {
-            if (isset($data["trunc_card"])) {
-                $data["trunc_card"] .= " | " . "xxxx xxxx xxxx " . $payment["last_four_digits"];
-            } else {
-                $data["trunc_card"] = "xxxx xxxx xxxx " . $payment["last_four_digits"];
-            }
-        }
-
-        if (isset($payment['cardholder']['name'])) {
-            if (isset($data["cardholder_name"])) {
-                $data["cardholder_name"] .= " | " . $payment["cardholder"]["name"];
-            } else {
-                $data["cardholder_name"] = $payment["cardholder"]["name"];
-            }
-        }
-
-        if (isset($payment['statement_descriptor'])) {
-            $data['statement_descriptor'] = $payment['statement_descriptor'];
-        }
-
-        if (isset($payment['merchant_order_id'])) {
-            $data['merchant_order_id'] = $payment['merchant_order_id'];
-        }
-
-        return $data;
     }
 
     /**

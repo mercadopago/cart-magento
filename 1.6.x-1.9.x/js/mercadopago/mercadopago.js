@@ -765,7 +765,10 @@ var MercadoPagoCustom = (function () {
             TinyJ(self.selectors.secondCardTotalBuy).hide();
             TinyJ(self.selectors.firstCardTotalBuy).show();
             cardsHandler();
-
+            if (typeof event == 'undefined'){
+                var event = {};
+            }
+            guessingPaymentMethod(event.type = self.constants.keyup);
         }
 
         function changeAmountHandler() {

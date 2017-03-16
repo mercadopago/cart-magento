@@ -378,3 +378,7 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 "Use 2 Cards","Utilizar 2 Tarjetas"
 "Close","Cerrar"
 "Configure","Configurar"
+
+"Time between verifications","Tiempo entre verificaciones"
+"Amount of hours","Cantidad de horas"
+"Try to update all the orders created "amount of hours" before time to the moment to execute the cron","Verifica e intenta actualizar todas las ordenes creadas 'cantidad de horas' antes de la hora en la que se ejecuta el cron"

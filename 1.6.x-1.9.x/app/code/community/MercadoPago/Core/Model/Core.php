@@ -487,15 +487,7 @@ class MercadoPago_Core_Model_Core
             
             $infoPayments = $paymentOrder->getAdditionalInformation();
             if (!isset($infoPayments['first_payment_id'])) {
-                foreach ($additionalFields as $field) {
-                    if (isset($data[$field])) {
-                        $paymentOrder->setAdditionalInformation($field, $data[$field]);
-                    }
-                }
-
-                if (isset($data['payment_method_id'])) {
-                    $paymentOrder->setAdditionalInformation('payment_method', $data['payment_method_id']);
-                }
+                $paymentOrder = $this->_addAdditionalInformationToPaymentOrder($data, $additionalFields, $paymentOrder);
             }
 
             $paymentStatus = $paymentOrder->save();
@@ -509,6 +501,23 @@ class MercadoPago_Core_Model_Core
 
             $this->getResponse()->setHttpResponseCode(MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    protected function _addAdditionalInformationToPaymentOrder($data, $additionalFields, $paymentOrder){
+        foreach ($additionalFields as $field) {
+            if (isset($data[$field])) {
+                $paymentOrder->setAdditionalInformation($field, $data[$field]);
+            }
+        }
+
+        if (isset($data['payment_method_id'])) {
+            $paymentOrder->setAdditionalInformation('payment_method', $data['payment_method_id']);
+        }
+
+        if (isset($data['merchant_order_id'])) {
+            $paymentOrder->setAdditionalInformation('merchant_order_id', $data['merchant_order_id']);
+        }
+        return $paymentOrder;
     }
 
     protected function _saveTransaction($data, $paymentOrder)

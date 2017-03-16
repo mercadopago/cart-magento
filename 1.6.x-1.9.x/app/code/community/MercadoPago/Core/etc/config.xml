@@ -222,6 +222,7 @@
                 <logs>0</logs>
                 <debug_mode>0</debug_mode>
                 <calculalator_available>0</calculalator_available>
+                <time_between_verifications>*/5 * * * *</time_between_verifications>
             </mercadopago>
 
             <mercadopago_custom>
@@ -281,5 +282,19 @@
 
         </payment>
     </default>
+
+    <crontab>
+        <jobs>
+            <order_status_inspector>
+                <schedule>
+                    <!--<cron_expr>*/5 * * * *</cron_expr>-->
+                    <config_path>payment/mercadopago/time_between_verifications</config_path>
+                </schedule>
+                <run>
+                    <model>mercadopago/cron_order::updateOrderStatus</model>
+                </run>
+            </order_status_inspector>
+        </jobs>
+    </crontab>
 
 </config>

@@ -26,7 +26,7 @@ class MercadoPago_Core_Model_Core
     protected $_canOrder = true;
     protected $_canRefund = true;
     protected $_canVoid = true;
-    protected $_canUseInternal = true;
+    protected $_canUseInternal = false;
     protected $_canUseCheckout = true;
     protected $_canUseForMultishipping = true;
     protected $_canFetchTransactionInfo = true;

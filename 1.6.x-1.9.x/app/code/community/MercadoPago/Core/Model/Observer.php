@@ -144,6 +144,7 @@ class MercadoPago_Core_Model_Observer
                 'MLC' => 206959756,
                 'MLV' => 206960619,
                 'MPE' => 217178514,
+                'MPU' => 247028139,
             ];
             $countryCode = $user['response']['site_id'];
 

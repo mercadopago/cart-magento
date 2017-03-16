@@ -22,7 +22,7 @@ Offer a checkout fully customized to your brand experience with our simple-to-us
 * Accept Mercado Pago's discount coupons.
 * Improve conversion rate.
 
-*Available for Argentina, Brazil, Colombia, Mexico, Peru and Venezuela*
+*Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru, Uruguay and Venezuela*
 
 **Standard Checkout**
 
@@ -49,15 +49,15 @@ This feature allows to setup and integrate with MercadoEnvios shipment method as
 *Available for Argentina, Brazil and Mexico only with Standard Checkout*
 
 
-**Recurring Payments**
+**Recurring Payments [Only for v1.6.x to 1.9.x]**
 
 Plugin integrates with Magento recurring payments functionality
 
-**Installments calculator**
+**Installments calculator [Only for v1.6.x to 1.9.x]**
 
 This feature adds a intallment calculator inside Magento Product Page and Cart. It can be enabled/disabled from plugin configuration.
 
-**Two card payments**
+**Two card payments [Only for v1.6.x to 1.9.x]**
 
 This feature allows customer to split Custom Checkout payments between two cards. This functionality can also be enabled/disabled from plugin configuration.
 

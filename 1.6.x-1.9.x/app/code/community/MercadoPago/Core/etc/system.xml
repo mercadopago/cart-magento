@@ -67,6 +67,26 @@
                             <show_in_store>0</show_in_store>
                             <comment></comment>
                         </financing_cost>
+                        <time_between_verifications translate="label comment">
+                            <label>Time between verifications</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>83</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </time_between_verifications>
+                        <number_of_hours translate="label comment">
+                            <label>Number of hours</label>
+                            <comment>Try to update all the orders created 'Amount of hours' before time to the moment to execute the cron</comment>
+                            <!--<comment><![CDATA[<strong style="color:red">Warning!</strong> bla bla bla]]></comment>-->
+                            <frontend_type>text</frontend_type>
+                            <sort_order>85</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <frontend_class>required-entry validate-digits</frontend_class>
+                        </number_of_hours>
 
                         <heading_order_status translate="label">
                             <label>Order Status Options</label>

@@ -67,6 +67,13 @@
                             <show_in_store>0</show_in_store>
                             <comment></comment>
                         </financing_cost>
+                        <heading_order_status_cron translate="label">
+                            <label>Order Status Update - Cron Configuration</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>81</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </heading_order_status_cron>
                         <time_between_verifications translate="label comment">
                             <label>Time between verifications</label>
                             <frontend_type>text</frontend_type>
@@ -78,7 +85,7 @@
                         <number_of_hours translate="label comment">
                             <label>Number of hours</label>
                             <comment>Try to update all the orders created 'Amount of hours' before time to the moment to execute the cron</comment>
-                            <!--<comment><![CDATA[<strong style="color:red">Warning!</strong> bla bla bla]]></comment>-->
+                            <!--<comment><![CDATA[<strong style="color:red">Warning!</strong>]]></comment>-->
                             <frontend_type>text</frontend_type>
                             <sort_order>85</sort_order>
                             <show_in_default>1</show_in_default>
@@ -241,7 +248,7 @@
                             <comment>Enable to display actual error messages to frontend users (not recommended on production environment)</comment>
                         </debug_mode>
 
-                        <heading_calculator translate="label">
+                        <heading_calculator translate="label comment">
                             <label>Payments Calculator</label>
                             <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
                             <sort_order>235</sort_order>
@@ -256,7 +263,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>if set to YES, Calculator will appear on the selected pages</comment>
+                            <comment>if set to YES, Calculator will appear on the selected pages - Custom checkout credentials (Public Key and Access Token) must be set</comment>
                         </calculalator_available>
                         <show_in_pages translate="label">
                             <label>Show Calculator on selected pages</label>

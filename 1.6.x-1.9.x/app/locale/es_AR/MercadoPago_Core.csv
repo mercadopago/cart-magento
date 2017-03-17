@@ -336,11 +336,12 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 "This payment method is used only for recurring profiles.","Este método de pago es usado solo para perfiles recurrentes"
 "Payment information", "Información de pago"
 
-
 "Payments Calculator","Calculador de Cuotas"
 "Enable Mercado Pago Installments Calculator","Habilitar Calculadora de Cuotas de Mercado Pago"
-"if set to YES, Calculator will appear on the selected pages","Si está configuración se setea en YES, la calculadora aparecerá en las páginas seleccionadas"
+"if set to YES, Calculator will appear on the selected pages - Custom checkout credentials (Public Key and Access Token) must be set","Si está configuración se setea en YES, la calculadora aparecerá en las páginas seleccionadas - Se deben establecer las credenciales 'Public Key' y 'Access Token' dentro de la configuración 'Custom Checkout'"
 "Show Calculator on selected pages", "Mostrar calculadora en las siguientes páginas seleccionadas"
+"Cart page","Pagina del carrito"
+"Product Detail Page","PDP"
 
 "Calculate your payments ", "Calculá tus Cuotas"
 "with ", "con "
@@ -379,6 +380,7 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 "Close","Cerrar"
 "Configure","Configurar"
 
+"Order Status Update - Cron Configuration","Chequeo del estado de las Ordenes - Configuración del Cron"
 "Time between verifications","Tiempo entre verificaciones"
 "Amount of hours","Cantidad de horas"
 "Try to update all the orders created "amount of hours" before time to the moment to execute the cron","Verifica e intenta actualizar todas las ordenes creadas 'cantidad de horas' antes de la hora en la que se ejecuta el cron"

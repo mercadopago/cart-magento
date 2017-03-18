@@ -255,7 +255,7 @@ class MercadoPago_Core_Model_Core
         /* INIT PREFERENCE */
         $preference = [];
 
-        $preference['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK) . "mercadopago/notifications/custom";
+        $preference['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, Mage::app()->getStore()->isCurrentlySecure()) . "mercadopago/notifications/custom";
         $preference['description'] = Mage::helper('mercadopago')->__("Order # %s in store %s", $orderId, Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true));
         if (isset($paymentInfo['transaction_amount'])) {
             $preference['transaction_amount'] = (float)$paymentInfo['transaction_amount'];

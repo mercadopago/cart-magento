@@ -27,7 +27,7 @@ $customer = $this->getCustomerAndCards();
 </script>
 <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
 
-<fieldset>
+<fieldset class="conteiner-form-list">
     <div id="mercadopago_checkout_custom">
         <ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;">
 
@@ -192,11 +192,6 @@ $customer = $this->getCustomerAndCards();
             </li>
 
             <li>
-
-                <?php if ($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
-                    <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>" class="banner_checkout_mp"/>
-                <?php endif; ?>
-
                 <input type="hidden" class="total_amount" name="total_amount" value="<?php echo $grant_total; ?>"/>
                 <input type="hidden" class="amount" name="amount" value="<?php echo $grant_total; ?>"/>
                 <input type="hidden" class="mercadopago-discount-amount" name="mercadopago-discount-amount" value="0"/>
@@ -214,4 +209,7 @@ $customer = $this->getCustomerAndCards();
             </li>
         </ul>
     </div>
+    <?php if ($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+        <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>" class="banner_checkout_mp"/>
+    <?php endif; ?>
 </fieldset>

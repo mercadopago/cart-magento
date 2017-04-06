@@ -453,7 +453,7 @@
 }
 
 .banner_checkout_mp {
-    margin: 21px 0 -8px;
+    /*margin: 21px 0 -8px;*/
     max-width:100%;
     max-height:100%;
 }
@@ -504,4 +504,22 @@
 #mercadopago_calculator_link img {
     display: inline-block;
     vertical-align: middle;
+}
+
+.sp-methods dd .conteiner-form-list{
+    padding: 0;
+    border-bottom: 1px solid #f4f4f4;
+    padding-bottom: 10px;
+}
+
+.conteiner-form-list #mercadopago_checkout_custom_ticket .form-mercadopago{
+    margin: 20px;
+}
+
+.mercadopago-ticket-options .mercadopago-ticket-option{
+    padding: 10px 1px;
+}
+
+.mercadopago-ticket-label img{
+    margin-right: 10px;
 }

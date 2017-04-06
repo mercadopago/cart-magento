@@ -1,4 +1,4 @@
-# Magento - MercadoPago Module (v1.6.x - 1.9.x)
+﻿# Magento - MercadoPago Module (v1.6.x - 1.9.x)
 
 [![Build Status](https://travis-ci.org/mercadopago/cart-magento.svg?branch=master)](https://travis-ci.org/mercadopago/cart-magento)
 
@@ -23,19 +23,19 @@ Great for merchants who want to get going quickly and easily.
 * Limited control of buying experience —display Checkout window as redirect, modal or iframe-.
 * Store buyer’s card for fast checkout.
 * Accept tickets, bank transfer and account money in addition to cards.
-* Accept Mercado Pago's discount coupons.
+* Accept MercadoPago's discount coupons.
 
 *Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru, Uruguay and Venezuela*
 
 **Custom Checkout**
 
-Offer a checkout fully customized to your brand experience with our simple-to-use payments API.
+Offers a fully customized checkout to your brand experience with our simple-to-use payments API.
 
 * Seamless integration— no coding required, unless you want to.
 * Full control of buying experience.
 * Store buyer’s card for fast checkout.
 * Accept tickets in addition to cards.
-* Accept Mercado Pago's discount coupons.
+* Accept MercadoPago's discount coupons.
 * Improve conversion rate.
 * Accept Payment with two cards
 * Debug Mode
@@ -51,7 +51,7 @@ This feature allows easy integration with two of the most used One Step Checkout
 **Shipment integration**
 
 This feature allows to configure and integrate the method of sending MercadoEnvios as another shipping option for customers. 
-It includes the ability to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
+It includes the ability to print the shipping label directly from the Magento Admin Panel.
 
 *Available for Argentina, Brazil and Mexico only with Clasic Checkout*
 
@@ -61,35 +61,34 @@ This feature integrates the functionality of "recurring profiles" of Magento wit
 The products to buy with this payment modality can only be simple products and virtual products.
 With this payment method, the customer authorizes MercadoPago to make a frequent payment. 
 After that, the customer can cancel, pause or resume a recurring payment.
-This functionality can be enabled/disabled from plugin configuration.  
+This functionality can be enabled/disabled from plugin configuration.
 
 **Returns and Cancellations between MercadoPago and Magento**
 
 This feature synchronizes orders between MercadoPago and Magento. 
-Returns and cancellations made from Magento are reflected in MercadoPago and vice versa.
-On store administration the returns can be enabled/disabled. 
-Also, you can define the maximum amount of partial refunds on the same order 
-and the maximum amount of days until refund is not accepted.
+Returns and cancellations made from Magento are synchronised in MercadoPago and vice versa.
+Returns can be enabled/disabled within Magento admin panel.
+You can also define the maximum amount of partial refunds on the same order and the maximum amount of days until refund is not accepted by using Magento admin panel.
 
 **Configurable success page**
 
-This feature allows configure the success page to which Magento redirects once the customer made a payment with MercadoPago.
-On store administration, you can select between success page from MercadoPago or standard page from Magento (checkout/success).
+This feature allows to configure the success page to which Magento redirects the customer once a payment was made with MercadoPago.
+Within Magento admin panel, you can select between success page from MercadoPago or standard page from Magento (checkout/success).
 
 **Installments calculator**
 
-This feature adds an instalment calculator into the Magento pages. 
-It can be enabled/disabled from the add-on configuration.
-The calculator can be visualized in product page, in the cart page, or in both pages.
+This feature allows to add an installment calculator within Magento pages.
+It can be enabled/disabled from the Magento admin panel.
+The calculator can be visualized within product, cart, or both pages.
 The customer can use the intallment calculator to see the financing options available and the final amount to be paid.
 
 *Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru, Uruguay and Venezuela*
 
-**Two card payments in custom checkout**
+**Split payments in custom checkout**
 
-This feature allows customer to split Custom Checkout payments between two cards.
+This feature allows customer to split Custom Checkout payments by using two different cards.
 This payment modality behaves in the same way as the equivalent payment mode in the classic checkout.
-This functionality can also be enabled/disabled from plugin configuration.
+This functionality can also be enabled/disabled from Magento plugin configuration.
 
 **Debug Mode in custom checkout**
 
@@ -114,22 +113,23 @@ On store administration you can define the execution period and limit the number
 
 2. In your admin go to **System > Cache Management** and clear all caches.
 
-	![Installation Instructions](/README.img/clear_cache.jpg)<br />
+	![Installation Instructions](/README.img/clear_cache.jpg)
 
 3. Logout from the admin panel and then login again in order to clear admin acl
 
 <a name="configuration"></a>
 ## Configuration
 
-1. Go to **System > Configuration > Sales > Payment Methods**. Select **Mercado Pago - Global Configuration**.
-![Mercado Pago Global Configuration](/README.img/mercadopago_global_configuration.jpg?raw=true)<br /> 
+1. Go to **System > Configuration > Sales > Payment Methods**. Select **MercadoPago - Global Configuration**.
+![MercadoPago Global Configuration](/README.img/mercadopago_global_configuration.jpg?raw=true)
+
 2. Set your Country to the same where your account was created on, and save config.
 	**Note: If you change the Country where your account was created you need save configuration in order to refresh the excluded payment methods.**
 	
 3. Other general configurations:<br />
 	* **Category of your store**: Sets up the category of the store.
 	* **Onestepcheckout Active** *(Only available if MercadoPago_OneStepCheckout Module is installed)*: Enables/disables compatibility with one step checkout modules.
-    * **Use Mercado Pago success page**: Use success page from MercadoPago or standard page from Magento.
+    * **Use MercadoPago success page**: Use success page from MercadoPago or standard page from Magento.
     * **Calculate Financing Cost**: If enabled, calculate the cost of financing and add the detail as a subtotal.
   - **Order Status Update - Cron Configuration**
 	* **Time between verifications**: Set the time between verifications to run the Cron.
@@ -157,8 +157,9 @@ On store administration you can define the execution period and limit the number
 <a name="checkout_custom"></a>
 ### Custom Checkout Payment Solution: ###
 
-1. Go to **System > Configuration > Sales > Payment Methods**. Select **Mercado Pago - Custom Checkout**.
-![Mercado Pago Custom Checkout Configuration](/README.img/mercadopago_custom_checkout_configuration.png?raw=true)<br /> 
+1. Go to **System > Configuration > Sales > Payment Methods**. Select **MercadoPago - Custom Checkout**.
+![MercadoPago Custom Checkout Configuration](/README.img/mercadopago_custom_checkout_configuration.png?raw=true)
+
 2. Set your **Public Key** and **Access Token**.
  	In order to get them check the following links according to the country you are opperating in:
 	
@@ -171,7 +172,8 @@ On store administration you can define the execution period and limit the number
     * Peru: [https://www.mercadopago.com/mpe/account/credentials](https://www.mercadopago.com/mpe/account/credentials)
 	
 If you want to enable credit card solution, check the configurations under **Checkout Custom - Credit Card**:
-![Mercado Pago Custom Checkout Credit Card](/README.img/mercadopago_custom_checkout_cc.jpg?raw=true)<br /> 
+![MercadoPago Custom Checkout Credit Card](/README.img/mercadopago_custom_checkout_cc.jpg?raw=true)
+
 * **Enabled**: Enables/disables this payment solution.
 * **Allow Payment with 2 Cards**: Enables/disables two card payments in custom checkout.
 * **Payment Title**: Sets the payment title.
@@ -179,26 +181,28 @@ If you want to enable credit card solution, check the configurations under **Che
 * **Binary Mode**: When set to true, the payment can only be approved or rejected. Otherwise in_process status is added.
 * **Banner Checkout**: Sets the URL for the banner image in the payment method selection in the checkout process.
 * **Checkout Position**: The position of the payment solution in the checkout process.
-* **Marketing - Coupon Mercado Pago**: Enables/disables the coupon form.
+* **Marketing - Coupon MercadoPago**: Enables/disables the coupon form.
 * **Custom Message**: Message to display in checkout.
 
 If you want to enable ticket solution, check the configurations under **Checkout Custom - Ticket**:
 
-![Mercado Pago Custom Checkout Ticket](/README.img/mercadopago_custom_checkout_ticket.jpg?raw=true)<br /> 
+![MercadoPago Custom Checkout Ticket](/README.img/mercadopago_custom_checkout_ticket.jpg?raw=true)
+
 * **Enabled**: Enables/disables this payment solution.
 * **Payment Title**: Sets the payment title.
 * **Banner Checkout**: Sets the URL for the banner image in the payment method selection in the checkout process.
 * **Checkout Position**: The position of the payment solution in the checkout process.
-* **Marketing - Coupon Mercado Pago**: Enables/disables the coupon form.
+* **Marketing - Coupon MercadoPago**: Enables/disables the coupon form.
 * **Custom Message**: Message to display in checkout.
 
 
 <a name="checkout_standard"></a>
 ### Classic Checkout Payment Solution: ###
 
-1. Go to **System > Configuration > Sales > Payment Methods**. Select **Mercado Pago - Classic Checkout**.
+1. Go to **System > Configuration > Sales > Payment Methods**. Select **MercadoPago - Classic Checkout**.
 
-2. Enable the solution and set your **Client Id** and **Client Secret**. <br />
+2. Enable the solution and set your **Client Id** and **Client Secret**. 
+
 Get them in the following address:
 	* Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
     * Brazil: [https://www.mercadopago.com/mlb/account/credentials](https://www.mercadopago.com/mlb/account/credentials)
@@ -228,12 +232,13 @@ Get them in the following address:
 <a name="recurring_payments"></a>
 ### Recurring Payments: ###
 
-1. Go to **System > Configuration > Sales > Payment Methods**. Select **Mercado Pago - Recurring Payments**.
+1. Go to **System > Configuration > Sales > Payment Methods**. Select **MercadoPago - Recurring Payments**.
 
 If you want to enable credit card solution, check the configurations under **Recurring Payments**:
-![Mercado Pago Recurring Payments](/README.img/mercadopago_recurring_payments.jpg?raw=true)<br /> 
+![MercadoPago Recurring Payments](/README.img/mercadopago_recurring_payments.jpg?raw=true)
 
-2. Enable the  payment method and set your **Client Id** and **Client Secret**. <br />
+2. Enable the  payment method and set your **Client Id** and **Client Secret**.
+
 Get them in the following address:
 	* Argentina: [https://www.mercadopago.com/mla/account/credentials](https://www.mercadopago.com/mla/account/credentials)
     * Brazil: [https://www.mercadopago.com/mlb/account/credentials](https://www.mercadopago.com/mlb/account/credentials)
@@ -302,9 +307,11 @@ find . -name "mercadopago.csv" -type f -delete
 ## MercadoEnvios ##
 
 In order to setup MercadoEnvios follow these instructions:<br />
-1. Setup MercadoPago Standard Checkout following [these instructions](#checkout_standard). <br />
-2. Go to **System > Configuration > Sales > Shipping Methods > MercadoEnvios - Configuration**.<br />
-3. Setup the plugin:<br />
+1. Setup MercadoPago Standard Checkout following [these instructions](#checkout_standard). 
+
+2. Go to **System > Configuration > Sales > Shipping Methods > MercadoEnvios - Configuration**.
+
+3. Setup the plugin:
 
 ![MercadoEnvios Configuration](/README.img/mercadoenvios.jpg?raw=true)
 

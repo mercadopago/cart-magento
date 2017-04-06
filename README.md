@@ -1,4 +1,4 @@
-# Magento - MercadoPago Module (v1.4.x to 1.9.x)
+﻿﻿# Magento - MercadoPago Module (v1.4.x to 1.9.x)
 
 * [Features](#features)
 * [Requirements](#requirements)
@@ -25,7 +25,7 @@ Great for merchants who want to get going quickly and easily.
 * Limited control of buying experience —display Checkout window as redirect, modal or iframe-.
 * Store buyer’s card for fast checkout.
 * Accept tickets, bank transfer and account money in addition to cards.
-* Accept Mercado Pago's discount coupons.
+* Accept MercadoPago's discount coupons.
 
 *Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru, Uruguay and Venezuela*
 
@@ -37,7 +37,7 @@ Offer a checkout fully customized to your brand experience with our simple-to-us
 * Full control of buying experience.
 * Store buyer’s card for fast checkout.
 * Accept tickets in addition to cards.
-* Accept Mercado Pago's discount coupons.
+* Accept MercadoPago's discount coupons.
 * Improve conversion rate.
 * Accept Payment with two cards <sup>*</sup>
 * Debug Mode
@@ -53,7 +53,7 @@ This feature allows easy integration with two of the most used One Step Checkout
 **Shipment integration**
 
 This feature allows to configure and integrate the method of sending MercadoEnvios as another shipping option for customers. 
-It includes the ability to print the shipping label directly from the Magento Admin Panel. Free shipping is also available.
+It includes the ability to print the shipping label directly from the Magento Admin Panel.
 
 *Available for Argentina, Brazil and Mexico only with Clasic Checkout*
 
@@ -63,35 +63,34 @@ This feature integrates the functionality of "recurring profiles" of Magento wit
 The products to buy with this payment modality can only be simple products and virtual products.
 With this payment method, the customer authorizes MercadoPago to make a frequent payment. 
 After that, the customer can cancel, pause or resume a recurring payment.
-This functionality can be enabled/disabled from plugin configuration.  
+This functionality can be enabled/disabled from plugin configuration.
 
 **Returns and Cancellations between MercadoPago and Magento**
 
 This feature synchronizes orders between MercadoPago and Magento. 
-Returns and cancellations made from Magento are reflected in MercadoPago and vice versa.
-On store administration the returns can be enabled/disabled. 
-Also, you can define the maximum amount of partial refunds on the same order 
-and the maximum amount of days until refund is not accepted.
+Returns and cancellations made from Magento are synchronised in MercadoPago and vice versa.
+Returns can be enabled/disabled within Magento admin panel.
+You can also define the maximum amount of partial refunds on the same order and the maximum amount of days until refund is not accepted by using Magento admin panel.
 
 **Configurable success page**
 
-This feature allows configure the success page to which Magento redirects once the customer made a payment with MercadoPago.
-On store administration, you can select between success page from MercadoPago or standard page from Magento (checkout/success).
+This feature allows to configure the success page to which Magento redirects the customer once a payment was made with MercadoPago.
+Within Magento admin panel, you can select between success page from MercadoPago or standard page from Magento (checkout/success).
 
 **Installments calculator**<sup>*</sup>
 
-This feature adds an instalment calculator into the Magento pages. 
-It can be enabled/disabled from the add-on configuration.
-The calculator can be visualized in product page, in the cart page, or in both pages.
+This feature allows to add an installment calculator within Magento pages.
+It can be enabled/disabled from the Magento admin panel.
+The calculator can be visualized within product, cart, or both pages.
 The customer can use the intallment calculator to see the financing options available and the final amount to be paid.
 
 *Available for Argentina, Brazil, Chile, Colombia, Mexico, Peru, Uruguay and Venezuela*
 
-**Two card payments in custom checkout**<sup>*</sup>
+**Split payments in custom checkout**<sup>*</sup>
 
-This feature allows customer to split Custom Checkout payments between two cards.
+This feature allows customer to split Custom Checkout payments by using two different cards.
 This payment modality behaves in the same way as the equivalent payment mode in the classic checkout.
-This functionality can also be enabled/disabled from plugin configuration.
+This functionality can also be enabled/disabled from Magento plugin configuration.
 
 **Debug Mode in custom checkout**<sup>*</sup>
 
@@ -106,7 +105,7 @@ The updating of the order states is done automatically,
 this functionality aims to automate the cases in which this does not happen.
 On store administration you can define the execution period and limit the number of orders to be evaluate using a time window.
 
-<!--Esta función permite verificar y actualizar los estados de las ordenes de Magento, dependiendo de su estado en Mercado Pago.-->
+<!--Esta función permite verificar y actualizar los estados de las ordenes de Magento, dependiendo de su estado en MercadoPago.-->
 <!--En el admin, puede definir el periodo de ejecucion y limitar las ordenens a evaluar mediante una ventana de tiempo.  -->
 
 

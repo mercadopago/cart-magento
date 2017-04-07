@@ -297,12 +297,11 @@
                                 <span>Click to get your Access Token for: </span>
                                 <a href="https://www.mercadopago.com/mla/account/credentials" target="_blank">Argentina</a>
                                 <a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank">Brazil</a><br>
+                                <a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank">Chile</a>
                                 <a href="https://www.mercadopago.com/mco/account/credentials" target="_blank">Colombia</a>
                                 <a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank">Mexico</a>
-                                <a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank">Venezuela</a>
-                                <a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank">Chile</a>
                                 <a href="https://www.mercadopago.com/mpe/account/credentials" target="_blank">Peru</a>
-                                <a href="https://www.mercadopago.com/mlu/account/credentials" target="_blank">Uruguay</a>
+                                <a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank">Venezuela</a>
                                 ]]>
                             </comment>
                         </access_token>
@@ -620,14 +619,14 @@
                     </fields>
                 </mercadopago_standard_checkout>
                 <mercadopago_recurring_checkout translate="label" module="mercadopago">
-                    <label>Mercado Pago - Recurring Payments Checkout</label>
+                    <label>Mercado Pago - Recurring Payments</label>
                     <sort_order>200</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>0</show_in_store>
                     <fields>
                         <mercadopago_recurring type="group" translate="label comment">
-                        <label>Checkout Recurring Payments</label>
+                        <label>Recurring Payments</label>
                         <frontend_type>text</frontend_type>
                         <frontend_model>mercadopago/adminhtml_system_config_fieldset_payment</frontend_model>
                         <show_in_default>1</show_in_default>

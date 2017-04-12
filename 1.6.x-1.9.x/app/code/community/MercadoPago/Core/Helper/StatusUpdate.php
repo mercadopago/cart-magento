@@ -426,5 +426,27 @@ class MercadoPago_Core_Helper_StatusUpdate
         return $data;
     }
 
+    public function getDataPayments($merchantOrderData, $logFile)
+    {
+        $data = array();
+        foreach ($merchantOrderData['payments'] as $payment) {
+            $data = $this->_getFormattedPaymentData($payment['id'], $data, $logFile);
+        }
+
+        return $data;
+    }
+
+    protected function _getFormattedPaymentData($paymentId, $data = [], $logFile)
+    {
+        $core = Mage::getModel('mercadopago/core');
+
+        $response = $core->getPayment($paymentId);
+        if ($response['status'] == 400 || $response['status'] == 401) {
+            return [];
+        }
+        $payment = $response['response']['collection'];
+
+        return $this->formatArrayPayment($data, $payment, $logFile);
+    }
 
 }

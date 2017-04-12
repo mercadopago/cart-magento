@@ -12,6 +12,17 @@ class MercadoPago_Core_SuccessController
      */
     protected $_order;
 
+    protected $_statusHelper;
+
+    protected $_core;
+
+    const LOG_FILE = 'mercadopago-checkout-redirect.log';
+
+    const SUCCESS_PAGE_MAGENTO = 'checkout/onepage/success';
+
+    const FAILURE_PAGE_MAGENTO = 'checkout/onepage/failure';
+
+
     /**
      * @return Mage_Sales_Model_Order
      */
@@ -58,13 +69,66 @@ class MercadoPago_Core_SuccessController
         return $handle;
     }
 
+    protected function _getTotal($order){
+        $total = $order->getBaseGrandTotal();
+        if (!$total) {
+            $total = $order->getBasePrice() + $order->getBaseShippingAmount();
+        }
+        $total = number_format($total, 2, '.', '');
+        return $total;
+    }
+
     public function indexAction()
     {
+        $this->_statusHelper = Mage::helper('mercadopago/statusUpdate');
+        $this->_core = Mage::getModel('mercadopago/core');
+
         $this->sendNewOrderMail();
-        if (!Mage::getStoreConfig('payment/mercadopago/use_successpage_mp')) {
+        if (!Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_USE_SUCCESSPAGE_MP)) {
             Mage::getSingleton('checkout/type_onepage')->getCheckout()->setLastSuccessQuoteId($this->_getQuoteId());
-            $this->_redirect('checkout/onepage/success',$this->_request->getParams());
-            return;
+
+            $order = $this->getOrder();
+
+            $info_payment = $this->_core->getInfoPaymentByOrder($order->getIncrementId());
+
+            $status = null;
+
+            //checkout Custom Ticket
+            if ($info_payment['activation_uri']['text'] == 'Generate Ticket'){
+                if (!empty($info_payment['payment_id_detail']['value'])){
+                    $this->_redirect(self::SUCCESS_PAGE_MAGENTO, $this->_request->getParams());
+                    return;
+                }
+                else{
+                    $this->_redirect(self::FAILURE_PAGE_MAGENTO, $this->_request->getParams());
+                    return;
+                }
+            }
+
+            //checkout Custom Credit Card
+            if (empty($info_payment['status']['value'])){
+                $merchantOrderId = Mage::app()->getRequest()->getParam('merchant_order_id');
+                $response = $this->_core->getMerchantOrder($merchantOrderId);
+
+                if ($response['status'] == 201 || $response['status'] == 200) {
+                    $merchantOrderData = $response['response'];
+                    $paymentData = $this->_statusHelper->getDataPayments($merchantOrderData, self::LOG_FILE);
+                    $status = $paymentData['status'];
+                }
+            } else{
+                $status = $info_payment['status']['value'];
+                //$detail = $info_payment['status_detail']['value'];
+            }
+
+            //checkout Classic
+            if ($status == 'approved' || $status == 'pending'){
+                $this->_redirect(self::SUCCESS_PAGE_MAGENTO, $this->_request->getParams());
+                return;
+            } else {
+                $this->_redirect(self::FAILURE_PAGE_MAGENTO, $this->_request->getParams());
+                return;
+            }
+
         }
         $checkoutTypeHandle = $this->getCheckoutHandle();
         $this->loadLayout(['default', $checkoutTypeHandle]);
@@ -74,4 +138,5 @@ class MercadoPago_Core_SuccessController
 
         $this->renderLayout();
     }
+
 }

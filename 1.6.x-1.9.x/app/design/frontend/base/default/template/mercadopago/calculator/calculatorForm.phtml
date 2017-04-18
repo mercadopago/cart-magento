@@ -29,7 +29,7 @@ $pk = $this->getPublicKey();
                                 <li id="<?php echo $i['id']; ?>-li">
                                     <label for="<?php echo $i['id']; ?>">
                                         <input id="<?php echo $i['id']; ?>" type="radio" name="paymentMethods" value="<?php echo $i['id']; ?>" />
-                                        <img src="<?php echo $i['thumbnail']; ?>" alt="<?php echo $i['id']; ?>"/>
+                                        <img src="<?php echo substr($i['thumbnail'], 5); ?>" alt="<?php echo $i['id']; ?>"/>
                                     </label>
                                 </li>
                             <?php endif; ?>

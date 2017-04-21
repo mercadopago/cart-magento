@@ -49,6 +49,16 @@ class MercadoPago_Core_Block_Calculator_CalculatorForm
     }
 
     /**
+    * Check if current requested URL is secure
+    *
+    * @return boolean
+    */
+    public function isCurrentlySecure()
+    {
+        return Mage::app()->getStore()->isCurrentlySecure();
+    }
+
+    /**
      * return the current value of amount
      *
      * @return mixed|bool

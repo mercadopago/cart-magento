@@ -48,7 +48,7 @@ class MercadoPago_Core_Model_Cron_Order
                 if ($response['status'] == 201 || $response['status'] == 200) {
                     $merchantOrderData = $response['response'];
 
-                    $paymentData = $this->getDataPayments($merchantOrderData);
+                    $paymentData = $this->_statusHelper->getDataPayments($merchantOrderData, self::LOG_FILE);
                     $statusFinal = $this->_statusHelper->getStatusFinal($paymentData['status'], $merchantOrderData);
                     $statusDetail = $infoPayments['status_detail'];
 

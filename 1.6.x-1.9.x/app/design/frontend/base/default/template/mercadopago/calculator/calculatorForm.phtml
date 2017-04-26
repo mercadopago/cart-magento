@@ -5,6 +5,7 @@ const PAYMENT_TYPE_CREDIT_CARD = 'credit_card';
 
 $list = $this->getPaymentMethods();
 $pk = $this->getPublicKey();
+$isSecure = $this->isCurrentlySecure();
 
 ?>
 <div id="mercadopago-popup" class="mercadopago-popup" style="display: none;">
@@ -29,7 +30,11 @@ $pk = $this->getPublicKey();
                                 <li id="<?php echo $i['id']; ?>-li">
                                     <label for="<?php echo $i['id']; ?>">
                                         <input id="<?php echo $i['id']; ?>" type="radio" name="paymentMethods" value="<?php echo $i['id']; ?>" />
-                                        <img src="<?php echo $i['thumbnail']; ?>" alt="<?php echo $i['id']; ?>"/>
+                                        <?php if ($isSecure): ?>
+                                            <img src="<?php echo $i['secure_thumbnail']; ?>" alt="<?php echo $i['id']; ?>"/>
+                                        <?php else : ?>
+                                            <img src="<?php echo $i['thumbnail']; ?>" alt="<?php echo $i['id']; ?>"/>
+                                        <?php endif; ?>
                                     </label>
                                 </li>
                             <?php endif; ?>

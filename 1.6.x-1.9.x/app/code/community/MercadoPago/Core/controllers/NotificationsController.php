@@ -147,7 +147,10 @@ class MercadoPago_Core_NotificationsController
                 }
                 $this->_helper->log('Update Order', self::LOG_FILE);
                 $this->_statusHelper->setStatusUpdated($payment, $this->_order);
-                $this->getCore()->updateOrder($this->_order, $payment);
+
+                $data = $this->_statusHelper->formatArrayPayment($data = [], $payment, self::LOG_FILE);
+
+                $this->getCore()->updateOrder($this->_order, $data);
                 $setStatusResponse = $this->_statusHelper->setStatusOrder($payment);
                 $this->_setResponse($setStatusResponse['body'], $setStatusResponse['code']);
                 $this->_helper->log('Http code', self::LOG_FILE, $this->getResponse()->getHttpResponseCode());
@@ -285,6 +288,8 @@ class MercadoPago_Core_NotificationsController
 
     /**
      * @var $profile Mage_Sales_Model_Recurring_Profile
+     *
+     * @return Mage_Core_Controller_Varien_Action
      */
     public function recurringAction()
     {
@@ -354,7 +359,10 @@ class MercadoPago_Core_NotificationsController
                 if ($order->getId()) {
                     $paymentData = Mage::helper('mercadopago')->setPayerInfo($paymentData);
                     $statusHelper->setStatusUpdated($paymentData, $order);
-                    $this->getCore()->updateOrder($order, $paymentData);
+
+                    $data = $this->_statusHelper->formatArrayPayment($data = [], $paymentData, self::LOG_FILE);
+
+                    $this->getCore()->updateOrder($order, $data);
                     Mage::helper('mercadopago/statusUpdate')->setStatusOrder($paymentData);
                     $profile->addOrderRelation($order->getId());
                 }

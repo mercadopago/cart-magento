@@ -395,6 +395,18 @@ class MercadoPago_Core_Helper_StatusUpdate
         $data['payer_last_name'] = $payment['payer']['last_name'];
         $data['payer_email'] = $payment['payer']['email'];
 
+        if (isset($data['payer_identification_type'])) {
+            $data['payer_identification_type'] .= " | " . $payment['payer']['identification']['type'];
+        } else {
+            $data['payer_identification_type'] = $payment['payer']['identification']['type'];
+        }
+
+        if (isset($data['payer_identification_number'])) {
+            $data['payer_identification_number'] .= " | " . $payment['payer']['identification']['number'];
+        } else {
+            $data['payer_identification_number'] = $payment['payer']['identification']['number'];
+        }
+
         return $data;
     }
 

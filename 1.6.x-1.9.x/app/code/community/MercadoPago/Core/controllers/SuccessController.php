@@ -130,6 +130,8 @@ class MercadoPago_Core_SuccessController
             }
 
         }
+        //set data for mp analytics
+        Mage::register('mp_analytics_data', Mage::helper('mercadopago')->getAnalyticsData($this->getOrder()));
         $checkoutTypeHandle = $this->getCheckoutHandle();
         $this->loadLayout(['default', $checkoutTypeHandle]);
 

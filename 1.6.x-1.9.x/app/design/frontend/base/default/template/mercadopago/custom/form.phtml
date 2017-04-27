@@ -13,6 +13,7 @@ $customer = $this->getCustomerAndCards();
 <script type="text/javascript">
         MercadoPagoCustom.enableLog(<?php echo $logEnabled?>);
         MercadoPagoCustom.getInstance().init();
+        sendAnalyticsData("<?php echo $_code ?>");
 </script>
 
 <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>

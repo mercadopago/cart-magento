@@ -7,7 +7,9 @@ $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
 $route = $this->getRequest()->getRequestedRouteName();
 
 ?>
-
+<script type="text/javascript">
+    sendAnalyticsData("<?php echo $_code ?>");
+</script>
 <fieldset class="form-list">
     <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
 

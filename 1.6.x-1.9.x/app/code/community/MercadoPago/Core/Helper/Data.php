@@ -261,4 +261,58 @@ class MercadoPago_Core_Helper_Data
         return $response['response'];
     }
 
+    /**
+     * Summary: Get client id from access token.
+     * Description: Get client id from access token.
+     *
+     * @param String $at
+     *
+     * @return String client id.
+     */
+    public static function getClientIdFromAccessToken($at)
+    {
+        $t = explode('-', $at);
+        if (count($t) > 0) {
+            return $t[1];
+        }
+
+        return '';
+    }
+
+    public function getAnalyticsData($order = null)
+    {
+        $analyticsData = [];
+        if ($order != null && $order->getPayment()->getData('method')) {
+            $additionalInfo = $order->getPayment()->getData('additional_information');
+            $methodCode = $order->getPayment()->getData('method');
+            $analyticsData = [
+                'payment_id'    => isset($additionalInfo['payment_id_detail']) ? $order->getPayment()->getData('additional_information')['payment_id_detail'] : '',
+                'payment_type'  => 'credit_card',
+                'checkout_type' => 'custom'
+            ];
+            if ($methodCode == 'mercadopago_custom') {
+                $analyticsData['public_key'] = Mage::getStoreConfig('payment/mercadopago_custom/public_key');
+            } elseif ($methodCode == 'mercadopago_standard') {
+                $analyticsData['analytics_key'] = Mage::getStoreConfig(self::XML_PATH_CLIENT_ID);
+                $analyticsData['checkout_type'] = 'basic';
+                $analyticsData['payment_type'] = isset($additionalInfo['payment_type_id']) ? $order->getPayment()->getData('additional_information')['payment_type_id'] : 'credit_card';
+            } else {
+                $analyticsData['analytics_key'] = $this->getClientIdFromAccessToken(Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN));
+                $analyticsData['payment_type'] = 'ticket';
+            }
+        } else {
+            $analyticsData['platform_version'] = (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version;
+            $analyticsData['module_version'] = (string)Mage::getVersion();
+            $analyticsData['email'] = Mage::getModel('mercadopago/core')->getEmailCustomer();
+            $analyticsData['user_logged'] = Mage::getSingleton('customer/session')->getCustomer()->getId() !== 0 ? 1 : 0;
+            $analyticsData['payment_methods'] = implode(',', array_keys(Mage::getSingleton('payment/config')->getActiveMethods()));
+
+            $analyticsData['custom_analytics_key'] = Mage::getStoreConfig(self::XML_PATH_PUBLIC_KEY);
+            $analyticsData['ticket_analytics_key'] = $this->getClientIdFromAccessToken(Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN));
+            $analyticsData['standard_analytics_key'] = Mage::getStoreConfig(self::XML_PATH_CLIENT_ID);
+        }
+
+        return $analyticsData;
+    }
+
 }

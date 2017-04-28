@@ -82,13 +82,14 @@ class MercadoPago_Core_Helper_Data
     public function isValidAccessToken($accessToken)
     {
         $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
-        try{
+        try {
             $response = $mp->get("/v1/payment_methods");
             if ($response['status'] == 401 || $response['status'] == 400) {
                 return false;
             }
+
             return true;
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -313,6 +314,56 @@ class MercadoPago_Core_Helper_Data
         }
 
         return $analyticsData;
+    }
+
+    public function getPlatformInfo()
+    {
+        return [
+            "platform"         => "Magento",
+            "platform_version" => (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version,
+            "module_version"   => (string)Mage::getVersion(),
+            "code_version"     => phpversion()
+        ];
+    }
+
+    public function checkAnalyticsData()
+    {
+        $clientId = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
+        $clientSecret = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
+        if (!empty($clientId) && !empty($clientSecret)) {
+            $this->sendAnalyticsData(Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret));
+        } else {
+            $accessToken = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
+            if (!empty($accessToken)) {
+                $this->sendAnalyticsData(Mage::helper('mercadopago')->getApiInstance($accessToken));
+            }
+
+        }
+
+    }
+
+    protected function sendAnalyticsData($api)
+    {
+        $request = [
+            "data" => $this->getPlatformInfo()
+        ];
+        $fields = [
+            'two_cards'                          => $this->_website->getConfig('payment/mercadopago_custom/allow_2_cards'),
+            'checkout_basic'                     => $this->_website->getConfig('payment/mercadopago_standard/active'),
+            'checkout_custom_credit_card'        => $this->_website->getConfig('payment/mercadopago_custom/active'),
+            'checkout_custom_ticket'             => $this->_website->getConfig('payment/mercadopago_customticket/active'),
+            'mercado_envios'                     => $this->_website->getConfig('carriers/mercadoenvios/active'),
+            'checkout_custom_credit_card_coupon' => $this->_website->getConfig('payment/mercadopago_custom/coupon_mercadopago'),
+            'checkout_custom_ticket_coupon'      => $this->_website->getConfig('payment/mercadopago_customticket/coupon_mercadopago')
+        ];
+        foreach ($fields as $key => $field) {
+            $request['data'][$key] = $field == 1 ? 'true' : 'false';
+        }
+
+        $this->log("Analytics settings request sent /modules/tracking/settings", 'mercadopago_analytics.log', $request);
+        $account_settings = $api->post("/modules/tracking/settings", $request['data']);
+        $this->log("Analytics settings response", 'mercadopago_analytics.log', $account_settings);
+
     }
 
 }

@@ -1390,7 +1390,8 @@ var MercadoPagoCustom = (function () {
 
                 var option = new Option(messageChoose + "... ", '');
                 payerCosts = response[0].payer_costs;
-                var hasCftInfo = payerCosts[0]['labels'].length > 0;
+                var hasCftInfo = payerCosts[0]['labels'].length > 0 && payerCosts[0]['labels'][0].indexOf('CFT') > -1;
+
                 if (!hasCftInfo) {
                     TinyJ('.tea-info-first-card').hide();
                     TinyJ('.cft-info-first-card').hide();

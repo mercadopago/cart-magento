@@ -72,6 +72,8 @@ class MercadoPago_Core_Model_Observer
 
         $this->availableCheckout();
 
+        Mage::helper('mercadopago')->checkAnalyticsData();
+
         $this->checkBanner('mercadopago_custom');
         $this->checkBanner('mercadopago_customticket');
         $this->checkBanner('mercadopago_standard');
@@ -522,5 +524,7 @@ class MercadoPago_Core_Model_Observer
     {
         return ($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom');
     }
+
+
   
 }

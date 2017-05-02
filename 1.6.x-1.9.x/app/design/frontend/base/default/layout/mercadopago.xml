@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <layout version="0.1.0">
-
-    <mercadopago_success_index>
+    <mercadopago_checkout_page>
 
         <reference name="head">
             <action method="addCss">
@@ -15,7 +14,7 @@
             </action>
         </reference>
 
-    </mercadopago_success_index>
+    </mercadopago_checkout_page>
 
     <mercadopago_custom_success>
         <reference name="content">

@@ -336,7 +336,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function getOrderPlaceRedirectUrl()
     {
-        return Mage::getUrl('mercadopago/success', ['_secure' => true]);
+        return Mage::getUrl('mercadopago/checkout/page', ['_secure' => true]);
     }
 
     public function getCode()

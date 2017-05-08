@@ -358,6 +358,10 @@ class FeatureContext
             $this->iWaitForSeconds(5);
         }
 
+        $changeLoggedUser = $session->getPage()->find('css', '#change-logged-user');
+        $changeLoggedUser->press();
+        $this->iWaitForSeconds(5);
+        
         $login = $session->getPage()->find('css', '#user_id');
         $pwd = $session->getPage()->find('css', '#password');
         $submit = $session->getPage()->find('css', '#init');

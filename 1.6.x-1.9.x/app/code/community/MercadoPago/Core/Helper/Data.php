@@ -138,7 +138,7 @@ class MercadoPago_Core_Helper_Data
         $couponAmount = $this->_getMultiCardValue($data, 'coupon_amount');
         $transactionAmount = $this->_getMultiCardValue($data, 'transaction_amount');
 
-        if ($couponAmount) {
+        if ($couponAmount && Mage::getStoreConfigFlag('payment/mercadopago/consider_discount')) {
             $order->setDiscountCouponAmount($couponAmount * -1);
             $order->setBaseDiscountCouponAmount($couponAmount * -1);
             $balance = $balance - ($transactionAmount - $couponAmount + $shippingCost);

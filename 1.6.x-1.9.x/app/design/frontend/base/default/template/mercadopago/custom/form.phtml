@@ -18,7 +18,7 @@ $customer = $this->getCustomerAndCards();
 
 <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
 
-<fieldset>
+<fieldset class="container-form-list">
     <div id="mercadopago_checkout_custom">
         <div id="mercadopago-loading">
             <img src="<?php echo $this->getSkinUrl('mercadopago/images/loading.gif'); ?>" alt="loading"/>
@@ -168,13 +168,6 @@ $customer = $this->getCustomerAndCards();
             </div>
 
             <div class="banner_custom">
-                <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
-                    <p class="communication  banner_checkout_mp"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
-                <?php endif; ?>
-                <?php if ($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
-                    <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>" class="banner_checkout_mp"/>
-                <?php endif; ?>
-
                 <input type="hidden" class="total_amount" name="total_amount" value="<?php echo $grant_total; ?>"/>
                 <input type="hidden" class="amount" name="amount" value="<?php echo $grant_total; ?>"/>
                 <input type="hidden" class="mercadopago-discount-amount" name="mercadopago-discount-amount" value="0"/>
@@ -191,4 +184,11 @@ $customer = $this->getCustomerAndCards();
             </div>
         </ul>
     </div>
+
+    <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
+        <p class="communication"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
+    <?php endif; ?>
+    <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+        <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
+    <?php endif;?>
 </fieldset>

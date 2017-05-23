@@ -75,7 +75,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     Examples:
       | credit_card         | doc_number | country | user                            | pass    | doc_type |
       | 4013 5406 8274 6260 | 14978546   | mco     | test_user_17369351@testuser.com | magento |   CC     |
-      | 4009 1753 3280 6176 | 14978546   | mpe     | test_user_5752395@testuser.com  | magento |   DNI    |
+    # | 4009 1753 3280 6176 | 14978546   | mpe     | test_user_5752395@testuser.com  | magento |   DNI    |
 
   @PaymentMethodsSuccessMexico
   Scenario Outline:

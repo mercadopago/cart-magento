@@ -210,7 +210,7 @@ class MercadoPago_Core_Model_Standard_Payment
             "street_number" => ""
         ];
 
-        $url = 'mercadopago/success';
+        $url = 'mercadopago/checkout/page';
         $arr['back_urls'] = [
             "success" => Mage::getUrl($url),
             "pending" => Mage::getUrl($url),

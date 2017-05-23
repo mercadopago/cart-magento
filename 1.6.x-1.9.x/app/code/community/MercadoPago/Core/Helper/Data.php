@@ -196,7 +196,7 @@ class MercadoPago_Core_Helper_Data
     public function getSuccessUrl()
     {
         if (Mage::getStoreConfig('payment/mercadopago/use_successpage_mp')) {
-            $url = 'mercadopago/success';
+            $url = 'mercadopago/checkout/page';
         } else {
             $url = 'checkout/onepage/success';
         }

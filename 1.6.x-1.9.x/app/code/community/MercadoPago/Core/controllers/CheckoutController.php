@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class MercadoPago_Core_SuccessController
+ * Class MercadoPago_Core_CheckoutController
  */
-class MercadoPago_Core_SuccessController
+class MercadoPago_Core_CheckoutController
     extends Mage_Core_Controller_Front_Action
 {
 
@@ -78,7 +78,7 @@ class MercadoPago_Core_SuccessController
         return $total;
     }
 
-    public function indexAction()
+    public function pageAction()
     {
         $this->_statusHelper = Mage::helper('mercadopago/statusUpdate');
         $this->_core = Mage::getModel('mercadopago/core');
@@ -89,13 +89,13 @@ class MercadoPago_Core_SuccessController
 
             $order = $this->getOrder();
 
-            $info_payment = $this->_core->getInfoPaymentByOrder($order->getIncrementId());
+            $infoPayment = $this->_core->getInfoPaymentByOrder($order->getIncrementId());
 
             $status = null;
 
             //checkout Custom Ticket
-            if ($info_payment['activation_uri']['text'] == 'Generate Ticket'){
-                if (!empty($info_payment['payment_id_detail']['value'])){
+            if (isset($infoPayment['activation_uri'])){
+                if (!empty($infoPayment['payment_id_detail']['value'])){
                     $this->_redirect(self::SUCCESS_PAGE_MAGENTO, $this->_request->getParams());
                     return;
                 }
@@ -105,8 +105,8 @@ class MercadoPago_Core_SuccessController
                 }
             }
 
-            //checkout Custom Credit Card
-            if (empty($info_payment['status']['value'])){
+            if (empty($infoPayment['status']['value'])){
+                //checkout Classic
                 $merchantOrderId = Mage::app()->getRequest()->getParam('merchant_order_id');
                 $response = $this->_core->getMerchantOrder($merchantOrderId);
 
@@ -116,11 +116,10 @@ class MercadoPago_Core_SuccessController
                     $status = $paymentData['status'];
                 }
             } else{
-                $status = $info_payment['status']['value'];
-                //$detail = $info_payment['status_detail']['value'];
+                //checkout Custom Credit Card
+                $status = $infoPayment['status']['value'];
             }
 
-            //checkout Classic
             if ($status == 'approved' || $status == 'pending'){
                 $this->_redirect(self::SUCCESS_PAGE_MAGENTO, $this->_request->getParams());
                 return;

@@ -121,41 +121,46 @@ class MercadoPago_Core_Helper_Data
 
     public function setOrderSubtotals($data, $order)
     {
-        if (isset($data['total_paid_amount'])) {
-            $balance = $this->_getMultiCardValue($data, 'total_paid_amount');
-        } else {
-            $balance = $data['transaction_details']['total_paid_amount'];
-        }
-        $shippingCost = $this->_getMultiCardValue($data, 'shipping_cost');
+        $couponAmount = $this->_getMultiCardValue($data, 'coupon_amount');
+        $transactionAmount = $this->_getMultiCardValue($data, 'transaction_amount');
 
-        $order->setGrandTotal($balance);
-        $order->setBaseGrandTotal($balance);
+        if (isset($data['total_paid_amount'])) {
+            $paidAmount = $this->_getMultiCardValue($data, 'total_paid_amount');
+        } else {
+            $paidAmount = $data['transaction_details']['total_paid_amount'];
+        }
+
+        $shippingCost = $this->_getMultiCardValue($data, 'shipping_cost');
+        $originalAmount = $transactionAmount + $shippingCost;
+
+
+        if ($couponAmount && Mage::getStoreConfigFlag('payment/mercadopago/consider_discount')) {
+            $order->setDiscountCouponAmount($couponAmount * -1);
+            $order->setBaseDiscountCouponAmount($couponAmount * -1);
+        }
+        //if a discount was applied  should be considered to get financing cost
+        $paidAmount += $couponAmount;
+        $financingCost = $paidAmount - $originalAmount;
+
         if ($shippingCost > 0) {
             $order->setBaseShippingAmount($shippingCost);
             $order->setShippingAmount($shippingCost);
         }
 
-        $couponAmount = $this->_getMultiCardValue($data, 'coupon_amount');
-        $transactionAmount = $this->_getMultiCardValue($data, 'transaction_amount');
-
-        if ($couponAmount && Mage::getStoreConfigFlag('payment/mercadopago/consider_discount')) {
-            $order->setDiscountCouponAmount($couponAmount * -1);
-            $order->setBaseDiscountCouponAmount($couponAmount * -1);
-            $balance = $balance - ($transactionAmount - $couponAmount + $shippingCost);
-        } else {
-            $balance = $balance - $transactionAmount - $shippingCost;
-        }
 
         if (!Mage::getStoreConfigFlag('payment/mercadopago/financing_cost')) {
-            $order->setGrandTotal($order->getGrandTotal() - $balance);
-            $order->setBaseGrandTotal($order->getBaseGrandTotal() - $balance);
+            $order->setGrandTotal($paidAmount - $financingCost);
+            $order->setBaseGrandTotal($paidAmount - $financingCost);
 
             return;
+        } else {
+            $order->setGrandTotal($paidAmount);
+            $order->setBaseGrandTotal($paidAmount);
         }
 
-        if (Zend_Locale_Math::round($balance, 4) > 0) {
-            $order->setFinanceCostAmount($balance);
-            $order->setBaseFinanceCostAmount($balance);
+        if (Zend_Locale_Math::round($financingCost, 4) > 0) {
+            $order->setFinanceCostAmount($financingCost);
+            $order->setBaseFinanceCostAmount($financingCost);
         }
     }
 

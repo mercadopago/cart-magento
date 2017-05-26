@@ -1390,7 +1390,8 @@ var MercadoPagoCustom = (function () {
 
                 var option = new Option(messageChoose + "... ", '');
                 payerCosts = response[0].payer_costs;
-                var hasCftInfo = payerCosts[0]['labels'].length > 0;
+                var hasCftInfo = payerCosts[0]['labels'].length > 0 && payerCosts[0]['labels'][0].indexOf('CFT') > -1;
+
                 if (!hasCftInfo) {
                     TinyJ('.tea-info-first-card').hide();
                     TinyJ('.cft-info-first-card').hide();
@@ -1445,8 +1446,14 @@ var MercadoPagoCustom = (function () {
                     option = new Option(payerCosts[i].recommended_message || payerCosts[i].installments, payerCosts[i].installments);
                     selectorInstallments.appendChild(option);
                     TinyJ(option).attribute(self.constants.cost, payerCosts[i].total_amount);
+
                     if (hasCftInfo) {
-                        var finance = payerCosts[i]['labels'][0].split('|');
+                        var financeValues = payerCosts[i]['labels'].find(
+                            function(str) {
+                                return str.indexOf('CFT') > -1;
+                            }
+                        );
+                        var finance = financeValues.split('|');
                         TinyJ(option).attribute('cft', finance[0].replace('_', ': '));
                         TinyJ(option).attribute('tea', finance[1].replace('_', ': '));
                     }

@@ -205,3 +205,6 @@
 "Use Mercado Pago success page","Use página de sucesso Mercado Pago"
 "If set this config with NO, magento success page will be used","Se definir essa configuração com NO, página de sucesso magento será usado"
 "MercadoEnvíos - Please enable a shipping method at least","MercadoEnvíos - Ative um método de envio pelo menos."
+
+"Consider Discounts","Considerar desconto"
+"Consider discount of Mercado Pago to invoicing","Considere o desconto do Mercado Pago para faturamento"

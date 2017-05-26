@@ -395,6 +395,18 @@ class MercadoPago_Core_Helper_StatusUpdate
         $data['payer_last_name'] = $payment['payer']['last_name'];
         $data['payer_email'] = $payment['payer']['email'];
 
+        if (isset($data['payer_identification_type'])) {
+            $data['payer_identification_type'] .= " | " . $payment['payer']['identification']['type'];
+        } else {
+            $data['payer_identification_type'] = $payment['payer']['identification']['type'];
+        }
+
+        if (isset($data['payer_identification_number'])) {
+            $data['payer_identification_number'] .= " | " . $payment['payer']['identification']['number'];
+        } else {
+            $data['payer_identification_number'] = $payment['payer']['identification']['number'];
+        }
+
         return $data;
     }
 
@@ -426,5 +438,27 @@ class MercadoPago_Core_Helper_StatusUpdate
         return $data;
     }
 
+    public function getDataPayments($merchantOrderData, $logFile)
+    {
+        $data = array();
+        foreach ($merchantOrderData['payments'] as $payment) {
+            $data = $this->_getFormattedPaymentData($payment['id'], $data, $logFile);
+        }
+
+        return $data;
+    }
+
+    protected function _getFormattedPaymentData($paymentId, $data = [], $logFile)
+    {
+        $core = Mage::getModel('mercadopago/core');
+
+        $response = $core->getPayment($paymentId);
+        if ($response['status'] == 400 || $response['status'] == 401) {
+            return [];
+        }
+        $payment = $response['response']['collection'];
+
+        return $this->formatArrayPayment($data, $payment, $logFile);
+    }
 
 }

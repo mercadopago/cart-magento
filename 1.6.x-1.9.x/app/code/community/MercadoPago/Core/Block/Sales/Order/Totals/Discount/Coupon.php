@@ -13,7 +13,7 @@ class MercadoPago_Core_Block_Sales_Order_Totals_Discount_Coupon
      */
     public function initTotals()
     {
-        if ((float)$this->getSource()->getDiscountCouponAmount() == 0) {
+        if ((float)$this->getSource()->getDiscountCouponAmount() == 0 || !Mage::getStoreConfigFlag('payment/mercadopago/consider_discount')) {
             return $this;
         }
         $total = new Varien_Object(array(

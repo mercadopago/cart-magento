@@ -33,33 +33,33 @@ class MercadoPago_Core_Block_Calculator_CalculatorLink
     }
 
     /**
-     * @param $nameLayoutConteiner string
+     * @param $nameLayoutContainer string
      * @return bool
      */
-    protected function isPageToShow($nameLayoutConteiner){
+    protected function isPageToShow($nameLayoutContainer){
 
         $valueConfig = $this->_helperData->getPagesToShow();
         $pages = explode(',', $valueConfig);
 
-        return in_array($nameLayoutConteiner, $pages);
+        return in_array($nameLayoutContainer, $pages);
     }
 
     /**
-     * @param $nameLayoutConteiner string
+     * @param $nameLayoutContainer string
      * @return bool
      */
-    protected function inPagePDP($nameLayoutConteiner){
+    protected function inPagePDP($nameLayoutContainer){
 
-        return $nameLayoutConteiner === self::PAGE_PDP;
+        return $nameLayoutContainer === self::PAGE_PDP;
     }
 
     /**
-     * @param $nameLayoutConteiner string
+     * @param $nameLayoutContainer string
      * @return bool
      */
-    protected function inPageCheckoutCart($nameLayoutConteiner){
+    protected function inPageCheckoutCart($nameLayoutContainer){
 
-        return $nameLayoutConteiner === self::PAGE_CART;
+        return $nameLayoutContainer === self::PAGE_CART;
     }
 
 }

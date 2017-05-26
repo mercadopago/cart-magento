@@ -48,6 +48,10 @@ class MercadoPago_Core_Model_Observer
 
     private $available_transparent_credit_cart = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe'];
     private $available_transparent_ticket = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe'];
+
+    /**
+     * @var
+     */
     private $_website;
 
     const LOG_FILE = 'mercadopago.log';
@@ -61,16 +65,17 @@ class MercadoPago_Core_Model_Observer
     {
 
         $this->_website = Mage::helper('mercadopago')->getAdminSelectedWebsite();
+        $helperValidate = Mage::helper('mercadopago/validate');
 
-        $this->validateAccessToken();
-
-        $this->validateClientCredentials();
-
-        $this->validateRecurringClientCredentials();
+        $helperValidate->validateAccessToken($this->_website);
+        $helperValidate->validateClientCredentials($this->_website);
+        $helperValidate->validateRecurringClientCredentials($this->_website);
 
         $this->setSponsor();
 
         $this->availableCheckout();
+
+        Mage::helper('mercadopago')->checkAnalyticsData();
 
         $this->checkBanner('mercadopago_custom');
         $this->checkBanner('mercadopago_customticket');
@@ -160,27 +165,6 @@ class MercadoPago_Core_Model_Observer
         Mage::helper('mercadopago')->log("Sponsor saved", self::LOG_FILE, $sponsorId);
     }
 
-    protected function validateAccessToken()
-    {
-        $accessToken = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
-        if (!empty($accessToken)) {
-            if (!Mage::helper('mercadopago')->isValidAccessToken($accessToken)) {
-                Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Custom Checkout: Invalid access token'));
-            }
-        }
-    }
-
-    protected function validateClientCredentials()
-    {
-        $clientId = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
-        $clientSecret = $this->_website->getConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
-        if (!empty($clientId) && !empty($clientSecret)) {
-            if (!Mage::helper('mercadopago')->isValidClientCredentials($clientId, $clientSecret)) {
-                Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Classic Checkout: Invalid client id or client secret'));
-            }
-        }
-    }
-
     protected function _saveWebsiteConfig($path, $value)
     {
         if ($this->_website->getId() == 0) {
@@ -201,10 +185,22 @@ class MercadoPago_Core_Model_Observer
             return;
         }
         $orderStatus = $order->getData('status');
-        $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
+        $additionalInformation = $order->getPayment()->getAdditionalInformation();
 
-        $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
+        $orderPaymentStatus = isset($additionalInformation['status']) ? $additionalInformation['status'] : null ;
+        $paymentID = isset($additionalInformation['payment_id_detail']) ? $additionalInformation['payment_id_detail'] : null ;
 
+        $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
+        if ($refundAvailable & $paymentID == null){
+            $this->_getSession()->addWarning(__('The cancellation will be made through Magento. It wasn\'t possible to cancel on MercadoPago'));
+            return;
+        }
+
+        $this->_cancellationRequest($orderStatus, $orderPaymentStatus, $paymentID, $paymentMethod);
+
+    }
+
+    protected function _cancellationRequest($orderStatus, $orderPaymentStatus, $paymentID, $paymentMethod) {
         if (!($orderPaymentStatus == null || $paymentID == null)) {
 
             $isValidBasicData = $this->checkCancelationBasicData($paymentID, $paymentMethod);
@@ -507,20 +503,11 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
-    protected function validateRecurringClientCredentials()
-    {
-        $clientId = Mage::getStoreConfig('payment/mercadopago_recurring/client_id');
-        $clientSecret = Mage::getStoreConfig('payment/mercadopago_recurring/client_secret');
-        if (!empty($clientId) && !empty($clientSecret)) {
-            if (!Mage::helper('mercadopago')->isValidClientCredentials($clientId, $clientSecret)) {
-                Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Recurring Payment Checkout: Invalid client id or client secret'));
-            }
-        }
-    }
-
     protected function _isMercadoPago($paymentMethod)
     {
         return ($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom');
     }
+
+
   
 }

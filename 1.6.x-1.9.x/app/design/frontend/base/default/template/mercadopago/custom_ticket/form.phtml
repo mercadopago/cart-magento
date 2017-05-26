@@ -7,8 +7,10 @@ $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
 $route = $this->getRequest()->getRequestedRouteName();
 
 ?>
-
-<fieldset class="form-list">
+<script type="text/javascript">
+    sendAnalyticsData("<?php echo $_code ?>");
+</script>
+<fieldset class="conteiner-form-list">
     <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
 
     <div id="mercadopago_checkout_custom_ticket">
@@ -26,18 +28,24 @@ $route = $this->getRequest()->getRequestedRouteName();
                 endif;
                 ?>
             </li>
-            <br/>
-            <li class="mercadopago-discount-options">
+            <li class="mercadopago-ticket-options">
                 <?php $optionsTicket = $this->getTicketsOptions(); ?>
                 <?php if (count($optionsTicket) == 1): ?>
                     <input type="hidden" name="payment[<?php echo $_code; ?>][payment_method_ticket]" type="text" value="<?php echo $optionsTicket[0]['id']; ?>" id="payment_method_ticket"/>
                 <?php else: ?>
-                    <?php foreach ($optionsTicket as $ticket): ?>
-                    <br/>
-                    <input type="radio" name="payment[<?php echo $_code; ?>][payment_method_ticket]" class="optionsTicketMp validate-one-required-by-name" value="<?php echo $ticket['id']; ?>">
-                    <img src="<?php echo $ticket['secure_thumbnail']; ?>">
-                    <label class="mercadopago-ticket-label"> (<?php echo $ticket['name']; ?>)</label><br/>
-                    <?php endforeach; ?>
+                    <ul>
+                        <?php foreach ($optionsTicket as $ticket): ?>
+                            <li class="mercadopago-ticket-option">
+                                <input type="radio" name="payment[<?php echo $_code; ?>][payment_method_ticket]" class="optionsTicketMp validate-one-required-by-name" value="<?php echo $ticket['id']; ?>">
+                                <label class="mercadopago-ticket-label">
+                                    <img src="<?php echo $ticket['secure_thumbnail']; ?>" alt="<?php echo $ticket['name']; ?>">
+                                    (<?php echo $ticket['name']; ?>)
+                                    <!--<span class="mercadopago-ticket-label-img"><img src="--><?php //echo $ticket['secure_thumbnail']; ?><!--" alt="--><?php //echo $ticket['name']; ?><!--"> </span>-->
+                                    <!--<span class="mercadopago-ticket-label-description">(--><?php //echo $ticket['name']; ?><!--)</span>-->
+                                </label>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 <?php endif; ?>
 
                 <input type="hidden" class="total_amount" name="total_amount" value="<?php echo $grant_total; ?>"/>
@@ -54,7 +62,6 @@ $route = $this->getRequest()->getRequestedRouteName();
 
         </ul>
     </div>
-    <br/>
     <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
     <p class="communication"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
     <?php endif; ?>

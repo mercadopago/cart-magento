@@ -35,7 +35,7 @@
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </country>
                         <category_id translate="label">
                             <label>Category of your store</label>
@@ -67,23 +67,40 @@
                             <show_in_store>0</show_in_store>
                             <comment></comment>
                         </financing_cost>
+                        <consider_discount translate="label">
+                            <label>Consider Discounts</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>Consider discount of Mercado Pago to invoicing</comment>
+                        </consider_discount>
+                        <heading_order_status_cron translate="label">
+                            <label>Order Status Update - Cron Configuration</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>82</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                        </heading_order_status_cron>
                         <time_between_verifications translate="label comment">
                             <label>Time between verifications</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>83</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
                         </time_between_verifications>
                         <number_of_hours translate="label comment">
                             <label>Number of hours</label>
                             <comment>Try to update all the orders created 'Amount of hours' before time to the moment to execute the cron</comment>
-                            <!--<comment><![CDATA[<strong style="color:red">Warning!</strong> bla bla bla]]></comment>-->
+                            <!--<comment><![CDATA[<strong style="color:red">Warning!</strong>]]></comment>-->
                             <frontend_type>text</frontend_type>
                             <sort_order>85</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
                             <can_be_empty>0</can_be_empty>
                             <frontend_class>required-entry validate-digits</frontend_class>
                         </number_of_hours>
@@ -94,6 +111,7 @@
                             <sort_order>95</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
                         </heading_order_status>
                         <order_status_approved translate="label">
                             <label>Choose the status of approved orders</label>
@@ -103,7 +121,7 @@
                             <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </order_status_approved>
                         <order_status_in_process translate="label">
                             <label>Choose the status when payment is pending</label>
@@ -113,7 +131,7 @@
                             <sort_order>105</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </order_status_in_process>
                         <order_status_in_mediation translate="label">
                             <label>Choose the status when client open a mediation</label>
@@ -123,17 +141,17 @@
                             <sort_order>110</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </order_status_in_mediation>
                         <order_status_rejected translate="label">
-                            <label>Choose the status when payment was reject</label>
+                            <label>Choose the status when payment was rejected</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>mercadopago/source_order_status</source_model>
                             <sort_order>115</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </order_status_rejected>
                         <order_status_cancelled translate="label">
                             <label>Choose the status when payment was canceled</label>
@@ -143,17 +161,17 @@
                             <sort_order>120</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </order_status_cancelled>
                         <order_status_chargeback translate="label">
-                            <label>Choose the status when payment was chargeback</label>
+                            <label>Choose the status when payment was charge back</label>
                             <comment>To manage the status available go to System > Order Statuses</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>mercadopago/source_order_status</source_model>
                             <sort_order>125</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </order_status_chargeback>
                         <order_status_refunded translate="label">
                             <label>Choose the status of refunded orders</label>
@@ -163,7 +181,7 @@
                             <sort_order>130</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </order_status_refunded>
 
                         <heading_refund translate="label">
@@ -180,7 +198,7 @@
                             <sort_order>150</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </refund_available>
                         <maximum_partial_refunds translate="label comment">
                             <label>Maximum amount of partial refunds on the same order</label>
@@ -188,7 +206,7 @@
                             <sort_order>155</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                             <frontend_class>validate-number-range number-range-1-20</frontend_class>
                             <comment>It must be a number between 1 and 20</comment>
                         </maximum_partial_refunds>
@@ -210,7 +228,7 @@
                             <sort_order>165</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                         </order_status_partially_refunded>
 
                         <heading_developer translate="label">
@@ -228,7 +246,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>Enable logs to analise plugin activity</comment>
+                            <comment>Enable logs to analyse plugin activity</comment>
                         </logs>
                         <debug_mode translate="label">
                             <label>Debug Mode</label>
@@ -241,7 +259,7 @@
                             <comment>Enable to display actual error messages to frontend users (not recommended on production environment)</comment>
                         </debug_mode>
 
-                        <heading_calculator translate="label">
+                        <heading_calculator translate="label comment">
                             <label>Payments Calculator</label>
                             <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
                             <sort_order>235</sort_order>
@@ -256,7 +274,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment>if set to YES, Calculator will appear on the selected pages</comment>
+                            <comment>if set to YES, Calculator will appear on the selected pages - Custom checkout credentials (Public Key and Access Token) must be set</comment>
                         </calculalator_available>
                         <show_in_pages translate="label">
                             <label>Show Calculator on selected pages</label>
@@ -265,7 +283,7 @@
                             <sort_order>245</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
+                            <show_in_store>0</show_in_store>
                             <can_be_empty>1</can_be_empty>
                         </show_in_pages>
                     </fields>
@@ -297,12 +315,11 @@
                                 <span>Click to get your Access Token for: </span>
                                 <a href="https://www.mercadopago.com/mla/account/credentials" target="_blank">Argentina</a>
                                 <a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank">Brazil</a><br>
+                                <a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank">Chile</a>
                                 <a href="https://www.mercadopago.com/mco/account/credentials" target="_blank">Colombia</a>
                                 <a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank">Mexico</a>
-                                <a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank">Venezuela</a>
-                                <a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank">Chile</a>
                                 <a href="https://www.mercadopago.com/mpe/account/credentials" target="_blank">Peru</a>
-                                <a href="https://www.mercadopago.com/mlu/account/credentials" target="_blank">Uruguay</a>
+                                <a href="https://www.mercadopago.com/mlv/account/credentials" target="_blank">Venezuela</a>
                                 ]]>
                             </comment>
                         </access_token>
@@ -346,7 +363,7 @@
                                     <sort_order>20</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
+                                    <show_in_store>1</show_in_store>
                                 </title>
                                 <statement_descriptor translate="label comment">
                                     <label>Statement Descriptor</label>
@@ -380,7 +397,7 @@
                                     <sort_order>70</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
+                                    <show_in_store>1</show_in_store>
                                     <frontend_class>validate-number</frontend_class>
                                 </sort_order>
                                 <coupon_mercadopago translate="label">
@@ -398,7 +415,7 @@
                                     <sort_order>90</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
+                                    <show_in_store>1</show_in_store>
                                     <comment>Custom message to display in checkout</comment>
                                 </communication>
 
@@ -429,7 +446,7 @@
                                     <sort_order>20</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
+                                    <show_in_store>1</show_in_store>
                                 </title>
                                 <banner_checkout translate="label">
                                     <label>Banner Checkout</label>
@@ -445,7 +462,7 @@
                                     <sort_order>40</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
+                                    <show_in_store>1</show_in_store>
                                     <frontend_class>validate-number</frontend_class>
                                 </sort_order>
                                 <coupon_mercadopago translate="label">
@@ -463,7 +480,7 @@
                                     <sort_order>60</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
+                                    <show_in_store>1</show_in_store>
                                     <comment>Custom message to display in checkout</comment>
                                 </communication>
 
@@ -520,7 +537,7 @@
                                     <sort_order>20</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
+                                    <show_in_store>1</show_in_store>
                                 </title>
                                 <banner_checkout translate="label">
                                     <label>Banner Checkout</label>
@@ -536,7 +553,7 @@
                                     <sort_order>40</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
+                                    <show_in_store>1</show_in_store>
                                     <frontend_class>validate-number</frontend_class>
                                 </sort_order>
                                 <type_checkout>
@@ -612,7 +629,7 @@
                                     <sort_order>170</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
+                                    <show_in_store>1</show_in_store>
                                     <comment>Custom message to display in checkout</comment>
                                 </communication>
                             </fields>
@@ -620,14 +637,14 @@
                     </fields>
                 </mercadopago_standard_checkout>
                 <mercadopago_recurring_checkout translate="label" module="mercadopago">
-                    <label>Mercado Pago - Recurring Payments Checkout</label>
+                    <label>Mercado Pago - Recurring Payments</label>
                     <sort_order>200</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>0</show_in_store>
                     <fields>
                         <mercadopago_recurring type="group" translate="label comment">
-                        <label>Checkout Recurring Payments</label>
+                        <label>Recurring Payments</label>
                         <frontend_type>text</frontend_type>
                         <frontend_model>mercadopago/adminhtml_system_config_fieldset_payment</frontend_model>
                         <show_in_default>1</show_in_default>
@@ -643,7 +660,7 @@
                                 <sort_order>1</sort_order>
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
-                                <show_in_store>1</show_in_store>
+                                <show_in_store>0</show_in_store>
                                 <comment>"It is necessary to configure necessary the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in this section for its proper functioning</comment>
                             </active>
                             <client_id translate="label">
@@ -668,7 +685,7 @@
                                 <sort_order>20</sort_order>
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
-                                <show_in_store>0</show_in_store>
+                                <show_in_store>1</show_in_store>
                             </title>
                             <banner_checkout translate="label">
                                 <label>Banner Checkout</label>
@@ -684,7 +701,7 @@
                                 <sort_order>40</sort_order>
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
-                                <show_in_store>0</show_in_store>
+                                <show_in_store>1</show_in_store>
                                 <frontend_class>validate-number</frontend_class>
                             </sort_order>
                             <type_checkout>
@@ -722,7 +739,7 @@
                                 <sort_order>40</sort_order>
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
-                                <show_in_store>1</show_in_store>
+                                <show_in_store>0</show_in_store>
                                 <comment>Enable to test checkout with real credit cards</comment>
                             </sandbox_mode>
                             <iframe_width translate="label">
@@ -731,7 +748,7 @@
                                 <sort_order>100</sort_order>
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
-                                <show_in_store>0</show_in_store>
+                                <show_in_store>1</show_in_store>
                                 <frontend_class>validate-number</frontend_class>
                             </iframe_width>
                             <iframe_height translate="label">
@@ -740,7 +757,7 @@
                                 <sort_order>110</sort_order>
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
-                                <show_in_store>0</show_in_store>
+                                <show_in_store>1</show_in_store>
                                 <frontend_class>validate-number</frontend_class>
                             </iframe_height>
                             <communication translate="label">
@@ -749,7 +766,7 @@
                                 <sort_order>170</sort_order>
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
-                                <show_in_store>0</show_in_store>
+                                <show_in_store>1</show_in_store>
                                 <comment>Custom message to display in checkout</comment>
                             </communication>
                         </fields>

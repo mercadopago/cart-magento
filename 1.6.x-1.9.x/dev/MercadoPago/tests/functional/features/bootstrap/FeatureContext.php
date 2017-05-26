@@ -358,6 +358,10 @@ class FeatureContext
             $this->iWaitForSeconds(5);
         }
 
+        $changeLoggedUser = $session->getPage()->find('css', '#change-logged-user');
+        $changeLoggedUser->press();
+        $this->iWaitForSeconds(5);
+        
         $login = $session->getPage()->find('css', '#user_id');
         $pwd = $session->getPage()->find('css', '#password');
         $submit = $session->getPage()->find('css', '#init');
@@ -631,6 +635,7 @@ class FeatureContext
         $obj->settingConfig('payment/mercadopago_custom_checkout/public_key', 'TEST-d5a3d71b-6bd4-4bfc-a1f3-7ed77987d5aa');
         $obj->settingConfig('payment/mercadopago_custom_checkout/access_token', 'TEST-446950613712741-091715-092a6109a25bb763aa94c61688ada0cd__LC_LA__-192627424');
         $obj->settingConfig('payment/mercadopago_custom/active', '1');
+        $obj->settingConfig('payment/mercadopago/use_successpage_mp', '1'); //with '1' use MercadoPago successPage
         $obj->settingConfig('payment/mercadopago/calculalator_available', '0');
     }
 

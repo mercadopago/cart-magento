@@ -75,6 +75,9 @@ class MercadoPago_Core_Model_Custom_Payment
                     $this->getInfoInstance()->setAdditionalInformation('second_payment_status_detail', $paymentSecondCard['status_detail']);
                     $this->getInfoInstance()->setAdditionalInformation('total_paid_amount', $paymentFirstCard['transaction_details']['total_paid_amount'] . '|' . $paymentSecondCard['transaction_details']['total_paid_amount']);
                     $this->getInfoInstance()->setAdditionalInformation('transaction_amount', $paymentFirstCard['transaction_amount'] . '|' . $paymentSecondCard['transaction_amount']);
+                    $this->getInfoInstance()->setAdditionalInformation('payer_identification_type', $paymentFirstCard['payer']['identification']['type']. '|' . $paymentSecondCard['payer']['identification']['type']);
+                    $this->getInfoInstance()->setAdditionalInformation('payer_identification_number', $paymentFirstCard['payer']['identification']['number'] . '|' . $paymentSecondCard['payer']['identification']['number']);
+
                     $stateObject->setState(Mage::helper('mercadopago/statusUpdate')->_getAssignedState('pending_payment'));
                     $stateObject->setStatus('pending_payment');
                     $stateObject->setIsNotified(false);
@@ -104,6 +107,9 @@ class MercadoPago_Core_Model_Custom_Payment
                 $this->getInfoInstance()->setAdditionalInformation('status', $payment['status']);
                 $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $payment['id']);
                 $this->getInfoInstance()->setAdditionalInformation('status_detail', $payment['status_detail']);
+                $this->getInfoInstance()->setAdditionalInformation('payer_identification_type', $payment['payer']['identification']['type']);
+                $this->getInfoInstance()->setAdditionalInformation('payer_identification_number', $payment['payer']['identification']['number']);
+
                 $stateObject->setState(Mage::helper('mercadopago/statusUpdate')->_getAssignedState('pending_payment'));
                 $stateObject->setStatus('pending_payment');
                 $stateObject->setIsNotified(false);
@@ -336,7 +342,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function getOrderPlaceRedirectUrl()
     {
-        return Mage::getUrl('mercadopago/success', ['_secure' => true]);
+        return Mage::getUrl('mercadopago/checkout/page', ['_secure' => true]);
     }
 
     public function getCode()

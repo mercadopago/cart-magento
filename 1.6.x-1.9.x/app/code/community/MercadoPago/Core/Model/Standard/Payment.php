@@ -194,9 +194,8 @@ class MercadoPago_Core_Model_Standard_Payment
         $billingAddress = $order->getBillingAddress()->getData();
 
         $arr['payer']['date_created'] = date('Y-m-d', $customer->getCreatedAtTimestamp()) . "T" . date('H:i:s', $customer->getCreatedAtTimestamp());
-        $arr['payer']['email'] = htmlentities($customer->getEmail());
-        $arr['payer']['first_name'] = htmlentities($customer->getFirstname());
-        $arr['payer']['last_name'] = htmlentities($customer->getLastname());
+
+        $this->_setPayerData($arr['payer'], $customer, $billingAddress);
 
         if (isset($payment['additional_information']['doc_number']) && $payment['additional_information']['doc_number'] != "") {
             $arr['payer']['identification'] = [
@@ -211,7 +210,7 @@ class MercadoPago_Core_Model_Standard_Payment
             "street_number" => ""
         ];
 
-        $url = 'mercadopago/success';
+        $url = 'mercadopago/checkout/page';
         $arr['back_urls'] = [
             "success" => Mage::getUrl($url),
             "pending" => Mage::getUrl($url),
@@ -219,7 +218,7 @@ class MercadoPago_Core_Model_Standard_Payment
         ];
 
         $arr['notification_url'] = Mage::getUrl('mercadopago/notifications/standard');
-
+        
         $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods();
         $installments = $this->getConfigData('installments');
         $arr['payment_methods']['installments'] = (int)$installments;
@@ -237,6 +236,18 @@ class MercadoPago_Core_Model_Standard_Payment
         }
 
         return $arr;
+    }
+
+    protected function _setPayerData(&$arr, $customer, $billingAddress) {
+        if (!$customer->getId()) {
+            $arr['payer']['email'] = htmlentities($billingAddress['email']);
+            $arr['payer']['first_name'] = htmlentities($billingAddress['firstname']);
+            $arr['payer']['last_name'] = htmlentities($billingAddress['lastname']);
+        } else {
+            $arr['payer']['email'] = htmlentities($customer->getEmail());
+            $arr['payer']['first_name'] = htmlentities($customer->getFirstname());
+            $arr['payer']['last_name'] = htmlentities($customer->getLastname());
+        }
     }
 
     protected function getReceiverAddress($shippingAddress)

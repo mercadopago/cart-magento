@@ -26,7 +26,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
     And I press "#payment-buttons-container .button" element
-
+    And I wait for "5" seconds
     When I press "#review-buttons-container .button" element
     And I wait for "20" seconds
 
@@ -40,6 +40,8 @@ Feature: Payment results in MercadoPago Custom Checkout
   @CustomCheckoutPerCountryWithDocType @skip
   Scenario Outline:
     Given Setting merchant <country>
+    And Setting Config "payment/mercadopago/debug_mode" is "1"
+    And I reset the session
     And User "<user>" "<pass>" exists
     And I am logged in as "<user>" "<pass>"
     And I empty cart
@@ -62,11 +64,10 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I fill text field "securityCode" with "123"
     And I select option field "cardExpirationYear" with "2018"
     And I select installment "1"
-    And I wait for "3" seconds
     And I press "#payment-buttons-container .button" element
-    And I wait for "3" seconds
+    And I wait for "10" seconds
     When I press "#review-buttons-container .button" element
-    And I wait for "20" seconds
+    And I wait for "10" seconds
 
     Then I should see "Payment Status: approved"
     And I should see "Payment Detail: accredited"
@@ -74,7 +75,7 @@ Feature: Payment results in MercadoPago Custom Checkout
     Examples:
       | credit_card         | doc_number | country | user                            | pass    | doc_type |
       | 4013 5406 8274 6260 | 14978546   | mco     | test_user_17369351@testuser.com | magento |   CC     |
-      | 4009 1753 3280 6176 | 14978546   | mpe     | test_user_5752395@testuser.com  | magento |   DNI    |
+    # | 4009 1753 3280 6176 | 14978546   | mpe     | test_user_5752395@testuser.com  | magento |   DNI    |
 
   @PaymentMethodsSuccessMexico
   Scenario Outline:
@@ -98,21 +99,13 @@ Feature: Payment results in MercadoPago Custom Checkout
     And I select radio "p_method_mercadopago_custom"
     # And I press "#use_other_card_mp" element
     And I select option field "paymentMethod" with "<payment_method>"
-    And I wait for "5" seconds
     And I fill text field "cardNumber" with "<credit_card>"
-    And I wait for "5" seconds
     And I select option field "cardExpirationMonth" with "01"
-    And I wait for "5" seconds
     And I fill text field "cardholderName" with "APRO"
-    And I wait for "5" seconds
     And I fill text field "securityCode" with "123"
-    And I wait for "5" seconds
     And I select option field "cardExpirationYear" with "2018"
-    And I wait for "5" seconds
     And I select option field "issuer" with "<issuer_id>"
-    And I wait for "5" seconds
     And I select installment "1"
-    And I wait for "5" seconds
     And I press "#payment-buttons-container .button" element
     And I wait for "5" seconds
     When I press "#review-buttons-container .button" element

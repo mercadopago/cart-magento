@@ -117,6 +117,14 @@ class MercadoPago_Core_Model_Core
             }
         }
 
+        if ($payment->getAdditionalInformation('payer_identification_type') != "") {
+            $text = __($payment->getAdditionalInformation('payer_identification_type'). ': '. $payment->getAdditionalInformation('payer_identification_number'));
+            $infoPayments[$payment->getAdditionalInformation('payer_identification_type')] = array(
+                "text"  => $text,
+                "value" => $payment->getAdditionalInformation('payer_identification_number')
+            );
+        }
+
         return $infoPayments;
     }
 
@@ -256,6 +264,7 @@ class MercadoPago_Core_Model_Core
         $preference = [];
 
         $preference['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK) . "mercadopago/notifications/custom";
+
         $preference['description'] = Mage::helper('mercadopago')->__("Order # %s in store %s", $orderId, Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true));
         if (isset($paymentInfo['transaction_amount'])) {
             $preference['transaction_amount'] = (float)$paymentInfo['transaction_amount'];
@@ -482,12 +491,23 @@ class MercadoPago_Core_Model_Core
                 'installments',
                 'statement_descriptor',
                 'trunc_card',
-                'id'
+                'id',
+                'payer_identification_type',
+                'payer_identification_number'
             ];
             
             $infoPayments = $paymentOrder->getAdditionalInformation();
+
             if (!isset($infoPayments['first_payment_id'])) {
                 $paymentOrder = $this->_addAdditionalInformationToPaymentOrder($data, $additionalFields, $paymentOrder);
+            }
+
+            if (isset($data['id'])) {
+                $paymentOrder->setAdditionalInformation('payment_id_detail', $data['id']);
+            }
+
+            if (isset($data['payer_identification_type']) & isset($data['payer_identification_number'])) {
+                $paymentOrder->setAdditionalInformation($data['payer_identification_type'], $data['payer_identification_number']);
             }
 
             $paymentStatus = $paymentOrder->save();

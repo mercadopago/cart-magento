@@ -26,7 +26,7 @@ Feature: Payment results in MercadoPago Standard Checkout
 
     When I press "#next" input element
     And I switch to the site
-    Then I should be on "/mercadopago/success"
+    Then I should be on "/mercadopago/checkout/page"
 
   @TOTAL @STANDARD
   Scenario: Check total displayed in iframe

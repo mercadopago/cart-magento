@@ -18,7 +18,7 @@ class MercadoPago_Core_Model_Source_ListPages
     {
         $pages = [];
         $pages[] = ['value' => "product.info.calculator",  'label' => Mage::helper('mercadopago')->__("Product Detail Page")];
-        $pages[] = ['value' => "checkout.cart.calculator", 'label' => Mage::helper('mercadopago')->__("Basket page")];
+        $pages[] = ['value' => "checkout.cart.calculator", 'label' => Mage::helper('mercadopago')->__("Cart page")];
 
         //force order by key
         ksort($pages);

@@ -137,10 +137,15 @@ class MercadoPago_Core_Helper_Data
         if ($couponAmount && Mage::getStoreConfigFlag('payment/mercadopago/consider_discount')) {
             $order->setDiscountCouponAmount($couponAmount * -1);
             $order->setBaseDiscountCouponAmount($couponAmount * -1);
+            $financingCost = $paidAmount + $couponAmount - $originalAmount;
+        } else {
+            //if a discount was applied and should not be considered
+            $paidAmount += $couponAmount;
+            $financingCost = $paidAmount - $originalAmount;
         }
-        //if a discount was applied  should be considered to get financing cost
-        $paidAmount += $couponAmount;
-        $financingCost = $paidAmount - $originalAmount;
+
+
+
 
         if ($shippingCost > 0) {
             $order->setBaseShippingAmount($shippingCost);

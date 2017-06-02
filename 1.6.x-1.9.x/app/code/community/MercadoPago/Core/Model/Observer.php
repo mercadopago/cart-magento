@@ -255,7 +255,7 @@ class MercadoPago_Core_Model_Observer
 
         $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
         if (!$refundAvailable) {
-            $this->_getSession()->addWarning(__('Mercado Pago cancellations are disabled. The cancellation will be made through Magento'));
+            $this->_getSession()->addWarning(__('Mercado Pago cancellation is disabled. The cancellation will be made through Magento'));
             return false;
         }
 

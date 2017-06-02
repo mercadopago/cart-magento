@@ -111,6 +111,7 @@ var MercadoPagoCustom = (function () {
             paymentMethodSelect: '#mercadopago_checkout_custom #paymentMethod',
             paymentMethodId: '#mercadopago_checkout_custom .payment_method_id',
             paymenMethodNotFound: '.error-payment-method-not-found',
+            secondCardPaymenMethodNotFound: '.second_card_error-payment-method-not-found',
             mercadoPagoTextChoice: '#mercadopago_checkout_custom .mercadopago-text-choice',
             errorMethodMinAmount: '.error-payment-method-min-amount',
             textDefaultIssuer: '#mercadopago_checkout_custom .mercadopago-text-default-issuer',
@@ -120,11 +121,13 @@ var MercadoPagoCustom = (function () {
             baseUrl: '.mercado_base_url',
             loading: '#mercadopago-loading',
             messageError: '.message-error',
+            messageErrorSecond: 'message-error-second',
+            messageErrorFirst: 'message-error-first',
             customDiscountAmount: '#mercadopago_checkout_custom .mercadopago-discount-amount',
             discountAmount: '.mercadopago-discount-amount',
             token: '#mercadopago_checkout_custom .token',
             errorFormat: '#mercadopago_checkout_custom .error-{0}',
-            errorFormatSecondCard: '#second_card_mercadopago_checkout_custom .error-{0}',
+            errorFormatSecondCard: '#mercadopago_checkout_custom_second_card .second_card_error-{0}',
             couponActionApply: '.mercadopago-coupon-action-apply',
             couponActionRemove: '.mercadopago-coupon-action-remove',
             ticketActionApply: '#mercadopago_checkout_custom_ticket .mercadopago-coupon-action-apply',
@@ -685,6 +688,7 @@ var MercadoPagoCustom = (function () {
             Mercadopago.clearSession();
 
             hideMessageError();
+            // hideMessageErrorFirst();
 
             checkCreateCardToken();
 
@@ -726,6 +730,7 @@ var MercadoPagoCustom = (function () {
             clearOptionsSecondCard();
             Mercadopago.clearSession();
             hideMessageError();
+            // hideMessageErrorSecond();
 
             checkCreateCardTokenSecondCard();
 
@@ -939,6 +944,7 @@ var MercadoPagoCustom = (function () {
 
             //hide all errors
             hideMessageError();
+            // hideMessageErrorFirst();
 
             var bin = getBin();
             try {
@@ -1080,6 +1086,7 @@ var MercadoPagoCustom = (function () {
             defineInputs();
         };
 
+
         function setPaymentMethodInfoSecondCard(status, response) {
 
             showLogMercadoPago(self.messages.setPaymentInfo);
@@ -1150,7 +1157,7 @@ var MercadoPagoCustom = (function () {
 
             } else {
 
-                showMessageErrorForm(self.selectors.paymenMethodNotFound);
+                showMessageErrorForm(self.selectors.secondCardPaymenMethodNotFound);
 
             }
 
@@ -1251,14 +1258,14 @@ var MercadoPagoCustom = (function () {
                 "issuer_id": issuerId
             });
 
-        }
+        };
 
         function getInstallments(options) {
 
 
             showLogMercadoPago(self.messages.getInstallment);
 
-            hideMessageError();
+            // hideMessageError();
             showLoading();
 
             var route = TinyJ(self.selectors.mercadoRoute).val();
@@ -1314,11 +1321,11 @@ var MercadoPagoCustom = (function () {
                 Mercadopago.getInstallments(options, setInstallmentInfo);
             }
 
-        }
+        };
 
         function getInstallmentsSecondCard(options) {
 
-            hideMessageError();
+            // hideMessageError();
             showLoading();
 
             var route = TinyJ(self.selectors.mercadoRoute).val();
@@ -1373,7 +1380,7 @@ var MercadoPagoCustom = (function () {
                 Mercadopago.getInstallments(options, setInstallmentInfoSecondCard);
             }
 
-        }
+        };
 
         function setInstallmentInfo(status, response) {
             showLogMercadoPago(self.messages.setInstallmentInfo);
@@ -1418,7 +1425,8 @@ var MercadoPagoCustom = (function () {
             } else {
                 showMessageErrorForm(self.selectors.paymenMethodNotFound);
             }
-        }
+
+        };
 
         function setInstallmentInfoSecondCard(status, response) {
             showLogMercadoPago(self.messages.setInstallmentInfo);
@@ -1460,7 +1468,7 @@ var MercadoPagoCustom = (function () {
                 }
                 selectorInstallments.enable();
             } else {
-                showMessageErrorForm(self.selectors.paymenMethodNotFound);
+                showMessageErrorForm(self.selectors.secondCardPaymenMethodNotFound);
             }
         }
 
@@ -1518,6 +1526,7 @@ var MercadoPagoCustom = (function () {
             var docNumber = TinyJ(self.selectors.docNumber).val();
             if (docNumber != '' && !checkDocNumber(docNumber)) {
                 submit = false;
+
             }
 
             if (submit) {
@@ -1527,6 +1536,7 @@ var MercadoPagoCustom = (function () {
                 console.log(TinyJ(selector).getElem());
                 Mercadopago.createToken(TinyJ(selector).getElem(), sdkResponseHandler);
             }
+
         }
 
         function checkCreateCardTokenSecondCard() {
@@ -1567,6 +1577,7 @@ var MercadoPagoCustom = (function () {
 
             //hide all errors
             hideMessageError();
+            // hideMessageErrorFirst();
             hideLoading();
 
             if (status == http.status.OK || status == http.status.CREATED) {
@@ -1575,21 +1586,22 @@ var MercadoPagoCustom = (function () {
                 showLogMercadoPago(response);
 
             } else {
-
                 for (var x = 0; x < Object.keys(response.cause).length; x++) {
                     var error = response.cause[x];
                     showMessageErrorForm(String.format(self.selectors.errorFormat, error.code));
                 }
-
             }
+
         };
 
         function sdkResponseHandlerSecondCard(status, response) {
             showLogMercadoPago(self.messages.responseCardToken);
             showLogMercadoPago(status);
             showLogMercadoPago(response);
+
             //hide all errors
             hideMessageError();
+            // hideMessageErrorSecond();
             hideLoading();
 
             if (status == http.status.OK || status == http.status.CREATED) {
@@ -1598,7 +1610,6 @@ var MercadoPagoCustom = (function () {
                 showLogMercadoPago(response);
 
             } else {
-
                 for (var x = 0; x < Object.keys(response.cause).length; x++) {
                     var error = response.cause[x];
                     showMessageErrorForm(String.format(self.selectors.errorFormatSecondCard, error.code));
@@ -1619,6 +1630,31 @@ var MercadoPagoCustom = (function () {
                 allMessageErrors.hide();
             }
         }
+
+        // function hideMessageErrorSecond() {
+        //     showLogMercadoPago(self.messages.hideErrors + 'Second card');
+        //     var allMessageErrors = TinyJ(self.selectors.messageErrorSecond);
+        //     if (Array.isArray(allMessageErrors)) {
+        //         for (var x = 0; x < allMessageErrors.length; x++) {
+        //             allMessageErrors[x].hide();
+        //         }
+        //     } else {
+        //         allMessageErrors.hide();
+        //     }
+        // }
+
+        // function hideMessageErrorFirst() {
+        //     showLogMercadoPago(self.messages.hideErrors + 'First card');
+        //     var allMessageErrors = TinyJ(self.selectors.messageErrorFirst);
+        //     if (Array.isArray(allMessageErrors)) {
+        //         for (var x = 0; x < allMessageErrors.length; x++) {
+        //             allMessageErrors[x].hide();
+        //         }
+        //     } else {
+        //         allMessageErrors.hide();
+        //     }
+        // }
+
 
         function showMessageErrorForm(error) {
             showLogMercadoPago(self.messages.showingError);

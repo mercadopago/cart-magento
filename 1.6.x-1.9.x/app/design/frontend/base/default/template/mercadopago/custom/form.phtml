@@ -83,7 +83,7 @@ $customer = $this->getCustomerAndCards();
 
                     <li id="cardNumber__mp">
                         <label for="cardNumber"><?php echo $this->__('Card Number'); ?></label>
-                        <input type="text" id="cardNumber" data-checkout="cardNumber" data-element-id="#cardNumber__mp"/>
+                        <input type="text" class="co-payment-form" id="cardNumber" data-checkout="cardNumber" data-element-id="#cardNumber__mp"/>
                         <p class="message-error error-payment-method-not-found error-E301 error-205 validation-advice"><?php echo $this->__('Card number is invalid.'); ?></p>
                         <p class="message-error error-payment-method-min-amount validation-advice"><?php echo $this->__('Cannot pay this amount with this payment_method_id.'); ?></p>
                     </li>

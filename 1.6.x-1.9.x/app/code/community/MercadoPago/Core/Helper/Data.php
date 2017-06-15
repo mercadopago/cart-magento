@@ -293,7 +293,7 @@ class MercadoPago_Core_Helper_Data
     public function getAnalyticsData($order = null)
     {
         $analyticsData = [];
-        if ($order != null && $order->getPayment()->getData('method')) {
+        if ($order != null && $order->getId() && $order->getPayment()->getData('method')) {
             $additionalInfo = $order->getPayment()->getData('additional_information');
             $methodCode = $order->getPayment()->getData('method');
             $analyticsData = [
@@ -330,8 +330,8 @@ class MercadoPago_Core_Helper_Data
     {
         return [
             "platform"         => "Magento",
-            "platform_version" => (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version,
-            "module_version"   => (string)Mage::getVersion(),
+            "platform_version" => (string)Mage::getVersion(),
+            "module_version"   => (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version,
             "code_version"     => phpversion()
         ];
     }

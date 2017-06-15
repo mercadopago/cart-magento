@@ -63,10 +63,14 @@ class MercadoPago_Core_CheckoutController
     protected function getCheckoutHandle()
     {
         $order = $this->getOrder();
-        $handle = $order->getPayment()->getMethod();
-        $handle .= '_success';
+        if (!$order->getId()){
 
-        return $handle;
+        } else {
+            $handle = $order->getPayment()->getMethod();
+            $handle .= '_success';
+
+            return $handle;
+        }
     }
 
     protected function _getTotal($order){

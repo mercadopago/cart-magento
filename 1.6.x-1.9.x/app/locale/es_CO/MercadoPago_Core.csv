@@ -140,3 +140,16 @@
 
 "Consider Discounts","Considerar descuentos"
 "Consider discount of Mercado Pago to invoicing","Considerar descuento de Mercado Pago en la facturación"
+
+"Mercado Pago Payment Id: %s","Id transacción Mercado Pago: %s"
+"Payment Status: approved","Estado del Pago: Aprobado"
+"Payment Status: in_process", "Estado del Pago: en proceso"
+"Payment Status: rejected", "Estado del Pago: rechazado"
+"Payment Detail: accredited","Detalle del Pago: acreditado"
+"Payment Detail: pending_contingency","Detalle del Pago: pendiente"
+"Payment Detail: cc_rejected_call_for_authorize","Detalle del Pago: Tarjeta de crédito rechazada. Llamar para autorizar."
+"Payment Detail: cc_rejected_insufficient_amount","Detalle del Pago: Tarjeta de crédito rechazada por monto insuficiente."
+"Payment Detail: cc_rejected_bad_filled_security_code","Detalle del Pago: Tarjeta de crédito rechazada por código de seguridad."
+"Payment Detail: cc_rejected_bad_filled_other","Detalle del Pago: Tarjeta de crédito rechazada por error en formulario."
+"Payment Detail: cc_rejected_other_reason","Detalle del Pago: Rechazo general"
+"Payment Detail: cc_rejected_bad_filled_date","Detalle del Pago: Tarjeta de crédito rechazada por fecha de expiración."

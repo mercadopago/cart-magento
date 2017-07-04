@@ -182,7 +182,7 @@
 "Cancellation made by Mercado Pago","Cancellation made by Mercado Pago"
 "Failed to make the cancellation by Mercado Pago","Failed to make the cancellation by Mercado Pago"
 "Order payment wasn't made by Mercado Pago. The cancellation will be made through Magento", "Order payment wasn't made by Mercado Pago. The cancellation will be made through Magento"
-"Mercado Pago cancellation are disabled. The cancellation will be made through Magento","Mercado Pago cancellation are disabled. The cancellation will be made through Magento"
+"Mercado Pago cancellation is disabled. The cancellation will be made through Magento","Mercado Pago cancellation are disabled. The cancellation will be made through Magento"
 "You can only make cancellations on orders whose status is Processing or Pending","You can only cancel orders in status Processing or Pending"
 "You can only make cancellations on orders whose payment status is Rejected, Pending o In Process","You can only make cancellations on orders whose payment status is Rejected, Pending o In Process"
 "Mercado Pago - Cancellations not made","Mercado Pago - Cancellation not made"

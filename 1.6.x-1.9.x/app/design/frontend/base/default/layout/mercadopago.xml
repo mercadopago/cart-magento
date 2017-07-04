@@ -110,6 +110,18 @@
         </reference>
     </checkout_onepage_index>
 
+    <onestepcheckout_index_index>
+        <reference name="content">
+            <block type="mercadopago/analytics_checkout" name="mercadopago_analytics" as="mercadopago_analytics" template="mercadopago/analytics/checkout.phtml"/>
+        </reference>
+    </onestepcheckout_index_index>
+
+    <idecheckoutvm_index_index>
+        <reference name="content">
+            <block type="mercadopago/analytics_checkout" name="mercadopago_analytics" as="mercadopago_analytics" template="mercadopago/analytics/checkout.phtml"/>
+        </reference>
+    </idecheckoutvm_index_index>
+
     <checkout_cart_index>
         <reference name="head">
             <action method="addCss">

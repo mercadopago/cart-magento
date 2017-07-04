@@ -173,14 +173,13 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 "Installments: %s","Cuotas: %s"
 "Statement Descriptor: %s","Identificación en la Factura de la Tarjeta de Crédito: %s"
 "Payment Id (Mercado Pago): %s","Número de Pago (Mercado Pago): %s"
-"Payment Status: %s (%s)","Estado del Pago: %s (%s)"
-"Payment Status: ","Estado del Pago: "
-"Payment Detail: ","Detalle del Pago: "
-"Mercado Pago Payment Id: %s","Id transacción Mercado Pago: %s"
+
 
 
 "Mercado Pago Payment Id: %s","Id transacción Mercado Pago: %s"
 "Payment Status: approved","Estado del Pago: Aprobado"
+"Payment Status: in_process", "Estado del Pago: en proceso"
+"Payment Status: rejected", "Estado del Pago: rechazado"
 "Payment Detail: accredited","Detalle del Pago: acreditado"
 "Payment Detail: pending_contingency","Detalle del Pago: pendiente"
 "Payment Detail: cc_rejected_call_for_authorize","Detalle del Pago: Tarjeta de crédito rechazada. Llamar para autorizar."
@@ -189,11 +188,6 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 "Payment Detail: cc_rejected_bad_filled_other","Detalle del Pago: Tarjeta de crédito rechazada por error en formulario."
 "Payment Detail: cc_rejected_other_reason","Detalle del Pago: Rechazo general"
 "Payment Detail: cc_rejected_bad_filled_date","Detalle del Pago: Tarjeta de crédito rechazada por fecha de expiración."
-
-
-"Payment Status: in_process", "Estado del Pago: en proceso"
-"Payment Status: rejected", "Estado del Pago: rechazado"
-
 
 
 "Click on the link to generate the ticket","Clique en el link para mostrar el ticket de pago"
@@ -384,7 +378,7 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 
 "Order Status Update - Cron Configuration","Chequeo del estado de las Ordenes - Configuración del Cron"
 "Time between verifications","Tiempo entre verificaciones"
-"Amount of hours","Cantidad de horas"
-"Try to update all the orders created "amount of hours" before time to the moment to execute the cron","Verifica e intenta actualizar todas las ordenes creadas 'cantidad de horas' antes de la hora en la que se ejecuta el cron"
+"Interval","Intervalo"
+"A interval is X hours before cron execution instant. Orders between this interval are updated.","Un intervalo son las X horas antes de la ejecucion del cron. Las ordenes dentro de este intervalo se actualizaran."
 
 "The cancellation will be made through Magento. It wasn't possible to cancel on MercadoPago","La cancelación se realizó a través de Magento. No fue posible cancelarla en MercadoPago"

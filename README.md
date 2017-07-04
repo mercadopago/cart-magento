@@ -136,7 +136,7 @@ On store administration you can define the execution period and limit the number
 
 <ul>
 <li>PHP 5.4.x</li>
-<li>PHP 5.5.x</li>
+<li>PHP 5.6.x</li>
 </ul>
     Required extensions:
 

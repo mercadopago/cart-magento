@@ -140,7 +140,7 @@ class MercadoPago_Core_Model_Observer
         $user = $mp->get("/users/me");
         Mage::helper('mercadopago')->log("API Users response", self::LOG_FILE, $user);
 
-        if ($user['status'] == 200 && !in_array("test_user", $user['response']['tags']) && strpos($accessToken, 'TEST') === FALSE) {
+        if ($user['status'] == 200 && !in_array("test_user", $user['response']['tags']) && strpos($accessToken, 'TEST') === false) {
             $sponsors = [
                 'MLA' => 186172525,
                 'MLB' => 186175129,
@@ -175,24 +175,26 @@ class MercadoPago_Core_Model_Observer
 
     }
 
-    public function salesOrderBeforeCancel (Varien_Event_Observer $observer) {
-        $orderID = (int) $observer->getEvent()->getControllerAction()->getRequest()->getParam('order_id');
+    public function salesOrderBeforeCancel(Varien_Event_Observer $observer)
+    {
+        $orderID = (int)$observer->getEvent()->getControllerAction()->getRequest()->getParam('order_id');
         $order = Mage::getModel('sales/order')->load($orderID);
-        
+
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
-        
+
         if ($order->getExternalRequest() || !$this->_isMercadoPago($paymentMethod)) {
             return;
         }
         $orderStatus = $order->getData('status');
         $additionalInformation = $order->getPayment()->getAdditionalInformation();
 
-        $orderPaymentStatus = isset($additionalInformation['status']) ? $additionalInformation['status'] : null ;
-        $paymentID = isset($additionalInformation['payment_id_detail']) ? $additionalInformation['payment_id_detail'] : null ;
+        $orderPaymentStatus = isset($additionalInformation['status']) ? $additionalInformation['status'] : null;
+        $paymentID = isset($additionalInformation['payment_id_detail']) ? $additionalInformation['payment_id_detail'] : null;
 
         $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
-        if ($refundAvailable & $paymentID == null){
+        if ($refundAvailable & $paymentID == null) {
             $this->_getSession()->addWarning(__('The cancellation will be made through Magento. It wasn\'t possible to cancel on MercadoPago'));
+
             return;
         }
 
@@ -200,7 +202,8 @@ class MercadoPago_Core_Model_Observer
 
     }
 
-    protected function _cancellationRequest($orderStatus, $orderPaymentStatus, $paymentID, $paymentMethod) {
+    protected function _cancellationRequest($orderStatus, $orderPaymentStatus, $paymentID, $paymentMethod)
+    {
         if (!($orderPaymentStatus == null || $paymentID == null)) {
 
             $isValidBasicData = $this->checkCancelationBasicData($paymentID, $paymentMethod);
@@ -214,7 +217,8 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
-    protected function _sendCancellationRequest ($paymentMethod, $paymentID) {
+    protected function _sendCancellationRequest($paymentMethod, $paymentID)
+    {
         $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
         $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
 
@@ -242,7 +246,8 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
-    protected function checkCancelationBasicData ($paymentID, $paymentMethod) {
+    protected function checkCancelationBasicData($paymentID, $paymentMethod)
+    {
 
         if ($paymentID == null) {
             return false;
@@ -250,19 +255,22 @@ class MercadoPago_Core_Model_Observer
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
             $this->_getSession()->addWarning(__('Order payment wasn\'t made by Mercado Pago. The cancellation will be made through Magento'));
+
             return false;
         }
 
         $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
         if (!$refundAvailable) {
-            $this->_getSession()->addWarning(__('Mercado Pago cancellations are disabled. The cancellation will be made through Magento'));
+            $this->_getSession()->addWarning(__('Mercado Pago cancellation is disabled. The cancellation will be made through Magento'));
+
             return false;
         }
 
         return true;
     }
 
-    protected function checkCancelationData ($orderStatus, $orderPaymentStatus) {
+    protected function checkCancelationData($orderStatus, $orderPaymentStatus)
+    {
         $isValidaData = true;
 
         if (!($orderStatus == 'processing' || $orderStatus == 'pending')) {
@@ -270,7 +278,7 @@ class MercadoPago_Core_Model_Observer
             $isValidaData = false;
         }
 
-        if (!($orderPaymentStatus == 'pending' || $orderPaymentStatus == 'in_process' || $orderPaymentStatus == 'rejected' )) {
+        if (!($orderPaymentStatus == 'pending' || $orderPaymentStatus == 'in_process' || $orderPaymentStatus == 'rejected')) {
             $this->_getSession()->addError(__('You can only make cancellations on orders whose payment status is Rejected, Pending o In Process'));
             $isValidaData = false;
         }
@@ -282,17 +290,20 @@ class MercadoPago_Core_Model_Observer
         return $isValidaData;
     }
 
-    protected function throwCancelationException () {
+    protected function throwCancelationException()
+    {
         if (Mage::registry('cancel_exception') != null) {
             Mage::register('cancel_exception', true);
         }
     }
 
-    protected function _getSession() {
+    protected function _getSession()
+    {
         return Mage::getSingleton('adminhtml/session');
     }
 
-    public function salesOrderAfterCancel (Varien_Event_Observer $observer) {
+    public function salesOrderAfterCancel(Varien_Event_Observer $observer)
+    {
         $mpCancellation = Mage::registry('mercadopago_cancellation');
         if ($mpCancellation) {
             $order = $observer->getData('order');
@@ -302,7 +313,8 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
-    public function salesOrderBeforeSave () {
+    public function salesOrderBeforeSave()
+    {
         $cancelException = Mage::registry('cancel_exception');
         if ($cancelException) {
             Mage::unregister('cancel_exception');
@@ -314,7 +326,7 @@ class MercadoPago_Core_Model_Observer
      * @param Varien_Event_Observer $observer
      */
 
-    public function creditMemoRefundBeforeSave (Varien_Event_Observer $observer)
+    public function creditMemoRefundBeforeSave(Varien_Event_Observer $observer)
     {
         $creditMemo = $observer->getData('creditmemo');
         $order = $creditMemo->getOrder();
@@ -329,19 +341,17 @@ class MercadoPago_Core_Model_Observer
         $orderPaymentStatus = $order->getPayment()->getData('additional_information')['status'];
         $payment = $order->getPayment();
 
-        $orderStatusHistory = $order->getAllStatusHistory();
         $isCreditCardPayment = ($order->getPayment()->getData('additional_information')['installments'] != null ? true : false);
 
         $paymentDate = null;
-        foreach ($orderStatusHistory as $status) {
-            if (strpos($status->getComment(), 'The payment was approved') !== false) {
-                $paymentDate = $status->getCreatedAt();
-                break;
-            }
+        $invoice = $order->getInvoiceCollection()->getLastItem();
+        if ($invoice) {
+            $paymentDate = $invoice->getCreatedAt();
         }
-        $isValidBasicData = $this->checkRefundBasicData ($paymentMethod, $paymentDate);
+
+        $isValidBasicData = $this->checkRefundBasicData($paymentMethod, $paymentDate);
         if ($isValidBasicData) {
-            $isValidaData = $this->checkRefundData ($isCreditCardPayment,
+            $isValidaData = $this->checkRefundData($isCreditCardPayment,
                 $orderStatus,
                 $orderPaymentStatus,
                 $paymentDate,
@@ -354,36 +364,40 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
-    protected function checkRefundBasicData ($paymentMethod, $paymentDate) {
+    protected function checkRefundBasicData($paymentMethod, $paymentDate)
+    {
         $refundAvailable = Mage::getStoreConfig('payment/mercadopago/refund_available');
 
         if ($paymentDate == null) {
             $this->_getSession()->addError(__('No payment is recorded. You can\'t make a refund on a unpaid order'));
+
             return false;
         }
 
         if (!($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom')) {
             $this->_getSession()->addWarning(__('Order payment wasn\'t made by Mercado Pago. The refund will be made through Magento'));
+
             return false;
         }
 
         if (!$refundAvailable) {
             $this->_getSession()->addWarning(__('Mercado Pago refunds are disabled. The refund will be made through Magento'));
+
             return false;
         }
 
         return true;
     }
 
-    protected function checkRefundData ($isCreditCardPayment,
-                                        $orderStatus,
-                                        $orderPaymentStatus,
-                                        $paymentDate,
-                                        $order)
+    protected function checkRefundData($isCreditCardPayment,
+                                       $orderStatus,
+                                       $orderPaymentStatus,
+                                       $paymentDate,
+                                       $order)
     {
 
-        $maxDays = (int) Mage::getStoreConfig('payment/mercadopago/maximum_days_refund');
-        $maxRefunds = (int) Mage::getStoreConfig('payment/mercadopago/maximum_partial_refunds');
+        $maxDays = (int)Mage::getStoreConfig('payment/mercadopago/maximum_days_refund');
+        $maxRefunds = (int)Mage::getStoreConfig('payment/mercadopago/maximum_partial_refunds');
 
         $isValidaData = true;
 
@@ -420,7 +434,8 @@ class MercadoPago_Core_Model_Observer
         return $isValidaData;
     }
 
-    protected function sendRefundRequest ($order, $creditMemo, $paymentMethod, $isTotalRefund) {
+    protected function sendRefundRequest($order, $creditMemo, $paymentMethod, $isTotalRefund)
+    {
 
         $response = null;
         $amount = $creditMemo->getGrandTotal();
@@ -435,11 +450,11 @@ class MercadoPago_Core_Model_Observer
             } else {
                 $order->setMercadoPagoRefundType('partial');
                 $metadata = [
-                    "reason" => '',
+                    "reason"             => '',
                     "external_reference" => $order->getIncrementId(),
                 ];
                 $params = [
-                    "amount" => $amount,
+                    "amount"   => $amount,
                     "metadata" => $metadata,
                 ];
                 $response = $mp->post('/collections/' . $paymentID . '/refunds?access_token=' . $mp->get_access_token(), $params);
@@ -468,18 +483,20 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
-    protected function throwRefundException () {
+    protected function throwRefundException()
+    {
         Mage::throwException(Mage::helper('mercadopago')->__('Mercado Pago - Refund not made'));
     }
 
     private function daysSince($date)
     {
         $now = Mage::getModel('core/date')->timestamp(time());
-        $date = strtotime ($date);
+        $date = strtotime($date);
+
         return (abs($now - $date) / 86400);
     }
 
-    public function creditMemoRefundAfterSave (Varien_Event_Observer $observer)
+    public function creditMemoRefundAfterSave(Varien_Event_Observer $observer)
     {
         $creditMemo = $observer->getData('creditmemo');
 
@@ -495,7 +512,8 @@ class MercadoPago_Core_Model_Observer
         }
     }
 
-    public function checkoutSubmitAllAfter (Varien_Event_Observer $observer) {
+    public function checkoutSubmitAllAfter(Varien_Event_Observer $observer)
+    {
         $recurringProfiles = $observer->getRecurringProfiles();
         if (isset($recurringProfiles) && count($recurringProfiles) > 0) {
             $checkoutSession = Mage::getSingleton('checkout/session');
@@ -509,5 +527,4 @@ class MercadoPago_Core_Model_Observer
     }
 
 
-  
 }

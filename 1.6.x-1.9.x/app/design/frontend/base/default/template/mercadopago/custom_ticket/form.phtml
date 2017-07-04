@@ -8,7 +8,9 @@ $route = $this->getRequest()->getRequestedRouteName();
 
 ?>
 <script type="text/javascript">
-    sendAnalyticsData("<?php echo $_code ?>");
+    if (typeof sendAnalyticsData === 'function') {
+        sendAnalyticsData("<?php echo $_code ?>");
+    }
 </script>
 <fieldset class="conteiner-form-list">
     <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
@@ -53,7 +55,7 @@ $route = $this->getRequest()->getRequestedRouteName();
                 <input type="hidden" class="site_id" name="site_id" value="<?php echo strtoupper($country); ?>"/>
                 <input type="hidden" class="mercadopago-discount-amount" name="mercadopago-discount-amount" value="0"/>
                 <input type="hidden" class="mercadopago-text-currency" value="<?php echo $this->__('$'); ?>">
-                <input type="hidden" class="mercadopago-text-choice" value="<?php echo $this->__('Choice'); ?>">
+                <input type="hidden" class="mercadopago-text-choice" value="<?php echo $this->__('Select'); ?>">
                 <input type="hidden" class="mercadopago-text-default-issuer" value="<?php echo $this->__('Default issuer'); ?>">
                 <input type="hidden" class="mercadopago-text-installment" value="<?php echo $this->__('Enter the card number'); ?>">
                 <input type="hidden" class="mercado_base_url" value="<?php echo $base_url; ?>">

@@ -41,7 +41,7 @@ $customer = $this->getCustomerAndCards();
                         <li id="second_card_securityCodeOCP__mp">
                             <label for="second_card_securityCode"><?php echo $this->__('CVV'); ?></label>
                             <input type="text" id="second_card_securityCodeOCP" class="required-entry" data-checkout="securityCode" maxlength="4" data-element-id="#second_card_securityCodeOCP__mp"/>
-                            <p class="message-error error-E302 error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
+                            <p class="message-error second_card_error-E302 second_card_error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
                             <span class="ch-form-hint"><?php echo $this->__('Last 3 numbers on back side.'); ?></span>
                         </li>
                     </ul>
@@ -59,7 +59,7 @@ $customer = $this->getCustomerAndCards();
                 <li id="second_card_cardNumber__mp">
                     <label for="second_card_cardNumber"><?php echo $this->__('Card Number'); ?></label>
                     <input type="text" id="second_card_cardNumber" data-checkout="cardNumber" data-element-id="#second_card_cardNumber__mp"/>
-                    <p class="message-error second_card_error-payment-method-not-found error-E301 error-205 validation-advice"><?php echo $this->__('Card number is invalid.'); ?></p>
+                    <p class="message-error second_card_error-payment-method-not-found second_card_error-E301 second_card_error-205 validation-advice"><?php echo $this->__('Card number is invalid.'); ?></p>
                     <p class="message-error second_card_error-payment-method-min-amount validation-advice"><?php echo $this->__('Cannot pay this amount with this payment_method_id.'); ?></p>
                 </li>
 
@@ -95,25 +95,25 @@ $customer = $this->getCustomerAndCards();
                 <li id="second_card_cardholderName__mp">
                     <label for="second_card_cardholderName"><?php echo $this->__('Card Holder Name'); ?></label>
                     <input type="text" id="second_card_cardholderName" data-checkout="cardholderName" name="payment[<?php echo $_code; ?>][card_holder_name]" data-element-id="#second_card_cardholderName__mp"/>
-                    <p class="message-error error-316 validation-advice"><?php echo $this->__('Card Holder Name is invalid.'); ?></p>
+                    <p class="message-error second_card_error-316 validation-advice"><?php echo $this->__('Card Holder Name is invalid.'); ?></p>
                 </li>
 
                 <li id="second_card_securityCode__mp">
                     <label for="second_card_securityCode"><?php echo $this->__('CVV'); ?></label>
                     <input type="text" id="second_card_securityCode" data-checkout="securityCode" maxlength="4" data-element-id="#second_card_securityCode__mp" class="required-entry"/>
-                    <p class="message-error second_card_error-E302 second_card_error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
+                    <p class="message-error error-E302 second_card_error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
                     <span class="ch-form-hint"><?php echo $this->__('Last 3 numbers on back side.'); ?></span>
                 </li>
 
                 <li id="second_card_doc_type__mp">
                     <label for="second_card_docNumber"><?php echo $this->__('Document'); ?></label>
                     <select id="second_card_docType" data-checkout="docType" data-element-id="#second_card_doc_type__mp" name="payment[<?php echo $_code; ?>][doc_type]"></select>
-                    <p class="message-error error-322 error-212 validation-advice"><?php echo $this->__('Document Type is invalid.'); ?></p>
+                    <p class="message-error second_card_error-322 second_card_error-212 validation-advice"><?php echo $this->__('Document Type is invalid.'); ?></p>
                 </li>
 
                 <li id="second_card_doc_number__mp">
                     <input type="text" id="second_card_docNumber" class="mp-validate-docnumber" data-checkout="docNumber" name="payment[<?php echo $_code; ?>][doc_number]" data-element-id="#second_card_doc_number__mp"/>
-                    <p class="message-error error-324 error-213 error-214 validation-advice"><?php echo $this->__('Document Number is invalid.'); ?></p>
+                    <p class="message-error second_card_error-324 second_card_error-213 second_card_error-214 validation-advice"><?php echo $this->__('Document Number is invalid.'); ?></p>
                 </li>
             </ul>
 

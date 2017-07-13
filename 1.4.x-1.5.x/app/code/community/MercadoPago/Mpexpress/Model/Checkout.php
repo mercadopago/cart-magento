@@ -103,6 +103,9 @@ class MercadoPago_Mpexpress_Model_Checkout extends MercadoPago_Mpexpress_Model_M
       }
       
       public function GetStatus($id){
+            if (!ctype_digit(strval($id))) {
+              throw new MercadoPagoException("Invalid argument. Payment ID must be integer");
+            }
      
             $this->getAccessToken(); 
             $url = "https://api.mercadolibre.com/collections/notifications/" . $id . "?access_token=" . $this->accesstoken;
@@ -114,5 +117,13 @@ class MercadoPago_Mpexpress_Model_Checkout extends MercadoPago_Mpexpress_Model_M
       
 
 }  
+
+class MercadoPagoException extends Exception {
+    public function __construct($message, $code = 500, Exception $previous = null) {
+        // Default code 500
+        parent::__construct($message, $code, $previous);
+    }
+}
+
 ?>
 

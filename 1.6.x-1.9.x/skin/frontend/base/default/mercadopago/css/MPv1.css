@@ -84,15 +84,13 @@
   margin-top: 10px;
 }
 
-.obrigatorio{
-  float: right;
-  font-style: normal;
-  color: #eb340a;
-  position: absolute;
-  top: 0;
-  right: -8px;
+[class^=form-col-] label.require:after {
+    content: ' *';
+    color: #df280a;
+    font-weight: normal;
+    font-family: "Helvetica Neue", Verdana, Arial, sans-serif;
+    font-size: 12px;
 }
-
 
 /* Error */
 .erro_febraban{

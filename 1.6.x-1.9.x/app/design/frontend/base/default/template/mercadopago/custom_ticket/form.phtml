@@ -122,42 +122,42 @@ if (typeof sendAnalyticsData === 'function') {
           <div id="form-ticket">
             <div class="form-row">
               <div class="form-col-6">
-                <label  for="firstname"><?php echo $form_labels['form']['name']; ?><em class="obrigatorio"> *</em></label>
+                <label for="firstname" class="require"><?php echo $form_labels['form']['name']; ?></label>
                 <input type="text" name="payment[<?php echo $_code; ?>][firstname]" id="MPv1-firstname" class="form-control-mine required-entry-firstname">
               </div>
 
               <div class="form-col-6">
-                <label  for="lastname"><?php echo $form_labels['form']['surname']; ?><em class="obrigatorio"> *</em></label>
+                <label  for="lastname" class="require"><?php echo $form_labels['form']['surname']; ?></label>
                 <input type="text" name="payment[<?php echo $_code; ?>][lastname]" id="MPv1-lastname" class="form-control-mine required-entry-lastname">
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-col-12">
-                <label for="docNumber"><?php echo $form_labels['form']['docNumber']; ?><em class="obrigatorio"> *</em></label>
+                <label for="docNumber" class="require"><?php echo $form_labels['form']['docNumber']; ?></label>
                 <input type="text" name="payment[<?php echo $_code; ?>][doc-number]" class="form-control-mine required-entry-doc-number" maxlength="14" id="MPv1-docNumber" onkeypress='execFormat(this,formatCPF)' onblur='clearTimeout()'>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-col-8">
-                <label for="address"><?php echo $form_labels['form']['address']; ?><em class="obrigatorio"> *</em></label>
+                <label for="address" class="require"><?php echo $form_labels['form']['address']; ?></label>
                 <input type="text" name="payment[<?php echo $_code; ?>][address]" id="MPv1-address" class="form-control-mine required-entry-address">
               </div>
               <div class="form-col-4">
-                <label for="number"><?php echo $form_labels['form']['number']; ?><em class="obrigatorio"> *</em></label>
+                <label for="number" class="require"><?php echo $form_labels['form']['number']; ?></label>
                 <input type="text" name="payment[<?php echo $_code; ?>][address-number]" id="MPv1-number" onkeypress="return event.charCode >= 48 && event.charCode <= 57"  class="form-control-mine required-entry-address-number">
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-col-6">
-                <label for="city"><?php echo $form_labels['form']['city']; ?><em class="obrigatorio"> *</em></label>
+                <label for="city" class="require"><?php echo $form_labels['form']['city']; ?></label>
                 <input type="text" name="payment[<?php echo $_code; ?>][address-city]" id="MPv1-city" class="form-control-mine required-entry-address-city">
               </div>
 
               <div class="form-col-6">
-                <label for="state"><?php echo $form_labels['form']['state']; ?><em class="obrigatorio"> *</em></label>
+                <label for="state" class="require"><?php echo $form_labels['form']['state']; ?></label>
                 <select name="payment[<?php echo $_code; ?>][address-state]" id="MPv1-state" class="form-control-mine required-entry-address-state">
                   <option value=""><?php echo $form_labels['form']['select']; ?></option>
                   <option value="AC">Acre</option>
@@ -193,7 +193,7 @@ if (typeof sendAnalyticsData === 'function') {
 
             <div class="form-row">
               <div class="form-col-6">
-                <label for="zipcode"><?php echo $form_labels['form']['zipcode']; ?><em class="obrigatorio"> *</em></label>
+                <label for="zipcode" class="require"><?php echo $form_labels['form']['zipcode']; ?></label>
                 <input type="text" name="payment[<?php echo $_code; ?>][address-zipcode]" id="MPv1-zipcode" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control-mine required-entry-address-zipcode">
               </div>
             </div>

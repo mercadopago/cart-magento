@@ -61,12 +61,9 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         $info = $this->getInfoInstance();
         $info->setAdditionalInformation('payment_method', $infoForm['payment_method_ticket']);
 
-
-
         if (isset($infoForm['coupon_code'])) {
             $info->setAdditionalInformation('coupon_code', $infoForm['coupon_code']);
         }
-
 
         // Fields for new febraban rule
         foreach ($this->fields_febraban as $key) {
@@ -94,16 +91,9 @@ class MercadoPago_Core_Model_CustomTicket_Payment
             $paymentInfo['coupon_code'] = $payment->getAdditionalInformation("coupon_code");
         }
 
-
-        // Fields for new febraban rule
-        foreach ($this->fields_febraban as $key) {
-          error_log("Teste: " . $key . " - " . $payment->getAdditionalInformation($key));
-        }
-
         $preference = $core->makeDefaultPreferencePaymentV1($paymentInfo);
 
         $preference['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
-
 
         // febraban rule
         if ($payment->getAdditionalInformation("firstname") != "") {

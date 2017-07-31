@@ -312,8 +312,8 @@ class MercadoPago_Core_Helper_Data
                 $analyticsData['payment_type'] = 'ticket';
             }
         } else {
-            $analyticsData['platform_version'] = (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version;
-            $analyticsData['module_version'] = (string)Mage::getVersion();
+            $analyticsData['platform_version'] = (string)Mage::getVersion();
+            $analyticsData['module_version'] = (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version;
             $analyticsData['email'] = Mage::getModel('mercadopago/core')->getEmailCustomer();
             $analyticsData['user_logged'] = Mage::getSingleton('customer/session')->getCustomer()->getId() !== 0 ? 1 : 0;
             $analyticsData['payment_methods'] = implode(',', array_keys(Mage::getSingleton('payment/config')->getActiveMethods()));
@@ -374,6 +374,10 @@ class MercadoPago_Core_Helper_Data
         $account_settings = $api->post("/modules/tracking/settings", $request['data']);
         $this->log("Analytics settings response", 'mercadopago_analytics.log', $account_settings);
 
+    }
+
+    public function getVersionModule(){
+      return (string) Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version;
     }
 
 }

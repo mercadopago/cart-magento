@@ -135,7 +135,7 @@ if (typeof sendAnalyticsData === 'function') {
             <div class="form-row">
               <div class="form-col-12">
                 <label for="docNumber" class="require"><?php echo $form_labels['form']['docNumber']; ?></label>
-                <input type="text" name="payment[<?php echo $_code; ?>][doc-number]" class="form-control-mine required-entry-doc-number" maxlength="14" id="MPv1-docNumber" onkeypress='execFormat(this,formatCPF)' onblur='clearTimeout()'>
+                <input type="text" name="payment[<?php echo $_code; ?>][doc-number]" class="form-control-mine required-entry-doc-number" maxlength="14" id="MPv1-docNumber" onblur='clearTimeout()'>
               </div>
             </div>
 
@@ -207,7 +207,7 @@ if (typeof sendAnalyticsData === 'function') {
           </div>
 
           <script>
-          //<![CDATA[
+
           if (typeof Validation != 'undefined'){
             Validation.add('required-entry-firstname', "<?php echo $form_labels['error']['FEB001']; ?>", function(v) {
               return !Validation.get('IsEmpty').test(v);
@@ -279,14 +279,11 @@ if (typeof sendAnalyticsData === 'function') {
           document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $state_code[$customer['state']]['code']; ?>";
           document.querySelector("#form-ticket #MPv1-zipcode").value = "<?php echo $customer['zipcode']; ?>";
 
-          function execFormat(o,f){
-              v_obj=o
-              v_fun=f
-              setTimeout('execFunction()',1)
-          }
-
-          function execFunction(){
-              v_obj.value=v_fun(v_obj.value)
+          function execFormat(){
+            v_obj= this
+            setTimeout(function(){
+              v_obj.value= formatCPF(v_obj.value)
+            },1)
           }
 
           function formatCPF(v){
@@ -305,7 +302,18 @@ if (typeof sendAnalyticsData === 'function') {
 
             return v
           }
-          //]]>
+
+          addListenerEventCustom(document.querySelector("#form-ticket #MPv1-docNumber"), 'keyup', execFormat);
+
+          function addListenerEventCustom(el, eventName, handler){
+            if (el.addEventListener) {
+              el.addEventListener(eventName, handler);
+            } else {
+              el.attachEvent('on' + eventName, function(){
+                handler.call(el);
+              });
+            }
+          };
 
           </script>
 
@@ -329,8 +337,11 @@ if (typeof sendAnalyticsData === 'function') {
   <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
     <p class="communication"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
   <?php endif; ?>
+
   <?php if ($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
-    <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>" class="banner_checkout_mp"/>
+    <div id="box-banner">
+      <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>" class="banner_checkout_mp"/>
+    </div>
   <?php endif; ?>
 
 </fieldset>

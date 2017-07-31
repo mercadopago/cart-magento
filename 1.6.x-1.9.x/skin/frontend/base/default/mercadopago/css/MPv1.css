@@ -2,6 +2,7 @@
   width: 92%;
   margin-left: 10px;
   margin-right: 10px;
+  max-width: 400px;
 }
 
 .form-row{
@@ -85,11 +86,11 @@
 }
 
 [class^=form-col-] label.require:after {
-    content: ' *';
-    color: #df280a;
-    font-weight: normal;
-    font-family: "Helvetica Neue", Verdana, Arial, sans-serif;
-    font-size: 12px;
+  content: ' *';
+  color: #df280a;
+  font-weight: normal;
+  font-family: "Helvetica Neue", Verdana, Arial, sans-serif;
+  font-size: 12px;
 }
 
 /* Error */
@@ -104,4 +105,11 @@
   display: none;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   clear: both;
+}
+
+
+
+#box-banner{
+  float: left;
+  width: 100%;
 }

@@ -22,6 +22,9 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
     protected $_code = 'mercadopago_customticket';
 
+    protected $fields_febraban = array(
+      "firstname", "lastname", "doc-number", "address", "address-number", "address-city", "address-state", "address-zipcode"
+    );
     /**
      * @param string $paymentAction
      * @param object $stateObject
@@ -58,10 +61,15 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         $info = $this->getInfoInstance();
         $info->setAdditionalInformation('payment_method', $infoForm['payment_method_ticket']);
 
-
-
         if (isset($infoForm['coupon_code'])) {
             $info->setAdditionalInformation('coupon_code', $infoForm['coupon_code']);
+        }
+
+        // Fields for new febraban rule
+        foreach ($this->fields_febraban as $key) {
+          if (isset($infoForm[$key])) {
+            $info->setAdditionalInformation($key, $infoForm[$key]);
+          }
         }
 
         return $this;
@@ -87,10 +95,44 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
         $preference['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
 
+        // febraban rule
+        if ($payment->getAdditionalInformation("firstname") != "") {
+          $preference['payer']['first_name'] = $payment->getAdditionalInformation("firstname");
+        }
+
+        if ($payment->getAdditionalInformation("lastname") != "") {
+          $preference['payer']['last_name'] = $payment->getAdditionalInformation("lastname");
+        }
+
+        if ($payment->getAdditionalInformation("doc-number") != "") {
+          $preference['payer']['identification']['type'] = "CPF";
+          $preference['payer']['identification']['number'] = $payment->getAdditionalInformation("doc-number");
+        }
+
+        if ($payment->getAdditionalInformation("address-zipcode") != "") {
+          $preference['payer']['address']['zip_code'] = $payment->getAdditionalInformation("address-zipcode");
+        }
+
+        if ($payment->getAdditionalInformation("address") != "") {
+          $preference['payer']['address']['street_name'] = $payment->getAdditionalInformation("address");
+        }
+
+        if ($payment->getAdditionalInformation("address-number") != "") {
+          $preference['payer']['address']['street_number'] = $payment->getAdditionalInformation("address-number");
+        }
+
+        if ($payment->getAdditionalInformation("address-city") != "") {
+          $preference['payer']['address']['city'] = $payment->getAdditionalInformation("address-city");
+          $preference['payer']['address']['neighborhood'] = $payment->getAdditionalInformation("address-city");
+        }
+
+        if ($payment->getAdditionalInformation("address-state") != "") {
+          $preference['payer']['address']['federal_unit'] = $payment->getAdditionalInformation("address-state");
+        }
+
         Mage::helper('mercadopago')->log("Ticket -> PREFERENCE to POST /v1/payments", 'mercadopago-custom.log', $preference);
 
         /* POST /v1/payments */
-
         return $core->postPaymentV1($preference);
     }
 

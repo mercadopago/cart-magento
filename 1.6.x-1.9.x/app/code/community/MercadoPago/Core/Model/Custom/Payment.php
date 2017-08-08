@@ -149,6 +149,9 @@ class MercadoPago_Core_Model_Custom_Payment
         }
 
         $info_form = $data->getData();
+        if(!isset($info_form['mercadopago_custom'])){
+          return $this;
+        }
         $info_form = $info_form['mercadopago_custom'];
         if (isset($info_form['one_click_pay']) && $info_form['one_click_pay'] == 1) {
             $info_form = $this->cleanFieldsOcp($info_form);

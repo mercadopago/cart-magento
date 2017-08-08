@@ -319,10 +319,11 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <comment><![CDATA[
-                                <span>Click to get your Access Token for: </span>
+                            <comment>
+                              <![CDATA[
+                                <span>Get your Public Key and Access Token on the link: </span> <br>
                                 <a href="https://www.mercadopago.com/mla/account/credentials" target="_blank">Argentina</a>
-                                <a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank">Brazil</a><br>
+                                <a href="https://www.mercadopago.com/mlb/account/credentials" target="_blank">Brazil</a>
                                 <a href="https://www.mercadopago.com/mlc/account/credentials" target="_blank">Chile</a>
                                 <a href="https://www.mercadopago.com/mco/account/credentials" target="_blank">Colombia</a>
                                 <a href="https://www.mercadopago.com/mlm/account/credentials" target="_blank">Mexico</a>
@@ -521,7 +522,6 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>0</show_in_store>
-                                    <comment>It is necessary to configure necessary the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in this section for its proper functioning</comment>
                                 </active>
                                 <client_id translate="label">
                                     <label>Client Id</label>
@@ -538,6 +538,19 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>0</show_in_store>
+                                    <comment>
+                                      <![CDATA[
+                                        <span>Get your Client id and Client Secret on the link: </span><br>
+                                        <a href="https://www.mercadopago.com/mla/account/credentials?type=basic" target="_blank">Argentina</a>
+                                        <a href="https://www.mercadopago.com/mlb/account/credentials?type=basic" target="_blank">Brazil</a>
+                                        <a href="https://www.mercadopago.com/mlc/account/credentials?type=basic" target="_blank">Chile</a>
+                                        <a href="https://www.mercadopago.com/mco/account/credentials?type=basic" target="_blank">Colombia</a>
+                                        <a href="https://www.mercadopago.com/mlm/account/credentials?type=basic" target="_blank">Mexico</a>
+                                        <a href="https://www.mercadopago.com/mpe/account/credentials?type=basic" target="_blank">Peru</a>
+                                        <a href="https://www.mercadopago.com/mlu/account/credentials?type=basic" target="_blank">Uruguay</a>
+                                        <a href="https://www.mercadopago.com/mlv/account/credentials?type=basic" target="_blank">Venezuela</a>
+                                        ]]>
+                                    </comment>
                                 </client_secret>
                                 <title translate="label">
                                     <label>Payment Title</label>
@@ -669,7 +682,6 @@
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>0</show_in_store>
-                                <comment>"It is necessary to configure necessary the Credentials 'CLIENT_ID' and 'CLIENT_SECRET' in this section for its proper functioning</comment>
                             </active>
                             <client_id translate="label">
                                 <label>Client Id</label>
@@ -686,6 +698,19 @@
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>0</show_in_store>
+                                <comment>
+                                  <![CDATA[
+                                    <span>Get your Client id and Client Secret on the link: </span><br>
+                                    <a href="https://www.mercadopago.com/mla/account/credentials?type=basic" target="_blank">Argentina</a>
+                                    <a href="https://www.mercadopago.com/mlb/account/credentials?type=basic" target="_blank">Brazil</a>
+                                    <a href="https://www.mercadopago.com/mlc/account/credentials?type=basic" target="_blank">Chile</a>
+                                    <a href="https://www.mercadopago.com/mco/account/credentials?type=basic" target="_blank">Colombia</a>
+                                    <a href="https://www.mercadopago.com/mlm/account/credentials?type=basic" target="_blank">Mexico</a>
+                                    <a href="https://www.mercadopago.com/mpe/account/credentials?type=basic" target="_blank">Peru</a>
+                                    <a href="https://www.mercadopago.com/mlu/account/credentials?type=basic" target="_blank">Uruguay</a>
+                                    <a href="https://www.mercadopago.com/mlv/account/credentials?type=basic" target="_blank">Venezuela</a>
+                                    ]]>
+                                </comment>
                             </client_secret>
                             <title translate="label">
                                 <label>Payment Title</label>

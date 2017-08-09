@@ -38,4 +38,66 @@ class MercadoPago_Core_Block_Customticket_Form
 
         return $tickets;
     }
+
+    public function getCustomerInformation(){
+      $customer = array();
+      $key_address = Mage::getStoreConfig('payment/mercadopago_customticket/street_number_address');
+      $key_address_number = Mage::getStoreConfig('payment/mercadopago_customticket/street_number_address_number');
+      $use_tax_vat = Mage::getStoreConfig('payment/mercadopago_customticket/tax_vat');
+
+      $state_code = array(
+        "485" => array("code" =>"AC", "state" => "Acre"),
+        "486" => array("code" =>"AL", "state" => "Alagoas"),
+        "487" => array("code" =>"AP", "state" => "Amapá"),
+        "488" => array("code" =>"AM", "state" => "Amazonas"),
+        "489" => array("code" =>"BA", "state" => "Bahia"),
+        "490" => array("code" =>"CE", "state" => "Ceará"),
+        "511" => array("code" =>"DF", "state" => "Distrito Federal"),
+        "491" => array("code" =>"ES", "state" => "Espírito Santo"),
+        "492" => array("code" =>"GO", "state" => "Goiás"),
+        "493" => array("code" =>"MA", "state" => "Maranhão"),
+        "494" => array("code" =>"MT", "state" => "Mato Grosso"),
+        "495" => array("code" =>"MS", "state" => "Mato Grosso do Sul"),
+        "496" => array("code" =>"MG", "state" => "Minas Gerais"),
+        "497" => array("code" =>"PA", "state" => "Pará"),
+        "498" => array("code" =>"PB", "state" => "Paraíba"),
+        "499" => array("code" =>"PR", "state" => "Paraná"),
+        "500" => array("code" =>"PE", "state" => "Pernambuco"),
+        "501" => array("code" =>"PI", "state" => "Piauí"),
+        "502" => array("code" =>"RJ", "state" => "Rio de Janeiro"),
+        "503" => array("code" =>"RN", "state" => "Rio Grande do Norte"),
+        "504" => array("code" =>"RS", "state" => "Rio Grande do Sul"),
+        "505" => array("code" =>"RO", "state" => "Rondônia"),
+        "506" => array("code" =>"RA", "state" => "Roraima"),
+        "507" => array("code" =>"SC", "state" => "Santa Catarina"),
+        "508" => array("code" =>"SP", "state" => "São Paulo"),
+        "509" => array("code" =>"SE", "state" => "Sergipe"),
+        "510" => array("code" =>"TO", "state" => "Tocantins")
+      );
+
+      if($use_tax_vat){
+        $customer_session = Mage::getSingleton('customer/session')->getCustomer();
+        $doc_number = $customer_session->getTaxvat();
+        $customer['docnumber'] = $doc_number;
+      }
+
+      $address = array(
+        "street_1" => Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getStreet(1),
+        "street_2" => Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getStreet(2),
+        "street_3" => Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getStreet(3),
+        "street_4" => Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getStreet(4)
+      );
+
+      $data_customer = Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getData();
+      $customer['firstname'] = $data_customer['firstname'];
+      $customer['lastname'] = $data_customer['lastname'];
+      $customer['address'] = $address[$key_address];
+      $customer['addressnumber'] = $address[$key_address_number];
+      $customer['city'] = $data_customer['city'];
+      $customer['state'] = $data_customer['region_id'];
+      $customer['zipcode'] = $data_customer['postcode'];
+      $customer['state_code'] = $state_code[$customer['state']]['code'];
+
+      return $customer;
+    }
 }

@@ -5,74 +5,35 @@ $_code = $this->getMethodCode();
 $grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
 $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
 $route = $this->getRequest()->getRequestedRouteName();
-$form_labels = array(
-  "form" => array(
-    "febraban_rules" => "Informações solicitadas em conformidade com as normas das circulares Nro. 3.461/09, 3.598/12 e 3.656/13 do Banco Central do Brasil.",
-    "select" => "Selecione...",
-    "name" => "Nome",
-    "surname" => "Sobrenome",
-    "docNumber" => "CPF",
-    "address" => "Endereço",
-    "number" => "Número",
-    "city" => "Cidade",
-    "state" => "Estado",
-    "zipcode" => "CEP"
-  ),
-  "error" => array(
-    //febraban
-    "FEB001" => "Obrigatório o preenchimento do Nome",
-    "FEB002" => "Obrigatório o preenchimento do Sobrenome",
-    "FEB003" => "Obrigatório o preenchimento de um CPF válido",
-    "FEB004" => "Obrigatório o preenchimento do Endereço",
-    "FEB005" => "Obrigatório o preenchimento do Número residencial",
-    "FEB006" => "Obrigatório informar a Cidade",
-    "FEB007" => "Obrigatório informar o Estado",
-    "FEB008" => "Obrigatório informar o CEP"
-  )
-);
 
-$billingAddress = Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getData();
-
-$customer = array(
-  "firstname" => $billingAddress['firstname'],
-  "lastname" => $billingAddress['lastname'],
-  "address" => $billingAddress['street'],
-  "addressnumber" => "",
-  "city" => $billingAddress['city'],
-  "state" => $billingAddress['region_id'],
-  "zipcode" => $billingAddress['postcode']
-);
-
-$state_code = array(
-  "485" => array("code" =>"AC", "state" => "Acre"),
-  "486" => array("code" =>"AL", "state" => "Alagoas"),
-  "487" => array("code" =>"AP", "state" => "Amapá"),
-  "488" => array("code" =>"AM", "state" => "Amazonas"),
-  "489" => array("code" =>"BA", "state" => "Bahia"),
-  "490" => array("code" =>"CE", "state" => "Ceará"),
-  "511" => array("code" =>"DF", "state" => "Distrito Federal"),
-  "491" => array("code" =>"ES", "state" => "Espírito Santo"),
-  "492" => array("code" =>"GO", "state" => "Goiás"),
-  "493" => array("code" =>"MA", "state" => "Maranhão"),
-  "494" => array("code" =>"MT", "state" => "Mato Grosso"),
-  "495" => array("code" =>"MS", "state" => "Mato Grosso do Sul"),
-  "496" => array("code" =>"MG", "state" => "Minas Gerais"),
-  "497" => array("code" =>"PA", "state" => "Pará"),
-  "498" => array("code" =>"PB", "state" => "Paraíba"),
-  "499" => array("code" =>"PR", "state" => "Paraná"),
-  "500" => array("code" =>"PE", "state" => "Pernambuco"),
-  "501" => array("code" =>"PI", "state" => "Piauí"),
-  "502" => array("code" =>"RJ", "state" => "Rio de Janeiro"),
-  "503" => array("code" =>"RN", "state" => "Rio Grande do Norte"),
-  "504" => array("code" =>"RS", "state" => "Rio Grande do Sul"),
-  "505" => array("code" =>"RO", "state" => "Rondônia"),
-  "506" => array("code" =>"RA", "state" => "Roraima"),
-  "507" => array("code" =>"SC", "state" => "Santa Catarina"),
-  "508" => array("code" =>"SP", "state" => "São Paulo"),
-  "509" => array("code" =>"SE", "state" => "Sergipe"),
-  "510" => array("code" =>"TO", "state" => "Tocantins")
-);
-
+if(strtoupper($country) == "MLB"){
+  $form_labels = array(
+    "form" => array(
+      "febraban_rules" => $this->__('Information requested in accordance with the rules of Circular No. 3.461/09, 3.598/12 and 3.656/13 of the Banco Central do Brasil.'),
+      "select" =>  $this->__('Select'),
+      "name" => $this->__('Name'),
+      "surname" =>  $this->__('Surname'),
+      "docNumber" =>  $this->__('Document Number'),
+      "address" =>  $this->__('Address'),
+      "number" =>  $this->__('Number'),
+      "city" =>  $this->__('City'),
+      "state" =>  $this->__('State'),
+      "zipcode" =>  $this->__('Zipcode')
+    ),
+    "error" => array(
+      //febraban
+      "FEB001" => $this->__('Name required'),
+      "FEB002" => $this->__('Surname required'),
+      "FEB003" => $this->__('Document Number required'),
+      "FEB004" => $this->__('Address required'),
+      "FEB005" => $this->__('Number Address required'),
+      "FEB006" => $this->__('City required'),
+      "FEB007" => $this->__('State required'),
+      "FEB008" => $this->__('Zipcode required')
+    )
+  );
+  $customer = $this->getCustomerInformation();
+}
 ?>
 <script type="text/javascript">
 if (typeof sendAnalyticsData === 'function') {
@@ -159,7 +120,7 @@ if (typeof sendAnalyticsData === 'function') {
               <div class="form-col-6">
                 <label for="state" class="require"><?php echo $form_labels['form']['state']; ?></label>
                 <select name="payment[<?php echo $_code; ?>][address-state]" id="MPv1-state" class="form-control-mine required-entry-address-state">
-                  <option value=""><?php echo $form_labels['form']['select']; ?></option>
+                  <option value=""><?php echo $form_labels['form']['select']; ?> ...</option>
                   <option value="AC">Acre</option>
                   <option value="AL">Alagoas</option>
                   <option value="AP">Amapá</option>
@@ -274,9 +235,11 @@ if (typeof sendAnalyticsData === 'function') {
           // Force the updating of values, when updating the html via ajax the value stays the same the first time set.
           document.querySelector("#form-ticket #MPv1-firstname").value = "<?php echo $customer['firstname']?>";
           document.querySelector("#form-ticket #MPv1-lastname").value = "<?php echo $customer['lastname']; ?>";
+          document.querySelector("#form-ticket #MPv1-docNumber").value = "<?php echo $customer['docnumber']; ?>";
           document.querySelector("#form-ticket #MPv1-address").value = "<?php echo preg_replace('/\s+/', ' ', $customer['address']); ?>";
+          document.querySelector("#form-ticket #MPv1-number").value = "<?php echo preg_replace('/\s+/', ' ', $customer['addressnumber']); ?>";
           document.querySelector("#form-ticket #MPv1-city").value = "<?php echo $customer['city']; ?>";
-          document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $state_code[$customer['state']]['code']; ?>";
+          document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $customer['state_code']; ?>";
           document.querySelector("#form-ticket #MPv1-zipcode").value = "<?php echo $customer['zipcode']; ?>";
 
           function execFormat(){

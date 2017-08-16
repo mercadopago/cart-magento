@@ -59,6 +59,7 @@ class MercadoPago_Core_Helper_StatusUpdate
                 if($statusOrder == 'canceled'){
                   $this->_order->cancel();
                 }
+                
                 $this->_order->setState($this->_getAssignedState($statusOrder));
                 $this->_order->addStatusToHistory($statusOrder, $message, true);
                 $this->_order->sendOrderUpdateEmail(true, $message);

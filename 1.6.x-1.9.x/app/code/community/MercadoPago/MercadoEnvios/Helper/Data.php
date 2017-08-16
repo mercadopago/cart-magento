@@ -36,11 +36,13 @@ class MercadoPago_MercadoEnvios_Helper_Data
             $tempWeight = $helperCarrier->_getShippingDimension($item, 'weight');
             $qty = $helperItem->itemGetQty($item);
             $bulk += ($tempWidth * $tempHeight * $tempLength) * $qty;
-            if ($tempWidth > $width)
+            if ($tempWidth > $width){
 	    	$width = $tempWidth;
+	    }
             $height += $tempHeight * $qty;
-            if ($tempLength > $length)
+            if ($tempLength > $length){
 	        $length = $tempLength;
+	    }
             $weight += $tempWeight * $qty;
         }
         $height = ceil($height);

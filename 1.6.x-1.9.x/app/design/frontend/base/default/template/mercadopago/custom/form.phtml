@@ -2,175 +2,196 @@
 $country = Mage::getStoreConfig('payment/mercadopago/country');
 $coupon_mercadopago = Mage::getStoreConfig('payment/mercadopago_custom/coupon_mercadopago');
 $_code = $this->getMethodCode();
-$grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
+$_quote = $this->helper('checkout/cart')->getQuote();
+$grant_total = $_quote->getGrandTotal();
+$_totals = $_quote->getTotals();
+if (isset($_totals['mercadopago'])) {
+    $grant_total = $grant_total - $_totals['mercadopago']->getValue();
+}
 $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
 $logEnabled= Mage::getStoreConfigFlag('payment/mercadopago/logs');
-$twoCardsEnabled = Mage::getStoreConfigFlag('payment/mercadopago_custom/allow_2_cards_payment');
 $route = $this->getRequest()->getRequestedRouteName();
 $customer = $this->getCustomerAndCards();
 ?>
 
-<script type="text/javascript">
-        MercadoPagoCustom.enableLog(<?php echo $logEnabled?>);
+<script>
+    MercadoPagoCustom.enableLog(<?php echo $logEnabled?>);
+    try {
+        TinyJ('#mercadopago_checkout_custom');
         MercadoPagoCustom.getInstance().init();
-        if (typeof sendAnalyticsData === 'function') {
-            sendAnalyticsData("<?php echo $_code ?>");
-        }
-
+    } catch (exception) {
+        document.observe("dom:loaded", function() {
+            MercadoPagoCustom.getInstance().init();
+        });
+    }
 </script>
-
 <link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>?nocache=<?php echo rand(); ?>"/>
 
 <fieldset class="container-form-list">
     <div id="mercadopago_checkout_custom">
-        <div id="mercadopago-loading">
-            <img src="<?php echo $this->getSkinUrl('mercadopago/images/loading.gif'); ?>" alt="loading"/>
-        </div>
         <ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;">
+
+
             <?php
             if ($coupon_mercadopago):
                 $block = $this->getLayout()->createBlock('mercadopago/discount')->setCode($_code);
                 echo $block->toHtml();
                 ?>
                 <script type="text/javascript">
+                    try {
+                        TinyJ('#mercadopago_checkout_custom');
                         MercadoPagoCustom.getInstance().initDiscount();
+                    } catch (exception) {
+                        document.observe("dom:loaded", function() {
+                            MercadoPagoCustom.getInstance().initDiscount();
+                        });
+                    }
                 </script>
                 <?php
             endif;
             ?>
-            <li class="card-form first-card">
-                <div id="first_card_amount_fields" class="show_second_card">
-                    <h3><?php echo $this->__('1st Card'); ?></h3>
-                    <label for="firstCard"><?php echo $this->__('Amount'); ?></label>
-                    <input type="text" id="first_card_amount" class="required-entry" max="<?php echo $grant_total; ?>" />
-                </div>
 
-                <?php if ($customer !== false && isset($customer['cards']) && count($customer['cards']) > 0): ?>
+            <?php if ($customer !== false && isset($customer['cards']) && count($customer['cards']) > 0): ?>
+                <li>
                     <ul id="mercadopago_checkout_custom_ocp">
                         <li id="cardId__mp">
-                            <a id="use_other_card_mp" class="action_ocp button"><?php echo $this->__('Use other card'); ?></a>
-                            <div class="form">
-                                <label id="payment_label" for="cardNumber"><?php echo $this->__('Payment Method: '); ?></label>
-                                <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp" class="full-width">
-                                    <?php foreach ($customer['cards'] as $card) { ?>
-                                        <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>" secure_thumb="<?php echo $card["payment_method"]["secure_thumbnail"]; ?>" payment_method_id="<?php echo $card["payment_method"]["id"]; ?>">
 
-                                            <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                                <input type="hidden" name="payment[<?php echo $_code; ?>][customer_id]" value="<?php echo $customer['id']; ?>">
-                            </div>
+                            <div><a id="use_other_card_mp" class="action_ocp"><?php echo $this->__('Use other card'); ?></a></div>
+
+                            <label for="cardNumber"><?php echo $this->__('Payment Method'); ?></label>
+                            <select id="cardId" name="payment[<?php echo $_code; ?>][cardId]" data-checkout="cardId" data-element-id="#cardId__mp" title="<?php echo $this->__('Payment Method'); ?>">
+                                <?php foreach ($customer['cards'] as $card) { ?>
+                                    <option value="<?php echo $card["id"]; ?>" first_six_digits="<?php echo $card["first_six_digits"]; ?>" security_code_length="<?php echo $card["security_code"]["length"]; ?>">
+
+                                        <?php echo $card["payment_method"]["name"].' '; ?><?php echo $this->__('ended in'); ?><?php echo ' '.$card["last_four_digits"]; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+
+                            <input type="hidden" name="payment[<?php echo $_code; ?>][customer_id]" value="<?php echo $customer['id']; ?>">
+
                         </li>
 
                         <li id="securityCodeOCP__mp">
-                            <label id="security_label" for="securityCode"><?php echo $this->__('CVV'); ?></label>
-                            <input type="text" id="securityCodeOCP" class="required-entry" data-checkout="securityCode" maxlength="4" data-element-id="#securityCodeOCP__mp"/>
+                            <label for="securityCode"><?php echo $this->__('CVV'); ?></label>
+                            <input type="text" id="securityCodeOCP" class="required-entry" data-checkout="securityCode" maxlength="4" data-element-id="#securityCodeOCP__mp" title="<?php echo $this->__('CVV'); ?>"/>
+
                             <p class="message-error error-E302 error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
-                            <span class="ch-form-hint"><?php echo $this->__('Last 3 numbers on back side.'); ?></span>
                         </li>
                     </ul>
+                </li>
 
-                    <script>
+                <script>
+                    try {
+                        TinyJ('#use_other_card_mp');
                         MercadoPagoCustom.getInstance().initOCP();
-                    </script>
-                    <div class="hide"><a id="return_list_card_mp" class="action_ocp button"><?php echo $this->__('Return to cards list'); ?></a></div>
-                <?php endif; ?>
+                    } catch (exception) {
+                        document.observe("dom:loaded", function() {
+                            MercadoPagoCustom.getInstance().initOCP();
+                        });
+                    }
+                </script>
+            <?php endif; ?>
 
+            <li>
                 <ul id="mercadopago_checkout_custom_card">
-
                     <li id="paymentMethod__mp">
+                        <div><a id="return_list_card_mp" class="action_ocp"><?php echo $this->__('Return to cards list'); ?></a></div>
                         <label for="paymentMethod"><?php echo $this->__('Payment Method'); ?></label>
-                        <select id="paymentMethod" data-checkout="paymentMethod" name="payment[<?php echo $_code; ?>][paymentMethod]" data-element-id="#paymentMethod__mp" class="validate-select"></select>
+                        <select id="paymentMethod" data-checkout="paymentMethod" name="payment[<?php echo $_code; ?>][paymentMethod]" data-element-id="#paymentMethod__mp" class="validate-select" title="<?php echo $this->__('Payment Method'); ?>"></select>
                     </li>
-
                     <li id="cardNumber__mp">
                         <label for="cardNumber"><?php echo $this->__('Card Number'); ?></label>
-                        <input type="text" class="co-payment-form" id="cardNumber" data-checkout="cardNumber" data-element-id="#cardNumber__mp"/>
+                        <input type="text" id="cardNumber" data-checkout="cardNumber" data-element-id="#cardNumber__mp" title="<?php echo $this->__('Card Number'); ?>"/>
+
                         <p class="message-error error-payment-method-not-found error-E301 error-205 validation-advice"><?php echo $this->__('Card number is invalid.'); ?></p>
+
                         <p class="message-error error-payment-method-min-amount validation-advice"><?php echo $this->__('Cannot pay this amount with this payment_method_id.'); ?></p>
+
                     </li>
 
                     <li id="issuer__mp">
                         <label for="issuer"><?php echo $this->__('Banks'); ?></label>
-                        <select id="issuer" name="payment[<?php echo $_code; ?>][issuer_id]" data-checkout="issuer" data-element-id="#issuer__mp"></select>
+                        <select id="issuer" name="payment[<?php echo $_code; ?>][issuer_id]" data-checkout="issuer" data-element-id="#issuer__mp" title="<?php echo $this->__('Banks'); ?>">
+
+                        </select>
+
                         <p class="message-error error-220 validation-advice"><?php echo $this->__('Select issuer'); ?></p>
                     </li>
 
                     <li id="expiration_date__mp">
-                        <label><?php echo $this->__('Expiration Date'); ?></label>
-                        <div class="expiration-date-box">
-                            <div id="box_month">
-                                <select id="cardExpirationMonth" data-checkout="cardExpirationMonth" class="mp-validate-cc-exp" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#expiration_date__mp">
-                                    <?php foreach ($this->getCcMonths() as $m => $v): ?>
-                                        <option value="<?php echo $m ? $m : ''; ?>"><?php echo $v; ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                                <p class="message-error error-325 error-208 validation-advice"><?php echo $this->__('Month is invalid.'); ?></p>
-                            </div>
+                        <div id="box_month">
+                            <label for="cardExpirationMonth"><?php echo $this->__('Month'); ?></label>
+                            <select id="cardExpirationMonth" data-checkout="cardExpirationMonth" class="mp-validate-cc-exp" name="payment[<?php echo $_code; ?>][card_expiration_month]" data-element-id="#expiration_date__mp" title="<?php echo $this->__('Month'); ?>">
+                                <?php foreach ($this->getCcMonths() as $m => $v): ?>
+                                    <option value="<?php echo $m ? $m : ''; ?>"><?php echo $v; ?></option>
+                                <?php endforeach ?>
+                            </select>
 
-                            <div id="box_year">
-                                <select id="cardExpirationYear" data-checkout="cardExpirationYear" name="payment[<?php echo $_code; ?>][card_expiration_year]" data-element-id="#expiration_date__mp">
-                                    <?php foreach ($this->getCcYears() as $y => $v): ?>
-                                        <option value="<?php echo $y ? $y : ''; ?>"><?php echo $v; ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                                <p class="message-error error-326 error-209 validation-advice"><?php echo $this->__('Year is invalid.'); ?></p>
-                            </div>
+                            <p class="message-error error-325 error-208 validation-advice"><?php echo $this->__('Month is invalid.'); ?></p>
+                        </div>
+
+                        <div id="box_year">
+                            <label for="cardExpirationYear"><?php echo $this->__('Year'); ?></label>
+                            <select id="cardExpirationYear" data-checkout="cardExpirationYear" name="payment[<?php echo $_code; ?>][card_expiration_year]" data-element-id="#expiration_date__mp" title="<?php echo $this->__('Year'); ?>">
+                                <?php foreach ($this->getCcYears() as $y => $v): ?>
+                                    <option value="<?php echo $y ? $y : ''; ?>"><?php echo $v; ?></option>
+                                <?php endforeach ?>
+                            </select>
+
+                            <p class="message-error error-326 error-209 validation-advice"><?php echo $this->__('Year is invalid.'); ?></p>
                         </div>
                     </li>
 
                     <li id="cardholderName__mp">
                         <label for="cardholderName"><?php echo $this->__('Card Holder Name'); ?></label>
-                        <input type="text" id="cardholderName" data-checkout="cardholderName" name="payment[<?php echo $_code; ?>][card_holder_name]" data-element-id="#cardholderName__mp"/>
+                        <input type="text" id="cardholderName" data-checkout="cardholderName" name="payment[<?php echo $_code; ?>][card_holder_name]" data-element-id="#cardholderName__mp" title="<?php echo $this->__('Card Holder Name'); ?>"/>
+
                         <p class="message-error error-316 validation-advice"><?php echo $this->__('Card Holder Name is invalid.'); ?></p>
                     </li>
 
                     <li id="securityCode__mp">
                         <label for="securityCode"><?php echo $this->__('CVV'); ?></label>
-                        <input type="text" id="securityCode" data-checkout="securityCode" maxlength="4" data-element-id="#securityCode__mp" class="required-entry"/>
+                        <input type="text" id="securityCode" data-checkout="securityCode" maxlength="4" data-element-id="#securityCode__mp" class="required-entry" title="<?php echo $this->__('CVV'); ?>"/>
+
                         <p class="message-error error-E302 error-224 validation-advice"><?php echo $this->__('CVV is invalid.'); ?></p>
-                        <span class="ch-form-hint"><?php echo $this->__('Last 3 numbers on back side.'); ?></span>
                     </li>
 
                     <li id="doc_type__mp">
-                        <label for="docNumber"><?php echo $this->__('Document'); ?></label>
-                        <select id="docType" data-checkout="docType" data-element-id="#doc_type__mp" name="payment[<?php echo $_code; ?>][doc_type]"></select>
+                        <label for="docType"><?php echo $this->__('Document Type'); ?></label>
+                        <select id="docType" data-checkout="docType" data-element-id="#doc_type__mp" name="payment[<?php echo $_code; ?>][doc_type]" title="<?php echo $this->__('Document Type'); ?>"></select>
+
                         <p class="message-error error-322 error-212 validation-advice"><?php echo $this->__('Document Type is invalid.'); ?></p>
                     </li>
 
                     <li id="doc_number__mp">
-                        <input type="text" id="docNumber" class="mp-validate-docnumber" data-checkout="docNumber" name="payment[<?php echo $_code; ?>][doc_number]" data-element-id="#doc_number__mp"/>
+                        <label for="docNumber"><?php echo $this->__('Document Number'); ?></label>
+                        <input type="text" id="docNumber" class="mp-validate-docnumber" data-checkout="docNumber" name="payment[<?php echo $_code; ?>][doc_number]" data-element-id="#doc_number__mp" title="<?php echo $this->__('Document Number'); ?>"/>
+
                         <p class="message-error error-324 error-213 error-214 validation-advice"><?php echo $this->__('Document Number is invalid.'); ?></p>
                     </li>
+
                 </ul>
-
-                <div id="installments__mp">
-                    <label for="installments"><?php echo $this->__('Installments'); ?></label>
-                    <select id="installments" name="payment[<?php echo $_code; ?>][installments]" data-element-id="#installments__mp" class="validate-select full-width"></select>
-                    <p class="message-error error-installment-not-work validation-advice"><?php echo $this->__('It was not possible to calculate the installments, click here and try again.'); ?></p>
-                    <p class="message-error error-011 validation-advice"><?php echo $this->__('An error has occurred. Please refresh the page.'); ?></p>
-                    <p class="message-error error-other validation-advice"><?php echo $this->__('Please validate your data.'); ?></p>
-                </div>
-
-                <div class="legal-info">
-                    <p class="tea-info tea-info-first-card">TEA: 0,00%</p>
-                    <p class="cft-info cft-info-first-card">CFT: 0,00%</p>
-                </div>
             </li>
 
-            <?php echo $this->setTemplate('mercadopago/custom/secondCard.phtml')->toHtml(); ?>
+            <li id="installments__mp">
+                <label for="installments"><?php echo $this->__('Installments'); ?></label>
+                <select id="installments" name="payment[<?php echo $_code; ?>][installments]" data-element-id="#installments__mp" class="validate-select" title="<?php echo $this->__('Installments'); ?>"></select>
+
+                <p class="message-error error-installment-not-work validation-advice"><?php echo $this->__('It was not possible to calculate the installments, click here and try again.'); ?></p>
+
+                <p class="message-error error-011 validation-advice"><?php echo $this->__('An error has occurred. Please refresh the page.'); ?></p>
+
+                <p class="message-error error-other validation-advice"><?php echo $this->__('Please validate your data.'); ?></p>
+
+            </li>
+            <li>
+                <div id="mercadopago-loading">
+                    <img src="<?php echo $this->getSkinUrl('mercadopago/images/loading.gif'); ?>" alt="loading"/>
+                </div>
+            </li>
 
             <li>
-                <a id="show_second_card" class="action_ocp button <?php if (!$twoCardsEnabled): echo "show_second_card_button"?><?php endif;?>"><?php echo $this->__('Use 2 Cards'); ?></a>
-            </li>
-
-            <div class="total_buy">
-                <label> <?php echo $this->__('Total amount: '); ?> </label>
-                <span class="total_buy_price"> $<?php echo $grant_total; ?>.-</span>
-            </div>
-
-            <div class="banner_custom">
                 <input type="hidden" class="total_amount" name="total_amount" value="<?php echo $grant_total; ?>"/>
                 <input type="hidden" class="amount" name="amount" value="<?php echo $grant_total; ?>"/>
                 <input type="hidden" class="mercadopago-discount-amount" name="mercadopago-discount-amount" value="0"/>
@@ -178,20 +199,17 @@ $customer = $this->getCustomerAndCards();
                 <input type="hidden" class="mercadopago-text-currency" value="<?php echo $this->__('$'); ?>">
                 <input type="hidden" class="mercadopago-text-choice" value="<?php echo $this->__('Select'); ?>">
                 <input type="hidden" class="mercadopago-text-default-issuer" value="<?php echo $this->__('Default issuer'); ?>">
-                <input type="hidden" class="mercadopago-text-installment" value="<?php echo $this->__('Select Installments'); ?>">
+                <input type="hidden" class="mercadopago-text-installment" value="<?php echo $this->__('Enter the card number'); ?>">
                 <input type="hidden" class="mercado_base_url" value="<?php echo $base_url; ?>">
                 <input type="hidden" class="mercado_route" value="<?php echo $route; ?>">
                 <input type="hidden" name="payment[<?php echo $_code; ?>][token]" type="text" value="" class="token"/>
                 <input type="hidden" name="payment[<?php echo $_code; ?>][payment_method_id]" type="text" value="" class="payment_method_id"/>
+
                 <input type="hidden" id="one_click_pay_mp" name="payment[<?php echo $_code; ?>][one_click_pay]" value="<?php echo count($customer['cards']) > 0 ? 1 : 0; ?>">
-            </div>
+            </li>
         </ul>
     </div>
-
-    <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
-        <p class="communication"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
+    <?php if ($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+        <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>" class="banner_checkout_mp"/>
     <?php endif; ?>
-    <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
-        <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
-    <?php endif;?>
 </fieldset>

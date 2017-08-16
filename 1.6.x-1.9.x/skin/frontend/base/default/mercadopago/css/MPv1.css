@@ -62,6 +62,10 @@
   width: 100%;
 }
 
+.form-row label{
+  width: 100%;
+}
+
 .form-control-mine {
   width: 100% !important;
   height: 27px;
@@ -93,6 +97,11 @@
   font-size: 12px;
 }
 
+
+#MPv1-zipcode{
+  width: 50% !important;
+}
+
 /* Error */
 .erro_febraban{
   text-transform: uppercase;
@@ -106,8 +115,6 @@
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   clear: both;
 }
-
-
 
 #box-banner{
   float: left;

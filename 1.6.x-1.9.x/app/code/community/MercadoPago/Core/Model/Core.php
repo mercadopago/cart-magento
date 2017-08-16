@@ -102,17 +102,16 @@ class MercadoPago_Core_Model_Core
             ["field" => "status", "title" => "Payment Status: %s"],
             ["field" => "status_detail", "title" => "Payment Detail: %s"],
             ["field" => "activation_uri", "title" => "Generate Ticket"],
-            ["field" => "payment_id_detail", "title" => "Mercado Pago Payment Id: %s"],
-            ["field" => "id", "title" => "Collection Id: %s"],
+            ["field" => "payment_id_detail", "title" => "Mercado Pago Payment Id: %s"]
 
         ];
 
         foreach ($fields as $field) {
             if ($payment->getAdditionalInformation($field['field']) != "") {
-                $text = Mage::helper('mercadopago')->__($field['title'], $payment->getAdditionalInformation($field['field']));
+                $text = Mage::helper('mercadopago')->__($field['title'], Mage::helper('mercadopago')->__($payment->getAdditionalInformation($field['field'])));
                 $infoPayments[$field['field']] = [
                     "text"  => $text,
-                    "value" => $payment->getAdditionalInformation($field['field'])
+                    "value" => Mage::helper('mercadopago')->__($payment->getAdditionalInformation($field['field']))
                 ];
             }
         }
@@ -495,7 +494,7 @@ class MercadoPago_Core_Model_Core
                 'payer_identification_type',
                 'payer_identification_number'
             ];
-            
+
             $infoPayments = $paymentOrder->getAdditionalInformation();
 
             if (!isset($infoPayments['first_payment_id'])) {

@@ -218,10 +218,13 @@ class MercadoPago_Core_Model_Standard_Payment
         ];
 
         $arr['notification_url'] = Mage::getUrl('mercadopago/notifications/standard');
-        
+
         $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods();
         $installments = $this->getConfigData('installments');
         $arr['payment_methods']['installments'] = (int)$installments;
+        if ((int)$installments > 0){
+          $arr['payment_methods']['installments'] = (int)$installments;
+        }
 
         $autoReturn = $this->getConfigData('auto_return');
         if ($autoReturn == 1) {

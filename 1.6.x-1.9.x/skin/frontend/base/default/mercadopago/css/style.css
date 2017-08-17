@@ -47,6 +47,7 @@
 #mercadopago_checkout_custom ul li label{
     padding: 5px 0;
     font-size: 14px;
+    width: 100%;
 }
 
 #mercadopago_checkout_custom ul li input,
@@ -141,7 +142,7 @@
 }
 
 #securityCode, #securityCodeOCP, #second_card_securityCodeOCP, #second_card_securityCode{
-    width: 53px !important;
+    width: 70px !important;
 }
 #second_card_securityCodeOCP__mp{
     margin-bottom: 6px;
@@ -163,6 +164,7 @@
 
 #box_month, #second_card_box_month, #box_year, #second_card_box_year{
     float: left;
+    width: 45%;
 }
 
 #box_month select, #second_card_box_month select{
@@ -174,7 +176,7 @@
 }
 
 #box_month, #second_card_box_month{
-    margin: 0 5px 0 0;
+    margin: 0 10px 0 0;
 }
 
 #docType, #second_card_docType{
@@ -192,7 +194,6 @@
 }
 
 #doc_number__mp, #second_card_doc_number__mp {
-    margin: 35px 0 0;
     padding-bottom: 1px;
     width: auto !important;
 }
@@ -210,7 +211,7 @@
 }
 
 #doc_number__mp input, #second_card_doc_number__mp input {
-    width: 100px;
+    width: 130px;
 }
 
 .message-error{

@@ -24,6 +24,7 @@ class MercadoPago_Core_Model_Source_Installments
 
         Mage::helper('mercadopago')->log("Get installments ... ", 'mercadopago.log');
 
+        $installment[] = array("value" => 0, "label" => "N/A");
         $installment[] = array("value" => 1, "label" => "1");
         $installment[] = array("value" => 2, "label" => "2");
         $installment[] = array("value" => 3, "label" => "3");

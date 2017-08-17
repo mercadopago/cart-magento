@@ -375,7 +375,9 @@ var MercadoPagoCustom = (function () {
                 OPC.prototype.save();
             } else if (isIdeasa()) {
                 //ideasa onestepcheckout
-                payment.update();
+                if(typeof payment.update !== "undefined"){
+                  payment.update();
+                }
             }
 
         }

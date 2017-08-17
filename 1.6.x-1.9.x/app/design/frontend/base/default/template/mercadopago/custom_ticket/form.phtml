@@ -84,42 +84,42 @@ if (typeof sendAnalyticsData === 'function') {
             <div class="form-row">
               <div class="form-col-6">
                 <label for="firstname" class="require"><?php echo $form_labels['form']['name']; ?></label>
-                <input type="text" name="payment[<?php echo $_code; ?>][firstname]" id="MPv1-firstname" class="form-control-mine required-entry-firstname">
+                <input type="text" name="payment[<?php echo $_code; ?>][firstname]" id="MPv1-firstname" class="form-control-mine required-entry-firstname" title="<?php echo $form_labels['form']['name']; ?>">
               </div>
 
               <div class="form-col-6">
                 <label  for="lastname" class="require"><?php echo $form_labels['form']['surname']; ?></label>
-                <input type="text" name="payment[<?php echo $_code; ?>][lastname]" id="MPv1-lastname" class="form-control-mine required-entry-lastname">
+                <input type="text" name="payment[<?php echo $_code; ?>][lastname]" id="MPv1-lastname" class="form-control-mine required-entry-lastname" title="<?php echo $form_labels['form']['surname']; ?>">
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-col-12">
                 <label for="docNumber" class="require"><?php echo $form_labels['form']['docNumber']; ?></label>
-                <input type="text" name="payment[<?php echo $_code; ?>][doc-number]" class="form-control-mine required-entry-doc-number" maxlength="14" id="MPv1-docNumber" onblur='clearTimeout()'>
+                <input type="text" name="payment[<?php echo $_code; ?>][doc-number]" class="form-control-mine required-entry-doc-number" maxlength="14" id="MPv1-docNumber" onblur='clearTimeout()' title="<?php echo $form_labels['form']['docNumber']; ?>">
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-col-8">
                 <label for="address" class="require"><?php echo $form_labels['form']['address']; ?></label>
-                <input type="text" name="payment[<?php echo $_code; ?>][address]" id="MPv1-address" class="form-control-mine required-entry-address">
+                <input type="text" name="payment[<?php echo $_code; ?>][address]" id="MPv1-address" class="form-control-mine required-entry-address" title="<?php echo $form_labels['form']['address']; ?>">
               </div>
               <div class="form-col-4">
                 <label for="number" class="require"><?php echo $form_labels['form']['number']; ?></label>
-                <input type="text" name="payment[<?php echo $_code; ?>][address-number]" id="MPv1-number" onkeypress="return event.charCode >= 48 && event.charCode <= 57"  class="form-control-mine required-entry-address-number">
+                <input type="text" name="payment[<?php echo $_code; ?>][address-number]" id="MPv1-number" onkeypress="return event.charCode >= 48 && event.charCode <= 57"  class="form-control-mine required-entry-address-number" title="<?php echo $form_labels['form']['number']; ?>">
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-col-6">
                 <label for="city" class="require"><?php echo $form_labels['form']['city']; ?></label>
-                <input type="text" name="payment[<?php echo $_code; ?>][address-city]" id="MPv1-city" class="form-control-mine required-entry-address-city">
+                <input type="text" name="payment[<?php echo $_code; ?>][address-city]" id="MPv1-city" class="form-control-mine required-entry-address-city" title="<?php echo $form_labels['form']['city']; ?>">
               </div>
 
               <div class="form-col-6">
                 <label for="state" class="require"><?php echo $form_labels['form']['state']; ?></label>
-                <select name="payment[<?php echo $_code; ?>][address-state]" id="MPv1-state" class="form-control-mine required-entry-address-state">
+                <select name="payment[<?php echo $_code; ?>][address-state]" id="MPv1-state" class="form-control-mine required-entry-address-state" title="<?php echo $form_labels['form']['state']; ?>">
                   <option value=""><?php echo $form_labels['form']['select']; ?> ...</option>
                   <option value="AC">Acre</option>
                   <option value="AL">Alagoas</option>
@@ -153,9 +153,9 @@ if (typeof sendAnalyticsData === 'function') {
             </div>
 
             <div class="form-row">
-              <div class="form-col-6">
-                <label for="zipcode" class="require"><?php echo $form_labels['form']['zipcode']; ?></label>
-                <input type="text" name="payment[<?php echo $_code; ?>][address-zipcode]" id="MPv1-zipcode" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control-mine required-entry-address-zipcode">
+              <div class="form-col-12">
+                <label for="zipcode" class="require"><?php echo $form_labels['form']['zipcode']; ?></label title="<?php echo $form_labels['form']['zipcode']; ?>">
+                <input type="text" name="payment[<?php echo $_code; ?>][address-zipcode]" id="MPv1-zipcode" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control-mine required-entry-address-zipcode" title="<?php echo $form_labels['form']['zipcode']; ?>">
               </div>
             </div>
 

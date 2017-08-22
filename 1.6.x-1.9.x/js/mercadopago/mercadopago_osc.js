@@ -136,8 +136,8 @@ var MercadoPagoCustom = (function () {
             discountOkTotalAmount: '.mercadopago-message-coupon .discount-ok .total-amount',
             discountOkTotalAmountDiscount: '.mercadopago-message-coupon .discount-ok .total-amount-discount',
             discountOkTerms: '.mercadopago-message-coupon .discount-ok .mercadopago-coupon-terms',
-            inputCouponDiscount: '#input-coupon-discount'
-
+            inputCouponDiscount: '#input-coupon-discount',
+            messageInvalidDocument: '.error-214'
         },
         url: {
             amount: 'mercadopago/api/amount',
@@ -264,7 +264,7 @@ var MercadoPagoCustom = (function () {
                 return (!element.hasClassName(self.constants.invalidCoupon));
             });
 
-            Validation.add(self.constants.validateDocNumber, self.messages.invalidDocument, function (v, element) {
+            Validation.add(self.constants.validateDocNumber, document.querySelector(self.selectors.messageInvalidDocument).innerHTML, function (v, element) {
                 return checkDocNumber(v);
             });
 

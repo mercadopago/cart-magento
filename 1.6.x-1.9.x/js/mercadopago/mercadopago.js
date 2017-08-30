@@ -321,7 +321,7 @@ var MercadoPagoCustom = (function () {
             var hideSecondCard = TinyJ(self.selectors.hideSecondCard);
             hideSecondCard.click(actionHideSecondCard);
 
-            var halfAmount = TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val()/2;
+            var halfAmount = (TinyJ(self.selectors.checkoutCustom).getElem(self.selectors.totalAmount).val()/2).toFixed(2);
             TinyJ(self.selectors.firstCardAmount).val(halfAmount);
             TinyJ(self.selectors.secondCardAmount).val(halfAmount);
             TinyJ(self.selectors.amountFirstCard).val(halfAmount);
@@ -764,7 +764,7 @@ var MercadoPagoCustom = (function () {
             guessingPaymentMethod(event.type = self.constants.keyup);
             initSecondCard();
         }
-        
+
         function actionHideSecondCard() {
             TinyJ(self.selectors.secondCard).hide();
             TinyJ(self.selectors.firstCardAmountFields).hide();

@@ -68,6 +68,7 @@
 
 #first_card_amount {
     width: 120px;
+    display: block;
 }
 
 #cardId {
@@ -131,6 +132,7 @@
 #second_card_amount_holder{
     font-size: 14px;
     color: #900;
+    display: block;
 }
 
 #hide_second_card{
@@ -160,6 +162,7 @@
     display: inline-block;
     margin-top: -2px;
     vertical-align: top;
+    width: 100%;
 }
 
 #box_month, #second_card_box_month, #box_year, #second_card_box_year{
@@ -224,7 +227,7 @@
 
 .action_ocp{
     cursor: pointer;
-    width: 210px;
+    width: 100%;
 }
 
 #mercadopago_checkout_custom .button {
@@ -236,6 +239,10 @@
     top: 15px;
     right: 15px;
     width: 25px;
+}
+
+#show_second_card{
+  width: 210px;
 }
 
 #use_other_card_mp:hover, #show_second_card:hover, #show_second_card:hover, #second_card_use_other_card_mp:hover {

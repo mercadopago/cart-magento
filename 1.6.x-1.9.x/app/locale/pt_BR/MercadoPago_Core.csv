@@ -1,4 +1,4 @@
-﻿"Enabled", "Ativo"
+"Enabled", "Ativo"
 
 "Mercado Pago - Configuration", "Mercado Pago - Configurações"
 "Credit Card - Mercado Pago", "Cartões de Credito - Mercado Pago"
@@ -239,6 +239,7 @@
 "Payment Detail: %s","Detalhe do Status do pagamento: %s"
 "Mercado Pago Payment Id: %s","Identificador do Pagamento no Mercado Pago: %s"
 "approved","aprovado"
+"accredited","creditado"
 "in_process","em processamento"
 "pending","pendente"
 "rejected","rejeitado"
@@ -259,3 +260,14 @@
 "cc_rejected_invalid_installments","O seu cartão não aceita parcelamento."
 "cc_rejected_max_attempts","Você atingiu o limite de tentativas permitidas."
 "cc_rejected_other_reason","Efetue o pagamento com outro cartão."
+
+
+"Payment Method: ", "Metodo de Pagamento: "
+"ended in","finalizado em"
+"Last 3 numbers on back side.","3 números atrás do cartão"
+"Select issuer","Selecione o Banco"
+"Expiration Date","Data de vencimento"
+"Document","CPF"
+"Document Type","Tipo de Documento"
+"Total amount: ","Valor total: "
+"Remaining Amount", "Valor restante"

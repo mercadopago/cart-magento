@@ -2,6 +2,8 @@
 
 ## Tutorial in English
 
+Mercado Pago integration Module for Magento
+
 * [Requirements](https://github.com/mercadopago/cart-magento/wiki/Requirements)
 * [Features](https://github.com/mercadopago/cart-magento/wiki/Features)
 * [Installation](https://github.com/mercadopago/cart-magento/wiki/Installation)
@@ -18,6 +20,8 @@
 
 ## Tutorial en Español
 
+Módulo de integración de Mercado Pago para Magento
+
 * [Requisitos](https://github.com/mercadopago/cart-magento/wiki/Requisitos-en-Español)
 * [Funcionalidad](https://github.com/mercadopago/cart-magento/wiki/Funcionalidad)
 * [Instalación](https://github.com/mercadopago/cart-magento/wiki/Instalación)
@@ -33,6 +37,8 @@
 * [Soporte técnico](https://github.com/mercadopago/cart-magento/wiki/Soporte-técnico)
 
 ## Tutorial em Português
+
+Modulo de integração do Mercado Pago para Magento
 
 * [Requisitos](https://github.com/mercadopago/cart-magento/wiki/Requisitos)
 * [Funcionalidades](https://github.com/mercadopago/cart-magento/wiki/Funcionalidades)

@@ -1,3 +1,5 @@
+	![Mercado Pago](/README.img/logo.png)
+
 ## Tutorial in English
 
 * [Requirements](https://github.com/mercadopago/cart-magento/wiki/Requirements)

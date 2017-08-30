@@ -134,12 +134,13 @@ $customer = $this->getCustomerAndCards();
                     </li>
 
                     <li id="doc_type__mp">
-                        <label for="docNumber"><?php echo $this->__('Document'); ?></label>
+                        <label for="docNumber"><?php echo $this->__('Document Type'); ?></label>
                         <select id="docType" data-checkout="docType" data-element-id="#doc_type__mp" name="payment[<?php echo $_code; ?>][doc_type]"></select>
                         <p class="message-error error-322 error-212 validation-advice"><?php echo $this->__('Document Type is invalid.'); ?></p>
                     </li>
 
                     <li id="doc_number__mp">
+                      <label for="docNumber"><?php echo $this->__('Document'); ?></label>
                         <input type="text" id="docNumber" class="mp-validate-docnumber" data-checkout="docNumber" name="payment[<?php echo $_code; ?>][doc_number]" data-element-id="#doc_number__mp"/>
                         <p class="message-error error-324 error-213 error-214 validation-advice"><?php echo $this->__('Document Number is invalid.'); ?></p>
                     </li>

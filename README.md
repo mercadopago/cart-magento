@@ -1,4 +1,4 @@
-	![Mercado Pago](/README.img/logo.png)
+![Mercado Pago](https://raw.githubusercontent.com/gmatsuoka/cart-magento/master/README.img/logo.png)
 
 ## Tutorial in English
 

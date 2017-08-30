@@ -1,6 +1,6 @@
 ![Mercado Pago](https://raw.githubusercontent.com/gmatsuoka/cart-magento/master/README.img/logo.png)
 
-## Tutorial in English
+## Documentation in English
 
 Mercado Pago integration Module for Magento
 
@@ -18,7 +18,7 @@ Mercado Pago integration Module for Magento
 * [FAQ](https://github.com/mercadopago/cart-magento/wiki/FAQ-English)
 * [Support](https://github.com/mercadopago/cart-magento/wiki/Support)
 
-## Tutorial en Español
+## Documentación en Español
 
 Módulo de integración de Mercado Pago para Magento
 
@@ -36,7 +36,7 @@ Módulo de integración de Mercado Pago para Magento
 * [FAQ](https://github.com/mercadopago/cart-magento/wiki/FAQ-Espanhol)
 * [Soporte técnico](https://github.com/mercadopago/cart-magento/wiki/Soporte-técnico)
 
-## Tutorial em Português
+## Documentação em Português
 
 Modulo de integração do Mercado Pago para Magento
 

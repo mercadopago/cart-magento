@@ -1,5 +1,3 @@
-# Magento - Mercado Pago Module (v1.6.x - 1.9.x)
-
 ![Mercado Pago](https://raw.githubusercontent.com/gmatsuoka/cart-magento/master/README.img/logo.png)
 
 ## Tutorial in English

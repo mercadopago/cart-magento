@@ -367,7 +367,7 @@
                                         ]]>
                                     </comment>
                                 </active>
-                                <allow_2_cards_payment translate="label">
+                                <!-- <allow_2_cards_payment translate="label">
                                     <label>Allow Payment with 2 Cards</label>
                                     <frontend_type>select</frontend_type>
                                     <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -375,7 +375,7 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>0</show_in_store>
-                                </allow_2_cards_payment>
+                                </allow_2_cards_payment> -->
                                 <title translate="label">
                                     <label>Payment Title</label>
                                     <frontend_type>text</frontend_type>
@@ -438,6 +438,25 @@
                                     <comment>Custom message to display in checkout</comment>
                                 </communication>
 
+                                <heading_mode_gateway translate="label">
+                                    <label>Gateway Mode</label>
+                                    <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                                    <sort_order>100</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                </heading_mode_gateway>
+
+                                <enable_gateway translate="label">
+                                    <label>Enable</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>110</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment></comment>
+                                </enable_gateway>
+
                             </fields>
                         </mercadopago_custom>
                         <mercadopago_customticket type="group" translate="label">
@@ -467,6 +486,16 @@
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>1</show_in_store>
                                 </title>
+                                <date_of_expiration translate="label">
+                                    <label>Date of Expiration</label>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>25</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <frontend_class>validate-number-range number-range-1-29</frontend_class>
+                                    <comment>This functionality handles the expiration date of the ticket, it does not automatically cancel the payment. Enter a value between 1 and 29.</comment>
+                                </date_of_expiration>
                                 <banner_checkout translate="label">
                                     <label>Banner Checkout</label>
                                     <frontend_type>text</frontend_type>

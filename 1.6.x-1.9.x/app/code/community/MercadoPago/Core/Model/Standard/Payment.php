@@ -221,7 +221,6 @@ class MercadoPago_Core_Model_Standard_Payment
 
         $arr['payment_methods']['excluded_payment_methods'] = $this->getExcludedPaymentsMethods();
         $installments = $this->getConfigData('installments');
-        $arr['payment_methods']['installments'] = (int)$installments;
         if ((int)$installments > 0){
           $arr['payment_methods']['installments'] = (int)$installments;
         }

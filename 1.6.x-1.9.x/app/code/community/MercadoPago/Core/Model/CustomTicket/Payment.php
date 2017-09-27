@@ -23,7 +23,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
     protected $_code = 'mercadopago_customticket';
 
     protected $fields_febraban = array(
-      "firstname", "lastname", "doc-number", "address", "address-number", "address-city", "address-state", "address-zipcode"
+      "firstname", "lastname", "doc-type","doc-number", "address", "address-number", "address-city", "address-state", "address-zipcode"
     );
     /**
      * @param string $paymentAction
@@ -96,6 +96,11 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         $preference['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
 
         // febraban rule
+        $date_of_expiration = Mage::getStoreConfig('payment/mercadopago_customticket/date_of_expiration');
+        if($date_of_expiration >= 1 && $date_of_expiration <= 29){
+          $preference['date_of_expiration'] = date('Y-m-d', strtotime("+" . $date_of_expiration . " days")) . "T00:00:01.000-03:00";
+        }
+
         if ($payment->getAdditionalInformation("firstname") != "") {
           $preference['payer']['first_name'] = $payment->getAdditionalInformation("firstname");
         }
@@ -104,8 +109,16 @@ class MercadoPago_Core_Model_CustomTicket_Payment
           $preference['payer']['last_name'] = $payment->getAdditionalInformation("lastname");
         }
 
+        if ($payment->getAdditionalInformation("doc-type") != "") {
+          $preference['payer']['identification']['type'] = $payment->getAdditionalInformation("doc-type");
+
+          //remove last-name pessoa juridica
+          if($preference['payer']['identification']['type'] == "CNPJ"){
+            $preference['payer']['last_name'] = "";
+          }
+        }
+
         if ($payment->getAdditionalInformation("doc-number") != "") {
-          $preference['payer']['identification']['type'] = "CPF";
           $preference['payer']['identification']['number'] = $payment->getAdditionalInformation("doc-number");
         }
 

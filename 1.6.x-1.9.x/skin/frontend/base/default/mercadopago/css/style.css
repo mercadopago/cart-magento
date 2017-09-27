@@ -54,6 +54,7 @@
 #mercadopago_checkout_custom ul li select{
     background-color: #FFFFFF;
     height: 25px;
+    margin-top: 4px;
 }
 
 #mercadopago_checkout_custom ul li select.full-width {

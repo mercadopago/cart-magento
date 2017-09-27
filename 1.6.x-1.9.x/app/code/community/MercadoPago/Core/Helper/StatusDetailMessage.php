@@ -9,7 +9,7 @@ class MercadoPago_Core_Helper_StatusDetailMessage
             "cc_rejected_bad_filled_other"         => 'Check the data.',
             "cc_rejected_bad_filled_security_code" => 'Check the security code.',
             "cc_rejected_blacklist"                => 'We could not process your payment.',
-            "cc_rejected_call_for_authorize"       => 'You must authorize to %s the payment of $ %s to MercadoPago.',
+            "cc_rejected_call_for_authorize"       => 'You must authorize to %s the payment of $ %s to Mercado Pago.',
             "cc_rejected_card_disabled"            => 'Call %s to activate your card.<br/>The phone is on the back of your card.',
             "cc_rejected_card_error"               => 'We could not process your payment.',
             "cc_rejected_duplicated_payment"       => 'You already made a payment by that value.<br/>If you need to repay, use another card or other payment method.',

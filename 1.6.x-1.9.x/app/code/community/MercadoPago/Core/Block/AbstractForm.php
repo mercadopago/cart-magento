@@ -5,22 +5,21 @@ class MercadoPago_Core_Block_AbstractForm
 {
     protected function _prepareLayout()
     {
-
-        $public_key = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_PUBLIC_KEY);
-
         //init js no header
         $block = Mage::app()->getLayout()->createBlock('core/text', 'js_mercadopago');
         $block->setText(
             sprintf(
                 '
-                <script type="text/javascript">var PublicKeyMercadoPagoCustom = "' . $public_key . '";</script>
-                <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
-                <script type="text/javascript" src="%s"></script>
-                <script type="text/javascript" src="%s"></script>
-                <script type="text/javascript" src="%s"></script>',
-                Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/mercadopago.js',
-                Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/tiny.min.js',
-                Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/tinyJ.js'
+                  <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+                  <script type="text/javascript" src="%s"></script>
+                  <script type="text/javascript" src="%s"></script>
+                  <link rel="stylesheet" href="%s"/>
+                  <link rel="stylesheet" href="%s"/>
+                ',
+                Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/MPv1.js',
+                Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS, true) . 'mercadopago/MPv1Ticket.js',
+                $this->getSkinUrl('mercadopago/css/custom_checkout_mercadopago.css') . "?nocache=" . rand(),
+                $this->getSkinUrl('mercadopago/css/MPv1.css') . "?nocache=" . rand()
             )
         );
 

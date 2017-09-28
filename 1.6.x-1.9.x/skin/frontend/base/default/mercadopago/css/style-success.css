@@ -1,7 +1,6 @@
 /* Styles for success page */
 #box-mercadopago, #logo-mercadopago{
     padding: 0;
-    text-align: center;
 }
 
 
@@ -51,11 +50,8 @@
 
 #logo-mercadopago{
     width: 100px;
-    /*
     margin: 20px 0;
-    */
-    /*float: left;*/
-    margin: 20px auto;
+    /*margin: 20px auto;*/
 }
 #logo-mercadopago img{
     /*    float: left;*/
@@ -72,9 +68,9 @@ p + #btn-boleto-mercadopago{
     margin-top: 15px;
 }
 
-#logo-mercadopago + .buttons-set{
+/*#logo-mercadopago + .buttons-set{
     text-align: center!important;
 }
 .button-success > button{
     float: none!important;
-}
+}*/

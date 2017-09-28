@@ -3,7 +3,7 @@
 /**
  * MercadoPago cURL RestClient
  */
-
+$GLOBALS["LIB_LOCATION"] = dirname(__FILE__);
 
 class MercadoPago_Lib_RestClient {
 
@@ -19,6 +19,7 @@ class MercadoPago_Lib_RestClient {
         curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago Magento-1.9.x-transparent Cart v1.0.2");
         curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($connect, CURLOPT_CAINFO, $GLOBALS["LIB_LOCATION"] . "/cacert.pem");
 
         $header_opt = array("Accept: application/json", "Content-Type: " . $content_type);
         if (count($extra_params) > 0) {

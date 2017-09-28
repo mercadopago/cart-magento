@@ -526,5 +526,27 @@ class MercadoPago_Core_Model_Observer
         return ($paymentMethod == 'mercadopago_standard' || $paymentMethod == 'mercadopago_custom');
     }
 
+    public function paymentMethodIsActive(Varien_Event_Observer $observer) {
+      $event           = $observer->getEvent();
+      $method          = $event->getMethodInstance();
+      $result          = $event->getResult();
+      $currencyCode    = Mage::app()->getStore()->getCurrentCurrencyCode();
+      $code = $method->getCode();
 
+      if($this->isAdmin()){
+        if($code == 'mercadopago_custom' || $code == 'mercadopago_customticket' ||  $code == 'mercadopago_standard' ||  $code == 'mercadopago_recurring'){
+          $result->isAvailable = false;
+        }
+      }
+    }
+
+    public function isAdmin(){
+      if(Mage::app()->getStore()->isAdmin()){
+        return true;
+      }
+      if(Mage::getDesign()->getArea() == 'adminhtml'){
+        return true;
+      }
+      return false;
+    }
 }

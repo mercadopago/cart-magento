@@ -44,6 +44,7 @@ class MercadoPago_Core_Block_Customticket_Form
       $key_address = Mage::getStoreConfig('payment/mercadopago_customticket/street_number_address');
       $key_address_number = Mage::getStoreConfig('payment/mercadopago_customticket/street_number_address_number');
       $use_tax_vat = Mage::getStoreConfig('payment/mercadopago_customticket/tax_vat');
+      $customer['docnumber'] = "";
 
       $state_code = array(
         "485" => array("code" =>"AC", "state" => "Acre"),

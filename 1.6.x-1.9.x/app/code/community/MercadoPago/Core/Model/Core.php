@@ -152,33 +152,45 @@ class MercadoPago_Core_Model_Core
 
     public function getMessageByStatus($status, $statusDetail, $paymentMethod, $installment, $amount)
     {
-        $status = $this->validStatusTwoPayments($status);
-        $statusDetail = $this->validStatusTwoPayments($statusDetail);
+      // @NEED_REFACTOR
+      $order_id = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+      $order = Mage::getModel('sales/order')->loadByIncrementId($order_id);
+      $payment = $order->getPayment();
 
-        $message = [
-            "title"   => "",
-            "message" => ""
-        ];
 
-        $rawMessage = Mage::helper('mercadopago/statusMessage')->getMessage($status);
-        $message['title'] = Mage::helper('mercadopago')->__($rawMessage['title']);
+      $status = $payment->getAdditionalInformation('status');
+      $statusDetail = $payment->getAdditionalInformation('status_detail');
+      $paymentMethod = $payment->getAdditionalInformation('payment_method');
+      $installment = $payment->getAdditionalInformation('installments');
+      $amount = $this->getTotalOrder($order);
 
-        if ($status == 'rejected') {
-            if ($statusDetail == 'cc_rejected_invalid_installments') {
-                $message['message'] = Mage::helper('mercadopago')
-                    ->__(Mage::helper('mercadopago/statusDetailMessage')->getMessage($statusDetail), strtoupper($paymentMethod), $installment);
-            } elseif ($statusDetail == 'cc_rejected_call_for_authorize') {
-                $message['message'] = Mage::helper('mercadopago')
-                    ->__(Mage::helper('mercadopago/statusDetailMessage')->getMessage($statusDetail), strtoupper($paymentMethod), $amount);
-            } else {
-                $message['message'] = Mage::helper('mercadopago')
-                    ->__(Mage::helper('mercadopago/statusDetailMessage')->getMessage($statusDetail), strtoupper($paymentMethod));
-            }
+      $status = $this->validStatusTwoPayments($status);
+      $statusDetail = $this->validStatusTwoPayments($statusDetail);
+
+      $message = [
+        "title"   => "",
+        "message" => ""
+      ];
+
+      $rawMessage = Mage::helper('mercadopago/statusMessage')->getMessage($status);
+      $message['title'] = Mage::helper('mercadopago')->__($rawMessage['title']);
+
+      if ($status == 'rejected') {
+        if ($statusDetail == 'cc_rejected_invalid_installments') {
+          $message['message'] = Mage::helper('mercadopago')
+          ->__(Mage::helper('mercadopago/statusDetailMessage')->getMessage($statusDetail), strtoupper($paymentMethod), $installment);
+        } elseif ($statusDetail == 'cc_rejected_call_for_authorize') {
+          $message['message'] = Mage::helper('mercadopago')
+          ->__(Mage::helper('mercadopago/statusDetailMessage')->getMessage($statusDetail), strtoupper($paymentMethod), $amount);
         } else {
-            $message['message'] = Mage::helper('mercadopago')->__($rawMessage['message']);
+          $message['message'] = Mage::helper('mercadopago')
+          ->__(Mage::helper('mercadopago/statusDetailMessage')->getMessage($statusDetail), strtoupper($paymentMethod));
         }
+      } else {
+        $message['message'] = Mage::helper('mercadopago')->__($rawMessage['message']);
+      }
 
-        return $message;
+      return $message;
     }
 
     protected function getCustomerInfo($customer, $order)
@@ -316,11 +328,13 @@ class MercadoPago_Core_Model_Core
 
             $coupon = $this->validCoupon($couponCode);
             Mage::helper('mercadopago')->log("Response API Coupon: ", self::LOG_FILE, $coupon);
-
-            $couponInfo = $this->getCouponInfo($coupon, $couponCode);
-            $preference['coupon_amount'] = $couponInfo['coupon_amount'];
-            $preference['coupon_code'] = strtoupper($couponInfo['coupon_code']);
-            $preference['campaign_id'] = $couponInfo['campaign_id'];
+            if(isset($coupon['status']) && $coupon['status'] < 300){
+              $couponInfo = $this->getCouponInfo($coupon, $couponCode);
+              $preference['coupon_amount'] = $couponInfo['coupon_amount'];
+              $preference['coupon_code'] = strtoupper($couponInfo['coupon_code']);
+              $preference['campaign_id'] = $couponInfo['campaign_id'];
+              Mage::helper('mercadopago')->log("Applied coupon..", self::LOG_FILE);
+            }
 
         }
 
@@ -457,6 +471,9 @@ class MercadoPago_Core_Model_Core
         $details_discount['response']['transaction_amount'] = $params['transaction_amount'];
         $details_discount['response']['params'] = $params;
 
+        if($details_discount['status'] >= 400 && $details_discount['status'] < 500){
+          $details_discount['response']['message'] = Mage::helper('mercadopago')->__($details_discount['response']['message']);
+        }
 
         return $details_discount;
     }
@@ -562,6 +579,17 @@ class MercadoPago_Core_Model_Core
         $mp = Mage::helper('mercadopago')->getApiInstance($this->_clientId, $this->_clientSecret);
 
         return $mp->get_preapproval_payment($id);
+    }
+
+    public function getTotalOrder($order){
+      $total = $order->getBaseGrandTotal();
+
+      if (!$total) {
+          $total = $order->getBasePrice() + $order->getBaseShippingAmount();
+      }
+
+      $total = number_format($total, 2, '.', '');
+      return $total;
     }
 
 }

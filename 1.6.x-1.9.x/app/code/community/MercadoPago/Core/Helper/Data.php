@@ -302,13 +302,13 @@ class MercadoPago_Core_Helper_Data
                 'checkout_type' => 'custom'
             ];
             if ($methodCode == 'mercadopago_custom') {
-                $analyticsData['public_key'] = Mage::getStoreConfig('payment/mercadopago_custom/public_key');
+                $analyticsData['public_key'] =  Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_PUBLIC_KEY);
             } elseif ($methodCode == 'mercadopago_standard') {
-                $analyticsData['analytics_key'] = Mage::getStoreConfig(self::XML_PATH_CLIENT_ID);
+                $analyticsData['analytics_key'] =  Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
                 $analyticsData['checkout_type'] = 'basic';
                 $analyticsData['payment_type'] = isset($additionalInfo['payment_type_id']) ? $order->getPayment()->getData('additional_information')['payment_type_id'] : 'credit_card';
             } else {
-                $analyticsData['analytics_key'] = $this->getClientIdFromAccessToken(Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN));
+                $analyticsData['analytics_key'] = $this->getClientIdFromAccessToken(Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN));
                 $analyticsData['payment_type'] = 'ticket';
             }
         } else {

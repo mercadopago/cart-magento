@@ -22,7 +22,6 @@ class MercadoPago_Core_Block_Custom_Form
         parent::_construct();
         $this->setTemplate('mercadopago/custom/form.phtml');
     }
-
     /*
      *
      * Only used in Mexico

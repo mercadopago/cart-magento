@@ -92,10 +92,9 @@ class MercadoPago_Core_CheckoutController
             Mage::getSingleton('checkout/type_onepage')->getCheckout()->setLastSuccessQuoteId($this->_getQuoteId());
 
             $order = $this->getOrder();
-
             $infoPayment = $this->_core->getInfoPaymentByOrder($order->getIncrementId());
-
-            $status = null;
+            $payment = $order->getPayment();
+            $status = $payment->getAdditionalInformation('status');
 
             //checkout Custom Ticket
             if (isset($infoPayment['activation_uri'])){
@@ -119,9 +118,6 @@ class MercadoPago_Core_CheckoutController
                     $paymentData = $this->_statusHelper->getDataPayments($merchantOrderData, self::LOG_FILE);
                     $status = $paymentData['status'];
                 }
-            } else{
-                //checkout Custom Credit Card
-                $status = $infoPayment['status']['value'];
             }
 
             if ($status == 'approved' || $status == 'pending'){

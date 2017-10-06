@@ -41,7 +41,7 @@ abstract class MercadoPago_Core_Model_CustomPayment
 
         $debugMode = Mage::getStoreConfig('payment/mercadopago/debug_mode');
         $secure = Mage::app()->getFrontController()->getRequest()->isSecure();
-        if (!$secure && !$debugMode ) {
+        if ($this->_code == 'mercadopago_custom' && (!$secure && !$debugMode) ) {
             return false;
         }
 

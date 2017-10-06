@@ -287,8 +287,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
         $customer = $mp->get("/v1/customers/search", ["email" => $email]);
 
-        Mage::helper('mercadopago')->log("Response search customer: " . $email, self::LOG_FILE, $customer);
-        Mage::helper('mercadopago')->log("access token: " . $access_token, self::LOG_FILE);
+        Mage::helper('mercadopago')->log("Response search customer", self::LOG_FILE, $customer);
 
         if ($customer['status'] == 200) {
 
@@ -299,7 +298,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
                 $customer = $mp->post("/v1/customers", ["email" => $email]);
 
-                Mage::helper('mercadopago')->log("Response create customer: " . $email, self::LOG_FILE, $customer);
+                Mage::helper('mercadopago')->log("Response create customer", self::LOG_FILE, $customer);
 
                 if ($customer['status'] == 201) {
                     return $customer['response'];

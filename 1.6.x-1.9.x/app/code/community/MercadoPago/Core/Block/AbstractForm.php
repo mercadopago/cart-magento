@@ -5,12 +5,14 @@ class MercadoPago_Core_Block_AbstractForm
 {
     protected function _prepareLayout()
     {
+
+                        // <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
         //init js no header
         $block = Mage::app()->getLayout()->createBlock('core/text', 'js_mercadopago');
         $block->setText(
             sprintf(
                 '
-                  <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+                  <script src="http://php56.dev.io/sdk/javascript/v1/mercadopago.debug.js"></script>
                   <script type="text/javascript" src="%s"></script>
                   <script type="text/javascript" src="%s"></script>
                   <link rel="stylesheet" href="%s"/>

@@ -30,7 +30,6 @@ abstract class MercadoPago_Core_Model_CustomPayment
      */
     public function isAvailable($quote = null)
     {
-
         $parent = parent::isAvailable($quote);
         $accessToken = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
         $publicKey = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_PUBLIC_KEY);
@@ -40,14 +39,9 @@ abstract class MercadoPago_Core_Model_CustomPayment
             return false;
         }
 
-        //if use credentials test..
-        if (strpos($accessToken, 'TEST') !== false && strpos($publicKey, 'TEST') !== false) {
-          return true;
-        }
-
         $debugMode = Mage::getStoreConfig('payment/mercadopago/debug_mode');
         $secure = Mage::app()->getFrontController()->getRequest()->isSecure();
-        if ($this->_code == 'mercadopago_custom' && (!$secure && !$debugMode) ) {
+        if (!$secure && !$debugMode ) {
             return false;
         }
 

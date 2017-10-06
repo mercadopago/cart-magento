@@ -283,7 +283,7 @@ class MercadoPago_Core_Helper_Data
     public static function getClientIdFromAccessToken($at)
     {
         $t = explode('-', $at);
-        if (count($t) > 0) {
+        if (count($t) > 1) {
             return $t[1];
         }
 

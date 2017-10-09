@@ -58,9 +58,12 @@ class MercadoPago_Core_Model_Discount_Coupon
     protected function _getDiscountCondition($address)
     {
         $postData = Mage::app()->getRequest()->getPost();
-        $method = $postData['payment']['method'];
-        $req = $postData['payment'][$method]['amount'];
-        return (!empty($req) && ($address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING) && Mage::getStoreConfigFlag('payment/mercadopago/consider_discount'));
 
+        if($address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING && isset($postData['payment'])){
+          $method = $postData['payment']['method'];
+          $req = $postData['payment'][$method]['amount'];
+          return (!empty($req) && Mage::getStoreConfigFlag('payment/mercadopago/consider_discount'));
+        }
+        return false;
     }
 }

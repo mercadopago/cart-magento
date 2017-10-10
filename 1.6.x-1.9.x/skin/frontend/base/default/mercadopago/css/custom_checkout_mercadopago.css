@@ -17,6 +17,10 @@
   box-sizing: border-box;
 }
 
+#mercadopago-form-general{
+  float: left;
+}
+
 .mp-box-inputs{
   float: left;
 }

@@ -330,12 +330,14 @@ class MercadoPago_Core_Model_Custom_Payment
                 return $card;
             }
         }
+
         $params = ["token" => $token];
+
         if (isset($payment['issuer_id'])) {
             $params['issuer_id'] = (int)$payment['issuer_id'];
         }
-        if (isset($payment['paymentMethodId'])) {
-            $params['payment_method_id'] = $payment['paymentMethodId'];
+        if (isset($payment['payment_method_id'])) {
+            $params['payment_method_id'] = $payment['payment_method_id'];
         }
         $card = $mp->post("/v1/customers/" . $customer['id'] . "/cards", $params);
 

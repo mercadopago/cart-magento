@@ -1,7 +1,7 @@
 /*
 * MPv1
 * Handlers Form Mercado Pago v1
-* @version     1.1.0
+* @version     1.1.1
 */
 
 (function (){
@@ -251,7 +251,8 @@
 
   MPv1.getBin = function () {
     var cardSelector = document.querySelector(MPv1.selectors.paymentMethodSelector);
-    if (cardSelector && cardSelector[cardSelector.options.selectedIndex].value != "-1") {
+    // if (cardSelector && cardSelector[cardSelector.options.selectedIndex].value != "-1") {
+    if (MPv1.customer_and_card.status) {
       return cardSelector[cardSelector.options.selectedIndex].getAttribute('first_six_digits');
     }
 
@@ -298,7 +299,6 @@
   };
 
   MPv1.setPaymentMethodInfo = function (status, response) {
-
     //@Gateway_mode
     // reset gateway_mode on guessing payment
     document.querySelector(MPv1.selectors.gateway_mode).value = "";
@@ -323,10 +323,26 @@
         var bin = MPv1.getBin();
         var amount = MPv1.getAmount();
 
-        Mercadopago.getInstallments({
+        var params = {
           "bin": bin,
           "amount": amount
-        }, MPv1.setInstallmentInfo);
+        }
+
+        if(MPv1.site_id == 'MLM'){
+          var selectorPaymetMethod = document.querySelector(MPv1.selectors.paymentMethodSelector);
+          var payment_method_id = selectorPaymetMethod.value;
+
+          if(MPv1.customer_and_card.status){
+            payment_method_id = selectorPaymetMethod[selectorPaymetMethod.options.selectedIndex].getAttribute("payment_method_id");
+          }
+
+          params = {
+            "payment_method_id": payment_method_id,
+            "amount": amount
+          }
+        }
+
+        Mercadopago.getInstallments(params, MPv1.setInstallmentInfo);
 
         // check if the issuer is necessary to pay
         var issuerMandatory = false,
@@ -350,9 +366,17 @@
 
   MPv1.changePaymetMethodSelector = function (){
     if(MPv1.guessing_payment_method){
-      var payment_method_id = document.querySelector(MPv1.selectors.paymentMethodSelector).value;
+      var selectorPaymetMethod = document.querySelector(MPv1.selectors.paymentMethodSelector);
+      var payment_method_id = selectorPaymetMethod.value;
+
+      if(MPv1.customer_and_card.status){
+        payment_method_id = selectorPaymetMethod[selectorPaymetMethod.options.selectedIndex].getAttribute("payment_method_id");
+      }
+      document.querySelector(MPv1.selectors.paymentMethodId).value = payment_method_id;
+
       MPv1.getIssuersPaymentMethod(payment_method_id);
     }
+
   }
 
 
@@ -365,7 +389,6 @@
 
   MPv1.getIssuersPaymentMethod = function (payment_method_id){
     var amount = MPv1.getAmount();
-
     //flow: MLM mercadopagocard
     if(payment_method_id == 'mercadopagocard'){
       Mercadopago.getInstallments({
@@ -380,7 +403,6 @@
 
 
   MPv1.showCardIssuers = function (status, issuers) {
-
     //if the API does not return any bank
     if(issuers.length > 0){
       var issuersSelector = document.querySelector(MPv1.selectors.issuer),
@@ -421,8 +443,15 @@
     }
 
     if(MPv1.site_id == "MLM"){
+      var selectorPaymetMethod = document.querySelector(MPv1.selectors.paymentMethodSelector);
+      var payment_method_id = selectorPaymetMethod.value;
+
+      if(MPv1.customer_and_card.status){
+        payment_method_id = selectorPaymetMethod[selectorPaymetMethod.options.selectedIndex].getAttribute("payment_method_id");
+      }
+
       params_installments = {
-        "payment_method_id": document.querySelector(MPv1.selectors.paymentMethodSelector).value,
+        "payment_method_id": payment_method_id,
         "amount": amount,
         "issuer_id": issuerId
       }
@@ -450,6 +479,7 @@
   */
 
   MPv1.setInstallmentInfo = function(status, response) {
+
     //force show
     document.querySelector(MPv1.selectors.mpInstallment).style.display = 'inline-block';
     var selectorInstallments = document.querySelector(MPv1.selectors.installments);
@@ -491,7 +521,7 @@
           }
         }
 
-        html_option += '<option value="'+ payerCosts[i].installments +'" '+ dataInput +'>' + (payerCosts[i].recommended_message || payerCosts[i].installments) + '</option>';
+        html_option += '<option value="'+ payerCosts[i].installments +'"'+ dataInput +'>' + (payerCosts[i].recommended_message || payerCosts[i].installments) + '</option>';
       }
 
       // not take the user's selection if equal
@@ -519,7 +549,6 @@
   */
 
   MPv1.cardsHandler = function () {
-
     var cardSelector = document.querySelector(MPv1.selectors.paymentMethodSelector);
     var type_checkout = cardSelector[cardSelector.options.selectedIndex].getAttribute("type_checkout");
     var amount = MPv1.getAmount();
@@ -527,7 +556,6 @@
     //@Gateway_mode
     // reset gateway_mode on guessing payment
     document.querySelector(MPv1.selectors.gateway_mode).value = ""
-
 
     if(MPv1.customer_and_card.default){
 
@@ -543,9 +571,24 @@
 
           var _bin = cardSelector[cardSelector.options.selectedIndex].getAttribute("first_six_digits");
 
-          Mercadopago.getPaymentMethod({
+          var params = {
             "bin": _bin
-          }, MPv1.setPaymentMethodInfo);
+          }
+
+          if(MPv1.site_id == 'MLM'){
+            var selectorPaymetMethod = document.querySelector(MPv1.selectors.paymentMethodSelector);
+            var payment_method_id = selectorPaymetMethod.value;
+
+            if(MPv1.customer_and_card.status){
+              payment_method_id = selectorPaymetMethod[selectorPaymetMethod.options.selectedIndex].getAttribute("payment_method_id");
+            }
+
+            params = {
+              "payment_method_id": payment_method_id
+            }
+          }
+
+          Mercadopago.getPaymentMethod(params, MPv1.setPaymentMethodInfo);
 
         }else{
           document.querySelector(MPv1.selectors.paymentMethodId).value = cardSelector.value != -1 ? cardSelector.value : "";
@@ -857,8 +900,8 @@
     };
 
     MPv1.initializeEventsCardNumber = function(el, eventName, handler){
-      MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'keyup', MPv1.guessingPaymentMethod);
       MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'keyup', MPv1.clearOptions);
+      MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'keyup', MPv1.guessingPaymentMethod);
       MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'change', MPv1.guessingPaymentMethod);
     };
 
@@ -989,8 +1032,6 @@
 
       Mercadopago.setPublishableKey(MPv1.public_key);
 
-      //Initialize event
-      MPv1.initializeEventsCardNumber();
 
       // flow coupon of discounts
       if (MPv1.coupon_of_discounts.default) {
@@ -1019,6 +1060,9 @@
 
       //flow: MLM
       if(MPv1.site_id != "MLM"){
+        //Initialize event
+        MPv1.initializeEventsCardNumber();
+
         Mercadopago.getIdentificationTypes();
       }
 

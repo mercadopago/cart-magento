@@ -4,11 +4,11 @@
  */
 $_htmlId = $this->getHtmlId() ? $this->getHtmlId() : '_' . uniqid();
 $productCode = $this->_getAttributes();
-$sizeUnit = ['cm', 'mt'];
-$weightUnit = ['kg', 'gr'];
-$meCode = ['length','width','height', 'weight'];
+$sizeUnit = array('cm', 'mt');
+$weightUnit = array('kg', 'gr');
+$meCode = array('length','width','height', 'weight');
 $meLabel = $this->_getMeLabel();
-$prevValues = [];
+$prevValues = array();
 $unit = $sizeUnit;
 
 $prevValues = $this->_getStoredMappingValues();

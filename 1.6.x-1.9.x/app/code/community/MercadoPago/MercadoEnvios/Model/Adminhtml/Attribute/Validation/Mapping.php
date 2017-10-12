@@ -7,7 +7,7 @@ class MercadoPago_MercadoEnvios_Model_Adminhtml_Attribute_Validation_Mapping
     public function save()
     {
         $mappingValues = $this->getValue(); //get the value from our config
-        $attributeCodes = [];
+        $attributeCodes = array();
         $website = Mage::helper('mercadopago')->getAdminSelectedWebsite();
 
         if ($website->getConfig('carriers/mercadoenvios/active')) {

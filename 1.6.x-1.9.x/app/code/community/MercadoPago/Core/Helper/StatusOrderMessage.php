@@ -3,7 +3,7 @@
 class MercadoPago_Core_Helper_StatusOrderMessage
     extends MercadoPago_Core_Helper_Message_Abstract
 {
-    protected $messagesMap = [
+    protected $messagesMap = array(
             "approved"     => 'Automatic notification of the Mercado Pago: The payment was approved.',
             "refunded"     => 'Automatic notification of the Mercado Pago: The payment was refunded.',
             "pending"      => 'Automatic notification of the Mercado Pago: The payment is being processed.',
@@ -12,7 +12,7 @@ class MercadoPago_Core_Helper_StatusOrderMessage
             "cancelled"    => 'Automatic notification of the Mercado Pago: The payment was cancelled.',
             "rejected"     => 'Automatic notification of the Mercado Pago: The payment was rejected.',
             "chargeback"   => 'Automatic notification of the Mercado Pago: One chargeback was initiated for this payment.',
-    ];
+    );
 
     public function getMessageMap()
     {

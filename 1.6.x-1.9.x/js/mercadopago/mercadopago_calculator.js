@@ -74,9 +74,10 @@ var MercadoPagoCustom = (function () {
         TinyJ(self.selectors.sectionPaymentCalculator).addClass(self.constants.loading);
 
         // add class to <li>
-        TinyJ(self.selectors.paymentCardLi).each(function(obj, key) {
+        TinyJ(self.selectors.paymentCardLi).each(function (obj, key) {
             obj.removeClass('selected');
         });
+        
         var liId = TinyJ(self.selectors.paymentCardSelected).val();
         TinyJ('#'+liId+'-li').addClass('selected'); // <li class="selected">
 
@@ -94,7 +95,7 @@ var MercadoPagoCustom = (function () {
         return TinyJ(self.selectors.paymentCardSelected).val();
     }
 
-    function getPaymentMethods( creditCardId ) {
+    function getPaymentMethods(creditCardId) {
         if ((methodsConsulted.hasOwnProperty(creditCardId))) {
             paymentMethodList = methodsConsulted[creditCardId];
             sortPaymentMethods();
@@ -103,7 +104,7 @@ var MercadoPagoCustom = (function () {
         }
     }
 
-    function responseHandler( status, response) {
+    function responseHandler(status, response) {
         paymentMethodList = response;
         methodsConsulted[response[0].payment_method_id] = response;
         sortPaymentMethods();
@@ -124,16 +125,16 @@ var MercadoPagoCustom = (function () {
         selectorPaymentMethods.appendChild(option);
 
         //swerch in all banks
-        for (var bank = 0; bank< paymentMethodList.length; bank++ ){
+        for (var bank = 0; bank< paymentMethodList.length; bank++){
             var payerCost = paymentMethodList[bank].payer_costs.length-1;
             var end = false;
 
             //serch in all installments
-            while ( payerCost >= 0 && !end){
+            while (payerCost >= 0 && !end){
 
                 //serch the first elment with installment rate in 0
                 // or is the last element
-                if ((paymentMethodList[bank].payer_costs[payerCost].installment_rate == '0') || (payerCost == 0) ){
+                if ((paymentMethodList[bank].payer_costs[payerCost].installment_rate == '0') || (payerCost == 0)){
                     end = true;
                     var installments = paymentMethodList[bank].payer_costs[payerCost].installments;
                     if (paymentMethodOrded[installments]){
@@ -154,7 +155,7 @@ var MercadoPagoCustom = (function () {
 
         for (var i= keys.length-1; i>=0; i--){
             // generate groups
-            if ( i === 0) {
+            if (i === 0) {
                 // Other banks
                 var label = 'Otros bancos';
             }else {
@@ -165,7 +166,7 @@ var MercadoPagoCustom = (function () {
 
             var oGroup = document.createElement('optgroup');
             oGroup.label = label ;
-            for ( var bank=0; bank<paymentMethodOrded[keys[i]].length; bank++){
+            for (var bank=0; bank<paymentMethodOrded[keys[i]].length; bank++){
                 var method = paymentMethodOrded[keys[i]][bank];
                 option = new Option(method.bank_name,method.bank);
                 TinyJ(option).attribute(self.constants.atributeInstallments,  method.installments);
@@ -183,7 +184,7 @@ var MercadoPagoCustom = (function () {
         // remove class loading
         TinyJ(self.selectors.sectionPaymentCalculator).removeClass(self.constants.loading);
     }
-    
+
     //Set Payment Cost
     function setPaymentCost() {
         var selectorPaymentOptions = TinyJ(self.selectors.installmentSelect);
@@ -245,7 +246,7 @@ var MercadoPagoCustom = (function () {
         TinyJ(self.selectors.installmentCFT).html(selectorPaymentOptions.attribute(self.constants.atributeDataCft));
         TinyJ(self.selectors.installmentTEA).html(selectorPaymentOptions.attribute(self.constants.atributeDataTea));
 
-        if( selectorPaymentOptions.attribute(self.constants.atributeDataRate) > 0 ){
+        if(selectorPaymentOptions.attribute(self.constants.atributeDataRate) > 0){
             //Hide message
             TinyJ(self.selectors.installmentsInterestFreeText).hide();
         } else {

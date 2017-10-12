@@ -59,22 +59,22 @@ class MercadoPago_Core_Model_Standard_Payment
                 $init_point = $payment['init_point'];
             }
 
-            $arrayAssign = [
+            $arrayAssign = array(
                 "init_point"      => $init_point,
                 "type_checkout"   => $this->getConfigData('type_checkout'),
                 "iframe_width"    => $this->getConfigData('iframe_width'),
                 "iframe_height"   => $this->getConfigData('iframe_height'),
                 "banner_checkout" => $this->getConfigData('banner_checkout'),
                 "status"          => 201
-            ];
+            );
 
             Mage::helper('mercadopago')->log("Array preference ok", self::LOG_FILE);
         } else {
-            $arrayAssign = [
+            $arrayAssign = array(
                 "message" => Mage::helper('mercadopago')->__('An error has occurred. Please refresh the page.'),
                 "json"    => json_encode($response),
                 "status"  => 400
-            ];
+            );
 
             Mage::helper('mercadopago')->log("Array preference error", self::LOG_FILE);
         }
@@ -84,7 +84,7 @@ class MercadoPago_Core_Model_Standard_Payment
 
     public function getOrderPlaceRedirectUrl()
     {
-        return Mage::getUrl('mercadopago/pay', ['_secure' => true]);
+        return Mage::getUrl('mercadopago/pay', array('_secure' => true));
     }
 
     public function getDiscount($order)
@@ -101,12 +101,12 @@ class MercadoPago_Core_Model_Standard_Payment
 
     protected function getItems($order)
     {
-        $items = [];
+        $items = array();
         foreach ($order->getAllVisibleItems() as $item) {
             $product = $item->getProduct();
             $image = (string)Mage::helper('catalog/image')->init($product, 'image');
 
-            $items[] = [
+            $items[] = array(
                 "id"          => $item->getSku(),
                 "title"       => $product->getName(),
                 "description" => $product->getName(),
@@ -114,7 +114,7 @@ class MercadoPago_Core_Model_Standard_Payment
                 "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
                 "quantity"    => (int)number_format($item->getQtyOrdered(), 0, '.', ''),
                 "unit_price"  => (float)number_format($item->getPrice(), 2, '.', '')
-            ];
+            );
         }
 
         return $items;
@@ -132,12 +132,12 @@ class MercadoPago_Core_Model_Standard_Payment
 
     protected function getExcludedPaymentsMethods()
     {
-        $excludedMethods = [];
+        $excludedMethods = array();
         $excludedPaymentMethods = $this->getConfigData('excluded_payment_methods');
         $arrEpm = explode(",", $excludedPaymentMethods);
         if (count($arrEpm) > 0) {
             foreach ($arrEpm as $m) {
-                $excludedMethods[] = ["id" => $m];
+                $excludedMethods[] = array("id" => $m);
             }
         }
 
@@ -153,9 +153,9 @@ class MercadoPago_Core_Model_Standard_Payment
         $paramsShipment = new Varien_Object();
 
         Mage::dispatchEvent('mercadopago_standard_make_preference_before',
-            ['params' => $paramsShipment, 'order' => $order]);
+            array('params' => $paramsShipment, 'order' => $order));
 
-        $arr = [];
+        $arr = array();
         $arr['external_reference'] = $orderIncrementId;
         $arr['items'] = $this->getItems($order);
 
@@ -169,13 +169,13 @@ class MercadoPago_Core_Model_Standard_Payment
         }
         if ($totalItem > $orderAmount || $totalItem < $orderAmount) {
             $diffPrice = $orderAmount - $totalItem;
-            $arr['items'][] = [
+            $arr['items'][] = array(
                 "title"       => "Difference amount of the items with a total",
                 "description" => "Difference amount of the items with a total",
                 "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
                 "quantity"    => 1,
                 "unit_price"  => (float)$diffPrice
-            ];
+            );
             Mage::helper('mercadopago')->log("Total itens: " . $totalItem, self::LOG_FILE);
             Mage::helper('mercadopago')->log("Total order: " . $orderAmount, self::LOG_FILE);
             Mage::helper('mercadopago')->log("Difference add itens: " . $diffPrice, self::LOG_FILE);
@@ -184,10 +184,10 @@ class MercadoPago_Core_Model_Standard_Payment
             $shippingAddress = $order->getShippingAddress();
             $shipping = $shippingAddress->getData();
 
-            $arr['payer']['phone'] = [
+            $arr['payer']['phone'] = array(
                 "area_code" => "-",
                 "number"    => $shipping['telephone']
-            ];
+            );
 
             $arr['shipments'] = $this->_getParamShipment($paramsShipment, $order, $shippingAddress);
         }
@@ -198,24 +198,24 @@ class MercadoPago_Core_Model_Standard_Payment
         $this->_setPayerData($arr['payer'], $customer, $billingAddress);
 
         if (isset($payment['additional_information']['doc_number']) && $payment['additional_information']['doc_number'] != "") {
-            $arr['payer']['identification'] = [
+            $arr['payer']['identification'] = array(
                 "type"   => "CPF",
                 "number" => $payment['additional_information']['doc_number']
-            ];
+            );
         }
 
-        $arr['payer']['address'] = [
+        $arr['payer']['address'] = array(
             "zip_code"      => $billingAddress['postcode'],
             "street_name"   => $billingAddress['street'] . " - " . $billingAddress['city'] . " - " . $billingAddress['country_id'],
             "street_number" => ""
-        ];
+        );
 
         $url = 'mercadopago/checkout/page';
-        $arr['back_urls'] = [
+        $arr['back_urls'] = array(
             "success" => Mage::getUrl($url),
             "pending" => Mage::getUrl($url),
             "failure" => Mage::getUrl('checkout/onepage/failure')
-        ];
+        );
 
         $arr['notification_url'] = Mage::getUrl('mercadopago/notifications/standard');
 
@@ -254,13 +254,13 @@ class MercadoPago_Core_Model_Standard_Payment
 
     protected function getReceiverAddress($shippingAddress)
     {
-        return [
+        return array(
             "floor"         => "-",
             "zip_code"      => $shippingAddress->getPostcode(),
             "street_name"   => $shippingAddress->getStreet()[0] . " - " . $shippingAddress->getCity() . " - " . $shippingAddress->getCountryId(),
             "apartment"     => "-",
             "street_number" => ""
-        ];
+        );
     }
 
     protected function _getParamShipment($params, $order, $shippingAddress) {
@@ -298,26 +298,26 @@ class MercadoPago_Core_Model_Standard_Payment
     protected function _calculateDiscountAmount(&$arr, $order)
     {
         if ($order->getDiscountAmount() < 0) {
-            $arr[] = [
+            $arr[] = array(
                 "title"       => "Store discount coupon",
                 "description" => "Store discount coupon",
                 "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
                 "quantity"    => 1,
                 "unit_price"  => (float)$order->getDiscountAmount()
-            ];
+            );
         }
     }
 
     protected function _calculateBaseTaxAmount(&$arr, $order)
     {
         if ($order->getBaseTaxAmount() > 0) {
-            $arr[] = [
+            $arr[] = array(
                 "title"       => "Store taxes",
                 "description" => "Store taxes",
                 "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
                 "quantity"    => 1,
                 "unit_price"  => (float)$order->getBaseTaxAmount()
-            ];
+            );
         }
     }
 

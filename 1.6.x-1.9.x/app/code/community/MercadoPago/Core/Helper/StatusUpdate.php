@@ -11,8 +11,8 @@ class MercadoPago_Core_Helper_StatusUpdate
      */
     protected $_order = false;
 
-    protected $_finalStatus = ['rejected', 'cancelled', 'refunded', 'charge_back'];
-    protected $_notFinalStatus = ['authorized', 'process', 'in_mediation'];
+    protected $_finalStatus = array('rejected', 'cancelled', 'refunded', 'charge_back');
+    protected $_notFinalStatus = array('authorized', 'process', 'in_mediation');
 
     private $_rawMessage;
 
@@ -145,7 +145,7 @@ class MercadoPago_Core_Helper_StatusUpdate
                 if (!(isset($payment['refunds']) && count($payment['refunds']) > 0)) {
                     if ($this->_order->getPayment()->getAdditionalInformation('is_second_card_used')) {
                         //if status is updated, there are no refunds and no custom payments with two cards.
-                        return ['body' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
+                        return array('body' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK);
                     }
                 }
             }
@@ -157,11 +157,11 @@ class MercadoPago_Core_Helper_StatusUpdate
             $helper->log("Update order", 'mercadopago.log', $statusSave->getData());
             $helper->log($message, 'mercadopago.log');
 
-            return ['body' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK];
+            return array('body' => $message, 'code' => MercadoPago_Core_Helper_Response::HTTP_OK);
         } catch (Exception $e) {
             $helper->log("error in set order status: " . $e, 'mercadopago.log');
 
-            return ['body' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST];
+            return array('body' => $e, 'code' => MercadoPago_Core_Helper_Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -293,10 +293,10 @@ class MercadoPago_Core_Helper_StatusUpdate
      */
     protected function _getLastPaymentIndex($payments, $status)
     {
-        $dates = [];
+        $dates = array();
         foreach ($payments as $key => $payment) {
             if (in_array($payment['status'], $status)) {
-                $dates[] = ['key' => $key, 'value' => $payment['last_modified']];
+                $dates[] = array('key' => $key, 'value' => $payment['last_modified']);
             }
         }
         usort($dates, array(get_class($this), "_dateCompare"));
@@ -369,7 +369,7 @@ class MercadoPago_Core_Helper_StatusUpdate
     {
         Mage::helper('mercadopago')->log("Format Array", $logFile);
 
-        $fields = [
+        $fields = array(
             "status",
             "status_detail",
             "payment_id_detail",
@@ -381,7 +381,7 @@ class MercadoPago_Core_Helper_StatusUpdate
             "installments",
             "shipping_cost",
             "amount_refunded"
-         ];
+         );
 
         foreach ($fields as $field) {
             if (isset($payment[$field])) {
@@ -452,13 +452,13 @@ class MercadoPago_Core_Helper_StatusUpdate
         return $data;
     }
 
-    protected function _getFormattedPaymentData($paymentId, $data = [], $logFile)
+    protected function _getFormattedPaymentData($paymentId, $data = array(), $logFile)
     {
         $core = Mage::getModel('mercadopago/core');
 
         $response = $core->getPayment($paymentId);
         if ($response['status'] == 400 || $response['status'] == 401) {
-            return [];
+            return array();
         }
         $payment = $response['response']['collection'];
 

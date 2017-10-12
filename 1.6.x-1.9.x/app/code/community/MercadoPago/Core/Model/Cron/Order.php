@@ -81,13 +81,13 @@ class MercadoPago_Core_Model_Cron_Order
         return $data;
     }
 
-    protected function getFormattedPaymentData($paymentId, $data = [])
+    protected function getFormattedPaymentData($paymentId, $data = array())
     {
         $core = Mage::getModel('mercadopago/core');
 
         $response = $core->getPayment($paymentId);
         if ($response['status'] == 400 || $response['status'] == 401) {
-            return [];
+            return array();
         }
         $payment = $response['response']['collection'];
 

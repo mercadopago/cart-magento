@@ -201,13 +201,14 @@ class MercadoPago_Core_Model_Recurring_Payment
         }
     }
 
-    protected function getUpdateFromAdmin ($product, $profile, $newAmount, $referenceId) {
+    protected function getUpdateFromAdmin($product, $profile, $newAmount, $referenceId)
+    {
         $localAmount = $product->getPrice() + $profile->getShippingAmount();
         if ($localAmount != $newAmount) {
             $clientId = Mage::getStoreConfig('payment/mercadopago_recurring/client_id');
             $clientSecret = Mage::getStoreConfig('payment/mercadopago_recurring/client_secret');
             $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
-            $response = $mp->update_preapproval_payment($referenceId, ["auto_recurring" => ["transaction_amount" => $localAmount]]);
+            $response = $mp->update_preapproval_payment($referenceId, array("auto_recurring" => array("transaction_amount" => $localAmount)));
             if ($response['status'] == 201 || $response['status'] == 200) {
                 $profile->setBillingAmount($localAmount);
                 $this->_getSession()->addSuccess(__('Recurring Profile updated by Mercado Pago'));
@@ -242,7 +243,7 @@ class MercadoPago_Core_Model_Recurring_Payment
         $response = $core->getRecurringPayment($profile->getReferenceId());
         $newAmount = $response ['response']['auto_recurring']['transaction_amount'];
         $id = $profile->getData('schedule_description');
-        $response = $mp->update_preapproval_payment($id, ["auto_recurring" => ["transaction_amount" => $newAmount]]);
+        $response = $mp->update_preapproval_payment($id, array("auto_recurring" => array("transaction_amount" => $newAmount)));
         if ($response['status'] == 201 || $response['status'] == 200) {
             $this->_getSession()->addSuccess(__('Recurring Profile updated by Mercado Pago'));
         } else {
@@ -272,7 +273,7 @@ class MercadoPago_Core_Model_Recurring_Payment
         }
 
         $id = explode('=' , $profile->getData('schedule_description'))[1];
-        $response = $mp->update_preapproval_payment($id, ["status" => $action]);
+        $response = $mp->update_preapproval_payment($id, array("status" => $action));
         if ($response['status'] == 201 || $response['status'] == 200) {
             $this->_getSession()->addSuccess(__('Recurring Profile updated by Mercado Pago'));
         } else {
@@ -281,22 +282,22 @@ class MercadoPago_Core_Model_Recurring_Payment
         }
     }
 
-    protected function _getSession() {
-
+    protected function _getSession()
+    {
         return Mage::getSingleton('core/session');
     }
 
-    public function getRecurringPaymentData ()
+    public function getRecurringPaymentData()
     {
         $initPoint = Mage::getSingleton('customer/session')->getInitPoint();
-        $arrayAssign = [
+        $arrayAssign = array(
             "init_point"      => $initPoint,
             "type_checkout"   => $this->getConfigData('type_checkout'),
             "iframe_width"    => $this->getConfigData('iframe_width'),
             "iframe_height"   => $this->getConfigData('iframe_height'),
             "banner_checkout" => $this->getConfigData('banner_checkout'),
             "status"          => 201
-        ];
+        );
 
         return $arrayAssign;
     }

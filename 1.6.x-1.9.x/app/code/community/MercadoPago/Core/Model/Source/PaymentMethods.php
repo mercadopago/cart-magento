@@ -25,7 +25,7 @@ class MercadoPago_Core_Model_Source_PaymentMethods
         $helper = Mage::helper('mercadopago');
 
         //empty value, to include all methods
-        $methods[] = ['value' => '', 'label' => ''];
+        $methods[] = array('value' => '', 'label' => '');
 
         $website = $helper->getAdminSelectedWebsite();
 

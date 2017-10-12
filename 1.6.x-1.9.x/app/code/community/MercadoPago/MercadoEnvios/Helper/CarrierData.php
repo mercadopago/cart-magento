@@ -8,19 +8,42 @@ class MercadoPago_MercadoEnvios_Helper_CarrierData
     const ME_LENGTH_UNIT = 'cm';
     const ME_WEIGHT_UNIT = 'gr';
 
-    protected $_products = [];
+    protected $_products = array();
     protected $_mapping;
 
-    protected $_maxWeight = ['mla' => '25000', 'mlb' => '30000', 'mlm' => ''];
-    protected $_individualDimensions = ['height' => ['mla' => ['min' => '0', 'max' => '70'], 'mlb' => ['min' => '2', 'max' => '105'], 'mlm' => ['min' => '0', 'max' => '80']],
-                                        'width'  => ['mla' => ['min' => '0', 'max' => '70'], 'mlb' => ['min' => '11', 'max' => '105'], 'mlm' => ['min' => '0', 'max' => '80']],
-                                        'length' => ['mla' => ['min' => '0', 'max' => '70'], 'mlb' => ['min' => '16', 'max' => '105'], 'mlm' => ['min' => '0', 'max' => '120']],
-                                        'weight' => ['mla' => ['min' => '0', 'max' => '25000'], 'mlb' => ['min' => '0', 'max' => '30000'], 'mlm' => ['min' => '0', 'max' => '70000']],
-    ];
-    protected $_globalMaxDimensions = ['mla' => '210',
-                                       'mlb' => '200',
-                                       'mlm' => '347',
-    ];
+    protected $_maxWeight = array('mla' => '25000', 'mlb' => '30000', 'mlm' => '');
+
+    protected $_individualDimensions = array(
+      'height' => array(
+        'mla' => array('min' => '0', 'max' => '70'),
+        'mlb' => array('min' => '2', 'max' => '105'),
+        'mlm' => array('min' => '0', 'max' => '80')
+      ),
+
+      'width'  => array(
+        'mla' => array('min' => '0', 'max' => '70'),
+        'mlb' => array('min' => '11', 'max' => '105'),
+        'mlm' => array('min' => '0', 'max' => '80')
+      ),
+
+      'length' => array(
+        'mla' => array('min' => '0', 'max' => '70'),
+        'mlb' => array('min' => '16', 'max' => '105'),
+        'mlm' => array('min' => '0', 'max' => '120')
+      ),
+
+      'weight' => array(
+        'mla' => array('min' => '0', 'max' => '25000'),
+        'mlb' => array('min' => '0', 'max' => '30000'),
+        'mlm' => array('min' => '0', 'max' => '70000')
+      ),
+    );
+
+    protected $_globalMaxDimensions = array(
+      'mla' => '210',
+      'mlb' => '200',
+      'mlm' => '347',
+    );
 
 
     /**
@@ -63,7 +86,7 @@ class MercadoPago_MercadoEnvios_Helper_CarrierData
         }
         $helper = Mage::helper('mercadopago_mercadoenvios');
         if (($height + $width + $length) > $this->_globalMaxDimensions[$country]) {
-            $helper->log('Invalid dimensions in cart:', ['width' => $width, 'height' => $height, 'length' => $length, 'weight' => $weight,]);
+            $helper->log('Invalid dimensions in cart:', array('width' => $width, 'height' => $height, 'length' => $length, 'weight' => $weight));
             Mage::register('mercadoenvios_msg', $this->__('Package exceed maximum dimensions'));
             Mage::throwException('Invalid dimensions cart');
         }
@@ -79,9 +102,9 @@ class MercadoPago_MercadoEnvios_Helper_CarrierData
         if (empty($this->_mapping)) {
             $mapping = Mage::getStoreConfig(self::XML_PATH_ATTRIBUTES_MAPPING);
             $mapping = unserialize($mapping);
-            $mappingResult = [];
+            $mappingResult = array();
             foreach ($mapping as $key => $map) {
-                $mappingResult[$key] = ['code' => $map['attribute_code'], 'unit' => $map['unit']];
+                $mappingResult[$key] = array('code' => $map['attribute_code'], 'unit' => $map['unit']);
             }
             $this->_mapping = $mappingResult;
         }

@@ -90,29 +90,29 @@ class MercadoPago_Core_Model_Core
     {
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
         $payment = $order->getPayment();
-        $infoPayments = [];
-        $fields = [
-            ["field" => "cardholderName", "title" => "Card Holder Name: %s"],
-            ["field" => "trunc_card", "title" => "Card Number: %s"],
-            ["field" => "payment_method", "title" => "Payment Method: %s"],
-            ["field" => "expiration_date", "title" => "Expiration Date: %s"],
-            ["field" => "installments", "title" => "Installments: %s"],
-            ["field" => "statement_descriptor", "title" => "Statement Descriptor: %s"],
-            ["field" => "payment_id", "title" => "Payment id (MercadoPago): %s"],
-            ["field" => "status", "title" => "Payment Status: %s"],
-            ["field" => "status_detail", "title" => "Payment Detail: %s"],
-            ["field" => "activation_uri", "title" => "Generate Ticket"],
-            ["field" => "payment_id_detail", "title" => "Mercado Pago Payment Id: %s"]
+        $infoPayments = array();
+        $fields = array(
+            array("field" => "cardholderName", "title" => "Card Holder Name: %s"),
+            array("field" => "trunc_card", "title" => "Card Number: %s"),
+            array("field" => "payment_method", "title" => "Payment Method: %s"),
+            array("field" => "expiration_date", "title" => "Expiration Date: %s"),
+            array("field" => "installments", "title" => "Installments: %s"),
+            array("field" => "statement_descriptor", "title" => "Statement Descriptor: %s"),
+            array("field" => "payment_id", "title" => "Payment id (MercadoPago): %s"),
+            array("field" => "status", "title" => "Payment Status: %s"),
+            array("field" => "status_detail", "title" => "Payment Detail: %s"),
+            array("field" => "activation_uri", "title" => "Generate Ticket"),
+            array("field" => "payment_id_detail", "title" => "Mercado Pago Payment Id: %s")
 
-        ];
+        );
 
         foreach ($fields as $field) {
             if ($payment->getAdditionalInformation($field['field']) != "") {
                 $text = Mage::helper('mercadopago')->__($field['title'], Mage::helper('mercadopago')->__($payment->getAdditionalInformation($field['field'])));
-                $infoPayments[$field['field']] = [
+                $infoPayments[$field['field']] = array(
                     "text"  => $text,
                     "value" => Mage::helper('mercadopago')->__($payment->getAdditionalInformation($field['field']))
-                ];
+                );
             }
         }
 
@@ -167,10 +167,10 @@ class MercadoPago_Core_Model_Core
       $status = $this->validStatusTwoPayments($status);
       $statusDetail = $this->validStatusTwoPayments($statusDetail);
 
-      $message = [
+      $message = array(
         "title"   => "",
         "message" => ""
-      ];
+      );
 
       $rawMessage = Mage::helper('mercadopago/statusMessage')->getMessage($status);
       $message['title'] = Mage::helper('mercadopago')->__($rawMessage['title']);
@@ -210,17 +210,17 @@ class MercadoPago_Core_Model_Core
             $lastName = $order->getBillingAddress()->getLastname();
         }
 
-        return ['email' => $email, 'first_name' => $firstName, 'last_name' => $lastName];
+        return array('email' => $email, 'first_name' => $firstName, 'last_name' => $lastName);
     }
 
     protected function getItemsInfo($order)
     {
-        $dataItems = [];
+        $dataItems = array();
         foreach ($order->getAllVisibleItems() as $item) {
             $product = $item->getProduct();
             $image = (string)Mage::helper('catalog/image')->init($product, 'image');
 
-            $dataItems[] = [
+            $dataItems[] = array(
                 "id"          => $item->getSku(),
                 "title"       => $product->getName(),
                 "description" => $product->getName(),
@@ -228,18 +228,18 @@ class MercadoPago_Core_Model_Core
                 "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
                 "quantity"    => (int)number_format($item->getQtyOrdered(), 0, '.', ''),
                 "unit_price"  => (float)number_format($product->getPrice(), 2, '.', '')
-            ];
+            );
         }
 
         /* verify discount and add it like an item */
         $discount = $this->getDiscount();
         if ($discount != 0) {
-            $dataItems[] = [
+            $dataItems[] = array(
                 "title"       => "Discount by the Store",
                 "description" => "Discount by the Store",
                 "quantity"    => 1,
                 "unit_price"  => (float)number_format($discount, 2, '.', '')
-            ];
+            );
         }
 
         return $dataItems;
@@ -248,7 +248,7 @@ class MercadoPago_Core_Model_Core
 
     protected function getCouponInfo($coupon, $couponCode)
     {
-        $infoCoupon = [];
+        $infoCoupon = array();
         $infoCoupon['coupon_amount'] = (float)$coupon['response']['coupon_amount'];
         $infoCoupon['coupon_code'] = $couponCode;
         $infoCoupon['campaign_id'] = $coupon['response']['id'];
@@ -261,7 +261,7 @@ class MercadoPago_Core_Model_Core
         return $infoCoupon;
     }
 
-    public function makeDefaultPreferencePaymentV1($paymentInfo = [])
+    public function makeDefaultPreferencePaymentV1($paymentInfo = array())
     {
         $quote = $this->_getQuote();
         $orderId = $quote->getReservedOrderId();
@@ -272,7 +272,7 @@ class MercadoPago_Core_Model_Core
         $customerInfo = $this->getCustomerInfo($customer, $order);
 
         /* INIT PREFERENCE */
-        $preference = [];
+        $preference = array();
 
         $preference['notification_url'] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK) . "mercadopago/notifications/custom";
 
@@ -295,11 +295,11 @@ class MercadoPago_Core_Model_Core
         $preference['additional_info']['payer']['first_name'] = $customerInfo['first_name'];
         $preference['additional_info']['payer']['last_name'] = $customerInfo['last_name'];
 
-        $preference['additional_info']['payer']['address'] = [
+        $preference['additional_info']['payer']['address'] = array(
             "zip_code"      => $billingAddress['postcode'],
             "street_name"   => $billingAddress['street'] . " - " . $billingAddress['city'] . " - " . $billingAddress['country_id'],
             "street_number" => ''
-        ];
+        );
 
         $preference['additional_info']['payer']['registration_date'] = date('Y-m-d', $customer->getCreatedAtTimestamp()) . "T" . date('H:i:s', $customer->getCreatedAtTimestamp());
 
@@ -307,20 +307,20 @@ class MercadoPago_Core_Model_Core
             $shippingAddress = $order->getShippingAddress();
             $shipping = $shippingAddress->getData();
 
-            $preference['additional_info']['shipments']['receiver_address'] = [
+            $preference['additional_info']['shipments']['receiver_address'] = array(
                 "zip_code"      => $shipping['postcode'],
                 "street_name"   => $shipping['street'] . " - " . $shipping['city'] . " - " . $shipping['country_id'],
                 "street_number" => '',
                 "floor"         => "-",
                 "apartment"     => "-",
 
-            ];
+            );
         }
 
-        $preference['additional_info']['payer']['phone'] = [
+        $preference['additional_info']['payer']['phone'] = array(
             "area_code" => "0",
             "number"    => $billingAddress['telephone']
-        ];
+        );
 
         if (!empty($paymentInfo['coupon_code'])) {
             $couponCode = $paymentInfo['coupon_code'];
@@ -498,7 +498,7 @@ class MercadoPago_Core_Model_Core
             return;
         }
         try {
-            $additionalFields = [
+            $additionalFields = array(
                 'status',
                 'status_detail',
                 'payment_id',
@@ -510,7 +510,7 @@ class MercadoPago_Core_Model_Core
                 'id',
                 'payer_identification_type',
                 'payer_identification_number'
-            ];
+            );
 
             $infoPayments = $paymentOrder->getAdditionalInformation();
 

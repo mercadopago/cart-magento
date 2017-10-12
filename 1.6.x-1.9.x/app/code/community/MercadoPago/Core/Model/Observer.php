@@ -16,8 +16,8 @@
  */
 class MercadoPago_Core_Model_Observer
 {
-    private $banners = [
-        "mercadopago_custom"       => [
+    private $banners = array(
+        "mercadopago_custom"       => array(
             "mla" => "//imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg",
             "mlb" => "//imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg",
             "mco" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
@@ -25,8 +25,8 @@ class MercadoPago_Core_Model_Observer
             "mlc" => "//secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "//imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
             "mpe" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
-        ],
-        "mercadopago_customticket" => [
+        ),
+        "mercadopago_customticket" => array(
             "mla" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlb" => "//imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/2014/230x60.png",
             "mco" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
@@ -34,8 +34,8 @@ class MercadoPago_Core_Model_Observer
             "mlc" => "//secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "//imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
             "mpe" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
-        ],
-        "mercadopago_standard"     => [
+        ),
+        "mercadopago_standard"     => array(
             "mla" => "//imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg",
             "mlb" => "//imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg",
             "mco" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
@@ -43,11 +43,11 @@ class MercadoPago_Core_Model_Observer
             "mlv" => "//imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
             "mlm" => "//imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG",
             "mpe" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
-        ]
-    ];
+        )
+    );
 
-    private $available_transparent_credit_cart = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe'];
-    private $available_transparent_ticket = ['mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe'];
+    private $available_transparent_credit_cart = array('mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe');
+    private $available_transparent_ticket = array('mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe');
 
     /**
      * @var
@@ -141,7 +141,7 @@ class MercadoPago_Core_Model_Observer
         Mage::helper('mercadopago')->log("API Users response", self::LOG_FILE, $user);
 
         if ($user['status'] == 200 && !in_array("test_user", $user['response']['tags']) && strpos($accessToken, 'TEST') === false) {
-            $sponsors = [
+            $sponsors = array(
                 'MLA' => 186172525,
                 'MLB' => 186175129,
                 'MLM' => 186175064,
@@ -150,7 +150,7 @@ class MercadoPago_Core_Model_Observer
                 'MLV' => 206960619,
                 'MPE' => 217178514,
                 'MLU' => 247028139,
-            ];
+            );
             $countryCode = $user['response']['site_id'];
 
             if (isset($sponsors[$countryCode])) {
@@ -230,9 +230,9 @@ class MercadoPago_Core_Model_Observer
         if ($paymentMethod == 'mercadopago_standard') {
             $response = $mp->cancel_payment($paymentID);
         } else {
-            $data = [
+            $data = array(
                 "status" => 'cancelled',
-            ];
+            );
             $response = $mp->put("/v1/payments/$paymentID?access_token=$access_token", $data);
         }
 
@@ -449,14 +449,14 @@ class MercadoPago_Core_Model_Observer
                 $order->setMercadoPagoRefundType('total');
             } else {
                 $order->setMercadoPagoRefundType('partial');
-                $metadata = [
+                $metadata = array(
                     "reason"             => '',
                     "external_reference" => $order->getIncrementId(),
-                ];
-                $params = [
+                );
+                $params = array(
                     "amount"   => $amount,
                     "metadata" => $metadata,
-                ];
+                );
                 $response = $mp->post('/collections/' . $paymentID . '/refunds?access_token=' . $mp->get_access_token(), $params);
             }
         } else {
@@ -464,11 +464,11 @@ class MercadoPago_Core_Model_Observer
             $accessToken = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);
             $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
             if ($isTotalRefund) {
-                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$accessToken", []);
+                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$accessToken", array());
             } else {
-                $params = [
+                $params = array(
                     "amount" => $amount,
-                ];
+                );
                 $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=$accessToken", $params);
             }
         }

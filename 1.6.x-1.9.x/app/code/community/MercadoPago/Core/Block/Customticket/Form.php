@@ -28,7 +28,7 @@ class MercadoPago_Core_Block_Customticket_Form
     public function getTicketsOptions()
     {
         $paymentMethods = Mage::getModel('mercadopago/core')->getPaymentMethods();
-        $tickets = [];
+        $tickets = array();
 
         foreach ($paymentMethods['response'] as $pm) {
             if ($pm['payment_type_id'] == 'ticket' || $pm['payment_type_id'] == 'atm') {

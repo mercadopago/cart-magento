@@ -18,9 +18,9 @@ class MercadoPago_Core_NotificationsController
     extends Mage_Core_Controller_Front_Action
 {
 
-    protected $_requestData = [];
-    protected $_merchantOrder = [];
-    protected $_paymentData = [];
+    protected $_requestData = array();
+    protected $_merchantOrder = array();
+    protected $_paymentData = array();
     protected $_core;
     protected $_helper;
     protected $_statusHelper;
@@ -148,7 +148,7 @@ class MercadoPago_Core_NotificationsController
                 $this->_helper->log('Update Order', self::LOG_FILE);
                 $this->_statusHelper->setStatusUpdated($payment, $this->_order);
 
-                $data = $this->_statusHelper->formatArrayPayment($data = [], $payment, self::LOG_FILE);
+                $data = $this->_statusHelper->formatArrayPayment($data = array(), $payment, self::LOG_FILE);
 
                 $this->getCore()->updateOrder($this->_order, $data);
                 $setStatusResponse = $this->_statusHelper->setStatusOrder($payment);
@@ -196,11 +196,11 @@ class MercadoPago_Core_NotificationsController
         return $data;
     }
 
-    protected function _getFormattedPaymentData($paymentId, $data = [])
+    protected function _getFormattedPaymentData($paymentId, $data = array())
     {
         $response = $this->getCore()->getPayment($paymentId);
         if (!$this->_isValidResponse($response)) {
-            return [];
+            return array();
         }
         $payment = $response['response']['collection'];
 
@@ -219,7 +219,7 @@ class MercadoPago_Core_NotificationsController
 
     protected function _getShipmentsArray()
     {
-        return (isset($this->_merchantOrder['shipments'][0])) ? $this->_merchantOrder['shipments'][0] : [];
+        return (isset($this->_merchantOrder['shipments'][0])) ? $this->_merchantOrder['shipments'][0] : array();
     }
 
     protected function _isValidMerchantOrder($merchantOrder)
@@ -265,8 +265,8 @@ class MercadoPago_Core_NotificationsController
     {
         if ($this->_shipmentExists($this->_shipmentData)) {
             Mage::dispatchEvent('mercadopago_standard_notification_before_set_status',
-                ['shipmentData' => $this->_shipmentData,
-                 'orderId'      => $this->_merchantOrder['external_reference']]
+                array('shipmentData' => $this->_shipmentData,
+                 'orderId'      => $this->_merchantOrder['external_reference'])
             );
         }
     }
@@ -275,8 +275,8 @@ class MercadoPago_Core_NotificationsController
     {
         if ($this->_shipmentExists($this->_shipmentData)) {
             Mage::dispatchEvent('mercadopago_standard_notification_received',
-                ['payment'        => $this->_paymentData,
-                 'merchant_order' => $this->_merchantOrder]
+                array('payment'        => $this->_paymentData,
+                 'merchant_order' => $this->_merchantOrder)
             );
         }
     }
@@ -364,7 +364,7 @@ class MercadoPago_Core_NotificationsController
                     $paymentData = Mage::helper('mercadopago')->setPayerInfo($paymentData);
                     $statusHelper->setStatusUpdated($paymentData, $order);
 
-                    $data = $this->_statusHelper->formatArrayPayment($data = [], $paymentData, self::LOG_FILE);
+                    $data = $this->_statusHelper->formatArrayPayment($data = array(), $paymentData, self::LOG_FILE);
 
                     $this->getCore()->updateOrder($order, $data);
                     Mage::helper('mercadopago/statusUpdate')->setStatusOrder($paymentData);

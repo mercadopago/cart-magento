@@ -16,9 +16,9 @@ class MercadoPago_Core_Model_Source_ListPages
 {
     public function toOptionArray()
     {
-        $pages = [];
-        $pages[] = ['value' => "product.info.calculator",  'label' => Mage::helper('mercadopago')->__("Product Detail Page")];
-        $pages[] = ['value' => "checkout.cart.calculator", 'label' => Mage::helper('mercadopago')->__("Cart page")];
+        $pages = array();
+        $pages[] = array('value' => "product.info.calculator",  'label' => Mage::helper('mercadopago')->__("Product Detail Page"));
+        $pages[] = array('value' => "checkout.cart.calculator", 'label' => Mage::helper('mercadopago')->__("Cart page"));
 
         //force order by key
         ksort($pages);

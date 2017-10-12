@@ -3,15 +3,15 @@
 $mystring = 'abc';
 $findme = 'a';
 
-if (!strpos($mystring, $findme)) {
+if (!strpos($mystring, $findme) === false) {
     //
 }
 
-if (strpos($mystring, $findme)) {
+if (strpos($mystring, $findme) === true) {
     //
 }
 
-if (strpos($mystring, $findme) == false) {
+if (strpos($mystring, $findme) === false) {
     //
 }
 

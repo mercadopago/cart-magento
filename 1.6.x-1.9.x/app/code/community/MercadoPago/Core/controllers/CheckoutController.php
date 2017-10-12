@@ -132,7 +132,7 @@ class MercadoPago_Core_CheckoutController
         //set data for mp analytics
         Mage::register('mp_analytics_data', Mage::helper('mercadopago')->getAnalyticsData($this->getOrder()));
         $checkoutTypeHandle = $this->getCheckoutHandle();
-        $this->loadLayout(['default', $checkoutTypeHandle]);
+        $this->loadLayout(array('default', $checkoutTypeHandle));
 
         $this->_initLayoutMessages('core/session');
         Mage::dispatchEvent('checkout_onepage_controller_success_action', array('order_ids' => array($this->getOrder()->getId())));

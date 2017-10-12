@@ -25,7 +25,7 @@ class MercadoPago_Core_Model_Custom_Payment
     const LOG_FILE = 'mercadopago-custom.log';
     const XML_PATH_ACCESS_TOKEN = 'payment/mercadopago_custom_checkout/access_token';
 
-    public static $exclude_inputs_opc = ['issuer_id', 'card_expiration_month', 'card_expiration_year', 'card_holder_name', 'doc_type', 'doc_number'];
+    public static $exclude_inputs_opc = array('issuer_id', 'card_expiration_month', 'card_expiration_year', 'card_holder_name', 'doc_type', 'doc_number');
 
     /**
      * @param string $paymentAction
@@ -198,7 +198,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
     protected function getPaymentInfo($payment)
     {
-        $payment_info = [];
+        $payment_info = array();
 
         if ($payment->getAdditionalInformation("coupon_code") != "") {
             $payment_info['coupon_code'] = $payment->getAdditionalInformation("coupon_code");
@@ -285,7 +285,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
         $mp = Mage::helper('mercadopago')->getApiInstance($access_token);
 
-        $customer = $mp->get("/v1/customers/search", ["email" => $email]);
+        $customer = $mp->get("/v1/customers/search", array("email" => $email));
 
         Mage::helper('mercadopago')->log("Response search customer", self::LOG_FILE, $customer);
 
@@ -296,7 +296,7 @@ class MercadoPago_Core_Model_Custom_Payment
             } else {
                 Mage::helper('mercadopago')->log("Customer not found: " . $email, self::LOG_FILE);
 
-                $customer = $mp->post("/v1/customers", ["email" => $email]);
+                $customer = $mp->post("/v1/customers", array("email" => $email));
 
                 Mage::helper('mercadopago')->log("Response create customer", self::LOG_FILE, $customer);
 
@@ -331,7 +331,7 @@ class MercadoPago_Core_Model_Custom_Payment
             }
         }
 
-        $params = ["token" => $token];
+        $params = array("token" => $token);
 
         if (isset($payment['issuer_id'])) {
             $params['issuer_id'] = (int)$payment['issuer_id'];
@@ -362,7 +362,7 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function getOrderPlaceRedirectUrl()
     {
-        return Mage::getUrl('mercadopago/checkout/page', ['_secure' => true]);
+        return Mage::getUrl('mercadopago/checkout/page', array('_secure' => true));
     }
 
     public function getCode()

@@ -85,7 +85,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
         $payment = $order->getPayment();
 
-        $paymentInfo = [];
+        $paymentInfo = array();
 
         if ($payment->getAdditionalInformation("coupon_code") != "") {
             $paymentInfo['coupon_code'] = $payment->getAdditionalInformation("coupon_code");
@@ -151,7 +151,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
     public function getOrderPlaceRedirectUrl()
     {
-        return Mage::getUrl('mercadopago/checkout/page', ['_secure' => true]);
+        return Mage::getUrl('mercadopago/checkout/page', array('_secure' => true));
     }
 
 }

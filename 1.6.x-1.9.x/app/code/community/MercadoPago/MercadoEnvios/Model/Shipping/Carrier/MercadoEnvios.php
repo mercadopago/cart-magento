@@ -53,7 +53,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
     public function getAllowedMethods()
     {
         $methods = $this->getDataAllowedMethods();
-        $allowedMethods = [];
+        $allowedMethods = array();
         if (is_array($methods)) {
             foreach ($methods as $method) {
                 if (isset($method['shipping_method_id'])) {
@@ -93,10 +93,10 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
             $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
             $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
 
-            $params = [
+            $params = array(
                 "dimensions" => $dimensions,
                 "zip_code"   => $postcode,
-            ];
+            );
 
             $freeMethod = Mage::helper('mercadopago_mercadoenvios')->getFreeMethod($this->_request);
             if (!empty($freeMethod)) {

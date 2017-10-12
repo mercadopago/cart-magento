@@ -292,15 +292,15 @@ class MercadoPago_Core_Helper_Data
 
     public function getAnalyticsData($order = null)
     {
-        $analyticsData = [];
+        $analyticsData = array();
         if ($order != null && $order->getId() && $order->getPayment()->getData('method')) {
             $additionalInfo = $order->getPayment()->getData('additional_information');
             $methodCode = $order->getPayment()->getData('method');
-            $analyticsData = [
+            $analyticsData = array(
                 'payment_id'    => isset($additionalInfo['payment_id_detail']) ? $order->getPayment()->getData('additional_information')['payment_id_detail'] : '',
                 'payment_type'  => 'credit_card',
                 'checkout_type' => 'custom'
-            ];
+            );
             if ($methodCode == 'mercadopago_custom') {
                 $analyticsData['public_key'] =  Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_PUBLIC_KEY);
             } elseif ($methodCode == 'mercadopago_standard') {
@@ -328,12 +328,12 @@ class MercadoPago_Core_Helper_Data
 
     public function getPlatformInfo()
     {
-        return [
+        return array(
             "platform"         => "Magento",
             "platform_version" => (string)Mage::getVersion(),
             "module_version"   => (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version,
             "code_version"     => phpversion()
-        ];
+        );
     }
 
     public function checkAnalyticsData()
@@ -354,10 +354,10 @@ class MercadoPago_Core_Helper_Data
 
     protected function sendAnalyticsData($api)
     {
-        $request = [
+        $request = array(
             "data" => $this->getPlatformInfo()
-        ];
-        $fields = [
+        );
+        $fields = array(
             'two_cards'                          => $this->_website->getConfig('payment/mercadopago_custom/allow_2_cards'),
             'checkout_basic'                     => $this->_website->getConfig('payment/mercadopago_standard/active'),
             'checkout_custom_credit_card'        => $this->_website->getConfig('payment/mercadopago_custom/active'),
@@ -365,7 +365,7 @@ class MercadoPago_Core_Helper_Data
             'mercado_envios'                     => $this->_website->getConfig('carriers/mercadoenvios/active'),
             'checkout_custom_credit_card_coupon' => $this->_website->getConfig('payment/mercadopago_custom/coupon_mercadopago'),
             'checkout_custom_ticket_coupon'      => $this->_website->getConfig('payment/mercadopago_customticket/coupon_mercadopago')
-        ];
+        );
         foreach ($fields as $key => $field) {
             $request['data'][$key] = $field == 1 ? 'true' : 'false';
         }

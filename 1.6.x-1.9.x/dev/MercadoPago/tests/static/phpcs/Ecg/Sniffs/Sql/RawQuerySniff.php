@@ -19,7 +19,7 @@ class Ecg_Sniffs_Sql_RawQuerySniff implements PHP_CodeSniffer_Sniff
 
     public function register()
     {
-        return array_merge(PHP_CodeSniffer_Tokens::$stringTokens, [T_HEREDOC, T_NOWDOC]);
+        return array_merge(PHP_CodeSniffer_Tokens::$stringTokens, array(T_HEREDOC, T_NOWDOC));
     }
 
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
@@ -30,7 +30,7 @@ class Ecg_Sniffs_Sql_RawQuerySniff implements PHP_CodeSniffer_Sniff
 
         if ($prev['code'] === T_EQUAL
             || ($prev['code'] == T_STRING && in_array($prev['content'], $this->queryFunctions))
-            || in_array($tokens[$stackPtr]['code'], [T_HEREDOC, T_NOWDOC])
+            || in_array($tokens[$stackPtr]['code'], array(T_HEREDOC, T_NOWDOC))
         ) {
             $trim = function ($str) {
                 return trim(str_replace(array('\'', '"'), '', $str));

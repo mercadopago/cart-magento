@@ -12,9 +12,9 @@ class MercadoPago_MercadoEnvios_Helper_Data
     const ME_SHIPMENT_TRACKING_URL = 'https://api.mercadolibre.com/sites/';
 
     protected $_mapping;
-    protected $_products = [];
+    protected $_products = array();
 
-    public static $enabled_methods = ['mla', 'mlb', 'mlm'];
+    public static $enabled_methods = array('mla', 'mlb', 'mlm');
 
 
     /**
@@ -103,12 +103,12 @@ class MercadoPago_MercadoEnvios_Helper_Data
         $tracking = Mage::getModel('sales/order_shipment_track');
         $tracking = $tracking->getCollection()
             ->addFieldToFilter(
-                ['entity_id', 'parent_id', 'order_id'],
-                [
-                    ['eq' => $_shippingInfo->getTrackId()],
-                    ['eq' => $_shippingInfo->getShipId()],
-                    ['eq' => $_shippingInfo->getOrderId()],
-                ]
+                array('entity_id', 'parent_id', 'order_id'),
+                array(
+                    array('eq' => $_shippingInfo->getTrackId()),
+                    array('eq' => $_shippingInfo->getShipId()),
+                    array('eq' => $_shippingInfo->getOrderId()),
+                )
             )
             ->setPageSize(1)
             ->setCurPage(1)
@@ -132,11 +132,11 @@ class MercadoPago_MercadoEnvios_Helper_Data
         if ($shipmentId) {
             if ($shipment = Mage::getModel('sales/order_shipment')->load($shipmentId)) {
                 if ($shipment->getShippingLabel()) {
-                    $params = [
+                    $params = array(
                         'shipment_ids'  => $shipment->getShippingLabel(),
                         'response_type' => Mage::getStoreConfig('carriers/mercadoenvios/shipping_label'),
                         'access_token'  => Mage::helper('mercadopago')->getAccessToken()
-                    ];
+                    );
 
                     return self::ME_SHIPMENT_LABEL_URL . '?' . http_build_query($params);
                 }

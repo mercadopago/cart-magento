@@ -128,23 +128,23 @@ class MercadoPago_MercadoEnvios_Model_Observer
         $order = $observer->getOrder();
         $method = $order->getShippingMethod();
         $shippingCost = $order->getBaseShippingAmount();
-        $paramsME = [];
+        $paramsME = array();
         if (Mage::helper('mercadopago_mercadoenvios')->isMercadoEnviosMethod($method)) {
             $shippingAddress = $order->getShippingAddress();
             $zipCode = $shippingAddress->getPostcode();
             $defaultShippingId = substr($method, strpos($method, '_') + 1);
             $helperMe = Mage::helper('mercadopago_mercadoenvios');
-            $paramsME = [
+            $paramsME = array(
                 'mode'                    => 'me2',
                 'zip_code'                => $zipCode,
                 'default_shipping_method' => intval($defaultShippingId),
                 'dimensions'              => $helperMe->getDimensions($helperMe->getAllItems($order->getAllItems()))
-            ];
+            );
             if ($shippingCost == 0) {
-                $paramsME['free_methods'] = [['id' => intval($defaultShippingId)]];
+                $paramsME['free_methods'] = array(array('id' => intval($defaultShippingId)));
             }
         }
-        
+
         $observer->getParams()->setValues($paramsME);
         Mage::helper('mercadopago_mercadoenvios')->log('REQUEST SHIPMENT ME: ', $paramsME, Zend_Log::INFO);
 

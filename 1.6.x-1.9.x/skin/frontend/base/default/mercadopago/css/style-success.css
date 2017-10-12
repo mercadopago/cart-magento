@@ -3,7 +3,6 @@
     padding: 0;
 }
 
-
 .mercadopago-title{
     margin: 0 0 10px 0;
     font-weight:bold;
@@ -51,10 +50,8 @@
 #logo-mercadopago{
     width: 100px;
     margin: 20px 0;
-    /*margin: 20px auto;*/
 }
 #logo-mercadopago img{
-    /*    float: left;*/
     width: 100%;
 }
 
@@ -67,10 +64,3 @@
 p + #btn-boleto-mercadopago{
     margin-top: 15px;
 }
-
-/*#logo-mercadopago + .buttons-set{
-    text-align: center!important;
-}
-.button-success > button{
-    float: none!important;
-}*/

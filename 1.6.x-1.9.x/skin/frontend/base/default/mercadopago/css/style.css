@@ -293,7 +293,6 @@
 
 #logo_mp{
     float: left;
-    /*text-align: center;*/
     width: 100%;
     margin: 40px 0 0 0;
 }
@@ -462,7 +461,6 @@
 }
 
 .banner_checkout_mp {
-    /*margin: 21px 0 -8px;*/
     max-width:100%;
     max-height:100%;
 }

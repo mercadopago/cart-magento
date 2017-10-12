@@ -3,12 +3,6 @@
 }
 
 #mp-box-form{
-  /*padding: 15px 10px;
-  margin: 30px auto;
-  width: 400px;
-  background-color: #fff;
-  overflow: auto;
-  border-radius: 5px;*/
   width: 100%;
   max-width: 375px;
   padding-left: 10px;
@@ -97,7 +91,6 @@
   height: 32px;
   margin-top: 0;
   max-width: unset;
-  /*font-size: 100%;*/
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;
@@ -279,10 +272,6 @@
   text-transform: uppercase;
   font-size: 12px;
   display: block;
-  /*margin-top: 8px;
-  margin-bottom: 16px;
-  margin-left: -15px;
-  margin-right: -15px;*/
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 

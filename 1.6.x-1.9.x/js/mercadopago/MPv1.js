@@ -4,7 +4,7 @@
 * @version     1.1.1
 */
 
-(function (){
+(function () {
 
   var MPv1 = {
     debug: false,
@@ -128,19 +128,19 @@
   }
 
   MPv1.currencyIdToCurrency = function (currency_id) {
-    if ( currency_id == 'ARS' ) {
+    if (currency_id == 'ARS') {
       return '$';
-    } else if ( currency_id == 'BRL' ) {
+    } else if (currency_id == 'BRL') {
       return 'R$';
-    } else if ( currency_id == 'COP' ) {
+    } else if (currency_id == 'COP') {
       return '$';
-    } else if ( currency_id == 'CLP' ) {
+    } else if (currency_id == 'CLP') {
       return '$';
-    } else if ( currency_id == 'MXN' ) {
+    } else if (currency_id == 'MXN') {
       return '$';
-    } else if ( currency_id == 'VEF' ) {
+    } else if (currency_id == 'VEF') {
       return 'Bs';
-    } else if ( currency_id == 'PEN' ) {
+    } else if (currency_id == 'PEN') {
       return 'S/';
     } else {
       return '$';
@@ -148,7 +148,7 @@
   }
 
   MPv1.checkCouponEligibility = function () {
-    if ( document.querySelector(MPv1.selectors.couponCode).value == "" ) {
+    if (document.querySelector(MPv1.selectors.couponCode).value == "") {
       // coupon code is empty
       document.querySelector(MPv1.selectors.mpCouponApplyed).style.display = 'none';
       document.querySelector(MPv1.selectors.mpCouponError).style.display = 'block';
@@ -158,7 +158,7 @@
       document.querySelector(MPv1.selectors.applyCoupon).value = MPv1.text.apply;
       document.querySelector(MPv1.selectors.discount).value = 0;
       MPv1.cardsHandler();
-    } else if ( MPv1.coupon_of_discounts.status ) {
+    } else if (MPv1.coupon_of_discounts.status) {
       // we already have a coupon set, so we remove it
       document.querySelector(MPv1.selectors.mpCouponApplyed).style.display = 'none';
       document.querySelector(MPv1.selectors.mpCouponError).style.display = 'none';
@@ -180,7 +180,7 @@
       var sp = "?";
 
       //check if there are params in the url
-      if (url.indexOf("?") >= 0){
+      if (url.indexOf("?") >= 0) {
         sp = "&"
       }
 
@@ -193,7 +193,7 @@
         url: url,
         method : "GET",
         timeout : 5000,
-        error: function(){
+        error: function () {
           // request failed
           document.querySelector(MPv1.selectors.mpCouponApplyed).style.display = 'none';
           document.querySelector(MPv1.selectors.mpCouponError).style.display = 'none';
@@ -205,7 +205,7 @@
           document.querySelector(MPv1.selectors.discount).value = 0;
           MPv1.cardsHandler();
         },
-        success : function (status, response){
+        success : function (status, response) {
 
           if (response.status == 200) {
             document.querySelector(MPv1.selectors.mpCouponApplyed).style.display = 'block';
@@ -282,13 +282,13 @@
     var amount = MPv1.getAmount();
 
     if (event.type == "keyup") {
-      if (bin != null && bin.length == 6 ) {
+      if (bin != null && bin.length == 6) {
         Mercadopago.getPaymentMethod({
           "bin": bin
         }, MPv1.setPaymentMethodInfo);
       }
     } else {
-      setTimeout(function() {
+      setTimeout(function () {
         if (bin.length >= 6) {
           Mercadopago.getPaymentMethod({
             "bin": bin
@@ -303,14 +303,14 @@
     // reset gateway_mode on guessing payment
     document.querySelector(MPv1.selectors.gateway_mode).value = "";
 
-    if(MPv1.guessing_payment_method){
+    if(MPv1.guessing_payment_method) {
       if (status == 200) {
 
-        if(MPv1.site_id != "MLM"){
+        if(MPv1.site_id != "MLM") {
           //guessing
           document.querySelector(MPv1.selectors.paymentMethodId).value = response[0].id;
 
-          if(MPv1.customer_and_card.status){
+          if(MPv1.customer_and_card.status) {
             document.querySelector(MPv1.selectors.paymentMethodSelector).style.background = "url(" + response[0].secure_thumbnail + ") 95% 50% no-repeat #fff";
           }else{
             document.querySelector(MPv1.selectors.cardNumber).style.background = "url(" + response[0].secure_thumbnail + ") 98% 50% no-repeat #fff";
@@ -328,11 +328,11 @@
           "amount": amount
         }
 
-        if(MPv1.site_id == 'MLM'){
+        if(MPv1.site_id == 'MLM') {
           var selectorPaymetMethod = document.querySelector(MPv1.selectors.paymentMethodSelector);
           var payment_method_id = selectorPaymetMethod.value;
 
-          if(MPv1.customer_and_card.status){
+          if(MPv1.customer_and_card.status) {
             payment_method_id = selectorPaymetMethod[selectorPaymetMethod.options.selectedIndex].getAttribute("payment_method_id");
           }
 
@@ -364,12 +364,12 @@
   }
 
 
-  MPv1.changePaymetMethodSelector = function (){
-    if(MPv1.guessing_payment_method){
+  MPv1.changePaymetMethodSelector = function () {
+    if(MPv1.guessing_payment_method) {
       var selectorPaymetMethod = document.querySelector(MPv1.selectors.paymentMethodSelector);
       var payment_method_id = selectorPaymetMethod.value;
 
-      if(MPv1.customer_and_card.status){
+      if(MPv1.customer_and_card.status) {
         payment_method_id = selectorPaymetMethod[selectorPaymetMethod.options.selectedIndex].getAttribute("payment_method_id");
       }
       document.querySelector(MPv1.selectors.paymentMethodId).value = payment_method_id;
@@ -387,10 +387,10 @@
   *
   */
 
-  MPv1.getIssuersPaymentMethod = function (payment_method_id){
+  MPv1.getIssuersPaymentMethod = function (payment_method_id) {
     var amount = MPv1.getAmount();
     //flow: MLM mercadopagocard
-    if(payment_method_id == 'mercadopagocard'){
+    if(payment_method_id == 'mercadopagocard') {
       Mercadopago.getInstallments({
         "payment_method_id": payment_method_id,
         "amount": amount
@@ -404,13 +404,13 @@
 
   MPv1.showCardIssuers = function (status, issuers) {
     //if the API does not return any bank
-    if(issuers.length > 0){
+    if(issuers.length > 0) {
       var list_aggregator = [];
       var list_gateway = [];
-      
-      for(var x in issuers){
+
+      for(var x in issuers) {
         var issuer = issuers[x];
-        if(issuer.processing_mode == 'gateway'){
+        if(issuer.processing_mode == 'gateway') {
           list_gateway.push(issuer);
         }else{
           list_aggregator.push(issuer);
@@ -420,7 +420,7 @@
       //@Gateway_mode
       //check gateway active
       var gateway_mode = MPv1.gateway_mode;
-      if(gateway_mode){
+      if(gateway_mode) {
         issuers = list_gateway;
       }else{
         issuers = list_aggregator;
@@ -463,11 +463,11 @@
       "issuer_id": issuerId
     }
 
-    if(MPv1.site_id == "MLM"){
+    if(MPv1.site_id == "MLM") {
       var selectorPaymetMethod = document.querySelector(MPv1.selectors.paymentMethodSelector);
       var payment_method_id = selectorPaymetMethod.value;
 
-      if(MPv1.customer_and_card.status){
+      if(MPv1.customer_and_card.status) {
         payment_method_id = selectorPaymetMethod[selectorPaymetMethod.options.selectedIndex].getAttribute("payment_method_id");
       }
 
@@ -481,7 +481,7 @@
     Mercadopago.getInstallments(params_installments, MPv1.setInstallmentInfo);
   }
 
-  MPv1.hideIssuer = function (){
+  MPv1.hideIssuer = function () {
     var $issuer = document.querySelector(MPv1.selectors.issuer);
     var opt = document.createElement('option');
     opt.value = "-1";
@@ -499,7 +499,7 @@
   *
   */
 
-  MPv1.setInstallmentInfo = function(status, response) {
+  MPv1.setInstallmentInfo = function (status, response) {
     //force show
     document.querySelector(MPv1.selectors.mpInstallment).style.display = 'inline-block';
     var selectorInstallments = document.querySelector(MPv1.selectors.installments);
@@ -512,10 +512,10 @@
 
       //@Gateway_mode
       //check gateway active
-      if(gateway_mode){
-        for(var x in response){
+      if(gateway_mode) {
+        for(var x in response) {
           var installments = response[x];
-          if(installments.processing_mode == 'gateway'){
+          if(installments.processing_mode == 'gateway') {
             //replaces item with gateway
             payerCosts = installments.payer_costs
             document.querySelector(MPv1.selectors.gateway_mode).value = installments.merchant_account_id;
@@ -530,11 +530,11 @@
 
         // Resolution 51/2017
         var dataInput = "";
-        if(MPv1.site_id == 'MLA'){
+        if(MPv1.site_id == 'MLA') {
           var tax = payerCosts[i].labels;
-          if(tax.length > 0){
+          if(tax.length > 0) {
             for (var l = 0; l < tax.length; l++) {
-              if (tax[l].indexOf('CFT_') !== -1){
+              if (tax[l].indexOf('CFT_') !== -1) {
                 dataInput = 'data-tax="' + tax[l] + '"'
               }
             }
@@ -545,13 +545,13 @@
       }
 
       // not take the user's selection if equal
-      if(selectorInstallments.innerHTML != html_option){
+      if(selectorInstallments.innerHTML != html_option) {
         selectorInstallments.innerHTML = html_option;
       }
 
       selectorInstallments.removeAttribute('disabled');
 
-      if(MPv1.site_id == "MLV" && payerCosts.length == 1){
+      if(MPv1.site_id == "MLV" && payerCosts.length == 1) {
         selectorInstallments.value = 1;
         document.querySelector(MPv1.selectors.mpInstallment).style.display = 'none';
       }
@@ -577,7 +577,7 @@
     // reset gateway_mode on guessing payment
     document.querySelector(MPv1.selectors.gateway_mode).value = ""
 
-    if(MPv1.customer_and_card.default){
+    if(MPv1.customer_and_card.default) {
 
       if (cardSelector &&
         cardSelector[cardSelector.options.selectedIndex].value != "-1" &&
@@ -595,11 +595,11 @@
             "bin": _bin
           }
 
-          if(MPv1.site_id == 'MLM'){
+          if(MPv1.site_id == 'MLM') {
             var selectorPaymetMethod = document.querySelector(MPv1.selectors.paymentMethodSelector);
             var payment_method_id = selectorPaymetMethod.value;
 
-            if(MPv1.customer_and_card.status){
+            if(MPv1.customer_and_card.status) {
               payment_method_id = selectorPaymetMethod[selectorPaymetMethod.options.selectedIndex].getAttribute("payment_method_id");
             }
 
@@ -626,7 +626,7 @@
     *
     */
 
-    MPv1.getPaymentMethods = function(){
+    MPv1.getPaymentMethods = function () {
       var fragment = document.createDocumentFragment();
       var paymentMethodsSelector = document.querySelector(MPv1.selectors.paymentMethodSelector)
       var mainPaymentMethodSelector = document.querySelector(MPv1.selectors.paymentMethodSelector)
@@ -635,7 +635,7 @@
       mainPaymentMethodSelector.style.background = "url("+MPv1.paths.loading+") 95% 50% no-repeat #fff";
 
       //if customer and card
-      if(MPv1.customer_and_card.status){
+      if(MPv1.customer_and_card.status) {
         paymentMethodsSelector = document.querySelector(MPv1.selectors.pmListOtherCards)
 
         //clean payment methods
@@ -646,15 +646,15 @@
         fragment.appendChild(option);
       }
 
-      Mercadopago.getAllPaymentMethods(function(code, payment_methods){
+      Mercadopago.getAllPaymentMethods(function (code, payment_methods) {
 
-        for(var x=0; x < payment_methods.length; x++){
+        for(var x=0; x < payment_methods.length; x++) {
           var pm = payment_methods[x];
 
           if((pm.payment_type_id == "credit_card" ||
           pm.payment_type_id == "debit_card" ||
           pm.payment_type_id == "prepaid_card") &&
-          pm.status == "active"){
+          pm.status == "active") {
 
             option = new Option(pm.name, pm.id);
             option.setAttribute("type_checkout", "custom");
@@ -676,20 +676,20 @@
     */
 
 
-    MPv1.createTokenByEvent = function(){
+    MPv1.createTokenByEvent = function () {
 
       var $inputs = MPv1.getForm().querySelectorAll('[data-checkout]');
       var $inputs_to_create_token = MPv1.getInputsToCreateToken();
 
-      for(var x = 0; x < $inputs.length; x++){
+      for(var x = 0; x < $inputs.length; x++) {
         var element = $inputs[x];
 
         //add events only in the required fields
-        if($inputs_to_create_token.indexOf(element.getAttribute("data-checkout")) > -1){
+        if($inputs_to_create_token.indexOf(element.getAttribute("data-checkout")) > -1) {
 
           var event = "focusout";
 
-          if(element.nodeName == "SELECT"){
+          if(element.nodeName == "SELECT") {
             event = "change";
           }
 
@@ -698,11 +698,11 @@
           //for firefox
           MPv1.addListenerEvent(element, "blur", MPv1.validateInputsCreateToken);
 
-          if(MPv1.create_token_on.keyup){
+          if(MPv1.create_token_on.keyup) {
             MPv1.addListenerEvent(element, "keyup", MPv1.validateInputsCreateToken);
           }
 
-          if(MPv1.create_token_on.paste){
+          if(MPv1.create_token_on.paste) {
             MPv1.addListenerEvent(element, "paste", MPv1.validateInputsCreateToken);
           }
 
@@ -710,45 +710,45 @@
       }
     }
 
-    MPv1.createTokenBySubmit = function(){
+    MPv1.createTokenBySubmit = function () {
       MPv1.addListenerEvent(document.querySelector(MPv1.selectors.form), 'submit', MPv1.doPay);
     }
 
     var doSubmit = false;
 
-    MPv1.doPay = function(event){
+    MPv1.doPay = function (event) {
       event.preventDefault();
-      if(!doSubmit){
+      if(!doSubmit) {
         MPv1.createToken();
         return false;
       }
     }
 
 
-    MPv1.validateInputsCreateToken = function(){
+    MPv1.validateInputsCreateToken = function () {
       var valid_to_create_token = true;
       var $inputs = MPv1.getForm().querySelectorAll('[data-checkout]');
       var $inputs_to_create_token = MPv1.getInputsToCreateToken();
 
-      for(var x = 0; x < $inputs.length; x++){
+      for(var x = 0; x < $inputs.length; x++) {
         var element = $inputs[x];
 
         //check is a input to create token
-        if($inputs_to_create_token.indexOf(element.getAttribute("data-checkout")) > -1){
-          if(element.value == -1 || element.value == ""){
+        if($inputs_to_create_token.indexOf(element.getAttribute("data-checkout")) > -1) {
+          if(element.value == -1 || element.value == "") {
             valid_to_create_token = false;
           } //end if check values
         } //end if check data-checkout
       }//end for
 
-      if(valid_to_create_token){
+      if(valid_to_create_token) {
         MPv1.createToken();
       }
 
       return valid_to_create_token;
     }
 
-    MPv1.createToken = function(){
+    MPv1.createToken = function () {
       MPv1.hideErrors();
 
       //show loading
@@ -762,7 +762,7 @@
       return false;
     }
 
-    MPv1.sdkResponseHandler = function(status, response) {
+    MPv1.sdkResponseHandler = function (status, response) {
 
       var $form = MPv1.getForm();
 
@@ -774,7 +774,7 @@
         var token = document.querySelector(MPv1.selectors.token);
         token.value = response.id;
 
-        if(MPv1.add_truncated_card){
+        if(MPv1.add_truncated_card) {
           var card = MPv1.truncateCard(response);
           document.querySelector(MPv1.selectors.cardTruncated).value=card;
         }
@@ -802,7 +802,7 @@
 
 
     MPv1.setForm = function () {
-      if(MPv1.customer_and_card.status){
+      if(MPv1.customer_and_card.status) {
         document.querySelector(MPv1.selectors.formDiv).style.display = 'none';
         document.querySelector(MPv1.selectors.mpSecurityCodeCustomerAndCard).removeAttribute('style');
       }else{
@@ -812,7 +812,7 @@
 
       Mercadopago.clearSession();
 
-      if(MPv1.create_token_on.event){
+      if(MPv1.create_token_on.event) {
         MPv1.createTokenByEvent();
         MPv1.validateInputsCreateToken();
       }
@@ -820,27 +820,27 @@
       document.querySelector(MPv1.selectors.CustomerAndCard).value = MPv1.customer_and_card.status;
     }
 
-    MPv1.getForm = function(){
-      if(MPv1.customer_and_card.status){
+    MPv1.getForm = function () {
+      if(MPv1.customer_and_card.status) {
         return document.querySelector(MPv1.selectors.formCustomerAndCard);
       }else{
         return document.querySelector(MPv1.selectors.form);
       }
     }
 
-    MPv1.getInputsToCreateToken = function(){
-      if(MPv1.customer_and_card.status){
+    MPv1.getInputsToCreateToken = function () {
+      if(MPv1.customer_and_card.status) {
         return MPv1.inputs_to_create_token_customer_and_card;
       }else{
         return MPv1.inputs_to_create_token;
       }
     }
 
-    MPv1.truncateCard = function(response_card_token){
+    MPv1.truncateCard = function (response_card_token) {
       var first_six_digits;
       var last_four_digits;
 
-      if(MPv1.customer_and_card.status){
+      if(MPv1.customer_and_card.status) {
         var cardSelector = document.querySelector(MPv1.selectors.paymentMethodSelector);
         first_six_digits = cardSelector[cardSelector.options.selectedIndex].getAttribute("first_six_digits").match(/.{1,4}/g)
         last_four_digits = cardSelector[cardSelector.options.selectedIndex].getAttribute("last_four_digits")
@@ -854,11 +854,11 @@
 
     }
 
-    MPv1.getAmount = function() {
+    MPv1.getAmount = function () {
       return document.querySelector(MPv1.selectors.amount).value - document.querySelector(MPv1.selectors.discount).value;
     }
 
-    MPv1.getAmountWithoutDiscount = function() {
+    MPv1.getAmountWithoutDiscount = function () {
       return document.querySelector(MPv1.selectors.amount).value;
     }
 
@@ -869,10 +869,10 @@
     *
     */
 
-    MPv1.showErrors = function(response){
+    MPv1.showErrors = function (response) {
       var $form = MPv1.getForm();
 
-      for(var x = 0; x < response.cause.length; x++){
+      for(var x = 0; x < response.cause.length; x++) {
         var error = response.cause[x];
         var $span = $form.querySelector('#mp-error-' + error.code);
         var $input = $form.querySelector($span.getAttribute("data-main"));
@@ -885,15 +885,15 @@
       return;
     }
 
-    MPv1.hideErrors = function(){
+    MPv1.hideErrors = function () {
 
-      for(var x = 0; x < document.querySelectorAll('[data-checkout]').length; x++){
+      for(var x = 0; x < document.querySelectorAll('[data-checkout]').length; x++) {
         var $field = document.querySelectorAll('[data-checkout]')[x];
         $field.classList.remove("mp-error-input");
 
       } //end for
 
-      for(var x = 0; x < document.querySelectorAll('.mp-error').length; x++){
+      for(var x = 0; x < document.querySelectorAll('.mp-error').length; x++) {
         var $span = document.querySelectorAll('.mp-error')[x];
         $span.style.display = 'none';
 
@@ -909,17 +909,17 @@
     */
 
 
-    MPv1.addListenerEvent = function(el, eventName, handler){
+    MPv1.addListenerEvent = function (el, eventName, handler) {
       if (el.addEventListener) {
         el.addEventListener(eventName, handler);
       } else {
-        el.attachEvent('on' + eventName, function(){
+        el.attachEvent('on' + eventName, function () {
           handler.call(el);
         });
       }
     };
 
-    MPv1.initializeEventsCardNumber = function(el, eventName, handler){
+    MPv1.initializeEventsCardNumber = function (el, eventName, handler) {
       MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'keyup', MPv1.clearOptions);
       MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'keyup', MPv1.guessingPaymentMethod);
       MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'change', MPv1.guessingPaymentMethod);
@@ -927,19 +927,19 @@
 
     // MPv1.cardsHandler();
 
-    MPv1.showTaxes = function(){
+    MPv1.showTaxes = function () {
       var selectorIsntallments = document.querySelector(MPv1.selectors.installments);
       var tax = selectorIsntallments.options[selectorIsntallments.selectedIndex].getAttribute('data-tax');
 
       var cft = ""
       var tea = ""
 
-      if(tax != null){
+      if(tax != null) {
         var tax_split = tax.split('|');
         cft = tax_split[0].replace('_', ' ');
         tea = tax_split[1].replace('_', ' ');
 
-        if(cft == "CFT 0,00%" && tea == "TEA 0,00%"){
+        if(cft == "CFT 0,00%" && tea == "TEA 0,00%") {
           cft = ""
           tea = ""
         }
@@ -963,7 +963,7 @@
       return referer;
     })();
 
-    MPv1.AJAX = function(options) {
+    MPv1.AJAX = function (options) {
       var useXDomain = !!window.XDomainRequest;
 
       var req = useXDomain ? new XDomainRequest() : new XMLHttpRequest()
@@ -983,36 +983,36 @@
       req.timeout = options.timeout || 1000;
 
       if (window.XDomainRequest) {
-        req.onload = function(){
+        req.onload = function () {
           data = JSON.parse(req.responseText);
           if (typeof options.success === "function") {
             options.success(options.requestedMethod === 'POST' ? 201 : 200, data);
           }
         };
-        req.onerror = req.ontimeout = function(){
-          if(typeof options.error === "function"){
+        req.onerror = req.ontimeout = function () {
+          if(typeof options.error === "function") {
             options.error(400,{user_agent:window.navigator.userAgent, error : "bad_request", cause:[]});
           }
         };
-        req.onprogress = function() {};
+        req.onprogress = function () {};
       } else {
         req.setRequestHeader('Accept','application/json');
 
-        if(options.contentType){
+        if(options.contentType) {
           req.setRequestHeader('Content-Type', options.contentType);
         }else{
           req.setRequestHeader('Content-Type', 'application/json');
         }
 
-        req.onreadystatechange = function() {
-          if (this.readyState === 4){
-            if (this.status >= 200 && this.status < 400){
+        req.onreadystatechange = function () {
+          if (this.readyState === 4) {
+            if (this.status >= 200 && this.status < 400) {
               // Success!
               data = JSON.parse(this.responseText);
               if (typeof options.success === "function") {
                 options.success(this.status, data);
               }
-            }else if(this.status >= 400){
+            }else if(this.status >= 400) {
               data = JSON.parse(this.responseText);
               if (typeof options.error === "function") {
                 options.error(this.status, data);
@@ -1024,7 +1024,7 @@
         };
       }
 
-      if(options.method === 'GET' || options.data == null || options.data == undefined){
+      if(options.method === 'GET' || options.data == null || options.data == undefined) {
         req.send();
       }else{
         req.send(JSON.stringify(options.data));
@@ -1041,7 +1041,7 @@
     *
     */
 
-    MPv1.Initialize = function(site_id, public_key, coupon_mode, discount_action_url, payer_email){
+    MPv1.Initialize = function (site_id, public_key, coupon_mode, discount_action_url, payer_email) {
 
       //sets
       MPv1.site_id = site_id
@@ -1062,7 +1062,7 @@
 
       //flow: customer & cards
       var selectorPmCustomerAndCards = document.querySelector(MPv1.selectors.pmCustomerAndCards);
-      if(MPv1.customer_and_card.default && selectorPmCustomerAndCards.childElementCount > 0){
+      if(MPv1.customer_and_card.default && selectorPmCustomerAndCards.childElementCount > 0) {
         MPv1.addListenerEvent(document.querySelector(MPv1.selectors.paymentMethodSelector), 'change', MPv1.cardsHandler);
         MPv1.cardsHandler();
       }else{
@@ -1072,27 +1072,27 @@
         document.querySelector(MPv1.selectors.formCustomerAndCard).style.display = 'none';
       }
 
-      if(MPv1.create_token_on.event){
+      if(MPv1.create_token_on.event) {
         MPv1.createTokenByEvent();
       }else{
         MPv1.createTokenBySubmit()
       }
 
       //flow: MLM
-      if(MPv1.site_id != "MLM"){
+      if(MPv1.site_id != "MLM") {
         //Initialize event
         MPv1.initializeEventsCardNumber();
 
         Mercadopago.getIdentificationTypes();
       }
 
-      if(MPv1.site_id == "MLM"){
+      if(MPv1.site_id == "MLM") {
 
         //hide documento for mex
         document.querySelector(MPv1.selectors.mpDoc).style.display = 'none';
         // document.querySelector(MPv1.selectors.mpPaymentMethodSelector).removeAttribute('style');
 
-        if(!MPv1.customer_and_card.status){
+        if(!MPv1.customer_and_card.status) {
           document.querySelector(MPv1.selectors.mpSecurityCodeCustomerAndCard).style.display = 'none';
         }
 
@@ -1116,12 +1116,9 @@
         //ajust css
         document.querySelector(MPv1.selectors.docNumber).classList.remove("mp-col-75");
         document.querySelector(MPv1.selectors.docNumber).classList.add("mp-col-100");
-
       } else if (MPv1.site_id == "MCO") {
         document.querySelector(MPv1.selectors.mpIssuer).style.display = 'none';
       } else if (MPv1.site_id == "MLA") {
-
-
         document.querySelector(MPv1.selectors.boxInstallmentsSelector).classList.remove("mp-col-100");
         document.querySelector(MPv1.selectors.boxInstallmentsSelector).classList.add("mp-col-70");
 
@@ -1129,7 +1126,6 @@
         document.querySelector(MPv1.selectors.taxTEA).style.display = 'block';
 
         MPv1.addListenerEvent(document.querySelector(MPv1.selectors.installments), 'change', MPv1.showTaxes);
-
       } else if (MPv1.site_id == "MLC" || MPv1.site_id == "MLV") {
         document.querySelector(MPv1.selectors.mpIssuer).style.display = 'none';
       }

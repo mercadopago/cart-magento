@@ -405,6 +405,27 @@
   MPv1.showCardIssuers = function (status, issuers) {
     //if the API does not return any bank
     if(issuers.length > 0){
+      var list_aggregator = [];
+      var list_gateway = [];
+      
+      for(var x in issuers){
+        var issuer = issuers[x];
+        if(issuer.processing_mode == 'gateway'){
+          list_gateway.push(issuer);
+        }else{
+          list_aggregator.push(issuer);
+        }
+      }
+
+      //@Gateway_mode
+      //check gateway active
+      var gateway_mode = MPv1.gateway_mode;
+      if(gateway_mode){
+        issuers = list_gateway;
+      }else{
+        issuers = list_aggregator;
+      }
+
       var issuersSelector = document.querySelector(MPv1.selectors.issuer),
       fragment = document.createDocumentFragment();
 
@@ -479,7 +500,6 @@
   */
 
   MPv1.setInstallmentInfo = function(status, response) {
-
     //force show
     document.querySelector(MPv1.selectors.mpInstallment).style.display = 'inline-block';
     var selectorInstallments = document.querySelector(MPv1.selectors.installments);

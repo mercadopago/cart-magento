@@ -1,9 +1,0 @@
-<?php
-    $info_payment = $this->getInfoPayment();
-?>
-
-<p><strong><?php echo $this->getMethod()->getTitle() ?></strong></p>
-
-<?php foreach($info_payment as $info): ?>
-    <p><?php echo $info['text']; ?></p>
-<?php endforeach; ?>

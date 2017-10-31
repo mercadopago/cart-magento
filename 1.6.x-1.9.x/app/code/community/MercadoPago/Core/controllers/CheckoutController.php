@@ -84,7 +84,6 @@ class MercadoPago_Core_CheckoutController
 
     public function pageAction()
     {
-        error_log(" pageAction ----> ");
         $this->_statusHelper = Mage::helper('mercadopago/statusUpdate');
         $this->_core = Mage::getModel('mercadopago/core');
 

@@ -37,6 +37,13 @@
         </reference>
     </mercadopago_customticket_success>
 
+    <mercadopago_banktransfer_success>
+        <reference name="content">
+            <block type="mercadopago/banktransfer_success" name="mercadopago.success" as="success"/>
+            <block type="mercadopago/analytics_afterCheckout" name="mercadopago_analytics" as="mercadopago_analytics" template="mercadopago/analytics/after_checkout.phtml"/>
+        </reference>
+    </mercadopago_banktransfer_success>
+
     <mercadopago_add_order_total>
         <reference name="order_totals">
             <block type="mercadopago/sales_order_totals_finance_cost" name="total_finance_cost"/>

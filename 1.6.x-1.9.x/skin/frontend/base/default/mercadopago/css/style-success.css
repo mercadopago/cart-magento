@@ -62,5 +62,6 @@
 }
 
 p + #btn-boleto-mercadopago{
-    margin-top: 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }

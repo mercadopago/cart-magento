@@ -16,11 +16,12 @@
  */
 class MercadoPago_Core_Model_Observer
 {
+
     private $banners = array(
         "mercadopago_custom"       => array(
             "mla" => "//imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg",
             "mlb" => "//imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg",
-            "mco" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
+            "mco" => "//secure.mlstatic.com/developers/site/cloud/banners/co/468x60_Todos-los-medios-de-pago.jpg",
             "mlm" => "//imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG",
             "mlc" => "//secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "//imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
@@ -29,16 +30,19 @@ class MercadoPago_Core_Model_Observer
         "mercadopago_customticket" => array(
             "mla" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlb" => "//imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/2014/230x60.png",
-            "mco" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
+            "mco" => "//secure.mlstatic.com/developers/site/cloud/banners/co/468x60_Todos-los-medios-de-pago.jpg",
             "mlm" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
             "mlc" => "//secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "//imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
             "mpe" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
         ),
+        "mercadopago_banktransfer" => array(
+            "mco" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png"
+        ),
         "mercadopago_standard"     => array(
             "mla" => "//imgmp.mlstatic.com/org-img/banners/ar/medios/online/468X60.jpg",
             "mlb" => "//imgmp.mlstatic.com/org-img/MLB/MP/BANNERS/tipo2_468X60.jpg",
-            "mco" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
+            "mco" => "//secure.mlstatic.com/developers/site/cloud/banners/co/468x60_Todos-los-medios-de-pago.jpg",
             "mlc" => "//secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "//imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
             "mlm" => "//imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG",
@@ -48,6 +52,7 @@ class MercadoPago_Core_Model_Observer
 
     private $available_transparent_credit_cart = array('mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe');
     private $available_transparent_ticket = array('mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe');
+    private $available_bank_transfer = array('mco');
 
     /**
      * @var
@@ -80,6 +85,7 @@ class MercadoPago_Core_Model_Observer
         $this->checkBanner('mercadopago_custom');
         $this->checkBanner('mercadopago_customticket');
         $this->checkBanner('mercadopago_standard');
+        $this->checkBanner('mercadopago_banktransfer');
     }
 
 
@@ -96,6 +102,10 @@ class MercadoPago_Core_Model_Observer
 
         if (!in_array($country, $this->available_transparent_ticket)) {
             $this->_saveWebsiteConfig('payment/mercadopago_customticket/active', 0);
+        }
+
+        if (!in_array($country, $this->available_bank_transfer)) {
+            $this->_saveWebsiteConfig('payment/mercadopago_banktransfer/active', 0);
         }
     }
 
@@ -534,7 +544,12 @@ class MercadoPago_Core_Model_Observer
       $code = $method->getCode();
 
       if($this->isAdmin()){
-        if($code == 'mercadopago_custom' || $code == 'mercadopago_customticket' ||  $code == 'mercadopago_standard' ||  $code == 'mercadopago_recurring'){
+        if($code == 'mercadopago_custom'
+          || $code == 'mercadopago_customticket'
+          || $code == 'mercadopago_standard'
+          || $code == 'mercadopago_recurring'
+          || $code == 'mercadopago_banktransfer'){
+
           $result->isAvailable = false;
         }
       }

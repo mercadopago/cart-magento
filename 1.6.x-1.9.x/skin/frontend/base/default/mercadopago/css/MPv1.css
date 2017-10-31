@@ -3,7 +3,7 @@
 }
 
 
-#mercadopago-ticket-form-general{
+#mercadopago-ticket-form-general, .mercadopago-box-form{
   float: left;
   width: 100%;
 }
@@ -95,6 +95,23 @@
   box-sizing: border-box;
 }
 
+
+
+.form-row select{
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #cecece;
+  padding: 5px;
+  border-radius: 3px;
+  color: #666;
+  height: 30px;
+  margin-top: 0;
+  max-width: unset;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 .mensagem-febraban{
   text-transform: uppercase;
   font-size: 10px;
@@ -139,4 +156,19 @@
 
 .title-razao-social, .title-cnpj{
   display: none;
+}
+
+
+
+
+/* Bank transfer */
+#mercadopago-bank-transfer{
+  width: 100%;
+  max-width: 375px;
+  padding-left: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  float: left;
 }

@@ -447,7 +447,7 @@ class MercadoPago_Core_Model_Core
         $quote = $this->_getQuote();
         $total = $quote->getBaseSubtotalWithDiscount() + $quote->getShippingAddress()->getShippingAmount() + $quote->getShippingAddress()->getBaseTaxAmount();
 
-        return (float)$total;
+        return (float) $total;
 
     }
 
@@ -591,5 +591,40 @@ class MercadoPago_Core_Model_Core
       $total = number_format($total, 2, '.', '');
       return $total;
     }
+
+    // Identification Type
+
+    public function getIdentificationType()
+    {
+        if (!$this->_accessToken) {
+            $this->_accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        }
+
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->_accessToken);
+
+        $payment_methods = $mp->get("/v1/identification_types");
+
+        return $payment_methods;
+    }
+
+
+    public function getBanks()
+    {
+        if (!$this->_accessToken) {
+            $this->_accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
+        }
+
+        $mp = Mage::helper('mercadopago')->getApiInstance($this->_accessToken);
+
+        $array = array(
+          'payment_type_id' => 'bank_transfer',
+          'marketplace' => 'NONE'
+        );
+
+        $payment_methods = $mp->get("/v1/payment_methods/search");
+
+        return $payment_methods;
+    }
+
 
 }

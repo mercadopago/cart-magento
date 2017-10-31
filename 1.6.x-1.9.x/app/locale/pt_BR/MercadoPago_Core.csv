@@ -342,3 +342,12 @@
 
 "Date of Expiration", "Dias para expirar o boleto"
 "This functionality handles the expiration date of the ticket, it does not automatically cancel the payment. Enter a value between 1 and 29.", "Essa funcionalidade manipula a data de expiração do boleto, ela não cancela o pagamento automaticamente. Digite um valor entre 1 e 29."
+
+
+"================================Versão 2.10.0================================", "================================Versão 2.10.0================================"
+
+"Bank", "Banco"
+"Type of Person", "Tipo de pessoa"
+"Transfer", "Transferir"
+"You have 20 minutes to do it.", "Você tem 20 minutos para fazer a transferencia."
+"The payment will be credited instantly.", "O pagamento será creditado em instantes."

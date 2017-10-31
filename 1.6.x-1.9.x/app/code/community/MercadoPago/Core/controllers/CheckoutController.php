@@ -88,6 +88,7 @@ class MercadoPago_Core_CheckoutController
         $this->_core = Mage::getModel('mercadopago/core');
 
         $this->sendNewOrderMail();
+
         if (!Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_USE_SUCCESSPAGE_MP)) {
             Mage::getSingleton('checkout/type_onepage')->getCheckout()->setLastSuccessQuoteId($this->_getQuoteId());
 
@@ -129,9 +130,11 @@ class MercadoPago_Core_CheckoutController
             }
 
         }
+
         //set data for mp analytics
         Mage::register('mp_analytics_data', Mage::helper('mercadopago')->getAnalyticsData($this->getOrder()));
         $checkoutTypeHandle = $this->getCheckoutHandle();
+
         $this->loadLayout(array('default', $checkoutTypeHandle));
 
         $this->_initLayoutMessages('core/session');

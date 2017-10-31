@@ -35,6 +35,8 @@ class MercadoPago_Core_Model_CustomTicket_Payment
      */
     public function initialize($paymentAction, $stateObject)
     {
+        Mage::helper('mercadopago')->log("Ticket -> initialize", 'mercadopago-custom.log', $infoForm);
+
         $response = $this->preparePostPayment();
 
         if ($response !== false) {
@@ -56,7 +58,7 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         $infoForm = $data->getData();
         $infoForm = $infoForm['mercadopago_customticket'];
 
-        Mage::helper('mercadopago')->log("info form", 'mercadopago-custom.log', $infoForm);
+        Mage::helper('mercadopago')->log("Ticket -> info form", 'mercadopago-custom.log', $infoForm);
 
         $info = $this->getInfoInstance();
         $info->setAdditionalInformation('payment_method', $infoForm['payment_method_ticket']);
@@ -151,6 +153,9 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
     public function getOrderPlaceRedirectUrl()
     {
+
+        Mage::helper('mercadopago')->log("Ticket -> getOrderPlaceRedirectUrl", 'mercadopago-custom.log', $infoForm);
+
         return Mage::getUrl('mercadopago/checkout/page', array('_secure' => true));
     }
 

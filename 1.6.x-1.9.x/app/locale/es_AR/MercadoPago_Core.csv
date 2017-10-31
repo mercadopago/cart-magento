@@ -516,3 +516,11 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 
 "Date of Expiration", "Días para la Expiración"
 "This functionality handles the expiration date of the ticket, it does not automatically cancel the payment. Enter a value between 1 and 29.", "Esta funcionalidad manipula la fecha expiración del ticket, NO se cancela o paga de forma automatica. Introduzca un valor entre 1 y 29."
+
+"================================Versão 2.10.0================================", "================================Versão 2.10.0================================"
+
+"Bank", "Banco"
+"Type of Person", "Tipo de persona"
+"Transfer", "Transferir"
+"You have 20 minutes to do it.", "Tienes 20 minutos para hacerlo."
+"The payment will be credited instantly.", "El pago se acreditará al instante."

@@ -1,0 +1,361 @@
+<?php
+$grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
+$coupon_mercadopago = Mage::getStoreConfig('payment/mercadopago_custom/coupon_mercadopago') == 1 ? 'true' : 'false';
+$country = Mage::getStoreConfig('payment/mercadopago/country');
+$_code = $this->getMethodCode();
+$debugMode = Mage::getStoreConfigFlag('payment/mercadopago/debug_mode') == 1 ? 'true' : 'false';
+
+$customer = $this->getCustomerAndCards();
+$public_key = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_PUBLIC_KEY);
+
+//@Gateway_Mode
+$modeGateway =  Mage::getStoreConfigFlag('payment/mercadopago_custom/enable_gateway') == 1 ? 'true' : 'false';
+
+$customer_session = Mage::getSingleton('customer/session')->getCustomer();
+$payer_email = $customer_session->getEmail();
+
+// $route = $this->getRequest()->getRequestedRouteName();
+$base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
+?>
+<script type="text/javascript">
+if (typeof sendAnalyticsData === 'function') {
+  sendAnalyticsData("<?php echo $_code ?>");
+}
+</script>
+
+<ul class="form-list form-mercadopago" id="payment_form_<?php echo $_code ?>" style="display:none;">
+  <li class="card-form first-card">
+    <div id="mp-box-form">
+      <?php
+      $form_labels = array(
+        "form" => array(
+          "coupon_empty" => $this->__("Please, inform your coupon code"),
+          'apply' => $this->__("Apply"),
+          'remove' => $this->__("Remove"),
+          'discount_info1' => $this->__("You will save"),
+          'discount_info2' => $this->__("with discount from"),
+          'discount_info3' => $this->__("Total of your purchase:"),
+          'discount_info4' => $this->__("Total of your purchase with discount:"),
+          'discount_info5' => $this->__("*Uppon payment approval"),
+          'discount_info6' => $this->__("Terms and Conditions of Use"),
+          'coupon_of_discounts' => $this->__("Discount Coupon"),
+          'label_other_bank' => $this->__("Other Bank"),
+          'label_choose' => $this->__("Choose"),
+          "payment_method" => $this->__("Payment Method"),
+          "credit_card_number" => $this->__("Credit card number"),
+          "expiration_month" => $this->__("Expiration month"),
+          "expiration_year" => $this->__("Expiration year"),
+          "year" => $this->__("Year"),
+          "month" => $this->__("Month"),
+          "card_holder_name" => $this->__("Card holder name"),
+          "security_code" => $this->__("Security code"),
+          "document_type" => $this->__("Document Type"),
+          "document_number" => $this->__("Document number"),
+          "issuer" => $this->__("Issuer"),
+          "installments" => $this->__("Installments"),
+          "your_card" => $this->__("Your Card"),
+          "other_cards" => $this->__("Other Cards"),
+          "other_card" => $this->__("Other Card"),
+          "ended_in" => $this->__("ended in")
+        ),
+        "error" => array(
+
+          //card number
+          "205" => $this->__("Parameter cardNumber can not be null/empty"),
+          "E301" => $this->__("Invalid Card Number"),
+          //expiration date
+          "208" => $this->__("Invalid Expiration Date"),
+          "209" => $this->__("Invalid Expiration Date"),
+          "325" => $this->__("Invalid Expiration Date"),
+          "326" => $this->__("Invalid Expiration Date"),
+          //card holder name
+          "221" => $this->__("Parameter cardholderName can not be null/empty"),
+          "316" => $this->__("Invalid Card Holder Name"),
+
+          //security code
+          "224" => $this->__("Parameter securityCode can not be null/empty"),
+          "E302" => $this->__("Invalid Security Code"),
+          "E203" => $this->__("Invalid Security Code"),
+
+          //doc type
+          "212" => $this->__("Parameter docType can not be null/empty"),
+          "322" => $this->__("Invalid Document Type"),
+          //doc number
+          "214" => $this->__("Parameter docNumber can not be null/empty"),
+          "324" => $this->__("Invalid Document Number"),
+          //doc sub type
+          "213" => $this->__("The parameter cardholder.document.subtype can not be null or empty"),
+          "323" => $this->__("Invalid Document Sub Type"),
+          //issuer
+          "220" => $this->__("Parameter cardIssuerId can not be null/empty")
+        ),
+        "coupon_error" => array(
+          "EMPTY" => $this->__("Please, inform your coupon code")
+          )
+        );
+        ?>
+
+        <div id="mercadopago-form-general">
+
+          <div class="mp-box-inputs mp-line" id="mercadopago-form-coupon">
+            <label for="couponCodeLabel"><?php echo $form_labels['form']['coupon_of_discounts']; ?></label>
+            <div class="mp-box-inputs mp-col-70">
+              <input type="text" id="couponCode" name="payment[<?php echo $_code; ?>][coupon_code]" autocomplete="off" maxlength="24" />
+            </div>
+
+            <div class="mp-box-inputs mp-col-30">
+              <input type="button" class="button" id="applyCoupon" value="<?php echo $form_labels['form']['apply']; ?>" >
+            </div>
+
+            <div class="mp-box-inputs mp-col-100 mp-box-message">
+              <span class="mp-discount" id="mpCouponApplyed" ></span>
+              <span class="mp-error" id="mpCouponError" ></span>
+            </div>
+          </div>
+
+          <div id="mercadopago-form-customer-and-card">
+
+            <div class="mp-box-inputs mp-line">
+              <label for="paymentMethodIdSelector"><?php echo $form_labels['form']['payment_method']; ?> <em>*</em></label>
+
+              <select id="paymentMethodSelector" name="payment[<?php echo $_code; ?>][paymentMethodSelector]" data-checkout='cardId' title="<?php echo $form_labels['form']['payment_method']; ?>" class="validate-select">
+                <optgroup label="<?php echo $form_labels['form']['your_card']; ?>" id="payment-methods-for-customer-and-cards">
+                  <?php foreach ($customer["cards"] as $card) { ?>
+
+                    <option value="<?php echo $card["id"]; ?>"
+                      first_six_digits="<?php echo $card["first_six_digits"]; ?>"
+                      last_four_digits="<?php echo $card["last_four_digits"]; ?>"
+                      security_code_length="<?php echo $card["security_code"]["length"]; ?>"
+                      type_checkout="customer_and_card"
+                      payment_method_id="<?php echo $card["payment_method"]["id"]; ?>"
+                      >
+                      <?php echo ucfirst($card["payment_method"]["name"]); ?> <?php echo $form_labels['form']['ended_in']; ?> <?php echo $card["last_four_digits"]; ?>
+                    </option>
+                    <?php } ?>
+                  </optgroup>
+
+                  <optgroup label="<?php echo $form_labels['form']['other_cards']; ?>" id="payment-methods-list-other-cards">
+                    <option value="-1"><?php echo $form_labels['form']['other_card']; ?></option>
+                  </optgroup>
+
+                </select>
+              </div>
+
+              <div class="mp-box-inputs mp-line" id="mp-securityCode-customer-and-card">
+                <div class="mp-box-inputs mp-col-50">
+                  <label for="customer-and-card-securityCode"><?php echo $form_labels['form']['security_code']; ?> <em>*</em></label>
+                  <input type="text" id="customer-and-card-securityCode" data-checkout="securityCode" autocomplete="off" maxlength="4" title="<?php echo $form_labels['form']['security_code']; ?>" class="required-entry"/>
+
+                  <span class="mp-error" id="mp-error-224" data-main="#customer-and-card-securityCode"> <?php echo $form_labels['error']['224']; ?> </span>
+                  <span class="mp-error" id="mp-error-E302" data-main="#customer-and-card-securityCode"> <?php echo $form_labels['error']['E302']; ?> </span>
+                  <span class="mp-error" id="mp-error-E203" data-main="#customer-and-card-securityCode"> <?php echo $form_labels['error']['E203']; ?> </span>
+                </div>
+              </div>
+
+            </div> <!--  end mercadopago-form-customer-and-card -->
+
+            <div id="mercadopago-form">
+              <div class="mp-box-inputs mp-col-100">
+                <label for="cardNumber"><?php echo $form_labels['form']['credit_card_number']; ?> <em>*</em></label>
+                <input type="text" id="cardNumber" data-checkout="cardNumber" autocomplete="off" title="<?php echo $form_labels['form']['credit_card_number']; ?>" class="required-entry"/>
+                <span class="mp-error" id="mp-error-205" data-main="#cardNumber"> <?php echo $form_labels['error']['205']; ?> </span>
+                <span class="mp-error" id="mp-error-E301" data-main="#cardNumber"> <?php echo $form_labels['error']['E301']; ?> </span>
+              </div>
+
+              <div class="mp-box-inputs mp-line">
+                <div class="mp-box-inputs mp-col-50">
+                  <label for="cardExpirationMonth"><?php echo $form_labels['form']['expiration_month']; ?> <em>*</em></label>
+                  <select id="cardExpirationMonth" data-checkout="cardExpirationMonth" name="payment[<?php echo $_code; ?>][cardExpirationMonth]" title="<?php echo $form_labels['form']['expiration_month']; ?>"  class="validate-select" >
+                    <option value="-1"> <?php echo $form_labels['form']['month']; ?> </option>
+                    <?php for ($x=1; $x<=12; $x++): ?>
+                      <option value="<?php echo $x; ?>"> <?php echo $x; ?></option>
+                    <?php endfor; ?>
+                  </select>
+                </div>
+
+                <div class="mp-box-inputs mp-col-50">
+                  <label for="cardExpirationYear"><?php echo $form_labels['form']['expiration_year']; ?> <em>*</em></label>
+                  <select  id="cardExpirationYear" data-checkout="cardExpirationYear" name="payment[<?php echo $_code; ?>][cardExpirationYear]" title="<?php echo $form_labels['form']['expiration_year']; ?>"  class="validate-select" >
+                    <option value="-1"> <?php echo $form_labels['form']['year']; ?> </option>
+                    <?php for ($x=date("Y"); $x<= date("Y") + 10; $x++): ?>
+                      <option value="<?php echo $x; ?>"> <?php echo $x; ?> </option>
+                    <?php endfor; ?>
+                  </select>
+                </div>
+
+                <span class="mp-error" id="mp-error-208" data-main="#cardExpirationMonth"> <?php echo $form_labels['error']['208']; ?> </span>
+                <span class="mp-error" id="mp-error-209" data-main="#cardExpirationYear"> </span>
+                <span class="mp-error" id="mp-error-325" data-main="#cardExpirationMonth"> <?php echo $form_labels['error']['325']; ?> </span>
+                <span class="mp-error" id="mp-error-326" data-main="#cardExpirationYear"> </span>
+
+              </div>
+
+              <div class="mp-box-inputs mp-col-100">
+                <label for="cardholderName"><?php echo $form_labels['form']['card_holder_name']; ?> <em>*</em></label>
+                <input type="text" id="cardholderName" name="payment[<?php echo $_code; ?>][cardholderName]" data-checkout="cardholderName" autocomplete="off" title="<?php echo $form_labels['form']['card_holder_name']; ?>" class="required-entry" >
+
+                <span class="mp-error" id="mp-error-221" data-main="#cardholderName"> <?php echo $form_labels['error']['221']; ?> </span>
+                <span class="mp-error" id="mp-error-316" data-main="#cardholderName"> <?php echo $form_labels['error']['316']; ?> </span>
+              </div>
+
+              <div class="mp-box-inputs mp-line">
+                <div class="mp-box-inputs mp-col-50">
+                  <label for="securityCode"><?php echo $form_labels['form']['security_code']; ?> <em>*</em></label>
+                  <input type="text" id="securityCode" data-checkout="securityCode" autocomplete="off" maxlength="4" title="<?php echo $form_labels['form']['security_code']; ?>"  class="required-entry" >
+
+                  <span class="mp-error" id="mp-error-224" data-main="#securityCode"> <?php echo $form_labels['error']['224']; ?> </span>
+                  <span class="mp-error" id="mp-error-E302" data-main="#securityCode"> <?php echo $form_labels['error']['E302']; ?> </span>
+                </div>
+              </div>
+
+              <div class="mp-box-inputs mp-col-100 mp-doc">
+                <div class="mp-box-inputs mp-col-35 mp-docType">
+                  <label for="docType"><?php echo $form_labels['form']['document_type']; ?> <em>*</em></label>
+                  <select id="docType" data-checkout="docType" name="payment[<?php echo $_code; ?>][docType]" title="<?php echo $form_labels['form']['document_type']; ?>" class="validate-select"></select>
+
+                  <span class="mp-error" id="mp-error-212" data-main="#docType"> <?php echo $form_labels['error']['212']; ?> </span>
+                  <span class="mp-error" id="mp-error-322" data-main="#docType"> <?php echo $form_labels['error']['322']; ?> </span>
+                </div>
+
+                <div class="mp-box-inputs mp-col-65 mp-docNumber">
+                  <label for="docNumber"><?php echo $form_labels['form']['document_number']; ?> <em>*</em></label>
+                  <input type="text" id="docNumber" data-checkout="docNumber" name="payment[<?php echo $_code; ?>][docNumber]" autocomplete="off" title="<?php echo $form_labels['form']['document_number']; ?>"  class="required-entry" >
+
+                  <span class="mp-error" id="mp-error-214" data-main="#docNumber"> <?php echo $form_labels['error']['214']; ?> </span>
+                  <span class="mp-error" id="mp-error-324" data-main="#docNumber"> <?php echo $form_labels['error']['324']; ?> </span>
+                </div>
+              </div>
+
+              <div class="mp-box-inputs mp-col-100 mp-issuer">
+                <label for="issuer"><?php echo $form_labels['form']['issuer']; ?> <em>*</em></label>
+                <select id="issuer" data-checkout="issuer" name="payment[<?php echo $_code; ?>][issuer_id]" title="<?php echo $form_labels['form']['issuer']; ?>" class="validate-select">
+                  <option value="-1"><?php echo $form_labels['form']['label_choose']; ?></option>
+                </select>
+
+                <span class="mp-error" id="mp-error-220" data-main="#issuer"> <?php echo $form_labels['error']['220']; ?> </span>
+              </div>
+
+            </div>  <!-- end #mercadopago-form -->
+
+            <div id="mp-box-installments" class="mp-installment">
+              <div class="mp-box-inputs mp-col-100" id="mp-box-installments-selector">
+                <label for="installments"><?php echo $form_labels['form']['installments']; ?> <em>*</em></label>
+                <select id="installments" data-checkout="installments" name="payment[<?php echo $_code; ?>][installments]" class="validate-select mercadopago-installments" title="<?php echo $form_labels['form']['installments']; ?>" >
+                  <option value="-1"><?php echo $form_labels['form']['label_choose']; ?></option>
+                </select>
+              </div>
+
+              <div class="mp-box-inputs mp-col-30" id="mp-box-input-tax-cft">
+                <div id="mp-tax-cft-text"></div>
+              </div>
+
+              <div class="mp-box-inputs mp-col-100" id="mp-box-input-tax-tea">
+                <div id="mp-tax-tea-text"></div>
+              </div>
+            </div>
+
+
+            <div class="mp-box-inputs mp-line">
+
+              <!-- NOT DELETE LOADING-->
+              <div class="mp-box-inputs mp-col-25">
+                <div id="mp-box-loading">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="mp-box-inputs mp-col-100" id="mercadopago-utilities">
+              <p><b>Debug Mode <span class="flag-on">ON</span></b></p>
+              site_id <input type="text" id="site_id"  name="payment[<?php echo $_code; ?>][site_id]"/> <br/>
+              amount: <input type="text" id="amount" value="<?php echo $grant_total; ?>" name="payment[<?php echo $_code; ?>][amount]"/> <br/>
+              paymentMethodId <input type="text" id="paymentMethodId" name="payment[<?php echo $_code; ?>][paymentMethodId]"/> <br/>
+              token <input type="text" id="token" name="payment[<?php echo $_code; ?>][token]"/> <br/>
+              cardTruncated <input type="text" id="cardTruncated" name="payment[<?php echo $_code; ?>][cardTruncated]"/> <br/>
+              CustomerAndCard <input type="text" id="CustomerAndCard" name="payment[<?php echo $_code; ?>][CustomerAndCard]"/> <br/>
+              mercadopago-gateway-mode <input type="text" id="mercadopago-gateway-mode" name="payment[<?php echo $_code; ?>][gateway_mode]"/> <br/>
+              customer_id <input type="text" name="payment[<?php echo $_code; ?>][customer_id]" value="<?php echo $customer['id']; ?>"> <br/>
+              campaign_id <input type="text" id="campaign_id" name="payment[<?php echo $_code; ?>][campaign_id]"/> <br/>
+              campaign <input type="text" id="campaign" name="payment[<?php echo $_code; ?>][campaign]"/> <br/>
+              discount <input type="text" id="discount" name="payment[<?php echo $_code; ?>][discount]"/> <br/>
+            </div>
+
+          </div>
+
+        </div>
+
+      </li>
+    </ul>
+
+    <script>
+    var mercadopago_site_id = '<?php echo strtoupper($country); ?>';
+    var mercadopago_public_key = '<?php echo $public_key; ?>';
+    var mercadopago_payer_email = '<?php echo $payer_email; ?>';
+    var mercadopago_url_coupon = '<?php echo $base_url; ?>mercadopago/api/coupon';
+    var mercadopago_url_amount = '<?php echo $base_url; ?>mercadopago/api/amount';
+
+    //initialize loading
+    MPv1.paths.loading = '<?php echo $this->getSkinUrl('mercadopago/images/loading.gif'); ?>';
+    MPv1.paths.check = '<?php echo $this->getSkinUrl('mercadopago/images/check.png'); ?>';
+    MPv1.paths.error = '<?php echo $this->getSkinUrl('mercadopago/images/error.png'); ?>';
+
+    //add text translations
+    MPv1.text.choose = '<?php echo $form_labels["form"]["label_choose"]; ?>';
+    MPv1.text.other_bank = '<?php echo $form_labels["form"]["label_other_bank"]; ?>';
+    MPv1.text.discount_info1 = '<?php echo $form_labels["form"]["discount_info1"]; ?>';
+    MPv1.text.discount_info2 = '<?php echo $form_labels["form"]["discount_info2"]; ?>';
+    MPv1.text.discount_info3 = '<?php echo $form_labels["form"]["discount_info3"]; ?>';
+    MPv1.text.discount_info4 = '<?php echo $form_labels["form"]["discount_info4"]; ?>';
+    MPv1.text.discount_info5 = '<?php echo $form_labels["form"]["discount_info5"]; ?>';
+    MPv1.text.discount_info6 = '<?php echo $form_labels["form"]["discount_info6"]; ?>';
+    MPv1.text.apply = '<?php echo $form_labels["form"]["apply"]; ?>';
+    MPv1.text.remove = '<?php echo $form_labels["form"]["remove"]; ?>';
+    MPv1.text.coupon_empty = '<?php echo $form_labels["form"]["coupon_empty"]; ?>';
+
+    MPv1.debug = <?php echo $debugMode; ?>;
+    MPv1.gateway_mode = <?php echo $modeGateway; ?>;
+
+    MPv1.Initialize(mercadopago_site_id, mercadopago_public_key, <?php echo $coupon_mercadopago; ?>, mercadopago_url_coupon, mercadopago_payer_email);
+
+
+    /***************************************
+    *
+    *
+    * Customizações
+    *
+    */
+
+    MPv1.AJAX({
+      url: mercadopago_url_amount,
+      method : "GET",
+      timeout : 5000,
+      error: function(){
+        // request failed
+        console.log("Fail get amount");
+      },
+      success : function (status, response){
+        document.querySelector(MPv1.selectors.amount).value = response.amount;
+      }
+    });
+
+    // NEED REFACTOR
+    Validation.add("mercadopago-installments", ' ', function (v, element) {
+      if(!MPv1.validateInputsCreateToken()){
+        return false;
+      }
+      var token = document.querySelector(MPv1.selectors.token);
+      if(token.value == ""){
+        return false;
+      }
+      return true;
+    });
+
+    </script>
+
+
+    <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
+      <p class="communication"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
+    <?php endif; ?>
+    <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+      <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
+    <?php endif;?>

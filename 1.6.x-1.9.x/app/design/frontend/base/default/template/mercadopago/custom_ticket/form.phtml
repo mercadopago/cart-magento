@@ -259,7 +259,7 @@ $form_labels = array(
             <?php endif; ?>
 
             <div class="mp-box-inputs mp-col-100" id="mercadopago-utilities">
-              <input type="hidden" id="site_id" value="<?php echo $_REQUEST['site_id']; ?>" name="payment[<?php echo $_code; ?>][site_id]"/>
+              <input type="hidden" id="site_id" value="<?php echo strtoupper($country); ?>" name="payment[<?php echo $_code; ?>][site_id]"/>
               <input type="hidden" id="amountTicket" value="<?php echo $grant_total; ?>" name="payment[<?php echo $_code; ?>][amount]"/>
               <input type="hidden" id="campaign_idTicket" name="payment[<?php echo $_code; ?>][campaign_id]"/>
               <input type="hidden" id="campaignTicket" name="payment[<?php echo $_code; ?>][campaign]"/>

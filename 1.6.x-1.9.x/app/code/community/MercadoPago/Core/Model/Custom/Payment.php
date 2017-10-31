@@ -41,7 +41,6 @@ class MercadoPago_Core_Model_Custom_Payment
         if ($this->getInfoInstance()->getAdditionalInformation('token') == "") {
             Mage::throwException(Mage::helper('mercadopago')->__('Verify the form data or wait until the validation of the payment data'));
         }
-
         // $useTwoCards = $this->getInfoInstance()->getAdditionalInformation('is_second_card_used');
         //
         // if ($useTwoCards === "true") {

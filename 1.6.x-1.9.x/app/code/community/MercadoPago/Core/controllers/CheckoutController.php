@@ -128,16 +128,37 @@ class MercadoPago_Core_CheckoutController
                 return;
             }
 
-        }
-        //set data for mp analytics
-        Mage::register('mp_analytics_data', Mage::helper('mercadopago')->getAnalyticsData($this->getOrder()));
-        $checkoutTypeHandle = $this->getCheckoutHandle();
-        $this->loadLayout(array('default', $checkoutTypeHandle));
+          }
+          //set data for mp analytics
+          Mage::register('mp_analytics_data', Mage::helper('mercadopago')->getAnalyticsData($this->getOrder()));
 
-        $this->_initLayoutMessages('core/session');
-        Mage::dispatchEvent('checkout_onepage_controller_success_action', array('order_ids' => array($this->getOrder()->getId())));
+          $session = Mage::getSingleton('checkout/type_onepage')->getCheckout();
+          if (!$session->getLastSuccessQuoteId()) {
+              $this->_redirect('checkout/cart');
+              return;
+          }
 
-        $this->renderLayout();
+          $lastQuoteId = $session->getLastQuoteId();
+          $lastOrderId = $session->getLastOrderId();
+          $lastRecurringProfiles = $session->getLastRecurringProfileIds();
+          if (!$lastQuoteId || (!$lastOrderId && empty($lastRecurringProfiles))) {
+              $this->_redirect('checkout/cart');
+              return;
+          }
+          Mage::getSingleton('checkout/cart')->truncate()->save();
+          $session->clear();
+
+          $checkoutTypeHandle = $this->getCheckoutHandle();
+          $this->loadLayout(array('default', $checkoutTypeHandle));
+
+          $this->_initLayoutMessages('checkout/session');
+          Mage::dispatchEvent('checkout_onepage_controller_success_action', array(
+              'order_ids' => array(
+                  $lastOrderId
+              )
+          ));
+
+          $this->renderLayout();
     }
 
 }

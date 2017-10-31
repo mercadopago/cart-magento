@@ -1,6 +1,6 @@
 <p><strong><?php echo $this->getMethod()->getTitle() ?></strong></p>
 
-<?php if( Mage::app()->getRequest()->getRouteName() == "sales" || Mage::app()->getFrontController()->getAction()->getFullActionName() == 'checkout_onepage_success' ): ?> 
+<?php if( Mage::app()->getRequest()->getRouteName() == "sales" || Mage::app()->getFrontController()->getAction()->getFullActionName() == 'checkout_onepage_success' ): ?>
 
     <?php
         $info_payment = $this->getInfoPayment();

@@ -26,6 +26,7 @@ class MercadoPago_Core_Model_Observer
             "mlc" => "//secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "//imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
             "mpe" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
+            "mlu" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png"
         ),
         "mercadopago_customticket" => array(
             "mla" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
@@ -35,6 +36,7 @@ class MercadoPago_Core_Model_Observer
             "mlc" => "//secure.mlstatic.com/developers/site/cloud/banners/cl/468x60.gif",
             "mlv" => "//imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
             "mpe" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
+            "mlu" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png"
         ),
         "mercadopago_banktransfer" => array(
             "mco" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png"
@@ -47,11 +49,12 @@ class MercadoPago_Core_Model_Observer
             "mlv" => "//imgmp.mlstatic.com/org-img/banners/ve/medios/468X60.jpg",
             "mlm" => "//imgmp.mlstatic.com/org-img/banners/mx/medios/MLM_468X60.JPG",
             "mpe" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png",
+            "mlu" => "//a248.e.akamai.net/secure.mlstatic.com/components/resources/mp/css/assets/desktop-logo-mercadopago.png"
         )
     );
 
-    private $available_transparent_credit_cart = array('mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe');
-    private $available_transparent_ticket = array('mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe');
+    private $available_transparent_credit_cart = array('mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe', 'mlu');
+    private $available_transparent_ticket = array('mla', 'mlb', 'mlm', 'mco', 'mlv', 'mlc', 'mpe', 'mlu');
     private $available_bank_transfer = array('mco');
 
     /**

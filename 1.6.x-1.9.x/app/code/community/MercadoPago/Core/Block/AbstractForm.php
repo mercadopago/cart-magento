@@ -13,6 +13,7 @@ class MercadoPago_Core_Block_AbstractForm
                   <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
                   <script type="text/javascript" src="%s"></script>
                   <script type="text/javascript" src="%s"></script>
+                  <script type="text/javascript" src="%s"></script>
                   <link rel="stylesheet" href="%s"/>
                   <link rel="stylesheet" href="%s"/>
                 ',

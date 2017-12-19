@@ -8,6 +8,8 @@ class MercadoPago_Core_Model_Discount_Coupon
 
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
+        
+        error_log("Discount collect... ");
 
         if ($this->_getDiscountCondition($address)) {
             parent::collect($address);
@@ -16,6 +18,14 @@ class MercadoPago_Core_Model_Discount_Coupon
             $postData = Mage::app()->getRequest()->getPost();
             $method = $postData['payment']['method'];
             $balance = $postData['payment'][$method]['discount'] * -1;
+
+
+            $core = Mage::getModel('mercadopago/core');
+            $coupon_id = $postData['payment'][$method]['coupon_code'];
+            $response = $core->validCoupon($coupon_id);
+
+            error_log("Discount collect... " . json_encode($postData));
+            error_log("Discount collect response api... " . json_encode($response));
 
             //set values in object
             $address->setDiscountCouponAmount($balance);
@@ -39,7 +49,9 @@ class MercadoPago_Core_Model_Discount_Coupon
     }
 
     public function fetch(Mage_Sales_Model_Quote_Address $address)
-    {
+    {   
+        error_log("Discount fetch... ");
+
         if ($this->_getDiscountCondition($address)) {
             if ($address->getDiscountCouponAmount() < 0) {
 
@@ -57,6 +69,8 @@ class MercadoPago_Core_Model_Discount_Coupon
 
     protected function _getDiscountCondition($address)
     {
+
+        error_log("Discount collect... ");
         $postData = Mage::app()->getRequest()->getPost();
 
         if($address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING && isset($postData['payment'])){

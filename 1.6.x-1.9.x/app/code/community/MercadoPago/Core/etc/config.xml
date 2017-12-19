@@ -18,7 +18,7 @@
 <config>
     <modules>
         <MercadoPago_Core>
-            <version>2.11.0</version>
+            <version>2.11.1</version>
         </MercadoPago_Core>
     </modules>
 
@@ -261,6 +261,7 @@
                     <tax_vat>1</tax_vat>
                     <street_number_address>street_1</street_number_address>
                     <street_number_address_number>street_2</street_number_address_number>
+                    <auto_state>0</auto_state>
                 </mercadopago_customticket>
 
                 <mercadopago_banktransfer>

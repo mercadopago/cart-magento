@@ -447,11 +447,6 @@ class MercadoPago_Core_Model_Core
         $quote = $this->_getQuote();
         $total = $quote->getBaseSubtotalWithDiscount() + $quote->getShippingAddress()->getShippingAmount() + $quote->getShippingAddress()->getBaseTaxAmount();
 
-        error_log(
-            "getBaseSubtotalWithDiscount: " . $quote->getBaseSubtotalWithDiscount() 
-            . " getShippingAmount: " . $quote->getShippingAddress()->getShippingAmount()
-            . " getBaseTaxAmount: " . $quote->getShippingAddress()->getBaseTaxAmount()
-        );
         return (float) $total;
 
     }
@@ -470,8 +465,6 @@ class MercadoPago_Core_Model_Core
             "coupon_code"        => $id
         );
 
-
-        error_log("validCoupon " . json_encode($params));
         $details_discount = $mp->get("/discount_campaigns", $params);
 
         //add value on return api discount

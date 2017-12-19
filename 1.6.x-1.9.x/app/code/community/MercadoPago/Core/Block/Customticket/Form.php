@@ -71,8 +71,8 @@ class MercadoPago_Core_Block_Customticket_Form
         "505" => array("code" =>"RO", "state" => "Rondônia"),
         "506" => array("code" =>"RA", "state" => "Roraima"),
         "507" => array("code" =>"SC", "state" => "Santa Catarina"),
-        "508" => array("code" =>"SP", "state" => "São Paulo"),
         "509" => array("code" =>"SE", "state" => "Sergipe"),
+        "508" => array("code" =>"SP", "state" => "São Paulo"),
         "510" => array("code" =>"TO", "state" => "Tocantins")
       );
 

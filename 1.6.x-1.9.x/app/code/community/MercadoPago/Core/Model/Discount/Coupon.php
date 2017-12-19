@@ -8,7 +8,6 @@ class MercadoPago_Core_Model_Discount_Coupon
 
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
-
         if ($this->_getDiscountCondition($address)) {
             parent::collect($address);
 
@@ -16,6 +15,11 @@ class MercadoPago_Core_Model_Discount_Coupon
             $postData = Mage::app()->getRequest()->getPost();
             $method = $postData['payment']['method'];
             $balance = $postData['payment'][$method]['discount'] * -1;
+
+
+            $core = Mage::getModel('mercadopago/core');
+            $coupon_id = $postData['payment'][$method]['coupon_code'];
+            $response = $core->validCoupon($coupon_id);
 
             //set values in object
             $address->setDiscountCouponAmount($balance);
@@ -39,7 +43,7 @@ class MercadoPago_Core_Model_Discount_Coupon
     }
 
     public function fetch(Mage_Sales_Model_Quote_Address $address)
-    {
+    {   
         if ($this->_getDiscountCondition($address)) {
             if ($address->getDiscountCouponAmount() < 0) {
 

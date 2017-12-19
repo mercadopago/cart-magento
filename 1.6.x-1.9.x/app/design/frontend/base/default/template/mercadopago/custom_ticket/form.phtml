@@ -6,6 +6,8 @@ $grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
 $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
 $route = $this->getRequest()->getRequestedRouteName();
 
+$use_state = Mage::getStoreConfig('payment/mercadopago_customticket/auto_state') == 1 ? 'true' : 'false';
+
 $form_labels = array(
   "form" => array(
     "coupon_empty" => $this->__("Please, inform your coupon code"),
@@ -251,9 +253,11 @@ $form_labels = array(
               document.querySelector("#form-ticket #MPv1-address").value = "<?php echo preg_replace('/\s+/', ' ', $customer['address']); ?>";
               document.querySelector("#form-ticket #MPv1-number").value = "<?php echo preg_replace('/\s+/', ' ', $customer['addressnumber']); ?>";
               document.querySelector("#form-ticket #MPv1-city").value = "<?php echo $customer['city']; ?>";
-              document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $customer['state_code']; ?>";
               document.querySelector("#form-ticket #MPv1-zipcode").value = "<?php echo $customer['zipcode']; ?>";
 
+              if(<?php echo $use_state; ?> === true){
+                document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $customer['state_code']; ?>";
+              }
               </script>
 
             <?php endif; ?>

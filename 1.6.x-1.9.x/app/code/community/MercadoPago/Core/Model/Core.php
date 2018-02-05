@@ -448,7 +448,6 @@ class MercadoPago_Core_Model_Core
         $total = $quote->getBaseSubtotalWithDiscount() + $quote->getShippingAddress()->getShippingAmount() + $quote->getShippingAddress()->getBaseTaxAmount();
 
         return (float) $total;
-
     }
 
     public function validCoupon($id)

@@ -8,6 +8,7 @@ class MercadoPago_Core_Model_Discount_Coupon
 
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
+
         if ($this->_getDiscountCondition($address)) {
             parent::collect($address);
 
@@ -44,6 +45,7 @@ class MercadoPago_Core_Model_Discount_Coupon
 
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {   
+
         if ($this->_getDiscountCondition($address)) {
             if ($address->getDiscountCouponAmount() < 0) {
 

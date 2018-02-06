@@ -194,10 +194,5 @@ class MercadoPago_Lib_RestClient {
 
 
         return self::post("/modules/log" , $data);
-        // "platform"         => "Magento",
-        // "platform_version" => (string)Mage::getVersion(),
-        // "module_version"   => (string)Mage::getConfig()->getModuleConfig("MercadoPago_Core")->version,
-        // "code_version"     => phpversion()
-        
     }
 }

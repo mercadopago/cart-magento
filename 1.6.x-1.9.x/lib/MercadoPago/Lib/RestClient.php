@@ -189,7 +189,7 @@ class MercadoPago_Lib_RestClient {
             "email_admin" => self::$email_admin,
             "country_initial" => self::$country_initial,
             "server_version" => $server_version,
-            "php_version" => $php_version
+            "code_lang" => "PHP " . $php_version
         );
 
 

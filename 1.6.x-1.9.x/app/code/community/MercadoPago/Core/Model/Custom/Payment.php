@@ -164,6 +164,12 @@ class MercadoPago_Core_Model_Custom_Payment
             throw $exception;
         }
 
+        //Added to force value as there are cases coming -1
+        if( $info_form['installments'] == -1 && strtoupper(Mage::getStoreConfig('payment/mercadopago/country')) == "MLV"){
+            $info_form['installments'] = 1;
+            Mage::helper('mercadopago')->log("Installment updated to 1... form return -1. ", self::LOG_FILE);
+        }
+
         Mage::helper('mercadopago')->log("info form", self::LOG_FILE, $info_form);
         $info = $this->getInfoInstance();
         $info->setAdditionalInformation($info_form);
@@ -178,7 +184,6 @@ class MercadoPago_Core_Model_Custom_Payment
         if (isset($info_form['gateway_mode'])) {
             $info->setAdditionalInformation('gateway_mode', $info_form['gateway_mode']);
         }
-
 
         return $this;
     }
@@ -238,7 +243,6 @@ class MercadoPago_Core_Model_Custom_Payment
             $preference['payment_method_id'] = $payment->getAdditionalInformation("payment_method");
             $preference['token'] = $payment->getAdditionalInformation("token");
         }
-
 
         if ($payment->getAdditionalInformation("issuer_id") != "" && $payment->getAdditionalInformation("issuer_id") != -1) {
             $preference['issuer_id'] = (int)$payment->getAdditionalInformation("issuer_id");

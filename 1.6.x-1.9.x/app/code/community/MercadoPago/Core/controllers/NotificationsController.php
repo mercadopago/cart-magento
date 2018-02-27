@@ -250,7 +250,7 @@ class MercadoPago_Core_NotificationsController
             return true;
         }
         $this->_helper->log(MercadoPago_Core_Helper_Response::INFO_EXTERNAL_REFERENCE_NOT_FOUND, self::LOG_FILE, $this->_requestData);
-        $this->_setResponse(MercadoPago_Core_Helper_Response::INFO_EXTERNAL_REFERENCE_NOT_FOUND, MercadoPago_Core_Helper_Response::HTTP_NOT_FOUND);
+        $this->_setResponse(MercadoPago_Core_Helper_Response::INFO_EXTERNAL_REFERENCE_NOT_FOUND, MercadoPago_Core_Helper_Response::HTTP_INTERNAL_ERROR);
 
         return false;
     }

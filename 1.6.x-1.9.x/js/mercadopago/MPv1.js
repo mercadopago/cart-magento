@@ -80,6 +80,7 @@
 
       paymentMethodId: "#paymentMethodId",
       amount: "#amount",
+      total_amount: "#total_amount",
       token: "#token",
       campaign_id: "#campaign_id",
       campaign: "#campaign",
@@ -378,6 +379,13 @@
     }
 
   }
+  
+  MPv1.actionInstallmentChange = function () {
+    var selectorInstallment = document.querySelector(MPv1.selectors.installments);
+    var payment_method_id = selectorInstallment.value;
+    var total_amount = selectorInstallment[selectorInstallment.options.selectedIndex].getAttribute("data-total-amount");
+    document.querySelector(MPv1.selectors.total_amount).value = total_amount;
+  }
 
 
   /*
@@ -540,8 +548,7 @@
             }
           }
         }
-
-        html_option += '<option value="'+ payerCosts[i].installments +'"'+ dataInput +'>' + (payerCosts[i].recommended_message || payerCosts[i].installments) + '</option>';
+        html_option += '<option value="'+ payerCosts[i].installments +'"'+ dataInput +' data-total-amount="'+ payerCosts[i].total_amount +'">' + (payerCosts[i].recommended_message || payerCosts[i].installments) + '</option>';
       }
 
       // not take the user's selection if equal
@@ -923,6 +930,7 @@
       MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'keyup', MPv1.clearOptions);
       MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'keyup', MPv1.guessingPaymentMethod);
       MPv1.addListenerEvent(document.querySelector(MPv1.selectors.cardNumber), 'change', MPv1.guessingPaymentMethod);
+      MPv1.addListenerEvent(document.querySelector(MPv1.selectors.installments), 'change', MPv1.actionInstallmentChange);
     };
 
     // MPv1.cardsHandler();

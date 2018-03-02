@@ -11,11 +11,15 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
         if ($this->_getFinancingCondition($address)) {
 
             $postData = Mage::app()->getRequest()->getPost();
+            $method = $postData['payment']['method'];
             parent::collect($address);
 
-            $totalAmount = (float)$postData['total_amount'];
-            $amount = (float)$postData['amount'] - (float)$postData['mercadopago-discount-amount'];
-            $balance = $totalAmount - $amount;
+            $totalAmount  = (float) $postData['payment'][$method]['total_amount'];
+            $amount       = (float) $postData['payment'][$method]['amount'];
+            $discount     = (float) $postData['payment'][$method]['discount'];
+          
+            $real_amount = $amount - $discount;
+            $balance = $totalAmount - $real_amount;
 
             $address->setFinanceCostAmount($balance);
             $address->setBaseFinanceCostAmount($balance);
@@ -37,7 +41,8 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
         if ($this->_getFinancingCondition($address)) {
-            if ($address->getFinanceCostAmount() > 0) {
+          if ($address->getFinanceCostAmount() > 0) {
+
                 $address->addTotal(array(
                     'code'  => $this->getCode(),
                     'title' => Mage::helper('mercadopago')->__('Financing Cost'),
@@ -51,9 +56,15 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
 
     protected function _getFinancingCondition($address)
     {
-        $req = Mage::app()->getRequest()->getParam('total_amount');
+      $postData = Mage::app()->getRequest()->getPost();
 
-        return (!empty($req) && $address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING);
-
+      if($address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING && isset($postData['payment'])){
+        $method = $postData['payment']['method'];
+        $req = $postData['payment'][$method]['amount'];
+        
+        return (!empty($req) && Mage::getStoreConfigFlag('payment/mercadopago/financing_cost'));
+      }
+      return false;
+        
     }
 }

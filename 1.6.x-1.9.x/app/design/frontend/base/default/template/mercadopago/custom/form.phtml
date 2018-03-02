@@ -269,6 +269,7 @@ if (typeof sendAnalyticsData === 'function') {
               <p><b>Debug Mode <span class="flag-on">ON</span></b></p>
               site_id <input type="text" id="site_id"  name="payment[<?php echo $_code; ?>][site_id]"/> <br/>
               amount: <input type="text" id="amount" value="<?php echo $grant_total; ?>" name="payment[<?php echo $_code; ?>][amount]"/> <br/>
+              total amount: <input type="text" id="total_amount" name="payment[<?php echo $_code; ?>][total_amount]"/> <br/>
               paymentMethodId <input type="text" id="paymentMethodId" name="payment[<?php echo $_code; ?>][paymentMethodId]"/> <br/>
               token <input type="text" id="token" name="payment[<?php echo $_code; ?>][token]"/> <br/>
               cardTruncated <input type="text" id="cardTruncated" name="payment[<?php echo $_code; ?>][cardTruncated]"/> <br/>

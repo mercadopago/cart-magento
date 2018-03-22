@@ -6,6 +6,10 @@ $grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
 $base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
 $route = $this->getRequest()->getRequestedRouteName();
 
+//get customer session
+$customer_session = Mage::getSingleton('customer/session')->getCustomer();
+$payer_email = $customer_session->getEmail();
+
 $use_state = Mage::getStoreConfig('payment/mercadopago_customticket/auto_state') == 1 ? 'true' : 'false';
 
 $form_labels = array(
@@ -13,6 +17,8 @@ $form_labels = array(
     "coupon_empty" => $this->__("Please, inform your coupon code"),
     'apply' => $this->__("Apply"),
     'remove' => $this->__("Remove"),
+    'label_other_bank' => $this->__("Other Bank"),
+    'label_choose' => $this->__("Choose"),
     'discount_info1' => $this->__("You will save"),
     'discount_info2' => $this->__("with discount from"),
     'discount_info3' => $this->__("Total of your purchase:"),

@@ -97,7 +97,12 @@ class MercadoPago_Core_Block_Customticket_Form
       $customer['city'] = $data_customer['city'];
       $customer['state'] = $data_customer['region_id'];
       $customer['zipcode'] = $data_customer['postcode'];
-      $customer['state_code'] = $state_code[$customer['state']]['code'];
+      
+      $state = "";
+      if(isset($state_code[$customer['state']]) && isset($state_code[$customer['state']]['code'])){
+        $state = $state_code[$customer['state']]['code'];
+      }
+      $customer['state_code'] = $state;
 
       return $customer;
     }

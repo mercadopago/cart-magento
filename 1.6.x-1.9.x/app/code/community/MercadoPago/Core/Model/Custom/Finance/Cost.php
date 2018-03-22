@@ -60,11 +60,13 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
 
       if($address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING && isset($postData['payment'])){
         $method = $postData['payment']['method'];
-        $req = $postData['payment'][$method]['amount'];
         
-        return (!empty($req) && Mage::getStoreConfigFlag('payment/mercadopago/financing_cost'));
+        if(isset($postData['payment'][$method]) && isset($postData['payment'][$method]['amount']) ){
+          $req = $postData['payment'][$method]['amount'];
+
+          return (!empty($req) && Mage::getStoreConfigFlag('payment/mercadopago/financing_cost'));          
+        }
       }
       return false;
-        
     }
 }

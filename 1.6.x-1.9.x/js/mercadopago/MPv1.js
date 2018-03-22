@@ -397,8 +397,8 @@
 
   MPv1.getIssuersPaymentMethod = function (payment_method_id) {
     var amount = MPv1.getAmount();
-    //flow: MLM mercadopagocard
-    if(payment_method_id == 'mercadopagocard') {
+    //flow: MLM mercadopagocard & amex
+    if(payment_method_id == 'mercadopagocard' || (MPv1.site_id == "MLM" && payment_method_id == 'amex')){
       Mercadopago.getInstallments({
         "payment_method_id": payment_method_id,
         "amount": amount

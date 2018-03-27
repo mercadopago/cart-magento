@@ -28,6 +28,7 @@ class MercadoPago_Core_Helper_StatusUpdate
         $statusDetail = $notificationData['status_detail'];
         $currentStatus = $this->_order->getPayment()->getAdditionalInformation('status');
         $currentStatusDetail = $this->_order->getPayment()->getAdditionalInformation('status_detail');
+      
         if ($isPayment) {
             $currentStatus = $this->_getMulticardLastValue($currentStatus);
             $currentStatusDetail = $this->_getMulticardLastValue($currentStatusDetail);
@@ -45,16 +46,22 @@ class MercadoPago_Core_Helper_StatusUpdate
     protected function _getMulticardLastValue($value)
     {
         $statuses = explode('|', $value);
-
-        return str_replace(' ', '', array_pop($statuses));
+      
+        $lastStatus = str_replace(' ', '', array_pop($statuses));
+      
+        return $lastStatus;
     }
 
-    protected function _updateStatus($status, $message, $statusDetail)
+    protected function _updateStatus($status, $message, $statusDetail, $payment_data = null)
     {
-        if ($this->_order->getState() !== Mage_Sales_Model_Order::STATE_COMPLETE
-        ) {
+        if ($this->_order->getState() !== Mage_Sales_Model_Order::STATE_COMPLETE) {            
+          
+            //use status final when is payment with two cards
+            if(!is_null($payment_data) && isset($payment_data['status_final'])){
+              $status = $payment_data['status_final'];
+            }
+          
             $statusOrder = $this->getStatusOrder($status, $statusDetail);
-
             if (isset($statusOrder) && ($this->_order->getStatus() !== $statusOrder)) {
                 $this->_order->setState($this->_getAssignedState($statusOrder));
                 $this->_order->addStatusToHistory($statusOrder, $message, true);
@@ -73,8 +80,9 @@ class MercadoPago_Core_Helper_StatusUpdate
         $item = Mage::getResourceModel('sales/order_status_collection')
             ->joinStates()
             ->addFieldToFilter('main_table.status', $status);
-
-        return array_pop($item->getItems())->getState();
+        $items = $item->getItems();
+      
+        return array_pop($items)->getState();
     }
 
     protected function _generateCreditMemo($payment)
@@ -195,7 +203,7 @@ class MercadoPago_Core_Helper_StatusUpdate
             $this->_order->cancel();
         } else {
             //if state is not complete updates according to setting
-            $this->_updateStatus($status, $message, $statusDetail);
+            $this->_updateStatus($status, $message, $statusDetail, $payment);
         }
 
         return $this->_order->save();
@@ -235,7 +243,7 @@ class MercadoPago_Core_Helper_StatusUpdate
 
 
     public function getStatusOrder($status, $statusDetail)
-    {
+    {      
         switch ($this->_getMulticardLastValue($status)) {
             case 'approved': {
                 $status = Mage::getStoreConfig('payment/mercadopago/order_status_approved');

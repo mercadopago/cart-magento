@@ -3,7 +3,32 @@
 class MercadoPago_Core_Block_Adminhtml_System_Config_Fieldset_Payment
     extends Mage_Adminhtml_Block_System_Config_Form_Fieldset
 {
+ 
+    /**
+     * Render fieldset html
+     *
+     * @param Varien_Data_Form_Element_Abstract $element
+     * @return string
+     */
+    public function render(Varien_Data_Form_Element_Abstract $element)
+    {
 
+      $country = Mage::getStoreConfig('payment/mercadopago/country');
+      $title = $element->getLegend();
+
+      if($title == "Checkout Custom - Bank Transfer" && strtoupper($country) != 'MCO'){
+        return "";
+      }
+
+      $this->setElement($element);
+      $html = $this->_getHeaderHtml($element);
+      foreach ($element->getSortedElements() as $field) {
+        $html.= $field->toHtml();
+      }
+      $html .= $this->_getFooterHtml($element);
+      return $html;
+    }
+  
     /**
      * Return header title part of html for payment solution
      *

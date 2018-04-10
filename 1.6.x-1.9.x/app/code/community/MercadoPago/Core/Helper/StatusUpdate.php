@@ -175,38 +175,46 @@ class MercadoPago_Core_Helper_StatusUpdate
 
     public function update($payment, $message)
     {
-        $statusDetail = $payment['status_detail'];
-        $status = $payment['status'];
-        $infoPayments = $this->_order->getPayment()->getAdditionalInformation();
-        if ($this->_getMulticardLastValue($status) == 'approved') {
-            $this->_handleTwoCards($payment, $infoPayments);
+      
+      $statusDetail = $payment['status_detail'];
+      $status = $payment['status'];
 
-            Mage::helper('mercadopago')->setOrderSubtotals($payment, $this->_order);
-            $this->_createInvoice($this->_order, $message);
-            //Associate card to customer
-            $additionalInfo = $this->_order->getPayment()->getAdditionalInformation();
-            if (isset($additionalInfo['token'])) {
-                Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
-            }
+      //define status final if exist
+      if(isset($payment['status_final']) && $payment['status_final'] != ""){
+        $status = $payment['status_final'];
+      }
+
+      $infoPayments = $this->_order->getPayment()->getAdditionalInformation();
+      if ($this->_getMulticardLastValue($status) == 'approved') {
+        $this->_handleTwoCards($payment, $infoPayments);
+
+        Mage::helper('mercadopago')->setOrderSubtotals($payment, $this->_order);
+        $this->_createInvoice($this->_order, $message);
+        //Associate card to customer
+        $additionalInfo = $this->_order->getPayment()->getAdditionalInformation();
+        if (isset($additionalInfo['token'])) {
+          Mage::getModel('mercadopago/custom_payment')->customerAndCards($additionalInfo['token'], $payment);
         }
+      }
 
-        if (isset($infoPayments['first_payment_id']) &&
-            !($infoPayments['first_payment_status'] == 'approved' && $infoPayments['second_payment_status'] == 'approved')
-        ) {
-            return $this->_order->save();
-        }
-
-        if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0) {
-            $this->_generateCreditMemo($payment);
-        } elseif ($status == 'cancelled') {
-            Mage::register('mercadopago_cancellation', true);
-            $this->_order->cancel();
-        } else {
-            //if state is not complete updates according to setting
-            $this->_updateStatus($status, $message, $statusDetail, $payment);
-        }
-
+      if (isset($infoPayments['first_payment_id']) &&
+          !($infoPayments['first_payment_status'] == 'approved' && $infoPayments['second_payment_status'] == 'approved')
+         ) {
         return $this->_order->save();
+      }
+
+      if (isset($payment['amount_refunded']) && $payment['amount_refunded'] > 0) {
+        $this->_generateCreditMemo($payment);
+      } elseif ($status == 'cancelled') {
+        Mage::register('mercadopago_cancellation', true);
+        $this->_order->cancel();
+      } else {
+        //if state is not complete updates according to setting
+        $this->_updateStatus($status, $message, $statusDetail, $payment);
+      }
+
+      return $this->_order->save();
+
     }
 
     protected function _handleTwoCards(&$payment, $infoPayments)
@@ -350,6 +358,7 @@ class MercadoPago_Core_Helper_StatusUpdate
 
     protected function _createInvoice($order, $message)
     {
+      
         if (!$order->hasInvoices()) {
             $invoice = $order->prepareInvoice();
             $invoice->register();

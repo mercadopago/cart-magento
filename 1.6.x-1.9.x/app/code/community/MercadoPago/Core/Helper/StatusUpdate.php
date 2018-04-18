@@ -145,9 +145,11 @@ class MercadoPago_Core_Helper_StatusUpdate
     public function setStatusOrder($payment)
     {
         $helper = Mage::helper('mercadopago');
-        $status = $this->getStatus($payment);
+        //actual status != final_status
+        //$status = $this->getStatus($payment);
 
-        $message = $this->getMessage($status, $payment);
+        $message = $this->getMessage($payment['status'], $payment);
+
         if ($this->isStatusUpdated()) {
             if (!(isset($payment['amount_refunded']) && ($payment['amount_refunded'] > 0))) {
                 if (!(isset($payment['refunds']) && count($payment['refunds']) > 0)) {
@@ -337,23 +339,29 @@ class MercadoPago_Core_Helper_StatusUpdate
      */
     public function getStatusFinal($dataStatus, $merchantOrder)
     {
-        if (isset($merchantOrder['paid_amount']) && $merchantOrder['total_amount'] == $merchantOrder['paid_amount']) {
-            return 'approved';
+
+      if(isset($merchantOrder['payments']) && count($merchantOrder['payments']) == 1){
+        return $merchantOrder['payments'][0]['status'];
+      }
+
+      if (isset($merchantOrder['paid_amount']) && $merchantOrder['total_amount'] == $merchantOrder['paid_amount']) {
+        return 'approved';
+      }
+      
+      $payments = $merchantOrder['payments'];
+      $statuses = explode('|', $dataStatus);
+      foreach ($statuses as $status) {
+        $status = str_replace(' ', '', $status);
+        if (in_array($status, $this->_notFinalStatus)) {
+          $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_notFinalStatus);
+
+          return $payments[$lastPaymentIndex]['status'];
         }
-        $payments = $merchantOrder['payments'];
-        $statuses = explode('|', $dataStatus);
-        foreach ($statuses as $status) {
-            $status = str_replace(' ', '', $status);
-            if (in_array($status, $this->_notFinalStatus)) {
-                $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_notFinalStatus);
+      }
 
-                return $payments[$lastPaymentIndex]['status'];
-            }
-        }
+      $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_finalStatus);
 
-        $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_finalStatus);
-
-        return $payments[$lastPaymentIndex]['status'];
+      return $payments[$lastPaymentIndex]['status'];
     }
 
     protected function _createInvoice($order, $message)
@@ -415,7 +423,7 @@ class MercadoPago_Core_Helper_StatusUpdate
         $data['payer_first_name'] = $payment['payer']['first_name'];
         $data['payer_last_name'] = $payment['payer']['last_name'];
         $data['payer_email'] = $payment['payer']['email'];
-
+                
         if (isset($data['payer_identification_type'])) {
             $data['payer_identification_type'] .= " | " . $payment['payer']['identification']['type'];
         } else {
@@ -452,8 +460,8 @@ class MercadoPago_Core_Helper_StatusUpdate
             $data['statement_descriptor'] = $payment['statement_descriptor'];
         }
 
-        if (isset($payment['merchant_order_id'])) {
-            $data['merchant_order_id'] = $payment['merchant_order_id'];
+        if(isset($payment['order']) && $payment['order']['type'] == 'mercadopago' ){
+            $data['merchant_order_id'] = $payment['order']['id'];
         }
 
         return $data;

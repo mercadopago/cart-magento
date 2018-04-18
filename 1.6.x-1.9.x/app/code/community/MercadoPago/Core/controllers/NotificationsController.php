@@ -76,14 +76,15 @@ class MercadoPago_Core_NotificationsController
                 break;
             case 'payment':
                 $this->_paymentData = $this->_getFormattedPaymentData($this->_getRequestData('id'));
+
                 if (empty($this->_paymentData)) {
-
-                    return;
+                  return;
                 }
+
                 if (!$this->_handleMerchantOrder($this->_paymentData['merchant_order_id'])) {
-
-                    return;
+                  return;
                 }
+               
                 break;
             default:
                 $this->_responseLog();
@@ -198,13 +199,16 @@ class MercadoPago_Core_NotificationsController
 
     protected function _getFormattedPaymentData($paymentId, $data = array())
     {
-        $response = $this->getCore()->getPayment($paymentId);
-        if (!$this->_isValidResponse($response)) {
-            return array();
-        }
-        $payment = $response['response']['collection'];
+      
+      $response = $this->getCore()->getPayment($paymentId);
 
-        return $this->_statusHelper->formatArrayPayment($data, $payment, self::LOG_FILE);
+      if (!$this->_isValidResponse($response)) {
+        return array();
+      }
+      
+      $payment = $response['response'];
+      
+      return $this->_statusHelper->formatArrayPayment($data, $payment, self::LOG_FILE);
     }
 
     protected function _responseLog()

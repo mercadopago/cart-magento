@@ -146,9 +146,9 @@ class MercadoPago_Core_Helper_StatusUpdate
     {
         $helper = Mage::helper('mercadopago');
         //actual status != final_status
-        //$status = $this->getStatus($payment);
-
-        $message = $this->getMessage($payment['status'], $payment);
+        $status = $this->getStatus($payment);
+        
+        $message = $this->getMessage($status, $payment);
 
         if ($this->isStatusUpdated()) {
             if (!(isset($payment['amount_refunded']) && ($payment['amount_refunded'] > 0))) {

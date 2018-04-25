@@ -219,6 +219,9 @@ class MercadoPago_Core_Model_Custom_Payment
 
     public function preparePostPayment($usingSecondCardInfo = null)
     {
+        //check actual time
+        $init = microtime(true);
+      
         Mage::helper('mercadopago')->log("Credit Card -> init prepare post payment", self::LOG_FILE);
         $core = Mage::getModel('mercadopago/core');
         $quote = $this->_getQuote();
@@ -267,7 +270,11 @@ class MercadoPago_Core_Model_Custom_Payment
 
         /* POST /v1/payments */
         $response = $core->postPaymentV1($preference);
-
+      
+        //calculate time consumed
+        $timeConsumed = round(microtime(true) - $init, 3); 
+        Mage::helper('mercadopago')->log("Time consumed to create payment (credit card): " . $timeConsumed . "s", 'mercadopago-custom.log');
+      
         return $response;
     }
 

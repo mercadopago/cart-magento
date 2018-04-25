@@ -20,9 +20,16 @@ class MercadoPago_Core_PayController
     public function indexAction()
     {
         $standard = Mage::getModel('mercadopago/standard_payment');
-
+        
+        //check actual time
+        $init = microtime(true);
+      
         //chama model para fazer o post do pagamento e obter as informacoes para mostrar o checkout
         $array_assign = $standard->postPago();
+
+        //calculate time consumed
+        $timeConsumed = round(microtime(true) - $init, 3); 
+        Mage::helper('mercadopago')->log("Time consumed to create preference: " . $timeConsumed . "s", 'mercadopago-standard.log');
 
         $this->loadLayout();
 

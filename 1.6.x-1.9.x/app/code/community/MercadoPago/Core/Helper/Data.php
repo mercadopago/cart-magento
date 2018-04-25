@@ -133,9 +133,9 @@ class MercadoPago_Core_Helper_Data
         $transactionAmount = $this->_getMultiCardValue($data, 'transaction_amount');
 
         if (isset($data['total_paid_amount'])) {
-            $paidAmount = $this->_getMultiCardValue($data, 'total_paid_amount');
+          $paidAmount = $this->_getMultiCardValue($data, 'total_paid_amount');
         } else {
-            $paidAmount = $data['transaction_details']['total_paid_amount'];
+          $paidAmount = $this->_getMultiCardValue($data, 'transaction_amount');
         }
 
         $shippingCost = $this->_getMultiCardValue($data, 'shipping_cost');

@@ -405,6 +405,7 @@ class MercadoPago_Core_Helper_StatusUpdate
             "coupon_amount",
             "installments",
             "shipping_cost",
+            "shipping_amount",
             "amount_refunded"
          );
 
@@ -460,7 +461,7 @@ class MercadoPago_Core_Helper_StatusUpdate
             $data['statement_descriptor'] = $payment['statement_descriptor'];
         }
 
-        if(isset($payment['order']) && $payment['order']['type'] == 'mercadopago' ){
+        if(isset($payment['order']) && isset($payment['order']['type']) && $payment['order']['type'] == 'mercadopago' ){
             $data['merchant_order_id'] = $payment['order']['id'];
         }
 

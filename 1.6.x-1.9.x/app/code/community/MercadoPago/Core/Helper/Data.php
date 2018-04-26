@@ -139,6 +139,11 @@ class MercadoPago_Core_Helper_Data
         }
 
         $shippingCost = $this->_getMultiCardValue($data, 'shipping_cost');
+
+        if(isset($data['shipping_amount'])){
+          $shippingCost = $this->_getMultiCardValue($data, 'shipping_amount');    
+        }      
+
         $originalAmount = $transactionAmount + $shippingCost;
 
 

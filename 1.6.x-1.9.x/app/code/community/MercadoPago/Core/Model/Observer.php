@@ -470,7 +470,7 @@ class MercadoPago_Core_Model_Observer
                     "amount"   => $amount,
                     "metadata" => $metadata,
                 );
-                $response = $mp->post('/collections/' . $paymentID . '/refunds?access_token=' . $mp->get_access_token(), $params);
+                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=" . $mp->get_access_token(), $params);
             }
         } else {
             $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];

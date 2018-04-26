@@ -68,6 +68,8 @@ class MercadoPago_Core_Model_BankTransfer_Payment
 
     public function preparePostPayment()
     {
+        //check actual time
+        $init = microtime(true);
         Mage::helper('mercadopago')->log("Bank Transfer -> init prepare post payment", 'mercadopago-custom.log');
 
         $core = Mage::getModel('mercadopago/core');
@@ -102,8 +104,14 @@ class MercadoPago_Core_Model_BankTransfer_Payment
 
         Mage::helper('mercadopago')->log("Bank Transfer -> PREFERENCE to POST /v1/payments", 'mercadopago-custom.log', $preference);
 
-        /* POST /v1/payments */
-        return $core->postPaymentV1($preference);
+         /* POST /v1/payments */
+        $response = $core->postPaymentV1($preference);
+      
+        //calculate time consumed
+        $timeConsumed = round(microtime(true) - $init, 3); 
+        Mage::helper('mercadopago')->log("Time consumed to create payment (bank transfer): " . $timeConsumed . "s", 'mercadopago-custom.log');
+      
+        return $response;
     }
 
     public function getOrderPlaceRedirectUrl()

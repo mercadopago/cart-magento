@@ -416,14 +416,13 @@
       var list_aggregator = [];
       var list_gateway = [];
 
-      for(var x in issuers) {
-        var issuer = issuers[x];
+      issuers.forEach(function(issuer) {
         if(issuer.processing_mode == 'gateway') {
           list_gateway.push(issuer);
         }else{
           list_aggregator.push(issuer);
         }
-      }
+      });
 
       //@Gateway_mode
       //check gateway active

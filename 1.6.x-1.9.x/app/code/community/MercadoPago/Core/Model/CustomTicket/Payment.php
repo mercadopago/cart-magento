@@ -79,6 +79,10 @@ class MercadoPago_Core_Model_CustomTicket_Payment
 
     public function preparePostPayment()
     {
+      
+        //check actual time
+        $init = microtime(true);
+      
         Mage::helper('mercadopago')->log("Ticket -> init prepare post payment", 'mercadopago-custom.log');
         $core = Mage::getModel('mercadopago/core');
         $quote = $this->_getQuote();
@@ -148,7 +152,13 @@ class MercadoPago_Core_Model_CustomTicket_Payment
         Mage::helper('mercadopago')->log("Ticket -> PREFERENCE to POST /v1/payments", 'mercadopago-custom.log', $preference);
 
         /* POST /v1/payments */
-        return $core->postPaymentV1($preference);
+        $response = $core->postPaymentV1($preference);
+      
+        //calculate time consumed
+        $timeConsumed = round(microtime(true) - $init, 3); 
+        Mage::helper('mercadopago')->log("Time consumed to create payment (ticket): " . $timeConsumed . "s", 'mercadopago-custom.log');
+      
+        return $response;
     }
 
     public function getOrderPlaceRedirectUrl()

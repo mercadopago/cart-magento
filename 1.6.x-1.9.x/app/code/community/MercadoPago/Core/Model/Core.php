@@ -391,7 +391,7 @@ class MercadoPago_Core_Model_Core
         }
         $mp = Mage::helper('mercadopago')->getApiInstance($this->_clientId, $this->_clientSecret);
 
-        return $mp->get_payment($payment_id);
+        return $mp->get("/v1/payments/" . $payment_id);
     }
 
     public function getPaymentV1($payment_id)
@@ -490,6 +490,7 @@ class MercadoPago_Core_Model_Core
         if (!$order) {
             $order = Mage::getModel('sales/order')->loadByIncrementId($data['external_reference']);
         }
+      
         $paymentOrder = $order->getPayment();
         $this->_saveTransaction($data, $paymentOrder);
 

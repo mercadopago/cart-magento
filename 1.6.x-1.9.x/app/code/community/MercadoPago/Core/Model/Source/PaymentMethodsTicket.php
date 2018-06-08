@@ -35,11 +35,6 @@ class MercadoPago_Core_Model_Source_PaymentMethodsTicket
             return $methods;
         }
 
-        //if accessToken is empty uses clientId and clientSecret to obtain it
-        if (empty($accessToken)) {
-            $accessToken = $helper->getAccessToken();
-        }
-
         $helper->log('Get payment methods by country... ', 'mercadopago.log');
         $helper->log('API payment methods: ' . '/v1/payment_methods?access_token=' . $accessToken, 'mercadopago.log');
         $response = MercadoPago_Lib_RestClient::get('/v1/payment_methods?access_token=' . $accessToken);

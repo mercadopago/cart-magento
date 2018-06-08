@@ -27,15 +27,22 @@ class MercadoPago_Core_Block_Customticket_Form
 
     public function getTicketsOptions()
     {
+        $exclude_payment_methods = Mage::getStoreConfig('payment/mercadopago_customticket/excluded_payment_methods_ticket');
+        $list_exclude = explode(",",$exclude_payment_methods);
+      
         $paymentMethods = Mage::getModel('mercadopago/core')->getPaymentMethods();
         $tickets = array();
 
         foreach ($paymentMethods['response'] as $pm) {
             if ($pm['payment_type_id'] == 'ticket' || $pm['payment_type_id'] == 'atm') {
-                $tickets[] = $pm;
-            }
-        }
+                
+                //insert if not exist in list exclude payment method
+                if(!in_array($pm['id'], $list_exclude)){
+                  $tickets[] = $pm;                  
+                }
 
+            }
+        }      
         return $tickets;
     }
 

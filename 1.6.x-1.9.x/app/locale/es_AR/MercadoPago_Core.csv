@@ -1,4 +1,4 @@
-﻿"//<---- MercadoEnvios---->","//<---- MercadoEnvios---->"
+"//<---- MercadoEnvios---->","//<---- MercadoEnvios---->"
 
 "MercadoEnvios - Configuration","MercadoEnvios - Configuración"
 "Enable to edit specific values","Habilitar para editar valores específicos"
@@ -528,3 +528,6 @@ Es un requisito que usted cuente con un certificado SSL, y que el formulario de 
 "================================Versão 2.11.1================================", "================================Versão 2.11.1================================"
 "Use State","Usa el estado"
 "Automatically fill in the State set up in the buyer's account. This function is not accurate if you use some checkout modules.","Rellene automáticamente el estado configurado en la cuenta del comprador. Esta función no es precisa si utiliza algunos módulos de pago."
+
+"================================Versão 2.13.0================================", "================================Versão 2.13.0================================"
+"There are no payment methods available, please contact the store to see what is happening.","No hay métodos de pago disponibles, entre en contacto con la tienda para analizar lo que está ocurriendo."

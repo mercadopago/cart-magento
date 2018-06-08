@@ -113,7 +113,7 @@ $form_labels = array(
             </ul>
           <?php endif; ?>
 
-          <?php if(strtoupper($country) == "MLB"): ?>
+          <?php if(strtoupper($country) == "MLB" && count($optionsTicket) > 0): ?>
             <div id="form-ticket">
               <div class="form-row">
                 <div class="form-col-6">
@@ -265,6 +265,10 @@ $form_labels = array(
                 document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $customer['state_code']; ?>";
               }
               </script>
+          
+            <?php else: ?>
+
+              <?php echo $this->__("There are no payment methods available, please contact the store to see what is happening."); ?>
 
             <?php endif; ?>
 

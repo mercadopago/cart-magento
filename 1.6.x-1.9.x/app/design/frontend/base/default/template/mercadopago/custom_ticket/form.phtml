@@ -113,164 +113,167 @@ $form_labels = array(
             </ul>
           <?php endif; ?>
 
-          <?php if(strtoupper($country) == "MLB" && count($optionsTicket) > 0): ?>
-            <div id="form-ticket">
-              <div class="form-row">
-                <div class="form-col-6">
-                  <input type="radio" name="payment[<?php echo $_code; ?>][doc-type]" class="MPv1-docType" id="MPv1-docType-fisica" title="<?php echo $form_labels['form']['docNumber']; ?>" checked="checked" value="CPF"> Pessoa Física
-                </div>
-                <div class="form-col-6">
-                  <input type="radio" name="payment[<?php echo $_code; ?>][doc-type]" class="MPv1-docType" id="MPv1-docType-juridica" title="<?php echo $form_labels['form']['docNumber']; ?>" value="CNPJ"> Pessoa Jurídica
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-col-6" id="box-firstname">
-                  <label for="firstname" class="require title-name"><?php echo $form_labels['form']['name']; ?></label>
-                  <label for="firstname" class="require title-razao-social"><?php echo $form_labels['form']['nameRazaoSocial']; ?></label>
-                  <input type="text" name="payment[<?php echo $_code; ?>][firstname]" id="MPv1-firstname" class="form-control-mine required-entry-firstname" title="<?php echo $form_labels['form']['name']; ?>">
+          <?php if(count($optionsTicket) > 0): ?>
+           
+            <?php if(strtoupper($country) == "MLB"): ?>
+              <div id="form-ticket">
+                <div class="form-row">
+                  <div class="form-col-6">
+                    <input type="radio" name="payment[<?php echo $_code; ?>][doc-type]" class="MPv1-docType" id="MPv1-docType-fisica" title="<?php echo $form_labels['form']['docNumber']; ?>" checked="checked" value="CPF"> Pessoa Física
+                  </div>
+                  <div class="form-col-6">
+                    <input type="radio" name="payment[<?php echo $_code; ?>][doc-type]" class="MPv1-docType" id="MPv1-docType-juridica" title="<?php echo $form_labels['form']['docNumber']; ?>" value="CNPJ"> Pessoa Jurídica
+                  </div>
                 </div>
 
-                <div class="form-col-6" id="box-lastname">
-                  <label  for="lastname" class="require"><?php echo $form_labels['form']['surname']; ?></label>
-                  <input type="text" name="payment[<?php echo $_code; ?>][lastname]" id="MPv1-lastname" class="form-control-mine required-entry-lastname" title="<?php echo $form_labels['form']['surname']; ?>">
-                </div>
-              </div>
+                <div class="form-row">
+                  <div class="form-col-6" id="box-firstname">
+                    <label for="firstname" class="require title-name"><?php echo $form_labels['form']['name']; ?></label>
+                    <label for="firstname" class="require title-razao-social"><?php echo $form_labels['form']['nameRazaoSocial']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][firstname]" id="MPv1-firstname" class="form-control-mine required-entry-firstname" title="<?php echo $form_labels['form']['name']; ?>">
+                  </div>
 
-              <div class="form-row">
-                <div class="form-col-12" id="box-docnumber">
-                  <label for="docNumber" class="require title-cpf"><?php echo $form_labels['form']['docNumber']; ?></label>
-                  <label for="docNumber" class="require title-cnpj"><?php echo $form_labels['form']['docNumberCNPJ']; ?></label>
-                  <input type="text" name="payment[<?php echo $_code; ?>][doc-number]" class="form-control-mine required-entry-doc-number" maxlength="14" id="MPv1-docNumber" onblur='clearTimeout()' title="<?php echo $form_labels['form']['docNumber']; ?>">
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-col-8">
-                  <label for="address" class="require"><?php echo $form_labels['form']['address']; ?></label>
-                  <input type="text" name="payment[<?php echo $_code; ?>][address]" id="MPv1-address" class="form-control-mine required-entry-address" title="<?php echo $form_labels['form']['address']; ?>">
-                </div>
-                <div class="form-col-4">
-                  <label for="number" class="require"><?php echo $form_labels['form']['number']; ?></label>
-                  <input type="text" name="payment[<?php echo $_code; ?>][address-number]" id="MPv1-number" onkeypress="return event.charCode >= 48 && event.charCode <= 57"  class="form-control-mine required-entry-address-number" title="<?php echo $form_labels['form']['number']; ?>">
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-col-6">
-                  <label for="city" class="require"><?php echo $form_labels['form']['city']; ?></label>
-                  <input type="text" name="payment[<?php echo $_code; ?>][address-city]" id="MPv1-city" class="form-control-mine required-entry-address-city" title="<?php echo $form_labels['form']['city']; ?>">
+                  <div class="form-col-6" id="box-lastname">
+                    <label  for="lastname" class="require"><?php echo $form_labels['form']['surname']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][lastname]" id="MPv1-lastname" class="form-control-mine required-entry-lastname" title="<?php echo $form_labels['form']['surname']; ?>">
+                  </div>
                 </div>
 
-                <div class="form-col-6">
-                  <label for="state" class="require"><?php echo $form_labels['form']['state']; ?></label>
-                  <select name="payment[<?php echo $_code; ?>][address-state]" id="MPv1-state" class="form-control-mine required-entry-address-state" title="<?php echo $form_labels['form']['state']; ?>">
-                    <option value=""><?php echo $form_labels['form']['select']; ?> ...</option>
-                    <option value="AC">Acre</option>
-                    <option value="AL">Alagoas</option>
-                    <option value="AP">Amapá</option>
-                    <option value="AM">Amazonas</option>
-                    <option value="BA">Bahia</option>
-                    <option value="CE">Ceará</option>
-                    <option value="DF">Distrito Federal</option>
-                    <option value="ES">Espírito Santo</option>
-                    <option value="GO">Goiás</option>
-                    <option value="MA">Maranhão</option>
-                    <option value="MT">Mato Grosso</option>
-                    <option value="MS">Mato Grosso do Sul</option>
-                    <option value="MG">Minas Gerais</option>
-                    <option value="PA">Pará</option>
-                    <option value="PB">Paraíba</option>
-                    <option value="PR">Paraná</option>
-                    <option value="PE">Pernambuco</option>
-                    <option value="PI">Piauí</option>
-                    <option value="RJ">Rio de Janeiro</option>
-                    <option value="RN">Rio Grande do Norte</option>
-                    <option value="RS">Rio Grande do Sul</option>
-                    <option value="RO">Rondônia</option>
-                    <option value="RA">Roraima</option>
-                    <option value="SC">Santa Catarina</option>
-                    <option value="SP">São Paulo</option>
-                    <option value="SE">Sergipe</option>
-                    <option value="TO">Tocantins</option>
-                  </select>
+                <div class="form-row">
+                  <div class="form-col-12" id="box-docnumber">
+                    <label for="docNumber" class="require title-cpf"><?php echo $form_labels['form']['docNumber']; ?></label>
+                    <label for="docNumber" class="require title-cnpj"><?php echo $form_labels['form']['docNumberCNPJ']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][doc-number]" class="form-control-mine required-entry-doc-number" maxlength="14" id="MPv1-docNumber" onblur='clearTimeout()' title="<?php echo $form_labels['form']['docNumber']; ?>">
+                  </div>
                 </div>
-              </div>
 
-              <div class="form-row">
-                <div class="form-col-12">
-                  <label for="zipcode" class="require"><?php echo $form_labels['form']['zipcode']; ?></label title="<?php echo $form_labels['form']['zipcode']; ?>">
-                    <input type="text" name="payment[<?php echo $_code; ?>][address-zipcode]" id="MPv1-zipcode" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control-mine required-entry-address-zipcode" title="<?php echo $form_labels['form']['zipcode']; ?>">
+                <div class="form-row">
+                  <div class="form-col-8">
+                    <label for="address" class="require"><?php echo $form_labels['form']['address']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][address]" id="MPv1-address" class="form-control-mine required-entry-address" title="<?php echo $form_labels['form']['address']; ?>">
+                  </div>
+                  <div class="form-col-4">
+                    <label for="number" class="require"><?php echo $form_labels['form']['number']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][address-number]" id="MPv1-number" onkeypress="return event.charCode >= 48 && event.charCode <= 57"  class="form-control-mine required-entry-address-number" title="<?php echo $form_labels['form']['number']; ?>">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-col-6">
+                    <label for="city" class="require"><?php echo $form_labels['form']['city']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][address-city]" id="MPv1-city" class="form-control-mine required-entry-address-city" title="<?php echo $form_labels['form']['city']; ?>">
+                  </div>
+
+                  <div class="form-col-6">
+                    <label for="state" class="require"><?php echo $form_labels['form']['state']; ?></label>
+                    <select name="payment[<?php echo $_code; ?>][address-state]" id="MPv1-state" class="form-control-mine required-entry-address-state" title="<?php echo $form_labels['form']['state']; ?>">
+                      <option value=""><?php echo $form_labels['form']['select']; ?> ...</option>
+                      <option value="AC">Acre</option>
+                      <option value="AL">Alagoas</option>
+                      <option value="AP">Amapá</option>
+                      <option value="AM">Amazonas</option>
+                      <option value="BA">Bahia</option>
+                      <option value="CE">Ceará</option>
+                      <option value="DF">Distrito Federal</option>
+                      <option value="ES">Espírito Santo</option>
+                      <option value="GO">Goiás</option>
+                      <option value="MA">Maranhão</option>
+                      <option value="MT">Mato Grosso</option>
+                      <option value="MS">Mato Grosso do Sul</option>
+                      <option value="MG">Minas Gerais</option>
+                      <option value="PA">Pará</option>
+                      <option value="PB">Paraíba</option>
+                      <option value="PR">Paraná</option>
+                      <option value="PE">Pernambuco</option>
+                      <option value="PI">Piauí</option>
+                      <option value="RJ">Rio de Janeiro</option>
+                      <option value="RN">Rio Grande do Norte</option>
+                      <option value="RS">Rio Grande do Sul</option>
+                      <option value="RO">Rondônia</option>
+                      <option value="RA">Roraima</option>
+                      <option value="SC">Santa Catarina</option>
+                      <option value="SP">São Paulo</option>
+                      <option value="SE">Sergipe</option>
+                      <option value="TO">Tocantins</option>
+                    </select>
                   </div>
                 </div>
 
                 <div class="form-row">
                   <div class="form-col-12">
-                    <span class="mensagem-febraban"><em>* </em><?php echo $form_labels['form']['febraban_rules']; ?></span>
+                    <label for="zipcode" class="require"><?php echo $form_labels['form']['zipcode']; ?></label title="<?php echo $form_labels['form']['zipcode']; ?>">
+                      <input type="text" name="payment[<?php echo $_code; ?>][address-zipcode]" id="MPv1-zipcode" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control-mine required-entry-address-zipcode" title="<?php echo $form_labels['form']['zipcode']; ?>">
+                    </div>
                   </div>
+
+                  <div class="form-row">
+                    <div class="form-col-12">
+                      <span class="mensagem-febraban"><em>* </em><?php echo $form_labels['form']['febraban_rules']; ?></span>
+                    </div>
+                  </div>
+
                 </div>
 
-              </div>
+                <script>
 
-              <script>
+                if (typeof Validation != 'undefined'){
+                  Validation.add('required-entry-firstname', "<?php echo $form_labels['error']['FEB001']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
 
-              if (typeof Validation != 'undefined'){
-                Validation.add('required-entry-firstname', "<?php echo $form_labels['error']['FEB001']; ?>", function(v) {
-                  return !Validation.get('IsEmpty').test(v);
-                });
+                  Validation.add('required-entry-lastname', "<?php echo $form_labels['error']['FEB002']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
 
-                Validation.add('required-entry-lastname', "<?php echo $form_labels['error']['FEB002']; ?>", function(v) {
-                  return !Validation.get('IsEmpty').test(v);
-                });
+                  Validation.add('required-entry-doc-number', "<?php echo $form_labels['error']['FEB003']; ?>", function(v) {
+                    if(document.querySelector(MPv1Ticket.selectors.radioTypeFisica).checked){
+                      return MPv1Ticket.validaCPF(v);
+                    }else{
+                      return MPv1Ticket.validaCNPJ(v);
+                    }
+                  });
 
-                Validation.add('required-entry-doc-number', "<?php echo $form_labels['error']['FEB003']; ?>", function(v) {
-                  if(document.querySelector(MPv1Ticket.selectors.radioTypeFisica).checked){
-                    return MPv1Ticket.validaCPF(v);
-                  }else{
-                    return MPv1Ticket.validaCNPJ(v);
-                  }
-                });
+                  Validation.add('required-entry-address', "<?php echo $form_labels['error']['FEB004']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
 
-                Validation.add('required-entry-address', "<?php echo $form_labels['error']['FEB004']; ?>", function(v) {
-                  return !Validation.get('IsEmpty').test(v);
-                });
+                  Validation.add('required-entry-address-number', "<?php echo $form_labels['error']['FEB005']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
 
-                Validation.add('required-entry-address-number', "<?php echo $form_labels['error']['FEB005']; ?>", function(v) {
-                  return !Validation.get('IsEmpty').test(v);
-                });
+                  Validation.add('required-entry-address-city', "<?php echo $form_labels['error']['FEB006']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
 
-                Validation.add('required-entry-address-city', "<?php echo $form_labels['error']['FEB006']; ?>", function(v) {
-                  return !Validation.get('IsEmpty').test(v);
-                });
+                  Validation.add('required-entry-address-state', "<?php echo $form_labels['error']['FEB007']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
 
-                Validation.add('required-entry-address-state', "<?php echo $form_labels['error']['FEB007']; ?>", function(v) {
-                  return !Validation.get('IsEmpty').test(v);
-                });
+                  Validation.add('required-entry-address-zipcode', "<?php echo $form_labels['error']['FEB008']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
+                }
 
-                Validation.add('required-entry-address-zipcode', "<?php echo $form_labels['error']['FEB008']; ?>", function(v) {
-                  return !Validation.get('IsEmpty').test(v);
-                });
-              }
+                // Force the updating of values, when updating the html via ajax the value stays the same the first time set.
+                document.querySelector("#form-ticket #MPv1-firstname").value = "<?php echo $customer['firstname']?>";
+                document.querySelector("#form-ticket #MPv1-lastname").value = "<?php echo $customer['lastname']; ?>";
+                document.querySelector("#form-ticket #MPv1-docNumber").value = "<?php echo $customer['docnumber']; ?>";
+                document.querySelector("#form-ticket #MPv1-address").value = "<?php echo preg_replace('/\s+/', ' ', $customer['address']); ?>";
+                document.querySelector("#form-ticket #MPv1-number").value = "<?php echo preg_replace('/\s+/', ' ', $customer['addressnumber']); ?>";
+                document.querySelector("#form-ticket #MPv1-city").value = "<?php echo $customer['city']; ?>";
+                document.querySelector("#form-ticket #MPv1-zipcode").value = "<?php echo $customer['zipcode']; ?>";
 
-              // Force the updating of values, when updating the html via ajax the value stays the same the first time set.
-              document.querySelector("#form-ticket #MPv1-firstname").value = "<?php echo $customer['firstname']?>";
-              document.querySelector("#form-ticket #MPv1-lastname").value = "<?php echo $customer['lastname']; ?>";
-              document.querySelector("#form-ticket #MPv1-docNumber").value = "<?php echo $customer['docnumber']; ?>";
-              document.querySelector("#form-ticket #MPv1-address").value = "<?php echo preg_replace('/\s+/', ' ', $customer['address']); ?>";
-              document.querySelector("#form-ticket #MPv1-number").value = "<?php echo preg_replace('/\s+/', ' ', $customer['addressnumber']); ?>";
-              document.querySelector("#form-ticket #MPv1-city").value = "<?php echo $customer['city']; ?>";
-              document.querySelector("#form-ticket #MPv1-zipcode").value = "<?php echo $customer['zipcode']; ?>";
-
-              if(<?php echo $use_state; ?> === true){
-                document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $customer['state_code']; ?>";
-              }
-              </script>
+                if(<?php echo $use_state; ?> === true){
+                  document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $customer['state_code']; ?>";
+                }
+                </script>
+               <?php endif; ?>
           
-            <?php else: ?>
+           <?php else: ?>
 
               <?php echo $this->__("There are no payment methods available, please contact the store to see what is happening."); ?>
 
-            <?php endif; ?>
+           <?php endif; ?>
 
             <div class="mp-box-inputs mp-col-100" id="mercadopago-utilities">
               <input type="hidden" id="site_id" value="<?php echo strtoupper($country); ?>" name="payment[<?php echo $_code; ?>][site_id]"/>

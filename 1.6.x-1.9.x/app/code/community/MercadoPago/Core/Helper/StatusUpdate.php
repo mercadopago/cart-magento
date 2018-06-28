@@ -433,7 +433,7 @@ class MercadoPago_Core_Helper_StatusUpdate
           }
         }
 
-        isset($payment['payer']) && isset($payment['payer']['identification']) && isset($payment['payer']['identification']['number']){      
+        if(isset($payment['payer']) && isset($payment['payer']['identification']) && isset($payment['payer']['identification']['number'])){      
           if (isset($data['payer_identification_number']))  {
               $data['payer_identification_number'] .= " | " . $payment['payer']['identification']['number'];
           } else {

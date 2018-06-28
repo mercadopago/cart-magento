@@ -48,7 +48,7 @@ class MercadoPago_Core_Model_Source_PaymentMethodsTicket
         $response = $response['response'];
 
         foreach ($response as $m) {
-            if ($m['payment_type_id'] == 'ticket') {
+            if ($m['payment_type_id'] == 'ticket' || $m['payment_type_id'] == 'atm') {
                 $methods[] = array(
                     'value' => $m['id'],
                     'label' => $helper->__($m['name'])

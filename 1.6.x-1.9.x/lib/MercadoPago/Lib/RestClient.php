@@ -8,6 +8,11 @@ $GLOBALS["LIB_LOCATION"] = dirname(__FILE__);
 class MercadoPago_Lib_RestClient {
 
     const API_BASE_URL = "https://api.mercadopago.com";
+  
+    /**
+     *Product Id, identifier used to designate the product, device and version
+     */
+    const PRODUCT_ID = "BC32C7VTRPP001U8NHNG";
 
     private static function get_connect($uri, $method, $content_type, $extra_params = array()) {
         if (!extension_loaded ("curl")) {
@@ -22,6 +27,12 @@ class MercadoPago_Lib_RestClient {
         curl_setopt($connect, CURLOPT_CAINFO, $GLOBALS["LIB_LOCATION"] . "/cacert.pem");
 
         $header_opt = array("Accept: application/json", "Content-Type: " . $content_type);
+      
+        //set x_product_id
+        if($method == 'POST'){
+          $header_opt[] = "x-product-id: " . self::PRODUCT_ID;
+        }      
+      
         if (count($extra_params) > 0) {
             $header_opt = array_merge($header_opt, $extra_params);
         }

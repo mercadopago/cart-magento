@@ -79,6 +79,7 @@ class MercadoPago_MercadoEnvios_Model_Shipping_Carrier_MercadoEnvios
                 return null;
             }
             $postcode = $shippingAddress->getPostcode();
+            $postcode = str_replace("-","",$postcode);
 
             try {
                 $helperMe = Mage::helper('mercadopago_mercadoenvios');

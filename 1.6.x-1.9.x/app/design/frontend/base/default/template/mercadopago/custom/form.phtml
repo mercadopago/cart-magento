@@ -338,19 +338,7 @@ if (typeof sendAnalyticsData === 'function') {
         document.querySelector(MPv1.selectors.amount).value = response.amount;
       }
     });
- 
-      
-    // NEED REFACTOR
-    Validation.add("mercadopago-installments", ' ', function (v, element) {
-      if(!MPv1.validateInputsCreateToken()){
-        return false;
-      }
-      var token = document.querySelector(MPv1.selectors.token);
-      if(token.value == ""){
-        return false;
-      }
-      return true;
-    });
+
       
     /***************************************
     *

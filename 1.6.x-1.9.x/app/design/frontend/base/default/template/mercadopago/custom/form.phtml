@@ -338,7 +338,8 @@ if (typeof sendAnalyticsData === 'function') {
         document.querySelector(MPv1.selectors.amount).value = response.amount;
       }
     });
-
+ 
+      
     // NEED REFACTOR
     Validation.add("mercadopago-installments", ' ', function (v, element) {
       if(!MPv1.validateInputsCreateToken()){
@@ -350,6 +351,61 @@ if (typeof sendAnalyticsData === 'function') {
       }
       return true;
     });
+      
+    /***************************************
+    *
+    *
+    * For OSC
+    *
+    */
+          
+    //force update amount in form
+    document.querySelector(MPv1.selectors.amount).value = '<?php echo $grant_total; ?>';
+
+    //check exist value card in input
+    var cc = document.querySelector(MPv1.selectors.cardNumber);
+    if(cc.value != ""){
+      //force guessingPaymentMethod
+      MPv1.guessingPaymentMethod({type: 'keyup'});
+    }
+
+    if(typeof OnestepcheckoutForm === 'function'){
+      OnestepcheckoutForm.prototype.placeOrder = function() {
+        var token = document.querySelector(MPv1.selectors.token);
+
+        if(token.value == "" && document.querySelector('input[name="payment[method]"]:checked').value == 'mercadopago_custom'){
+          MPv1.hideErrors();
+          document.querySelector(MPv1.selectors.box_loading).style.background = "url("+MPv1.paths.loading+") 0 50% no-repeat #fff";
+          var $form = MPv1.getForm();
+          Mercadopago.createToken($form, MPv1.sdkResponseHandlerCustom);
+          return false;
+        }
+
+        if (this.validate()) {
+          this.showOverlay();
+          this.showPleaseWaitNotice();
+          this.disablePlaceOrderButton();
+          new Ajax.Request(this.placeOrderUrl,{
+            method: 'post',
+            parameters: Form.serialize(this.form.form, true),
+            onComplete: this.onComplete.bindAsEventListener(this)
+          })
+        }
+      }
+      MPv1.sdkResponseHandlerCustom = function (status, response) {
+        var $form = MPv1.getForm();
+        document.querySelector(MPv1.selectors.box_loading).style.background = "";
+        if (status != 200 && status != 201) {
+          MPv1.showErrors(response);
+        } else {
+          var token = document.querySelector(MPv1.selectors.token);
+          token.value = response.id;
+          //get button OSC BRASIL
+          var btnPlaceOrder = document.querySelector("#onestepcheckout-place-order-button")
+          btnPlaceOrder.click();
+        }
+      }
+    }
 
     </script>
 

@@ -42,63 +42,6 @@ class MercadoPago_Core_Model_Custom_Payment
             Mage::throwException(Mage::helper('mercadopago')->__('Verify the form data or wait until the validation of the payment data'));
         }
 
-        // $useTwoCards = $this->getInfoInstance()->getAdditionalInformation('is_second_card_used');
-        //
-        // if ($useTwoCards === "true") {
-        //     $usingSecondCardInfo['first_card']['amount'] = $this->getInfoInstance()->getAdditionalInformation('first_card_amount');
-        //     $usingSecondCardInfo['first_card']['installments'] = $this->getInfoInstance()->getAdditionalInformation('installments');
-        //     $usingSecondCardInfo['first_card']['payment_method_id'] = $this->getInfoInstance()->getAdditionalInformation('payment_method');
-        //     $usingSecondCardInfo['first_card']['token'] = $this->getInfoInstance()->getAdditionalInformation('token');
-        //
-        //     $usingSecondCardInfo['second_card']['amount'] = $this->getInfoInstance()->getAdditionalInformation('second_card_amount');
-        //     $usingSecondCardInfo['second_card']['installments'] = $this->getInfoInstance()->getAdditionalInformation('second_card_installments');
-        //     $usingSecondCardInfo['second_card']['payment_method_id'] = $this->getInfoInstance()->getAdditionalInformation('second_card_payment_method_id');
-        //     $usingSecondCardInfo['second_card']['token'] = $this->getInfoInstance()->getAdditionalInformation('second_card_token');
-        //
-        //     $responseFirstCard = $this->preparePostPayment($usingSecondCardInfo['first_card']);
-        //     if (isset($responseFirstCard) && ($responseFirstCard['response']['status'] == 'approved') ) {
-        //         $paymentFirstCard = $responseFirstCard['response'];
-        //         $responseSecondCard = $this->preparePostPayment($usingSecondCardInfo['second_card']);
-        //
-        //         if (isset($responseSecondCard) && ($responseSecondCard['response']['status'] == 'approved') ) {
-        //             $paymentSecondCard = $responseSecondCard['response'];
-        //             $this->getInfoInstance()->setAdditionalInformation('status', $paymentFirstCard['status'] . ' | ' . $paymentSecondCard['status']);
-        //             $this->getInfoInstance()->setAdditionalInformation('payment_id_detail', $paymentFirstCard['id']  . ' | ' . $paymentSecondCard['id']);
-        //             $this->getInfoInstance()->setAdditionalInformation('status_detail', $paymentFirstCard['status_detail'] . ' | ' . $paymentSecondCard['status_detail']);
-        //             $this->getInfoInstance()->setAdditionalInformation('installments', $paymentFirstCard['installments'] . ' | ' . $paymentSecondCard['installments']);
-        //             $this->getInfoInstance()->setAdditionalInformation('payment_method', $paymentFirstCard['payment_method_id'] . ' | ' . $paymentSecondCard['payment_method_id']);
-        //             $this->getInfoInstance()->setAdditionalInformation('first_payment_id', $paymentFirstCard['id']);
-        //             $this->getInfoInstance()->setAdditionalInformation('first_payment_status', $paymentFirstCard['status']);
-        //             $this->getInfoInstance()->setAdditionalInformation('first_payment_status_detail', $paymentFirstCard['status_detail']);
-        //             $this->getInfoInstance()->setAdditionalInformation('second_payment_id', $paymentSecondCard['id']);
-        //             $this->getInfoInstance()->setAdditionalInformation('second_payment_status', $paymentSecondCard['status']);
-        //             $this->getInfoInstance()->setAdditionalInformation('second_payment_status_detail', $paymentSecondCard['status_detail']);
-        //             $this->getInfoInstance()->setAdditionalInformation('total_paid_amount', $paymentFirstCard['transaction_details']['total_paid_amount'] . '|' . $paymentSecondCard['transaction_details']['total_paid_amount']);
-        //             $this->getInfoInstance()->setAdditionalInformation('transaction_amount', $paymentFirstCard['transaction_amount'] . '|' . $paymentSecondCard['transaction_amount']);
-        //             $this->getInfoInstance()->setAdditionalInformation('payer_identification_type', $paymentFirstCard['payer']['identification']['type']. '|' . $paymentSecondCard['payer']['identification']['type']);
-        //             $this->getInfoInstance()->setAdditionalInformation('payer_identification_number', $paymentFirstCard['payer']['identification']['number'] . '|' . $paymentSecondCard['payer']['identification']['number']);
-        //
-        //             $stateObject->setState(Mage::helper('mercadopago/statusUpdate')->_getAssignedState('pending_payment'));
-        //             $stateObject->setStatus('pending_payment');
-        //             $stateObject->setIsNotified(false);
-        //             $this->saveOrder();
-        //             return true;
-        //         } else {
-        //             //second card payment failed, refund for first card
-        //             $accessToken = Mage::getStoreConfig(self::XML_PATH_ACCESS_TOKEN);
-        //             $mp = Mage::helper('mercadopago')->getApiInstance($accessToken);
-        //             $id = $paymentFirstCard['id'];
-        //             $refundResponse = $mp->post("/v1/payments/$id/refunds?access_token=$accessToken");
-        //             Mage::helper('mercadopago')->log("info form", self::LOG_FILE, $refundResponse);
-        //             return false;
-        //         }
-        //     } else {
-        //         return false;
-        //     }
-        //
-        //
-        // } else {
-
         $response = $this->preparePostPayment();
 
         if ($response) {
@@ -162,12 +105,6 @@ class MercadoPago_Core_Model_Custom_Payment
         $info_form = $info_form['mercadopago_custom'];
         if (isset($info_form['CustomerAndCard']) && $info_form['CustomerAndCard'] == 1) {
             $info_form = $this->cleanFieldsOcp($info_form);
-        }
-
-        if (empty($info_form['token'])) {
-            $exception = new MercadoPago_Core_Model_Api_V1_Exception();
-            $exception->setMessage($exception->getUserMessage());
-            throw $exception;
         }
 
         //Added to force value as there are cases coming -1

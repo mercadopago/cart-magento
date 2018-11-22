@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <MercadoPago_Core>
+            <active>true</active>
+            <codePool>community</codePool>
+        </MercadoPago_Core>
+    </modules>
+</config>

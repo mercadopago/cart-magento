@@ -1,0 +1,45 @@
+<?php
+    $order = $this->getOrder();
+    $total = $this->getTotal();
+    $payment = $this->getPayment();
+
+    $link_to_order = $this->__('Your order %s has been successfully generated.', '<a href="'. Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "sales/order/view/order_id/" . $this->getEntityId() . '">' . $order->getIncrementId() .'</a>');
+
+    $payment_method = $this->getPaymentMethod();
+    $info_payment = $this->getInfoPayment();
+
+    $activation_uri = $payment->getAdditionalInformation('activation_uri');
+?>
+
+<div id="box-mercadopago">
+
+    <?php if($payment_method == 'mercadopago_customticket'): ?>
+        <h2 class="mercadopago-title"><?php echo $this->__('Thank you for your purchase!'); ?></h2>
+
+        <p>
+            <?php echo $link_to_order; ?>
+        </p>
+
+        <p>
+            <?php echo $this->__('Generate the ticket and pay it wherever you want.'); ?>
+        </p>
+        <p>
+            <?php echo $this->__('Will be approved within 2 business days.'); ?>
+        </p>
+        <a href="<?php echo urldecode($this->htmlEscape($activation_uri)); ?>" target="_blank" id="btn-boleto-mercadopago">
+            <?php echo $this->__('Generate Ticket'); ?>
+        </a>
+
+    <?php endif; ?>
+
+</div>
+
+<div id="logo-mercadopago">
+    <img src="https://secure.mlstatic.com/components/resources/mp/desktop/css/assets/desktop-logo-mercadopago.png" />
+</div>
+
+<div class="buttons-set">
+    <div class="button-success">
+        <button type="button" class="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue Shopping')) ?>" onclick="window.location='<?php echo $this->getUrl() ?>'"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+    </div>
+</div>

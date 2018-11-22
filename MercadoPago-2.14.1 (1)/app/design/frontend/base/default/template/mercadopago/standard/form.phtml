@@ -1,0 +1,20 @@
+<?php $_code = $this->getMethodCode(); ?>
+
+<script type="text/javascript">
+    if (typeof sendAnalyticsData === 'function') {
+        sendAnalyticsData("<?php echo $_code ?>");
+    }
+</script>
+<fieldset class="conteiner-form-list">
+    <!--<link rel="stylesheet" href="<?php echo $this->getSkinUrl('mercadopago/css/style.css'); ?>" /> -->
+    
+    <?php $_code = $this->getMethodCode(); ?>
+    <?php $_country = $this->getMethodCountry(); ?>
+
+    <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
+        <p class="communication"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
+    <?php endif; ?>    <?php if($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+        <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>"  class="banner_checkout_mp"/>
+    <?php endif;?>
+
+</fieldset>

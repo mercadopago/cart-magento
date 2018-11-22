@@ -1,0 +1,347 @@
+<?php
+$country = Mage::getStoreConfig('payment/mercadopago/country');
+$coupon_mercadopago = Mage::getStoreConfig('payment/mercadopago_customticket/coupon_mercadopago') == 1 ? 'true' : 'false';
+$_code = $this->getMethodCode();
+$grant_total = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
+$base_url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true);
+$route = $this->getRequest()->getRequestedRouteName();
+
+//get customer session
+$customer_session = Mage::getSingleton('customer/session')->getCustomer();
+$payer_email = $customer_session->getEmail();
+
+$use_state = Mage::getStoreConfig('payment/mercadopago_customticket/auto_state') == 1 ? 'true' : 'false';
+
+$form_labels = array(
+  "form" => array(
+    "coupon_empty" => $this->__("Please, inform your coupon code"),
+    'apply' => $this->__("Apply"),
+    'remove' => $this->__("Remove"),
+    'label_other_bank' => $this->__("Other Bank"),
+    'label_choose' => $this->__("Choose"),
+    'discount_info1' => $this->__("You will save"),
+    'discount_info2' => $this->__("with discount from"),
+    'discount_info3' => $this->__("Total of your purchase:"),
+    'discount_info4' => $this->__("Total of your purchase with discount:"),
+    'discount_info5' => $this->__("*Uppon payment approval"),
+    'discount_info6' => $this->__("Terms and Conditions of Use"),
+    'coupon_of_discounts' => $this->__("Discount Coupon"),
+
+    "febraban_rules" => $this->__('Information requested in accordance with the rules of Circular No. 3.461/09, 3.598/12 and 3.656/13 of the Banco Central do Brasil.'),
+    "select" =>  $this->__('Select'),
+    "name" => $this->__('Name'),
+    "surname" =>  $this->__('Surname'),
+    "docType" =>  $this->__('Document Type'),
+    "docNumber" =>  $this->__('Document Number'),
+    "address" =>  $this->__('Address'),
+    "number" =>  $this->__('Number'),
+    "city" =>  $this->__('City'),
+    "state" =>  $this->__('State'),
+    "zipcode" =>  $this->__('Zipcode'),
+
+    "nameRazaoSocial" => "Razão Social",
+    "docNumberCNPJ" => "CNPJ"
+  ),
+  "error" => array(
+    //febraban
+    "FEB001" => $this->__('Name required'),
+    "FEB002" => $this->__('Surname required'),
+    "FEB003" => $this->__('Document Number required'),
+    "FEB004" => $this->__('Address required'),
+    "FEB005" => $this->__('Number Address required'),
+    "FEB006" => $this->__('City required'),
+    "FEB007" => $this->__('State required'),
+    "FEB008" => $this->__('Zipcode required')
+  ),
+  "coupon_error" => array(
+    "EMPTY" => $this->__("Please, inform your coupon code")
+    )
+  );
+
+  if(strtoupper($country) == "MLB"){
+    $customer = $this->getCustomerInformation();
+  }
+  ?>
+  <script type="text/javascript">
+  if (typeof sendAnalyticsData === 'function') {
+    sendAnalyticsData("<?php echo $_code ?>");
+  }
+  </script>
+
+  <div id="mercadopago-ticket-form-general">
+    <div id="mercadopago_checkout_custom_ticket">
+      <ul class="form-list form-mercadopago" id="payment_form_<?php echo $_code ?>" style="display:none;">
+        <li class="mercadopago-ticket-options">
+
+
+          <div id="mercadopago-form-coupon-ticket">
+            <div class="form-row">
+              <div class="form-col-8">
+                <label><?php echo $form_labels['form']['coupon_of_discounts']; ?> </label>
+                <input type="text" id="couponCodeTicket" name="payment[<?php echo $_code; ?>][coupon_code]" autocomplete="off" maxlength="24" />
+              </div>
+
+              <div class="form-col-4">
+                <input type="button" class="button" id="applyCouponTicket" value="<?php echo $form_labels['form']['apply']; ?>">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col-12">
+                <span class="mp-discount" id="mpCouponApplyedTicket" ></span>
+                <span class="mp-error" id="mpCouponErrorTicket" ></span>
+              </div>
+            </div>
+          </div>
+
+          <?php $optionsTicket = $this->getTicketsOptions(); ?>
+          <?php if (count($optionsTicket) == 1): ?>
+            <input type="hidden" name="payment[<?php echo $_code; ?>][payment_method_ticket]" type="text" value="<?php echo $optionsTicket[0]['id']; ?>" id="payment_method_ticket"/>
+          <?php else: ?>
+            <ul>
+              <?php foreach ($optionsTicket as $ticket): ?>
+                <li class="mercadopago-ticket-option">
+                  <input type="radio" name="payment[<?php echo $_code; ?>][payment_method_ticket]" class="optionsTicketMp validate-one-required-by-name" value="<?php echo $ticket['id']; ?>">
+                  <label class="mercadopago-ticket-label">
+                    <img src="<?php echo $ticket['secure_thumbnail']; ?>" alt="<?php echo $ticket['name']; ?>">
+                    (<?php echo $ticket['name']; ?>)
+                    <!--<span class="mercadopago-ticket-label-img"><img src="--><?php //echo $ticket['secure_thumbnail']; ?><!--" alt="--><?php //echo $ticket['name']; ?><!--"> </span>-->
+                    <!--<span class="mercadopago-ticket-label-description">(--><?php //echo $ticket['name']; ?><!--)</span>-->
+                  </label>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          <?php endif; ?>
+
+          <?php if(count($optionsTicket) > 0): ?>
+           
+            <?php if(strtoupper($country) == "MLB"): ?>
+              <div id="form-ticket">
+                <div class="form-row">
+                  <div class="form-col-6">
+                    <input type="radio" name="payment[<?php echo $_code; ?>][doc-type]" class="MPv1-docType" id="MPv1-docType-fisica" title="<?php echo $form_labels['form']['docNumber']; ?>" checked="checked" value="CPF"> Pessoa Física
+                  </div>
+                  <div class="form-col-6">
+                    <input type="radio" name="payment[<?php echo $_code; ?>][doc-type]" class="MPv1-docType" id="MPv1-docType-juridica" title="<?php echo $form_labels['form']['docNumber']; ?>" value="CNPJ"> Pessoa Jurídica
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-col-6" id="box-firstname">
+                    <label for="firstname" class="require title-name"><?php echo $form_labels['form']['name']; ?></label>
+                    <label for="firstname" class="require title-razao-social"><?php echo $form_labels['form']['nameRazaoSocial']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][firstname]" id="MPv1-firstname" class="form-control-mine required-entry-firstname" title="<?php echo $form_labels['form']['name']; ?>">
+                  </div>
+
+                  <div class="form-col-6" id="box-lastname">
+                    <label  for="lastname" class="require"><?php echo $form_labels['form']['surname']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][lastname]" id="MPv1-lastname" class="form-control-mine required-entry-lastname" title="<?php echo $form_labels['form']['surname']; ?>">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-col-12" id="box-docnumber">
+                    <label for="docNumber" class="require title-cpf"><?php echo $form_labels['form']['docNumber']; ?></label>
+                    <label for="docNumber" class="require title-cnpj"><?php echo $form_labels['form']['docNumberCNPJ']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][doc-number]" class="form-control-mine required-entry-doc-number" maxlength="14" id="MPv1-docNumber" onblur='clearTimeout()' title="<?php echo $form_labels['form']['docNumber']; ?>">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-col-8">
+                    <label for="address" class="require"><?php echo $form_labels['form']['address']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][address]" id="MPv1-address" class="form-control-mine required-entry-address" title="<?php echo $form_labels['form']['address']; ?>">
+                  </div>
+                  <div class="form-col-4">
+                    <label for="number" class="require"><?php echo $form_labels['form']['number']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][address-number]" id="MPv1-number" onkeypress="return event.charCode >= 48 && event.charCode <= 57"  class="form-control-mine required-entry-address-number" title="<?php echo $form_labels['form']['number']; ?>">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-col-6">
+                    <label for="city" class="require"><?php echo $form_labels['form']['city']; ?></label>
+                    <input type="text" name="payment[<?php echo $_code; ?>][address-city]" id="MPv1-city" class="form-control-mine required-entry-address-city" title="<?php echo $form_labels['form']['city']; ?>">
+                  </div>
+
+                  <div class="form-col-6">
+                    <label for="state" class="require"><?php echo $form_labels['form']['state']; ?></label>
+                    <select name="payment[<?php echo $_code; ?>][address-state]" id="MPv1-state" class="form-control-mine required-entry-address-state" title="<?php echo $form_labels['form']['state']; ?>">
+                      <option value=""><?php echo $form_labels['form']['select']; ?> ...</option>
+                      <option value="AC">Acre</option>
+                      <option value="AL">Alagoas</option>
+                      <option value="AP">Amapá</option>
+                      <option value="AM">Amazonas</option>
+                      <option value="BA">Bahia</option>
+                      <option value="CE">Ceará</option>
+                      <option value="DF">Distrito Federal</option>
+                      <option value="ES">Espírito Santo</option>
+                      <option value="GO">Goiás</option>
+                      <option value="MA">Maranhão</option>
+                      <option value="MT">Mato Grosso</option>
+                      <option value="MS">Mato Grosso do Sul</option>
+                      <option value="MG">Minas Gerais</option>
+                      <option value="PA">Pará</option>
+                      <option value="PB">Paraíba</option>
+                      <option value="PR">Paraná</option>
+                      <option value="PE">Pernambuco</option>
+                      <option value="PI">Piauí</option>
+                      <option value="RJ">Rio de Janeiro</option>
+                      <option value="RN">Rio Grande do Norte</option>
+                      <option value="RS">Rio Grande do Sul</option>
+                      <option value="RO">Rondônia</option>
+                      <option value="RA">Roraima</option>
+                      <option value="SC">Santa Catarina</option>
+                      <option value="SP">São Paulo</option>
+                      <option value="SE">Sergipe</option>
+                      <option value="TO">Tocantins</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-col-12">
+                    <label for="zipcode" class="require"><?php echo $form_labels['form']['zipcode']; ?></label title="<?php echo $form_labels['form']['zipcode']; ?>">
+                      <input type="text" name="payment[<?php echo $_code; ?>][address-zipcode]" id="MPv1-zipcode" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control-mine required-entry-address-zipcode" title="<?php echo $form_labels['form']['zipcode']; ?>">
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-col-12">
+                      <span class="mensagem-febraban"><em>* </em><?php echo $form_labels['form']['febraban_rules']; ?></span>
+                    </div>
+                  </div>
+
+                </div>
+
+                <script>
+
+                if (typeof Validation != 'undefined'){
+                  Validation.add('required-entry-firstname', "<?php echo $form_labels['error']['FEB001']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
+
+                  Validation.add('required-entry-lastname', "<?php echo $form_labels['error']['FEB002']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
+
+                  Validation.add('required-entry-doc-number', "<?php echo $form_labels['error']['FEB003']; ?>", function(v) {
+                    if(document.querySelector(MPv1Ticket.selectors.radioTypeFisica).checked){
+                      return MPv1Ticket.validaCPF(v);
+                    }else{
+                      return MPv1Ticket.validaCNPJ(v);
+                    }
+                  });
+
+                  Validation.add('required-entry-address', "<?php echo $form_labels['error']['FEB004']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
+
+                  Validation.add('required-entry-address-number', "<?php echo $form_labels['error']['FEB005']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
+
+                  Validation.add('required-entry-address-city', "<?php echo $form_labels['error']['FEB006']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
+
+                  Validation.add('required-entry-address-state', "<?php echo $form_labels['error']['FEB007']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
+
+                  Validation.add('required-entry-address-zipcode', "<?php echo $form_labels['error']['FEB008']; ?>", function(v) {
+                    return !Validation.get('IsEmpty').test(v);
+                  });
+                }
+
+                // Force the updating of values, when updating the html via ajax the value stays the same the first time set.
+                document.querySelector("#form-ticket #MPv1-firstname").value = "<?php echo $customer['firstname']?>";
+                document.querySelector("#form-ticket #MPv1-lastname").value = "<?php echo $customer['lastname']; ?>";
+                document.querySelector("#form-ticket #MPv1-docNumber").value = "<?php echo $customer['docnumber']; ?>";
+                document.querySelector("#form-ticket #MPv1-address").value = "<?php echo preg_replace('/\s+/', ' ', $customer['address']); ?>";
+                document.querySelector("#form-ticket #MPv1-number").value = "<?php echo preg_replace('/\s+/', ' ', $customer['addressnumber']); ?>";
+                document.querySelector("#form-ticket #MPv1-city").value = "<?php echo $customer['city']; ?>";
+                document.querySelector("#form-ticket #MPv1-zipcode").value = "<?php echo $customer['zipcode']; ?>";
+
+                if(<?php echo $use_state; ?> === true){
+                  document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $customer['state_code']; ?>";
+                }
+                </script>
+               <?php endif; ?>
+          
+           <?php else: ?>
+
+              <?php echo $this->__("There are no payment methods available, please contact the store to see what is happening."); ?>
+
+           <?php endif; ?>
+
+            <div class="mp-box-inputs mp-col-100" id="mercadopago-utilities">
+              <input type="hidden" id="site_id" value="<?php echo strtoupper($country); ?>" name="payment[<?php echo $_code; ?>][site_id]"/>
+              <input type="hidden" id="amountTicket" value="<?php echo $grant_total; ?>" name="payment[<?php echo $_code; ?>][amount]"/>
+              <input type="hidden" id="campaign_idTicket" name="payment[<?php echo $_code; ?>][campaign_id]"/>
+              <input type="hidden" id="campaignTicket" name="payment[<?php echo $_code; ?>][campaign]"/>
+              <input type="hidden" id="discountTicket" name="payment[<?php echo $_code; ?>][discount]"/>
+            </div>
+
+            <script>
+            var mercadopago_site_id = '<?php echo strtoupper($country); ?>';
+            var mercadopago_payer_email = '<?php echo $payer_email; ?>';
+            var mercadopago_url_coupon = '<?php echo $base_url; ?>mercadopago/api/coupon';
+            var mercadopago_url_amount = '<?php echo $base_url; ?>mercadopago/api/amount';
+
+            //initialize loading
+            MPv1Ticket.paths.loading = '<?php echo $this->getSkinUrl('mercadopago/images/loading.gif'); ?>';
+            MPv1Ticket.paths.check = '<?php echo $this->getSkinUrl('mercadopago/images/check.png'); ?>';
+            MPv1Ticket.paths.error = '<?php echo $this->getSkinUrl('mercadopago/images/error.png'); ?>';
+
+            //add text translations
+            MPv1Ticket.text.choose = '<?php echo $form_labels["form"]["label_choose"]; ?>';
+            MPv1Ticket.text.other_bank = '<?php echo $form_labels["form"]["label_other_bank"]; ?>';
+            MPv1Ticket.text.discount_info1 = '<?php echo $form_labels["form"]["discount_info1"]; ?>';
+            MPv1Ticket.text.discount_info2 = '<?php echo $form_labels["form"]["discount_info2"]; ?>';
+            MPv1Ticket.text.discount_info3 = '<?php echo $form_labels["form"]["discount_info3"]; ?>';
+            MPv1Ticket.text.discount_info4 = '<?php echo $form_labels["form"]["discount_info4"]; ?>';
+            MPv1Ticket.text.discount_info5 = '<?php echo $form_labels["form"]["discount_info5"]; ?>';
+            MPv1Ticket.text.discount_info6 = '<?php echo $form_labels["form"]["discount_info6"]; ?>';
+            MPv1Ticket.text.apply = '<?php echo $form_labels["form"]["apply"]; ?>';
+            MPv1Ticket.text.remove = '<?php echo $form_labels["form"]["remove"]; ?>';
+            MPv1Ticket.text.coupon_empty = '<?php echo $form_labels["form"]["coupon_empty"]; ?>';
+
+            MPv1Ticket.selectors.form = "#mercadopago-ticket-form-general"
+
+            MPv1Ticket.Initialize( mercadopago_site_id, <?php echo $coupon_mercadopago; ?>, mercadopago_url_coupon, mercadopago_payer_email);
+
+            /***************************************
+            *
+            *
+            * Customizações
+            *
+            */
+
+            MPv1.AJAX({
+              url: mercadopago_url_amount,
+              method : "GET",
+              timeout : 5000,
+              error: function(){
+                // request failed
+                console.log("Fail get amount");
+              },
+              success : function (status, response){
+                document.querySelector(MPv1Ticket.selectors.amount).value = response.amount;
+              }
+            });
+
+            </script>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+
+    <?php if ($this->getMethod()->getConfigData('communication') != ""): ?>
+      <p class="communication"><?php echo $this->getMethod()->getConfigData('communication') ?></p>
+    <?php endif; ?>
+
+    <?php if ($this->getMethod()->getConfigData('banner_checkout') != ""): ?>
+      <img src="<?php echo $this->getMethod()->getConfigData('banner_checkout'); ?>" class="banner_checkout_ticket_mp"/>
+    <?php endif; ?>

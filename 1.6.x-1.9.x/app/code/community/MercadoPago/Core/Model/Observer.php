@@ -423,8 +423,9 @@ class MercadoPago_Core_Model_Observer
             $this->_getSession()->addError(__('You can only make refunds on orders whose status is Processing or Completed'));
             $isValidaData = false;
         }
-
-        if (!($orderPaymentStatus == 'approved')) {
+        
+        $splitOrderPayment = explode (" | " , "approved");
+        if (!(in_array("approved", $splitOrderPayment))) {
             $this->_getSession()->addError(__('You can only make refunds on orders whose payment status Approved'));
             $isValidaData = false;
         }
@@ -454,24 +455,52 @@ class MercadoPago_Core_Model_Observer
         $amount = $creditMemo->getGrandTotal();
         if ($paymentMethod == 'mercadopago_standard') {
             $paymentID = $order->getPayment()->getData('additional_information')['id'];
+                     
             $clientId = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_ID);
             $clientSecret = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_CLIENT_SECRET);
             $mp = Mage::helper('mercadopago')->getApiInstance($clientId, $clientSecret);
-            if ($isTotalRefund) {
-                $response = $mp->refund_payment($paymentID);
-                $order->setMercadoPagoRefundType('total');
-            } else {
-                $order->setMercadoPagoRefundType('partial');
-                $metadata = array(
-                    "reason"             => '',
-                    "external_reference" => $order->getIncrementId(),
-                );
-                $params = array(
-                    "amount"   => $amount,
-                    "metadata" => $metadata,
-                );
-                $response = $mp->post("/v1/payments/$paymentID/refunds?access_token=" . $mp->get_access_token(), $params);
+          
+            $listPayment = explode(" | ", $paymentID);
+
+            foreach($listPayment as $payment){    
+              $responsePayment = $mp->get("/v1/payments/$payment?access_token=" . $mp->get_access_token());
+              if($responsePayment['status'] == 200){
+                if($responsePayment['response']['status'] == 'approved'){
+                  $availableRefund = $responsePayment['response']['transaction_amount'] - $responsePayment['response']['transaction_amount_refunded'];
+                  
+                  if($availableRefund > 0 && $amount > 0){
+                      $amountToRefund = 0;
+                    //refund partial 
+                    if($amount <= $availableRefund){
+                      $amountToRefund = $amount;
+                    }else{
+                      //refund total available in payment (list)
+                      $amountToRefund = $availableRefund;
+                    }
+                    
+                    //decriment amount in credit memo to refund
+                    $amount = $amount - $availableRefund;
+
+                    $metadata = array(
+                      "reason"             => '',
+                      "external_reference" => $order->getIncrementId(),
+                    );
+                    $params = array(
+                      "amount"   => $amountToRefund,
+                      "metadata" => $metadata,
+                    );
+                    $response = $mp->post("/v1/payments/$payment/refunds?access_token=" . $mp->get_access_token(), $params);
+                  }
+                }
+              }
             }
+          
+          if ($isTotalRefund) {
+            $order->setMercadoPagoRefundType('total');
+          } else {
+            $order->setMercadoPagoRefundType('partial');
+          }
+
         } else {
             $paymentID = $order->getPayment()->getData('additional_information')['payment_id_detail'];
             $accessToken = Mage::getStoreConfig(MercadoPago_Core_Helper_Data::XML_PATH_ACCESS_TOKEN);

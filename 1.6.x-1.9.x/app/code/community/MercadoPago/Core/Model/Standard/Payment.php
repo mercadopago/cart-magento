@@ -185,12 +185,21 @@ class MercadoPago_Core_Model_Standard_Payment
             $shipping = $shippingAddress->getData();
 
             $arr['payer']['phone'] = array(
-                "area_code" => "-",
-                "number"    => $shipping['telephone']
+              "area_code" => "-",
+              "number"    => $shipping['telephone']
             );
 
-            $arr['shipments'] = $this->_getParamShipment($paramsShipment, $order, $shippingAddress);
+            $arr['shipments']  = array();
+            $arr['shipments']['receiver_address'] = $this->getReceiverAddress($shippingAddress);
+            $arr['items'][] = array(
+              "title"       => "Shipment cost",
+              "description" => "Shipment cost",
+              "category_id" => Mage::getStoreConfig('payment/mercadopago/category_id'),
+              "quantity"    => 1,
+              "unit_price"  => (float)$order->getBaseShippingAmount()
+          );
         }
+      
         $billingAddress = $order->getBillingAddress()->getData();
 
         $arr['payer']['date_created'] = date('Y-m-d', $customer->getCreatedAtTimestamp()) . "T" . date('H:i:s', $customer->getCreatedAtTimestamp());

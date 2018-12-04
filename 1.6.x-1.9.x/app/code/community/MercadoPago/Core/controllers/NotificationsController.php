@@ -56,7 +56,7 @@ class MercadoPago_Core_NotificationsController
     }
 
     public function standardAction()
-    {
+    {   
         $this->_requestData = $this->getRequest()->getParams();
         //notification received
         $this->_helper = Mage::helper('mercadopago');
@@ -68,6 +68,7 @@ class MercadoPago_Core_NotificationsController
 
             return;
         }
+
         switch ($this->_getRequestData('topic')) {
             case 'merchant_order':
                 if (!$this->_handleMerchantOrder($this->_getRequestData('id'))) {

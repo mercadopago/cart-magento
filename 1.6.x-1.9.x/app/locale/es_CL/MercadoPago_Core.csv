@@ -289,3 +289,7 @@
 
 "================================Versão 2.13.0================================", "================================Versão 2.13.0================================"
 "There are no payment methods available, please contact the store to see what is happening.","No hay métodos de pago disponibles, entre en contacto con la tienda para analizar lo que está ocurriendo."
+
+"================================Versão 2.15.0================================", "================================Versão 2.15.0================================"
+"Show form only when missing information","Mostrar el formulario sólo cuando falta información"
+"Will show the form when there is some mandatory information to create the payment.","Se mostrará el formulario cuando falte alguna información obligatoria para la creación del pago."

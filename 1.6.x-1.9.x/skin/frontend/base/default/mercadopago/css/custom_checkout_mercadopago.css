@@ -347,3 +347,13 @@
   width: 100%;
   max-width: 400px;
 }
+
+/*
+* Form ticket
+*
+*/
+
+
+#form-ticket.completed-data{
+  display:none;
+}

@@ -60,6 +60,7 @@ $form_labels = array(
 
   if(strtoupper($country) == "MLB"){
     $customer = $this->getCustomerInformation();
+    error_log("Customer : " .  json_encode($customer) );
   }
   ?>
   <script type="text/javascript">
@@ -116,7 +117,7 @@ $form_labels = array(
           <?php if(count($optionsTicket) > 0): ?>
            
             <?php if(strtoupper($country) == "MLB"): ?>
-              <div id="form-ticket">
+              <div id="form-ticket" class="<?php echo ($customer['show_form'] === true ? 'completed-data': 'missing-data'); ?>">
                 <div class="form-row">
                   <div class="form-col-6">
                     <input type="radio" name="payment[<?php echo $_code; ?>][doc-type]" class="MPv1-docType" id="MPv1-docType-fisica" title="<?php echo $form_labels['form']['docNumber']; ?>" checked="checked" value="CPF"> Pessoa Física

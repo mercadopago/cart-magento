@@ -154,7 +154,6 @@ class MercadoPago_Core_Block_Customticket_Form
 
       foreach($mandatoryData as $data){
         if(!isset($customer[$data]) || empty($customer[$data])){
-          error_log("where ". $data . " " . $customer[$data]);
           //set false if not exist or is empty
           $customer['show_form'] = false;
         }

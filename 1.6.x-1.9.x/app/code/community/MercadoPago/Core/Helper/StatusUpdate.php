@@ -490,7 +490,10 @@ class MercadoPago_Core_Helper_StatusUpdate
         if ($response['status'] == 400 || $response['status'] == 401) {
             return array();
         }
-        $payment = $response['response']['collection'];
+      
+        error_log("_getFormattedPaymentData : " . json_encode($response));
+      
+        $payment = $response['response'];
 
         return $this->formatArrayPayment($data, $payment, $logFile);
     }

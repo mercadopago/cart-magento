@@ -1,0 +1,178 @@
+<?xml version="1.0" ?>
+
+<config>
+    <sections>
+        <carriers>
+            <groups>
+                <mercadoenvios_carrier translate="label">
+                    <label>MercadoEnvios</label>
+                    <sort_order>130</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <mercadoenvios type="group" translate="label">
+                            <label>MercadoEnvios - Configuration</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>mercadopago_mercadoenvios/adminhtml_system_config_fieldset_carrier</frontend_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>0</sort_order>
+                            <fields>
+                                <active translate="label comment">
+                                    <label>Enabled</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                    <comment>Enable to edit specific values</comment>
+                                </active>
+                                <title translate="label">
+                                    <label>Title</label>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>20</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </title>
+                                <attributesmapping translate="label">
+                                    <label>Product attributes mapping</label>
+                                    <frontend_model>mercadopago_mercadoenvios/adminhtml_system_config_fieldset_mapping</frontend_model>
+                                    <backend_model>mercadopago_mercadoenvios/adminhtml_attribute_validation_mapping</backend_model>
+                                    <sort_order>25</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </attributesmapping>
+                                <availablemethods translate="label">
+                                    <label>Available shipping methods</label>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <source_model>mercadopago_mercadoenvios/adminhtml_source_shipping_method</source_model>
+                                    <sort_order>27</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </availablemethods>
+                                <sallowspecific translate="label">
+                                    <label>Allow Specific Country</label>
+                                    <frontend_type>select</frontend_type>
+                                    <frontend_class>shipping-applicable-country</frontend_class>
+                                    <source_model>adminhtml/system_config_source_shipping_allspecificcountries</source_model>
+                                    <sort_order>30</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>0</show_in_default>
+                                    <show_in_website>0</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </sallowspecific>
+                                <specificcountry translate="label">
+                                    <label>Specific Country</label>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <source_model>mercadopago/source_country</source_model>
+                                    <sort_order>40</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>0</show_in_default>
+                                    <show_in_website>0</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </specificcountry>
+                                <free_method translate="label">
+                                    <label>Free Method</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mercadopago_mercadoenvios/adminhtml_source_shipping_freeMethod</source_model>
+                                    <sort_order>45</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </free_method>
+                                <free_shipping_enable translate="label">
+                                    <label>Free Shipping with Minimum Order Amount</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                                    <sort_order>46</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </free_shipping_enable>
+                                <free_shipping_subtotal translate="label">
+                                    <label>Minimum Order Amount for Free Shipping</label>
+                                    <frontend_type>text</frontend_type>
+                                    <validate>validate-number validate-zero-or-greater</validate>
+                                    <sort_order>47</sort_order>
+                                    <depends><free_shipping_enable>1</free_shipping_enable></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </free_shipping_subtotal>
+                                <showmethod translate="label">
+                                    <label>Show method if not applicable</label>
+                                    <frontend_type>select</frontend_type>
+                                    <sort_order>50</sort_order>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <frontend_class>shipping-skip-hide</frontend_class>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </showmethod>
+                                <specificerrmsg translate="label">
+                                    <label>Displayed Error Message</label>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>60</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </specificerrmsg>
+                                <log translate="label">
+                                    <label>Log</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>65</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </log>
+                                <debug_mode translate="label">
+                                    <label>Debug Mode</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>70</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </debug_mode>
+                                <sort_order translate="label">
+                                    <label>Sort order</label>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>80</sort_order>
+                                    <depends><active>1</active></depends>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </sort_order>
+                                <shipping_label translate="label">
+                                    <label>Shipping label download option</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mercadopago_mercadoenvios/adminhtml_source_shipping_print_mode</source_model>
+                                    <sort_order>90</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </shipping_label>
+                            </fields>
+                        </mercadoenvios>
+                    </fields>
+                </mercadoenvios_carrier>
+            </groups>
+        </carriers>
+    </sections>
+</config>

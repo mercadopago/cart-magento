@@ -1,0 +1,47 @@
+<li class="mercadopago-discount-options">
+    <div class="box-input">
+        <label for="mercadopago_coupon"><?php echo $this->__('Discount coupon'); ?></label>
+        <div class="input-box">
+            <input class="mercadopago_coupon input-text validate-discount" id="input-coupon-discount" type="text" type="text" name="payment[<?php echo $this->code; ?>][coupon_code]"/>
+        </div>
+    </div>
+    
+    
+    <ul class="mercadopago-message-coupon">
+        <li class="loading">
+            <img src="<?php echo $this->getSkinUrl('mercadopago/images/loading.gif')  ;?>" alt="loading" />        
+        </li>
+        
+        <li class="error error-get validation-advice">
+            <?php echo $this->__('An error occurred while validating the coupon. Try again.'); ?>
+        </li>
+        
+        <li class="error amount-doesnt-match transaction_amount_invalid validation-advice">
+            <?php echo $this->__('The coupon can not be applied to this amount.'); ?>
+        </li>
+
+        <li class="error campaign-code-doesnt-match collector-doesnt-match validation-advice">
+            <?php echo $this->__("Doesn't find a campaign with the given code."); ?>
+        </li>
+        
+        <li class="error run-out-of-uses validation-advice">
+            <?php echo $this->__("Run Out of uses per user."); ?>
+        </li>
+        
+        
+        <li class="error invalid_id validation-advice">
+            <?php echo $this->__('Please enter a valid coupon code.'); ?>
+        </li>
+        
+        <li class="ok discount-ok">
+            <p><?php echo $this->__('You save %s with the exclusive discount', '<b><span class="amount-discount"></span></b>'); ?> <span class="mercadopago-focus">Mercado Pago.</span></p>
+            <p><?php echo $this->__('Total of your purchase'); ?>: <b><span class="total-amount"></span></b>.</p>
+            <p><?php echo $this->__('Total of your purchase discount'); ?>: <b><span class="total-amount-discount"></span>*</b>.</p>
+            <p><i>*<?php echo $this->__('Upon approval of payment'); ?></i></p>
+            <p><a href="" class="mercadopago-coupon-terms" target="_blank"><?php echo $this->__('Terms and conditions'); ?></a></p>
+        </li>
+    </ul>
+    
+    <span class="mercadopago-coupon-action-apply"><?php echo $this->__('Apply discount'); ?></span>
+    <span class="mercadopago-coupon-action-remove"><?php echo $this->__('Remove discount'); ?></span>
+</li>

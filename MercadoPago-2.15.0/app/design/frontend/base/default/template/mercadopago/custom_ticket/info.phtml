@@ -1,0 +1,34 @@
+<p><strong><?php echo $this->getMethod()->getTitle() ?></strong></p>
+
+<?php if( Mage::app()->getRequest()->getRouteName() == "sales" || Mage::app()->getFrontController()->getAction()->getFullActionName() == 'checkout_onepage_success' ): ?> 
+
+    <?php
+        $info_payment = $this->getInfoPayment();
+    ?>
+
+
+    <?php if(isset($info_payment['payment_id']) && $info_payment['payment_id']['value'] != ""): ?>
+        <p><?php echo $this->__('Payment Id (Mercado Pago): %s', $info_payment['payment_id']['value']); ?></p>
+    <?php endif; ?>
+
+    <?php if(isset($info_payment['status']) && $info_payment['status']['value'] != ""): ?>
+        <p><?php echo $this->__('Payment Status: %s', $info_payment['status']['value']); ?></p>
+    <?php endif; ?>
+
+    <?php if(isset($info_payment['status_detail']) && $info_payment['status_detail']['value'] != ""): ?>
+        <p><?php echo $this->__('Payment Status Detail: %s', $info_payment['status_detail']['value']); ?></p>
+    <?php endif; ?>
+
+    <p>
+        <?php echo $this->__('Generate the ticket and pay it wherever you want.'); ?>
+    </p>
+    <p>
+        <?php echo $this->__('Will be approved within 2 business days.'); ?>
+    </p>
+    <p><?php echo $this->__('Click on the link to generate the ticket'); ?>.</p>
+
+    <a href="<?php echo urldecode($info_payment['activation_uri']['value']); ?>" target="_blank">
+        <?php echo $this->__('Generate Ticket'); ?>
+    </a>
+
+<?php endif;?>

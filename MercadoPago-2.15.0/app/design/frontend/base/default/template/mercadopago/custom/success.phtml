@@ -1,0 +1,52 @@
+<?php
+    $order = $this->getOrder();
+    $total = $this->getTotal();
+    $payment = $this->getPayment();
+
+    $link_to_order = $this->__('Your order %s has been successfully generated.', '<a href="'. Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK,true) . "sales/order/view/order_id/" . $this->getEntityId() . '">' . $order->getIncrementId() .'</a>');
+
+    $payment_method = $this->getPaymentMethod();
+    $info_payment = $this->getInfoPayment();
+?>
+
+<div id="box-mercadopago">
+
+    <?php if(!isset($info_payment['status']['value'])): ?>
+        <h2 class="mercadopago-title"><?php echo $this->__('Thank you for your purchase!'); ?></h2>
+        <p><?php echo $link_to_order; ?></p>
+    <?php else: ?>
+        <?php
+            // @NEED_REFACTOR
+            $message_status = $this->getMessageByStatus(
+                $info_payment['status']['value'],
+                $info_payment['status_detail']['value'],
+                (isset($info_payment['payment_method']['value'])) ? $info_payment['payment_method']['value'] : '',
+                (isset($info_payment['installment']['value'])) ? $info_payment['installment']['value'] : '' ,
+                $this->getTotal()
+            );
+        ?>
+        <h2 class="mercadopago-title"><?php echo $message_status['title']; ?></h2>
+
+        <p><?php echo $message_status['message']; ?></p>
+
+        <p><?php echo $link_to_order; ?></p>
+
+        <h5 class="mercadopago-title-info-payment"><?php echo $this->__('Payment information'); ?></h5>
+
+        <div id="payment-info-text">
+            <?php foreach($info_payment as $info): ?>
+                <p><?php echo $this->__($info['text']); ?></p>
+            <?php endforeach; ?>
+        </div>
+
+    <?php endif; ?>
+</div>
+
+<div id="logo-mercadopago">
+    <img src="https://secure.mlstatic.com/components/resources/mp/desktop/css/assets/desktop-logo-mercadopago.png" />
+</div>
+<div class="buttons-set">
+    <div class="button-success">
+        <button type="button" class="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue Shopping')) ?>" onclick="window.location='<?php echo $this->getUrl() ?>'"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+    </div>
+</div>

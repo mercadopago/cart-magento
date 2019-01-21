@@ -6,6 +6,7 @@
 1.6.x-1.9.x/app/etc/modules/* app/etc/modules/
 1.6.x-1.9.x/app/locale/en_US/* app/locale/en_US/
 1.6.x-1.9.x/app/locale/es_AR/* app/locale/es_AR/
+1.6.x-1.9.x/app/locale/es_CL/* app/locale/es_CL/
 1.6.x-1.9.x/app/locale/es_CO/* app/locale/es_CO/
 1.6.x-1.9.x/app/locale/es_ES/* app/locale/es_ES/
 1.6.x-1.9.x/app/locale/es_MX/* app/locale/es_MX/

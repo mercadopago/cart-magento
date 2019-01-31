@@ -112,11 +112,14 @@ class MercadoPago_Core_Block_Customticket_Form
     $customer['city'] = $data_customer['city'];
     $customer['zipcode'] = $data_customer['postcode'];
 
-
-    //             $customer['state'] =  ? $data_customer['region'] : $data_customer['region_id'];
+    //check perfil person
+    $customer['doctype'] = 'CPF';
+    $documentNumber = preg_replace('/[.,\/-]/', '', $customer['docnumber']);
+    if(strlen($documentNumber) > 11){
+      $customer['doctype'] = 'CNPJ';
+    }
 
     $customer['state'] =  $data_customer['region_id'];
-
     $state = "";
     if(empty($data_customer['region_id'])){
       $customer['state'] = $data_customer['region'];

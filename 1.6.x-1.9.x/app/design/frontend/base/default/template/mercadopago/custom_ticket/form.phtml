@@ -288,6 +288,7 @@ $form_labels = array(
             var mercadopago_payer_email = '<?php echo $payer_email; ?>';
             var mercadopago_url_coupon = '<?php echo $base_url; ?>mercadopago/api/coupon';
             var mercadopago_url_amount = '<?php echo $base_url; ?>mercadopago/api/amount';
+            var doctype = '<?php echo $customer['doctype']; ?>';
 
             //initialize loading
             MPv1Ticket.paths.loading = '<?php echo $this->getSkinUrl('mercadopago/images/loading.gif'); ?>';
@@ -310,6 +311,12 @@ $form_labels = array(
             MPv1Ticket.selectors.form = "#mercadopago-ticket-form-general"
 
             MPv1Ticket.Initialize( mercadopago_site_id, <?php echo $coupon_mercadopago; ?>, mercadopago_url_coupon, mercadopago_payer_email);
+             
+            //update doc type 
+            if(doctype == "CNPJ"){
+              document.querySelector("#form-ticket #MPv1-docType-juridica").checked = true;
+              MPv1Ticket.initializeDocumentPessoaJuridica();
+            }
 
             /***************************************
             *

@@ -59,7 +59,7 @@ class MercadoPago_Core_Block_Customticket_Form
         $customer['docnumber'] = "";
 
         $state_code = $this->getRegions();
-
+        
         if ($use_tax_vat) {
             $customer_session = Mage::getSingleton('customer/session')->getCustomer();
             $doc_number = $customer_session->getTaxvat();

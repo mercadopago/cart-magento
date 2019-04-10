@@ -56,17 +56,28 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
 
     protected function _getFinancingCondition($address)
     {
+      
+      //check is enable
+      if(!Mage::getStoreConfigFlag('payment/mercadopago/financing_cost') && $financingStatus == true){
+        return false;
+      }
       $postData = Mage::app()->getRequest()->getPost();
-
       if($address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING && isset($postData['payment'])){
         $method = $postData['payment']['method'];
-        
-        if(isset($postData['payment'][$method]) && isset($postData['payment'][$method]['amount']) ){
-          $req = $postData['payment'][$method]['amount'];
-
-          return (!empty($req) && Mage::getStoreConfigFlag('payment/mercadopago/financing_cost'));          
+        //data of method not found
+        if(!isset($postData['payment'][$method])){
+          return false;
         }
+        //get data of method
+        $amount = isset($postData['payment'][$method]['amount']) ? $postData['payment'][$method]['amount'] : "";
+        $totalAmount = isset($postData['payment'][$method]['total_amount']) ? $postData['payment'][$method]['total_amount'] : "";
+        //check is exist or is zero
+        if($amount == "" || $amount <= 0 || $totalAmount == "" || $totalAmount <= 0){
+          return false;
+        }
+      }else{
+        return false;
       }
-      return false;
+      return true;
     }
 }

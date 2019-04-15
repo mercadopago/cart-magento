@@ -10,7 +10,7 @@ $route = $this->getRequest()->getRequestedRouteName();
 $customer_session = Mage::getSingleton('customer/session')->getCustomer();
 $payer_email = $customer_session->getEmail();
 
-$use_state = Mage::getStoreConfig('payment/mercadopago_customticket/auto_state') == 1 ? 'true' : 'false';
+$useState = Mage::getStoreConfig('payment/mercadopago_customticket/auto_state') == 1 ? true : false;
 
 $form_labels = array(
   "form" => array(
@@ -168,33 +168,9 @@ $form_labels = array(
                     <label for="state" class="require"><?php echo $form_labels['form']['state']; ?></label>
                     <select name="payment[<?php echo $_code; ?>][address-state]" id="MPv1-state" class="form-control-mine required-entry-address-state" title="<?php echo $form_labels['form']['state']; ?>">
                       <option value=""><?php echo $form_labels['form']['select']; ?> ...</option>
-                      <option value="AC">Acre</option>
-                      <option value="AL">Alagoas</option>
-                      <option value="AP">Amapá</option>
-                      <option value="AM">Amazonas</option>
-                      <option value="BA">Bahia</option>
-                      <option value="CE">Ceará</option>
-                      <option value="DF">Distrito Federal</option>
-                      <option value="ES">Espírito Santo</option>
-                      <option value="GO">Goiás</option>
-                      <option value="MA">Maranhão</option>
-                      <option value="MT">Mato Grosso</option>
-                      <option value="MS">Mato Grosso do Sul</option>
-                      <option value="MG">Minas Gerais</option>
-                      <option value="PA">Pará</option>
-                      <option value="PB">Paraíba</option>
-                      <option value="PR">Paraná</option>
-                      <option value="PE">Pernambuco</option>
-                      <option value="PI">Piauí</option>
-                      <option value="RJ">Rio de Janeiro</option>
-                      <option value="RN">Rio Grande do Norte</option>
-                      <option value="RS">Rio Grande do Sul</option>
-                      <option value="RO">Rondônia</option>
-                      <option value="RA">Roraima</option>
-                      <option value="SC">Santa Catarina</option>
-                      <option value="SP">São Paulo</option>
-                      <option value="SE">Sergipe</option>
-                      <option value="TO">Tocantins</option>
+                        <?php foreach ($this->getRegions() as $key => $region){ ?>
+                            <option value="<?=$region['code'];?>" <?php if($key == $customer['state_code'] && $useState === true){ ?> selected <?php } ?>><?=$region['state'];?></option>
+                        <?php } ?>
                     </select>
                   </div>
                 </div>
@@ -263,9 +239,6 @@ $form_labels = array(
                 document.querySelector("#form-ticket #MPv1-city").value = "<?php echo $customer['city']; ?>";
                 document.querySelector("#form-ticket #MPv1-zipcode").value = "<?php echo $customer['zipcode']; ?>";
 
-                if(<?php echo $use_state; ?> === true){
-                  document.querySelector("#form-ticket #MPv1-state").value = "<?php echo $customer['state_code']; ?>";
-                }
                 </script>
                <?php endif; ?>
           

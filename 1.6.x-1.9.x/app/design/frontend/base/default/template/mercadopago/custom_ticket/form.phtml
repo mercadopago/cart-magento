@@ -100,9 +100,10 @@ $form_labels = array(
           <?php else: ?>
             <ul>
               <?php foreach ($optionsTicket as $ticket): ?>
+                <?php $inputId = 'payment-mercadopago-' . $ticket['payment_type_id'] . '-' . $ticket['id']; ?>
                 <li class="mercadopago-ticket-option">
-                  <input type="radio" name="payment[<?php echo $_code; ?>][payment_method_ticket]" class="optionsTicketMp validate-one-required-by-name" value="<?php echo $ticket['id']; ?>">
-                  <label class="mercadopago-ticket-label">
+                  <input type="radio" id="<?php echo $inputId ?>" name="payment[<?php echo $_code; ?>][payment_method_ticket]" class="optionsTicketMp validate-one-required-by-name" value="<?php echo $ticket['id']; ?>">
+                  <label class="mercadopago-ticket-label" for="<?php echo $inputId ?>">
                     <img src="<?php echo $ticket['secure_thumbnail']; ?>" alt="<?php echo $ticket['name']; ?>">
                     (<?php echo $ticket['name']; ?>)
                     <!--<span class="mercadopago-ticket-label-img"><img src="--><?php //echo $ticket['secure_thumbnail']; ?><!--" alt="--><?php //echo $ticket['name']; ?><!--"> </span>-->

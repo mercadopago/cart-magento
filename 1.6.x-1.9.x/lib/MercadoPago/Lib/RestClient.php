@@ -3,7 +3,8 @@
 /**
  * MercadoPago cURL RestClient
  */
-$GLOBALS["LIB_LOCATION"] = dirname(__FILE__);
+
+$GLOBALS["LIB_LOCATION"] = Mage::getBaseDir() . '/lib/MercadoPago/Lib';
 
 class MercadoPago_Lib_RestClient {
 

@@ -58,7 +58,7 @@ class MercadoPago_Core_Model_Custom_Finance_Cost
     {
       
       //check is enable
-      if(!Mage::getStoreConfigFlag('payment/mercadopago/financing_cost') && $financingStatus == true){
+      if(!Mage::getStoreConfigFlag('payment/mercadopago/financing_cost')){
         return false;
       }
       $postData = Mage::app()->getRequest()->getPost();

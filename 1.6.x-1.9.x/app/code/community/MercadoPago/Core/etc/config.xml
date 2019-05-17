@@ -10,7 +10,7 @@
 *
 * @category   	Payment Gateway
 * @package    	MercadoPago
-* @author      	Gabriel Matsuoka (gabriel.matsuoka@gmail.com)
+* @author      	Mercado Pago (developers@mercadopago.com)
 * @copyright  	Copyright (c) MercadoPago [http://www.mercadopago.com]
 * @license    	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
@@ -18,7 +18,7 @@
 <config>
     <modules>
         <MercadoPago_Core>
-            <version>2.15.2</version>
+            <version>2.15.3</version>
         </MercadoPago_Core>
     </modules>
 

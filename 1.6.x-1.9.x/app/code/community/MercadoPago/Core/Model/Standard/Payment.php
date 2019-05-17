@@ -238,6 +238,9 @@ class MercadoPago_Core_Model_Standard_Payment
         if ($autoReturn == 1) {
             $arr['auto_return'] = "approved";
         }
+        
+        //binary mode
+        $arr['binary_mode'] = Mage::getStoreConfigFlag('payment/mercadopago_standard/binary_mode');
 
         $sponsorId = Mage::getStoreConfig('payment/mercadopago/sponsor_id');
         Mage::helper('mercadopago')->log("Sponsor_id", self::LOG_FILE, $sponsorId);

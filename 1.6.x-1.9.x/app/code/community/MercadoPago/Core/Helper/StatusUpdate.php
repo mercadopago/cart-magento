@@ -54,20 +54,27 @@ class MercadoPago_Core_Helper_StatusUpdate
 
     protected function _updateStatus($status, $message, $statusDetail, $payment_data = null)
     {
-        if ($this->_order->getState() !== Mage_Sales_Model_Order::STATE_COMPLETE) {            
-          
-            //use status final when is payment with two cards
-            if(!is_null($payment_data) && isset($payment_data['status_final'])){
-              $status = $payment_data['status_final'];
-            }
-          
-            $statusOrder = $this->getStatusOrder($status, $statusDetail);
-            if (isset($statusOrder) && ($this->_order->getStatus() !== $statusOrder)) {
-                $this->_order->setState($this->_getAssignedState($statusOrder));
-                $this->_order->addStatusToHistory($statusOrder, $message, true);
-                $this->_order->sendOrderUpdateEmail(true, $message);
-            }
+      if ($this->_order->getState() !== Mage_Sales_Model_Order::STATE_COMPLETE) {            
+
+        //use status final when is payment with two cards
+        if(!is_null($payment_data) && isset($payment_data['status_final'])){
+          $status = $payment_data['status_final'];
         }
+
+        $statusOrder = $this->getStatusOrder($status, $statusDetail);
+        if (isset($statusOrder) && ($this->_order->getStatus() !== $statusOrder)) {
+          
+          //checks if payment will be canceled to cancel the order
+          if($statusOrder == Mage_Sales_Model_Order::STATE_CANCELED){
+            $this->_order->cancel();
+          }else{
+            $this->_order->setState($this->_getAssignedState($statusOrder));
+          }
+          
+          $this->_order->addStatusToHistory($statusOrder, $message, true);
+          $this->_order->sendOrderUpdateEmail(true, $message);
+        }
+      }
     }
 
     /**

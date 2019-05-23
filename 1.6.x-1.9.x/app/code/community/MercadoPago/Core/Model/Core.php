@@ -278,9 +278,9 @@ class MercadoPago_Core_Model_Core
 
         $preference['description'] = Mage::helper('mercadopago')->__("Order # %s in store %s", $orderId, Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true));
         if (isset($paymentInfo['transaction_amount'])) {
-            $preference['transaction_amount'] = (float)$paymentInfo['transaction_amount'];
+            $preference['transaction_amount'] = round((float)$paymentInfo['transaction_amount'],2);
         } else {
-            $preference['transaction_amount'] = (float)$this->getAmount();
+            $preference['transaction_amount'] = round((float)$this->getAmount(),2);
         }
 
         $preference['external_reference'] = $orderId;

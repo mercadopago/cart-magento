@@ -121,7 +121,7 @@ class MercadoPago_Core_CheckoutController
                 }
             }
 
-            if ($status == 'approved' || $status == 'pending'){
+            if ($status == 'approved' || $status == 'pending' || $status == 'in_process'){
                 $this->_redirect(self::SUCCESS_PAGE_MAGENTO, $this->_request->getParams());
                 return;
             } else {

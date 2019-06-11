@@ -56,14 +56,19 @@ class MercadoPago_Core_Block_Customticket_Form
 
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         $data_customer = $quote->getBillingAddress()->getData();
-        $customer['docnumber'] = "";
-
         $state_code = $this->getRegions();
+        $customer['docnumber'] = "";
         
         if ($use_tax_vat) {
-            $customer_session = Mage::getSingleton('customer/session')->getCustomer();
-            $doc_number = $customer_session->getTaxvat();
-            $customer['docnumber'] = $doc_number;
+          $customer_session = Mage::getSingleton('customer/session')->getCustomer();
+
+          $doc_number = $customer_session->getTaxvat();
+
+          if(is_null($doc_number) && isset($data_customer['vat_id'])){
+            $doc_number = $data_customer['vat_id'];
+          }
+
+          $customer['docnumber'] = $doc_number;
         }
 
         //if you are not registered with the user

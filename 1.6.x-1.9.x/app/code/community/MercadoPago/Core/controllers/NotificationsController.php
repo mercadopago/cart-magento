@@ -184,7 +184,7 @@ class MercadoPago_Core_NotificationsController
         $this->_statusFinal = $this->_statusHelper->getStatusFinal($this->_paymentData['status'], $this->_merchantOrder);
         $this->_shipmentData = $this->_getShipmentsArray();
         $this->merchantOrder = $merchantOrder;
-
+      
         return true;
     }
 

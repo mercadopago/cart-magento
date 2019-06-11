@@ -346,29 +346,51 @@ class MercadoPago_Core_Helper_StatusUpdate
      */
     public function getStatusFinal($dataStatus, $merchantOrder)
     {
-
+      
       if(isset($merchantOrder['payments']) && count($merchantOrder['payments']) == 1){
         return $merchantOrder['payments'][0]['status'];
       }
 
-      if (isset($merchantOrder['paid_amount']) && $merchantOrder['total_amount'] == $merchantOrder['paid_amount']) {
-        return 'approved';
+      $totalApproved = 0;
+      $totalPending = 0;
+      $payments = $merchantOrder['payments'];
+      $totalOrder = $merchantOrder['total_amount'];
+
+      foreach($payments as $payment){
+        $status = $payment['status'];
+        
+        if($status == 'approved'){
+          $totalApproved += $payment['transaction_amount'];
+        }elseif ($status == 'in_process' || $status == 'pending' || $status == 'authorized') {
+          $totalPending += $payment['transaction_amount'];
+        }
+
       }
       
-      $payments = $merchantOrder['payments'];
-      $statuses = explode('|', $dataStatus);
-      foreach ($statuses as $status) {
-        $status = str_replace(' ', '', $status);
-        if (in_array($status, $this->_notFinalStatus)) {
-          $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_notFinalStatus);
+      $arrayLog =  array(
+        "totalApproved" => $totalApproved,
+        "totalOrder" => $totalOrder,
+        "totalPending" => $totalPending
+      );
+      
+      //validate order state
+      if ($totalApproved >= $totalOrder) {
+        Mage::helper('mercadopago')->log("Order Setted Approved", "mercadopago-notification.log", $arrayLog);
+        return "approved";
+      }
+      elseif ($totalPending >= $totalOrder) {
+        Mage::helper('mercadopago')->log("Order Setted Pending", "mercadopago-notification.log", $arrayLog);
+        return "pending";
+      }else {
 
-          return $payments[$lastPaymentIndex]['status'];
-        }
+        // return last status inserted 
+        $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_finalStatus);
+        $statusReturned = $payments[$lastPaymentIndex]['status'];
+        Mage::helper('mercadopago')->log("Order Setted Other Status: " . $statusReturned, "mercadopago-notification.log", $arrayLog);
+
+        return $statusReturned;
       }
 
-      $lastPaymentIndex = $this->_getLastPaymentIndex($payments, $this->_finalStatus);
-
-      return $payments[$lastPaymentIndex]['status'];
     }
 
     protected function _createInvoice($order, $message)

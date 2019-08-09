@@ -881,6 +881,12 @@
       for(var x = 0; x < response.cause.length; x++) {
         var error = response.cause[x];
         var $span = $form.querySelector('#mp-error-' + error.code);
+        
+        //Checks for element to show error
+        if($span === null){
+          return;
+        }
+        
         var $input = $form.querySelector($span.getAttribute("data-main"));
 
         $span.style.display = 'inline-block';
@@ -1117,8 +1123,8 @@
 
       //flow: MLB AND MCO
       if (MPv1.site_id == "MLB") {
-
-        document.querySelector(MPv1.selectors.mpDocType).style.display = 'none';
+    
+        // document.querySelector(MPv1.selectors.mpDocType).style.display = 'none';
         document.querySelector(MPv1.selectors.mpIssuer).style.display = 'none';
         //ajust css
         document.querySelector(MPv1.selectors.docNumber).classList.remove("mp-col-75");

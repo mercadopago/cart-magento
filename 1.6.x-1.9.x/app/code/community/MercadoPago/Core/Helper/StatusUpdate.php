@@ -11,7 +11,7 @@ class MercadoPago_Core_Helper_StatusUpdate
      */
     protected $_order = false;
 
-    protected $_finalStatus = array('rejected', 'cancelled', 'refunded', 'charge_back');
+    protected $_finalStatus = array('rejected', 'cancelled', 'refunded', 'charged_back');
     protected $_notFinalStatus = array('authorized', 'process', 'in_mediation');
 
     private $_rawMessage;
@@ -286,7 +286,7 @@ class MercadoPago_Core_Helper_StatusUpdate
                 $status = Mage::getStoreConfig('payment/mercadopago/order_status_rejected');
                 break;
             }
-            case 'chargeback': {
+            case 'charged_back': {
                 $status = Mage::getStoreConfig('payment/mercadopago/order_status_chargeback');
                 break;
             }

@@ -1103,6 +1103,8 @@
 
         //hide documento for mex
         document.querySelector(MPv1.selectors.mpDoc).style.display = 'none';
+        document.querySelector(MPv1.selectors.mpDocType).style.display = 'none';
+        document.querySelector(MPv1.selectors.mpDocNumber).style.display = 'none';
         // document.querySelector(MPv1.selectors.mpPaymentMethodSelector).removeAttribute('style');
 
         if(!MPv1.customer_and_card.status) {

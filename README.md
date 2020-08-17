@@ -1,47 +1,28 @@
-<p align="center"><a href="https://www.mercadopago.com/"><img src="https://raw.githubusercontent.com/mercadopago/cart-woocommerce/master/assets/images/mplogo.png" height="80" width="auto" alt="MercadoPago">
-</a></p>
-
-The Mercado Pago plugin for Magento 1 allows you to expand the functionalities of your online store and offer a unique payment experience for your customers.
-
-## Documentation in English
-
-For a better experience, you will be redirected to our site by clicking on the links below:
-
-* [Features](https://www.mercadopago.com.br/developers/en/plugins_sdks/plugins/official/magento/#bookmark_features)
-* [Requirements](https://www.mercadopago.com.br/developers/en/plugins_sdks/plugins/official/magento/#bookmark_requirements)
-* [Installation](https://www.mercadopago.com.br/developers/en/plugins_sdks/plugins/official/magento/#bookmark_installation)
-* [Upgrade](https://www.mercadopago.com.br/developers/en/plugins_sdks/plugins/official/magento/#bookmark_upgrade)
-* [Configure Checkout Custom](https://www.mercadopago.com.br/developers/en/plugins_sdks/plugins/official/magento/#bookmark_configure_checkout_custom_(credit_card_and_ticket))
-* [Configure Mercado Pago Checkout](https://www.mercadopago.com.br/developers/en/plugins_sdks/plugins/official/magento/#bookmark_configure_checkout_classic)
-* [Configure Subscriptions](https://www.mercadopago.com.br/developers/en/plugins_sdks/plugins/official/magento/#bookmark_configure_subscriptions)
-* [Payment Notification Status Settings](https://www.mercadopago.com.br/developers/en/plugins_sdks/plugins/official/magento/#bookmark_payment_notification_status_settings)
-
-## Documentación en Español
-
-Para una mejor experiencia, será redirigido a nuestro sitio haciendo clic en los links a abajo:
-
-* [Funcionalidades](https://www.mercadopago.com.ar/developers/es/plugins_sdks/plugins/official/magento/#bookmark_features)
-* [Requisitos](https://www.mercadopago.com.ar/developers/es/plugins_sdks/plugins/official/magento/#bookmark_requirements)
-* [Instalación](https://www.mercadopago.com.ar/developers/es/plugins_sdks/plugins/official/magento/#bookmark_installation)
-* [Actualización](https://www.mercadopago.com.ar/developers/es/plugins_sdks/plugins/official/magento/#bookmark_upgrade)
-* [Configurar el Checkout Personalizado](https://www.mercadopago.com.ar/developers/es/plugins_sdks/plugins/official/magento/#bookmark_configure_checkout_custom_(credit_card_and_ticket))
-* [Configurar Checkout de Mercado Pago](https://www.mercadopago.com.ar/developers/es/plugins_sdks/plugins/official/magento/#bookmark_configure_checkout_classic)
-* [Configurar Suscripciones](https://www.mercadopago.com.ar/developers/es/plugins_sdks/plugins/official/magento/#bookmark_configure_subscriptions)
-* [Configuración de estado de las notificaciones de Pago](https://www.mercadopago.com.ar/developers/es/plugins_sdks/plugins/official/magento/#bookmark_payment_notification_status_settings)
-
-## Documentação em Português
-
-Para uma melhor experiência, você será redirecionado para o nosso site, clicando nos links abaixo:
-
-* [Funcionalidades](https://www.mercadopago.com.br/developers/pt/plugins_sdks/plugins/official/magento/#bookmark_features)
-* [Requisitos](https://www.mercadopago.com.br/developers/pt/plugins_sdks/plugins/official/magento/#bookmark_requirements)
-* [Instalação](https://www.mercadopago.com.br/developers/pt/plugins_sdks/plugins/official/magento/#bookmark_installation)
-* [Atualização](https://www.mercadopago.com.br/developers/pt/plugins_sdks/plugins/official/magento/#bookmark_upgrade)
-* [Configurar Checkout Custom](https://www.mercadopago.com.br/developers/pt/plugins_sdks/plugins/official/magento/#bookmark_configure_checkout_custom_(credit_card_and_ticket))
-* [Configurar Checkout Mercado Pago](https://www.mercadopago.com.br/developers/pt/plugins_sdks/plugins/official/magento/#bookmark_configure_checkout_classic)
-* [Configurando o Pagamento Recorrente](https://www.mercadopago.com.br/developers/pt/plugins_sdks/plugins/official/magento/#bookmark_configure_subscriptions)
-* [Configurações de status de Notificações de Pagamento](https://www.mercadopago.com.br/developers/pt/plugins_sdks/plugins/official/magento/#bookmark_payment_notification_status_settings)
-
-## Support
-
-Something's wrong? [Get in touch with our support](https://www.mercadopago.com.ar/developers/en/support)
+## Magento 1 deprecation
+​
+Mercado Pago supports the integration of payment checkouts on open source ecommerce platforms. Users are able to choose between several ecommerce platforms compatible with Mercado Pago. Mercado Pago does not endorse any particular platform.
+​
+If you’re currently working with Magento 1 as your ecommerce platform, we remind you that, on August 6th 2020, Adobe [announced](https://magento.com/blog/magento-news/support-magento-1-software-ends-june-30-2020) that Magento 1 and every related extensions would no longer be available on Magento’s repository.
+​
+Based on Adobe’s decision to discontinue Magento 1, Mercado Pago will no longer offer its module for Magento 1 nor support services related to its integration. In case you’re using Magento as your ecommerce platform, we recommend migrating to the latest version offered on Magento’s [website](https://magento.com/tech-resources/download).
+​
+We remind you that Mercado Pago isn’t responsible for the ecommerce platform chosen by each seller nor for vulnerabilities that given platform may have.
+​
+## Deprecación de Magento 1
+Mercado Pago soporta la integración de checkouts de pago en plataformas de ecommerce “open source”. Los usuarios vendedores pueden elegir distintas plataformas de ecommerce compatibles con Mercado Pago. Mercado Pago no recomienda ninguna plataforma en particular.  
+​
+Si actualmente estás trabajando con Magento 1 cómo tu plataforma de comercio electrónico, te recordamos que Adobe [anunció](https://magento.com/blog/magento-news/support-magento-1-software-ends-june-30-2020) que a partir del 6 de agosto de 2020, Magento 1 y todas las extensiones de Magento 1 ya no estarán disponibles en el repositorio de Magento.
+​
+En virtud de la decisión de Adobe de discontinuar Magento 1, Mercado Pago dejará de ofrecer su módulo de integración para Magento 1 y de prestar servicio de soporte a usuarios en su integración. Te recomendamos que, en caso de utilizar Magento 1 cómo plataforma de comercio electrónico, migres a la última versión ofrecida por Adobe en su [sitio web](https://magento.com/tech-resources/download).
+​
+Te recordamos que Mercado Pago no es responsable por la plataforma de comercio electrónico elegida por cada vendedor y ni por las vulnerabilidades que dicha plataforma pudiera tener. 
+​
+## Deprecação de Magento 1
+​
+O Mercado Pago suporta a integração de checkouts de pagamento em plataformas de ecommerce “open source”. Os usuários vendedores podem escolher diferentes plataformas de ecommerce compatíveis com o Mercado Pago. O Mercado Pago não recomenda nenhuma plataforma em particular.
+​
+Se atualmente está trabalhando com Magento 1 como sua plataforma de comércio eletrônico, lembramos que a Adobe [anunciou](https://magento.com/blog/magento-news/support-magento-1-software-ends-june-30-2020) que, a partir de 6 de Agosto de 2020, Magento 1 e todas as suas extensões não estarão mais disponíveis no repositório de Magento.
+​
+Em virtude da decisão da Adobe em descontinuar o Magento 1, o Mercado Pago deixará de oferecer seu módulo de integração para Magento 1 e de prestar serviços de suporte a usuários em sua integração. Recomendamos que, caso esteja utilizando Magento 1 como sua plataforma de comércio eletrônico, migre para a última versão oferecida pela Adobe em [seu site](https://magento.com/tech-resources/download).
+​
+Lembramos que o Mercado Pago não é responsável pela plataforma de comércio eletrônico escolhida por cada vendedor nem vulnerabilidades que tal plataforma possa conter.

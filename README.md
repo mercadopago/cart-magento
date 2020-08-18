@@ -8,7 +8,7 @@ Based on Adobe’s decision to discontinue Magento 1, Mercado Pago will no longe
 
 We remind you that Mercado Pago isn’t responsible for the ecommerce platform chosen by each seller nor for vulnerabilities that given platform may have.
 
-## Deprecación de Magento 1
+## Deprecado de Magento 1
 
 Mercado Pago soporta la integración de checkouts de pago en plataformas de ecommerce “open source”. Los usuarios vendedores pueden elegir distintas plataformas de ecommerce compatibles con Mercado Pago. Mercado Pago no recomienda ninguna plataforma en particular.  
 
